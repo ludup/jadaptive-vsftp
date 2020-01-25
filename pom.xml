@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.jadaptive</groupId>
+	<artifactId>jadaptive-plugins</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<url>https://jadaptive.com</url>
+	<packaging>pom</packaging>
+	<name>Private Plugins</name>
+	<description>Private Plugins</description>
+
+	<scm>
+		<url>http://github.com/ludup/jadaptive-plugins</url>
+		<connection>scm:git:https://github.com/ludup/jadaptive-plugins</connection>
+		<developerConnection>scm:git:https://github.com/ludup/jadaptive-plugind</developerConnection>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>lee</id>
+			<name>Lee David Painter</name>
+			<email>lee@jadaptive.com</email>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>jadaptive-virtual-sftp</module>
+	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.1.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<pf4j.version>3.3.0-SNAPSHOT</pf4j.version>
+		<javadoc.disabled>true</javadoc.disabled>
+		<deploy.disabled>true</deploy.disabled>
+		<source.disabled>true</source.disabled>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
+	<build>
+		<resources>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
