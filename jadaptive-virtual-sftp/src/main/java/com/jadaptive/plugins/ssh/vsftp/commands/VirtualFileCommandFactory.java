@@ -12,8 +12,8 @@ public class VirtualFileCommandFactory implements PluginCommandFactory {
 
 	@Override
 	public CommandFactory<ShellCommand> buildFactory() throws AccessDeniedException {
-		// TODO Auto-generated method stub
-		return null;
+		return new CommandFactory<ShellCommand>() {
+		};
 	}
 
 }
