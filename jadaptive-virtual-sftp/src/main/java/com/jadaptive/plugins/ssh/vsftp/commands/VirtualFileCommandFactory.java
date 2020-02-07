@@ -1,13 +1,13 @@
 package com.jadaptive.plugins.ssh.vsftp.commands;
 
-import org.springframework.stereotype.Component;
+import org.pf4j.Extension;
 
 import com.jadaptive.api.permissions.AccessDeniedException;
 import com.jadaptive.plugins.sshd.PluginCommandFactory;
 import com.sshtools.server.vsession.CommandFactory;
 import com.sshtools.server.vsession.ShellCommand;
 
-@Component
+@Extension
 public class VirtualFileCommandFactory implements PluginCommandFactory {
 
 	@Override
