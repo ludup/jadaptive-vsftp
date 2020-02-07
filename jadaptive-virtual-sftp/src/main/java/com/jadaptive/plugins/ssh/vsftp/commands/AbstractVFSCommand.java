@@ -1,6 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.commands;
 
-import com.jadaptive.api.sshd.commands.AbstractTenantAwareCommand;
+import com.jadaptive.plugins.sshd.commands.AbstractTenantAwareCommand;
 import com.sshtools.common.files.vfs.VirtualFileFactory;
 import com.sshtools.common.policy.FileSystemPolicy;
 

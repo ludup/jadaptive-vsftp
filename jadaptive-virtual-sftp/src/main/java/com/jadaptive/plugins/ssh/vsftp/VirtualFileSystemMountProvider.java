@@ -3,12 +3,12 @@ package com.jadaptive.plugins.ssh.vsftp;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.pf4j.Extension;
+import org.springframework.stereotype.Component;
 
-import com.jadaptive.api.sshd.PluginFileSystemMount;
+import com.jadaptive.plugins.sshd.PluginFileSystemMount;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 
-@Extension
+@Component
 public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 
 	@Override
