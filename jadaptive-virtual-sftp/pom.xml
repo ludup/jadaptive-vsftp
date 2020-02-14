@@ -34,10 +34,26 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.sshtools</groupId>
-			<artifactId>vfs-s3</artifactId>
-			<version>3.1.0-SNAPSHOT</version>
-			<scope>compile</scope>
+			<groupId>jcifs</groupId>
+			<artifactId>jcifs</artifactId>
+			<version>1.3.17</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-vfs2-sandbox</artifactId>
+			<version>2.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.jackrabbit</groupId>
+					<artifactId>jackrabbit-webdav</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
@@ -100,4 +116,16 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<repositories>
+		<repository>
+			<id>ext-releases-local</id>
+			<name>artifactory.javassh.com-ext-releases</name>
+			<url>http://artifactory.javassh.com/ext-releases-local</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases/>
+		</repository>
+	</repositories>
 </project>
