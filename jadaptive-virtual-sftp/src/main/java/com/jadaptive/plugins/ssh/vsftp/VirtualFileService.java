@@ -3,6 +3,9 @@ package com.jadaptive.plugins.ssh.vsftp;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.provider.FileProvider;
+
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
 import com.sshtools.common.files.vfs.VFSFileFactory;
@@ -27,5 +30,7 @@ public interface VirtualFileService {
 	VirtualFolder getVirtualFolder(String mount);
 
 	void deleteVirtualFolder(VirtualFolder virtualFolder);
+
+	void addProvider(String scheme, FileProvider provider) throws FileSystemException;
 
 }

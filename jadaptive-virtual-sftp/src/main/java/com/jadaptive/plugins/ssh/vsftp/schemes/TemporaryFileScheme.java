@@ -56,4 +56,9 @@ public class TemporaryFileScheme implements FileScheme {
 	public Class<? extends VirtualFolderCredentials> getCredentialsClass() {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public String getScheme() {
+		return "tmp";
+	}
 }

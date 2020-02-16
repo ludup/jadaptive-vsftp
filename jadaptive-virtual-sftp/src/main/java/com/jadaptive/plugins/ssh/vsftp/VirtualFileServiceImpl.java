@@ -17,6 +17,7 @@ import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
+import org.apache.commons.vfs2.provider.FileProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,20 +59,6 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 				VirtualFolder.class, 
 				permissionService.getCurrentUser());
 	}
-	
-//	public void mountS3(String name, String region, String accessKeyId, String secretAccessKey) {
-//		FileSystemOptions opts = new FileSystemOptions();
-//        try {
-//        	
-//            DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, 
-//            		new StaticUserAuthenticator(null, accessKeyId, secretAccessKey));
-//            
-//            S3FileSystemConfigBuilder.getInstance().setRegion(opts, 
-//            		Regions.fromName(region));
-//        } catch (FileSystemException e) {
-//            log.error(String.format("Failed to set credentials on %s", name));
-//        }
-//	}
 
 	@Override
 	public boolean checkMountExists(String mount, User user) {
@@ -149,6 +136,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 	
 	public FileSystemManager getManager(String id, CacheStrategy cacheStrategy)
 			throws FileSystemException {
+		
 		synchronized (managers) {
 			String key = id == null ? "__DEFAULT__" : id;
 			FileSystemManager mgr = managers.get(key);
@@ -156,9 +144,11 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 				DefaultFileSystemManager vfsMgr = new DefaultFileSystemManager();
 				vfsMgr.setLogger(LogFactory.getLog(key));
 				vfsMgr.setCacheStrategy(cacheStrategy);
-				for (Map.Entry<String, FileScheme> en : providers.entrySet()) {
-					if(!vfsMgr.hasProvider(en.getKey()))
-						vfsMgr.addProvider(en.getKey(), en.getValue().getFileProvider());
+				for(FileScheme provider : applicationService.getBeans(FileScheme.class)) {
+					if(!vfsMgr.hasProvider(provider.getScheme())) {
+						log.info("Registering {} file scheme", provider.getScheme());
+						vfsMgr.addProvider(provider.getScheme(), provider.getFileProvider());
+					}
 				}
 				vfsMgr.init();
 				managers.put(key, vfsMgr);
@@ -166,6 +156,20 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 			}
 			return mgr;
 		}
+	}
+	
+	@Override
+	public void addProvider(String scheme, FileProvider provider) throws FileSystemException {
+		synchronized (managers) {
+			if (providers.containsKey(scheme))
+				throw new IllegalArgumentException(String.format("Provider already registered for %s.", scheme));
+			for (Map.Entry<String, FileSystemManager> en : managers.entrySet()) {
+				if (en.getValue() instanceof DefaultFileSystemManager) {
+					((DefaultFileSystemManager) en.getValue()).addProvider(scheme, provider);
+				}
+			}
+		}
+
 	}
 
 	@Override

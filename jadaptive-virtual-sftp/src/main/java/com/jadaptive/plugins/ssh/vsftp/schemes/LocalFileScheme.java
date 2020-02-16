@@ -57,4 +57,9 @@ public class LocalFileScheme implements FileScheme {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public String getScheme() {
+		return "file";
+	}
+
 }
