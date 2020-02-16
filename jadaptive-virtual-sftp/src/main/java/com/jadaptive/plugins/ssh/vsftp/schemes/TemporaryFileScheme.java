@@ -15,6 +15,7 @@ import org.pf4j.Extension;
 import com.jadaptive.api.template.EntityTemplate;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
 @Extension
 public class TemporaryFileScheme implements FileScheme {
@@ -48,6 +49,11 @@ public class TemporaryFileScheme implements FileScheme {
 
 	@Override
 	public EntityTemplate getCredentialsTemplate() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Class<? extends VirtualFolderCredentials> getCredentialsClass() {
 		throw new UnsupportedOperationException();
 	}
 }

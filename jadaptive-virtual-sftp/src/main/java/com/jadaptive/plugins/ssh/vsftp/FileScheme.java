@@ -24,4 +24,6 @@ public interface FileScheme extends ExtensionPoint {
 	FileProvider getFileProvider();
 	
 	EntityTemplate getCredentialsTemplate();
+
+	Class<? extends VirtualFolderCredentials> getCredentialsClass();
 }

@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.commands;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,8 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.CacheStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.db.DocumentHelper;
 import com.jadaptive.api.entity.EntityNotFoundException;
-import com.jadaptive.api.entity.EntityService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.template.EntityTemplate;
@@ -28,6 +29,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.utils.FileUtils;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountManager;
+import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.server.vsession.CliHelper;
 import com.sshtools.server.vsession.UsageException;
@@ -43,7 +45,7 @@ public class Mount extends AbstractVFSCommand {
 	private RoleService roleService; 
 	
 	@Autowired
-	private UserService userService; 
+	private UserService userService;  
 	
 	public Mount() {
 		super("mount", "Virtual File System",  UsageHelper.build("mount [options] path destination",
@@ -113,7 +115,11 @@ public class Mount extends AbstractVFSCommand {
 		
 		VirtualFolderCredentials credentials = null;
 		if(provider.requiresCredentials()) {
-			credentials = promptForCredentials(provider);
+			try {
+				credentials = promptForCredentials(provider);
+			} catch (ParseException e) {
+				throw new IOException(e.getMessage(), e);
+			}
 		}
 		
 		try {
@@ -124,11 +130,12 @@ public class Mount extends AbstractVFSCommand {
 			folder.setCacheStrategy(cacheStrategy);
 			folder.setDestinationUri(path);
 			folder.setType(uri.getScheme());
+			folder.setCredentials(credentials);
 			
-			fileService.resolveMount(folder);
+			VFSFileFactory factory = fileService.resolveMount(folder);
 			
 			VirtualMountManager mm = getFileFactory().getMountManager(console.getConnection());
-			mm.mount(mm.createMount(mount, uri.toASCIIString(), new VFSFileFactory()));
+			mm.mount(new VirtualMountTemplate(mount, uri.toASCIIString(), factory));
 			
 			if(permanent) {
 				users.add(user);
@@ -139,16 +146,16 @@ public class Mount extends AbstractVFSCommand {
 		}
 	}
 
-	private VirtualFolderCredentials promptForCredentials(FileScheme provider) {
+	private VirtualFolderCredentials promptForCredentials(FileScheme provider) throws ParseException {
 		
 		EntityTemplate template = provider.getCredentialsTemplate();
 		
-		Map<String,String> obj = new HashMap<>();
+		Map<String, Object> obj = new HashMap<>();
 		for(FieldTemplate field : template.getFields()) {
 			obj.put(field.getResourceKey(), console.readLine(String.format("%s: ", field.getName())));
 		}
 
-		return null;
+		return DocumentHelper.convertDocumentToObject(provider.getCredentialsClass(), obj);
 	}
 
 	private void saveMount(VirtualFolder folder, Collection<Role> roles, Collection<User> users) {

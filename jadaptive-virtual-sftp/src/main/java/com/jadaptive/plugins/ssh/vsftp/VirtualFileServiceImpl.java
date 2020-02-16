@@ -27,7 +27,6 @@ import com.jadaptive.api.db.AssignableObjectDatabase;
 import com.jadaptive.api.entity.EntityNotFoundException;
 import com.jadaptive.api.permissions.PermissionService;
 import com.jadaptive.api.role.Role;
-import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.user.User;
 import com.sshtools.common.files.AbstractFileHomeFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
@@ -47,9 +46,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 	
 	@Autowired
 	private ApplicationService applicationService; 
-	
-	@Autowired
-	private RoleService roleService; 
+
 	
 	private Set<String> types;
 	private Map<String, FileScheme> providers = new HashMap<>();
@@ -94,6 +91,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 			for(FileScheme provider : applicationService.getBeans(FileScheme.class)) {
 				types.addAll(provider.types());
 				for(String t : provider.types()) {
+					log.info("Registering file scheme {}", t);
 					providers.put(t, provider);
 				}
 			}
@@ -103,6 +101,9 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 
 	@Override
 	public FileScheme getFileScheme(String type) {
+		if(providers.isEmpty()) {
+			checkSupportedMountType(type);
+		}
 		return providers.get(type);
 	}
 	
@@ -126,13 +127,13 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 	}
 	
 	@Override
-	public FileObject resolveMount(VirtualFolder folder) throws IOException {
+	public VFSFileFactory resolveMount(VirtualFolder folder) throws IOException {
 		
 		try {
 			FileScheme scheme = getFileScheme(folder.getType());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
-			FileObject obj = getManager(folder.getUuid(), 
-					folder.getCacheStrategy()).resolveFile(
+			FileSystemManager mgr = getManager(folder.getUuid(), folder.getCacheStrategy());
+			FileObject obj = mgr.resolveFile(
 							scheme.generateUri(
 									folder.getDestinationUri()).toASCIIString(), opts);
 			
@@ -140,7 +141,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 				throw new FileNotFoundException("Destination of mount was not found");
 			}
 			
-			return obj;
+			return new VFSFileFactory(mgr, opts, new VFSHomeFactory());
 		} catch (URISyntaxException e) {
 			throw new IOException(e.getMessage(), e);
 		}
@@ -170,13 +171,17 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 	@Override
 	public VirtualMountTemplate getVirtualMountTemplate(VirtualFolder folder) throws IOException {
 		
-		FileSystemOptions opts = getFileScheme(
-				folder.getType()).buildFileSystemOptions(folder);
-		FileSystemManager manager = getManager(folder.getUuid(), folder.getCacheStrategy());
+		try {
+			FileScheme scheme = getFileScheme(folder.getType());
+			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
+			FileSystemManager manager = getManager(folder.getUuid(), folder.getCacheStrategy());
 
-		return new VirtualMountTemplate(folder.getMountPath(),
-				folder.getDestinationUri(),
-				new VFSFileFactory(manager, opts, new VFSHomeFactory()));
+			return new VirtualMountTemplate(folder.getMountPath(),
+					scheme.generateUri(folder.getDestinationUri()).toASCIIString(),
+					new VFSFileFactory(manager, opts, new VFSHomeFactory()));
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
 	
 	}
 

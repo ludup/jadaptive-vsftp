@@ -17,7 +17,7 @@ public class WindowsCredentials extends VirtualFolderCredentials {
 	@Member(name = "Username", description = "The username of the identity", type = FieldType.TEXT)
 	String username;
 	
-	@Member(name = "Domain", description = "The password for this identity", type = FieldType.TEXT)
+	@Member(name = "Password", description = "The password for this identity", type = FieldType.TEXT)
 	String password;
 
 	public String getDomain() {

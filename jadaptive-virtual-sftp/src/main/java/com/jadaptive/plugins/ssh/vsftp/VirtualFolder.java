@@ -33,6 +33,7 @@ public class VirtualFolder extends AssignableUUIDEntity {
 
 	public void setMountPath(String mountPath) {
 		setUuid(mountPath);
+		this.mountPath = mountPath;
 	}
 
 	public String getDestinationUri() {

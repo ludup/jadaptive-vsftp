@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.vfs2.FileSystemException;
@@ -19,9 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.EntityTemplate;
-import com.jadaptive.api.template.EntityTemplateRepository;
+import com.jadaptive.api.template.EntityTemplateService;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
 @Extension
 public class SmbFileScheme implements FileScheme {
@@ -31,22 +33,28 @@ public class SmbFileScheme implements FileScheme {
 	SmbFileProvider provider = new SmbFileProvider();
 	
 	@Autowired
-	EntityTemplateRepository templateRepository; 
+	EntityTemplateService templateService; 
 	
 	@Override
 	public FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException {
 
-		String domain = null;
-		String username = null;
-		String password = null;
+		FileSystemOptions opts = new FileSystemOptions();
 		
-		StaticUserAuthenticator auth = new StaticUserAuthenticator(domain, username, password);
-		
-        FileSystemOptions opts = new FileSystemOptions();
-        try {
-			DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
-		} catch (FileSystemException e) {
-			log.error("Could not set credentials on file system options", e);
+		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof WindowsCredentials) {
+			
+			WindowsCredentials creds = (WindowsCredentials) folder.getCredentials();
+			String domain = creds.getDomain();
+			String username = creds.getUsername();
+			String password = creds.getPassword();
+			
+			StaticUserAuthenticator auth = new StaticUserAuthenticator(domain, username, password);
+			
+	        
+	        try {
+				DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
+			} catch (FileSystemException e) {
+				log.error("Could not set credentials on file system options", e);
+			}
 		}
 		return opts;
 	}
@@ -80,6 +88,11 @@ public class SmbFileScheme implements FileScheme {
 
 	@Override
 	public EntityTemplate getCredentialsTemplate() {
-		return templateRepository.get(WindowsCredentials.RESOURCE_KEY);
+		return templateService.get(WindowsCredentials.RESOURCE_KEY);
+	}
+
+	@Override
+	public Class<? extends VirtualFolderCredentials> getCredentialsClass() {
+		return WindowsCredentials.class;
 	}
 }

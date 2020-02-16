@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.entity.EntityNotFoundException;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.FileUtils;
 import com.sshtools.common.files.vfs.VirtualMount;
 import com.sshtools.common.files.vfs.VirtualMountManager;

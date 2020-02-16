@@ -3,10 +3,9 @@ package com.jadaptive.plugins.ssh.vsftp;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.commons.vfs2.FileObject;
-
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
+import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 
 public interface VirtualFileService {
@@ -17,7 +16,7 @@ public interface VirtualFileService {
 
 	FileScheme getFileScheme(String type);
 
-	FileObject resolveMount(VirtualFolder folder) throws IOException;
+	VFSFileFactory resolveMount(VirtualFolder folder) throws IOException;
 
 	VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles);
 
