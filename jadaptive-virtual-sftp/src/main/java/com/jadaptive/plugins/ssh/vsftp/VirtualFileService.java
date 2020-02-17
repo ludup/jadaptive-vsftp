@@ -33,4 +33,6 @@ public interface VirtualFileService {
 
 	void addProvider(String scheme, FileProvider provider) throws FileSystemException;
 
+	Collection<FileScheme> getSchemes();
+
 }

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -50,6 +51,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 
 	
 	private Set<String> types;
+	private Set<FileScheme> schemes = new HashSet<>();
 	private Map<String, FileScheme> providers = new HashMap<>();
 	private Map<String, FileSystemManager> managers = new HashMap<>();
 	
@@ -75,11 +77,12 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 		
 		if(Objects.isNull(types)) {
 			types = new HashSet<>();
-			for(FileScheme provider : applicationService.getBeans(FileScheme.class)) {
-				types.addAll(provider.types());
-				for(String t : provider.types()) {
+			checkSchemes();
+			for(FileScheme scheme : schemes) {
+				types.addAll(scheme.types());
+				for(String t : scheme.types()) {
 					log.info("Registering file scheme {}", t);
-					providers.put(t, provider);
+					providers.put(t, scheme);
 				}
 			}
 		}
@@ -137,6 +140,8 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 	public FileSystemManager getManager(String id, CacheStrategy cacheStrategy)
 			throws FileSystemException {
 		
+		checkSchemes();
+		
 		synchronized (managers) {
 			String key = id == null ? "__DEFAULT__" : id;
 			FileSystemManager mgr = managers.get(key);
@@ -144,10 +149,10 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 				DefaultFileSystemManager vfsMgr = new DefaultFileSystemManager();
 				vfsMgr.setLogger(LogFactory.getLog(key));
 				vfsMgr.setCacheStrategy(cacheStrategy);
-				for(FileScheme provider : applicationService.getBeans(FileScheme.class)) {
-					if(!vfsMgr.hasProvider(provider.getScheme())) {
-						log.info("Registering {} file scheme", provider.getScheme());
-						vfsMgr.addProvider(provider.getScheme(), provider.getFileProvider());
+				for(FileScheme scheme : schemes) {
+					if(!vfsMgr.hasProvider(scheme.getScheme())) {
+						log.info("Registering {} file scheme", scheme.getScheme());
+						vfsMgr.addProvider(scheme.getScheme(), scheme.getFileProvider());
 					}
 				}
 				vfsMgr.init();
@@ -158,6 +163,16 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 		}
 	}
 	
+	private void checkSchemes() {
+		
+		if(schemes.isEmpty()) {
+			for(FileScheme scheme : applicationService.getBeans(FileScheme.class)) {
+				schemes.add(scheme);
+			}
+		}
+		
+	}
+
 	@Override
 	public void addProvider(String scheme, FileProvider provider) throws FileSystemException {
 		synchronized (managers) {
@@ -208,5 +223,10 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 		permissionService.assertReadWrite(VirtualFolder.RESOURCE_KEY);
 		repository.deleteObject(virtualFolder);
 		
+	}
+
+	@Override
+	public Collection<FileScheme> getSchemes() {
+		return Collections.unmodifiableCollection(schemes);
 	}
 }

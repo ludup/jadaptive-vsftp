@@ -15,6 +15,7 @@ public class VirtualFileCommandFactory extends AbstractAutowiredCommandFactory i
 	public CommandFactory<ShellCommand> buildFactory() throws AccessDeniedException {
 		tryCommand("mount", Mount.class, "vfolder.readWrite");
 		tryCommand("umount", Unmount.class, "vfolder.readWrite");
+		tryCommand("vfs", Vfs.class, "vfolder.readWrite");
 		return this;
 	}
 

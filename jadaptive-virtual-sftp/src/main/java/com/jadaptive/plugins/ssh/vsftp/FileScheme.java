@@ -28,4 +28,6 @@ public interface FileScheme extends ExtensionPoint {
 	Class<? extends VirtualFolderCredentials> getCredentialsClass();
 
 	String getScheme();
+
+	String getName();
 }

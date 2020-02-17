@@ -3,38 +3,32 @@ package com.jadaptive.plugins.ssh.vsftp.schemes;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
-import org.apache.commons.vfs2.provider.FileProvider;
 import org.apache.commons.vfs2.provider.smb.SmbFileProvider;
 import org.pf4j.Extension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.EntityTemplate;
 import com.jadaptive.api.template.EntityTemplateService;
-import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
 @Extension
-public class SmbFileScheme implements FileScheme {
+public class SmbFileScheme extends AbstractFileScheme {
 
-	static Logger log = LoggerFactory.getLogger(SmbFileScheme.class);
-	
-	SmbFileProvider provider = new SmbFileProvider();
 	
 	@Autowired
 	EntityTemplateService templateService; 
-	
+
+	public SmbFileScheme() {
+		super("Windows CIFS", new SmbFileProvider(), "smb", "windows", "cifs");
+	}
+
 	@Override
 	public FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException {
 
@@ -65,25 +59,16 @@ public class SmbFileScheme implements FileScheme {
 	}
 
 	@Override
-	public Set<String> types() {
-		return new HashSet<>(Arrays.asList("smb", "windows", "cifs"));
-	}
-
-	@Override
 	public URI generateUri(String path) throws URISyntaxException {
 		return new URI("smb://" + convertWindowsUNCPath(path));
 	}
 
 	private String convertWindowsUNCPath(String path) {
-		if(path.startsWith("\\\\")) {
-			return path.substring(2).replace("\\", "/");
+		path = path.replace("\\", "/");
+		if(path.startsWith("//")) {
+			return path.substring(2);
 		}
 		return path;
-	}
-
-	@Override
-	public FileProvider getFileProvider() {
-		return provider;
 	}
 
 	@Override
@@ -94,10 +79,5 @@ public class SmbFileScheme implements FileScheme {
 	@Override
 	public Class<? extends VirtualFolderCredentials> getCredentialsClass() {
 		return WindowsCredentials.class;
-	}
-
-	@Override
-	public String getScheme() {
-		return "smb";
 	}
 }
