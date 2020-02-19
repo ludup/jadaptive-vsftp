@@ -59,6 +59,8 @@ public class Vfs extends AbstractVFSCommand {
 				console.println(folder.getDestinationUri());
 			}
 		}
+		
+		console.println();
 
 	}
 

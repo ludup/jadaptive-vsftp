@@ -227,6 +227,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 
 	@Override
 	public Collection<FileScheme> getSchemes() {
+		checkSchemes();
 		return Collections.unmodifiableCollection(schemes);
 	}
 }
