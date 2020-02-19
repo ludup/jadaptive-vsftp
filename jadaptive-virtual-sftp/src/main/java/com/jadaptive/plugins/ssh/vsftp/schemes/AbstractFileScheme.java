@@ -11,7 +11,9 @@ import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.FileProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.encrypt.EncryptionService;
 import com.jadaptive.api.template.EntityTemplate;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -25,10 +27,17 @@ public abstract class AbstractFileScheme implements FileScheme {
 	String[] types;
 	FileProvider provider; 
 	
+	@Autowired
+	EncryptionService encryptionService; 
+	
 	protected AbstractFileScheme(String name, FileProvider provider, String... types) {
 		this.name = name;
 		this.types = types;
 		this.provider = provider;
+	}
+	
+	protected String decryptCredentials(String value) {
+		return encryptionService.decrypt(value);
 	}
 	
 	@Override

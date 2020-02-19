@@ -14,7 +14,7 @@ public class PasswordCredentials extends VirtualFolderCredentials {
 	@Column(name = "Username", description = "The username of this user", type = FieldType.TEXT)
 	String username;
 	
-	@Column(name = "Password", description = "The password for this user", type = FieldType.TEXT)
+	@Column(name = "Password", description = "The password for this user", type = FieldType.PASSWORD, manualEncryption = true)
 	String password;
 
 	public String getUsername() {

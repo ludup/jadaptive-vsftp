@@ -39,7 +39,7 @@ public class SmbFileScheme extends AbstractFileScheme {
 			WindowsCredentials creds = (WindowsCredentials) folder.getCredentials();
 			String domain = creds.getDomain();
 			String username = creds.getUsername();
-			String password = creds.getPassword();
+			String password = decryptCredentials(creds.getPassword());
 			
 			StaticUserAuthenticator auth = new StaticUserAuthenticator(domain, username, password);
 			

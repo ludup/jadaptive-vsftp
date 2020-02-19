@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.vfs2.CacheStrategy;
+import org.jline.reader.LineReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.app.ApplicationService;
@@ -163,125 +164,140 @@ public class Mount extends AbstractVFSCommand {
 
 	private VirtualFolderCredentials promptForCredentials(FileScheme provider) throws ParseException, PermissionDeniedException, IOException {
 		
-		EntityTemplate template = provider.getCredentialsTemplate();
-		
-		Map<String, Object> obj = new HashMap<>();
-		for(FieldTemplate field : template.getFields()) {
-			switch(field.getFieldType()) {
-			case TEXT:
-				obj.put(field.getResourceKey(), console.readLine(String.format("%s: ", field.getName())));
-				break;
-			case TEXT_AREA:
-			{
-				console.println("Enter path to ".concat(field.getName()));
-				String filename = console.readLine("Path: ");
-				
-				AbstractFile file = getFileFactory().getFile(filename, console.getConnection());
-				if(!file.exists())  {
-					throw new IOException("Could not find file");
-				}
-				
-				obj.put(field.getResourceKey(), IOUtils.readUTF8StringFromStream(file.getInputStream()));
-
-				break;
-			}
-			case DECIMAL:
-			{
-				String val; 
-				while(true) {
-					val = console.readLine(String.format("%s: ", field.getName()));
-					try {
-						Double.parseDouble(val);
-						break;
-					} catch(NumberFormatException e) {
-						continue;
-					}
-				}
-				obj.put(field.getResourceKey(), val);
-				break;
-			}
-			case BOOL:
-			{
-				String val; 
-				Set<String> validAnswers = new HashSet<>(Arrays.asList("y", "n", "yes", "no"));
-				do {
-					val = console.readLine(String.format("%s (y/n): ", field.getName()));		 
-				} while(!validAnswers.contains(val.toLowerCase()));
-				obj.put(field.getResourceKey(), val);
-				break;
-			}
-			case ENUM:
-			{
-				console.println("Select ".concat(field.getName()).concat(" from the list (type name or index number)"));
-				String type = field.getValidationValue(ValidationType.OBJECT_TYPE);
-				try {
-					@SuppressWarnings("unchecked")
-					Class<? extends Enum<?>> clz = (Class<? extends Enum<?>>) applicationService.resolveClass(type);
+		console.getLineReader().getVariables().put(LineReader.DISABLE_HISTORY, Boolean.TRUE);
+        
+		try {
+			EntityTemplate template = provider.getCredentialsTemplate();
+			
+			Map<String, Object> obj = new HashMap<>();
+			for(FieldTemplate field : template.getFields()) {
+				switch(field.getFieldType()) {
+				case PASSWORD:
+					obj.put(field.getResourceKey(), 
+							console.getLineReader().readLine(
+									String.format("%s: ", field.getName()), '*'));
+					break;
+				case TEXT:
+					obj.put(field.getResourceKey(), console.readLine(
+							String.format("%s: ", field.getName())));
+					break;
+				case TEXT_AREA:
+				{
+					console.println("Enter path to ".concat(field.getName()));
+					String filename = console.readLine("Path: ");
 					
-					List<String> values = new ArrayList<>();
-					Enum<?>[] constants = clz.getEnumConstants();
-					int maximumSize = 0;
-					for(Enum<?> e : constants) {
-						values.add(e.name());
-						maximumSize = Math.max(maximumSize, e.name().length());
+					AbstractFile file = getFileFactory().getFile(
+							filename, 
+							console.getConnection());
+					
+					if(!file.exists())  {
+						throw new IOException("Could not find file");
 					}
 					
-					int columns = console.getTerminal().getSize().getColumns();
-					maximumSize += 8;
-					int perLine = (columns / maximumSize) - 1;
-					int i = 0;
-					int y = 0;
-					for(String name : values) {
-						if(++y > perLine) {
-							y = 1;
-							console.println();
-						}
-						console.print(StringUtils.rightPad(String.format("%02d. %s ", ++i, name), maximumSize));
-					}
-					console.println();
-					String val;
+					obj.put(field.getResourceKey(), IOUtils.readUTF8StringFromStream(file.getInputStream()));
+	
+					break;
+				}
+				case DECIMAL:
+				{
+					String val; 
 					while(true) {
 						val = console.readLine(String.format("%s: ", field.getName()));
-						if(NumberUtils.isNumber(val)) {
-							int idx = Integer.parseInt(val);
-							if(idx > 0 && idx <= values.size()) {
-								val = values.get(i-1);
-								break;
-							}
-						} else if(values.contains(val)) {
+						try {
+							Double.parseDouble(val);
 							break;
+						} catch(NumberFormatException e) {
+							continue;
 						}
-						console.println("Invalid value. Try again.");
 					}
 					obj.put(field.getResourceKey(), val);
-				} catch (ClassNotFoundException e) {
-					throw new IOException(e.getMessage(), e);
+					break;
 				}
-				
-				break;
-			}
-			case NUMBER:
-			{
-				String val; 
-				while(true) {
-					val = console.readLine(String.format("%s: ", field.getName()));
+				case BOOL:
+				{
+					String val; 
+					Set<String> validAnswers = new HashSet<>(Arrays.asList("y", "n", "yes", "no"));
+					do {
+						val = console.readLine(String.format("%s (y/n): ", field.getName()));		 
+					} while(!validAnswers.contains(val.toLowerCase()));
+					obj.put(field.getResourceKey(), val);
+					break;
+				}
+				case ENUM:
+				{
+					console.println("Select ".concat(field.getName()).concat(" from the list (type name or index number)"));
+					String type = field.getValidationValue(ValidationType.OBJECT_TYPE);
 					try {
-						Long.parseLong(val);
-						break;
-					} catch(NumberFormatException e) {
-						continue;
+						@SuppressWarnings("unchecked")
+						Class<? extends Enum<?>> clz = (Class<? extends Enum<?>>) applicationService.resolveClass(type);
+						
+						List<String> values = new ArrayList<>();
+						Enum<?>[] constants = clz.getEnumConstants();
+						int maximumSize = 0;
+						for(Enum<?> e : constants) {
+							values.add(e.name());
+							maximumSize = Math.max(maximumSize, e.name().length());
+						}
+						
+						int columns = console.getTerminal().getSize().getColumns();
+						maximumSize += 8;
+						int perLine = (columns / maximumSize) - 1;
+						int i = 0;
+						int y = 0;
+						for(String name : values) {
+							if(++y > perLine) {
+								y = 1;
+								console.println();
+							}
+							console.print(StringUtils.rightPad(String.format("%02d. %s ", ++i, name), maximumSize));
+						}
+						console.println();
+						String val;
+						while(true) {
+							val = console.readLine(String.format("%s: ", field.getName()));
+							if(NumberUtils.isNumber(val)) {
+								int idx = Integer.parseInt(val);
+								if(idx > 0 && idx <= values.size()) {
+									val = values.get(i-1);
+									break;
+								}
+							} else if(values.contains(val)) {
+								break;
+							}
+							console.println("Invalid value. Try again.");
+						}
+						obj.put(field.getResourceKey(), val);
+					} catch (ClassNotFoundException e) {
+						throw new IOException(e.getMessage(), e);
 					}
+					
+					break;
 				}
-				obj.put(field.getResourceKey(), val);
-				break;
-			}
-			default:
-				
+				case NUMBER:
+				{
+					String val; 
+					while(true) {
+						val = console.readLine(String.format("%s: ", field.getName()));
+						try {
+							Long.parseLong(val);
+							break;
+						} catch(NumberFormatException e) {
+							continue;
+						}
+					}
+					obj.put(field.getResourceKey(), val);
+					break;
+				}
+				default:
+					
+				}
 			}
 			
+			return templateService.createObject(obj, provider.getCredentialsClass());
+			
+		} finally {
+			console.getLineReader().getVariables().remove(LineReader.DISABLE_HISTORY);
 		}
-
-		return templateService.createObject(obj, provider.getCredentialsClass());
 	}
 
 	private void saveMount(VirtualFolder folder, Collection<Role> roles, Collection<User> users) {

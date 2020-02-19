@@ -46,7 +46,8 @@ public class GCSFileScheme extends AbstractFileScheme {
 		FileSystemOptions options = new FileSystemOptions();
 		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof GCSCredentials) {
 			
-			String credentials = ((GCSCredentials)folder.getCredentials()).getClientJson();
+			String credentials = decryptCredentials(
+					((GCSCredentials)folder.getCredentials()).getClientJson());
 			GoogleStorageFileSystemConfigBuilder.getInstance().setClientIdJSON(
 					options, credentials);
 		}

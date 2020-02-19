@@ -10,7 +10,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 @Template(name="Google Credentials", resourceKey = "googleCredentials", scope = EntityScope.GLOBAL, type = EntityType.OBJECT)
 public class GCSCredentials extends VirtualFolderCredentials {
 
-	@Column(name = "Client JSON", description = "The contents of the client json file provided by GCS", type = FieldType.TEXT_AREA)
+	@Column(name = "Client JSON", description = "The contents of the client json file provided by GCS", type = FieldType.TEXT_AREA, manualEncryption = true)
 	String clientJson;
 	
 	public void setClientJson(String clientJson) {

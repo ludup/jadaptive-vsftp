@@ -17,7 +17,7 @@ public class WindowsCredentials extends VirtualFolderCredentials {
 	@Column(name = "Username", description = "The username of the identity", type = FieldType.TEXT)
 	String username;
 	
-	@Column(name = "Password", description = "The password for this identity", type = FieldType.TEXT)
+	@Column(name = "Password", description = "The password for this identity", type = FieldType.PASSWORD, manualEncryption = true)
 	String password;
 
 	public String getDomain() {
