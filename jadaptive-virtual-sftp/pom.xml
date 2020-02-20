@@ -50,7 +50,7 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<outputDirectory>../../jadaptive-builder/target/dist/plugins</outputDirectory>
+					<outputDirectory>../target/dist/plugins</outputDirectory>
 					<finalName>${project.artifactId}-${project.version}-plugin</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 					<attach>false</attach>

@@ -6,7 +6,7 @@ import org.pf4j.Extension;
 @Extension
 public class HttpsFileScheme extends AbstractFileScheme {
 
-	protected HttpsFileScheme() {
+	public HttpsFileScheme() {
 		super("https", new HttpFileProvider(), "https");
 	}
 
