@@ -3,17 +3,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jadaptive</groupId>
-	<artifactId>jadaptive-plugins</artifactId>
+	<artifactId>jadaptive-vsftp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<url>https://jadaptive.com</url>
 	<packaging>pom</packaging>
-	<name>Private Plugins</name>
-	<description>Private Plugins</description>
+	<name>VSFTP Plugins</name>
+	<description>VSFTP Plugins</description>
 
 	<scm>
-		<url>http://github.com/ludup/jadaptive-plugins</url>
-		<connection>scm:git:https://github.com/ludup/jadaptive-plugins</connection>
-		<developerConnection>scm:git:https://github.com/ludup/jadaptive-plugins</developerConnection>
+		<url>http://github.com/ludup/jadaptive-vsftp</url>
+		<connection>scm:git:https://github.com/ludup/jadaptive-vsftp</connection>
+		<developerConnection>scm:git:https://github.com/ludup/jadaptive-vsftp</developerConnection>
 	</scm>
 
 	<developers>
