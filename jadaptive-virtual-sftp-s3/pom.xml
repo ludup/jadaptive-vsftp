@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.jadaptive</groupId>
-		<artifactId>jadaptive-plugins</artifactId>
+		<artifactId>jadaptive-vsftp</artifactId>
 		<relativePath>..</relativePath>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
@@ -17,6 +17,7 @@
 		<plugin.class>com.jadaptive.plugins.vsftp.s3.S3StoragePlugin</plugin.class>
 		<plugin.version>${project.version}</plugin.version>
 		<plugin.provider>JADAPTIVE Limited</plugin.provider>
+		<plugin.projectUrl>https://github.com/ludup/jadpative-vsftp</plugin.projectUrl>
 		<plugin.dependencies>jadaptive-virtual-sftp</plugin.dependencies>	
 	</properties>
 
@@ -68,41 +69,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<outputDirectory>../target/dist/plugins</outputDirectory>
-					<finalName>${project.artifactId}-${project.version}-plugin</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
-					<attach>false</attach>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-						</manifest>
-						<manifestEntries>
-							<Plugin-Id>${plugin.id}</Plugin-Id>
-							<Plugin-Version>${plugin.version}</Plugin-Version>
-							<Plugin-Provider>${plugin.provider}</Plugin-Provider>
-							<Plugin-Class>${plugin.class}</Plugin-Class>
-							<Plugin-Dependencies>${plugin.dependencies}</Plugin-Dependencies>
-						</manifestEntries>
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>com.jadaptive</groupId>
 				<artifactId>pf4j-plugin-generator</artifactId>
