@@ -4,3 +4,4 @@
 /target/
 /plugin.properties
 *.project
+/bin/
