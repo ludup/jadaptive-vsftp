@@ -99,7 +99,7 @@ public class Mount extends AbstractVFSCommand {
 			throw new UsageException(String.format("%s is not a supported file type", type));
 		}
 		
-		if(fileService.checkMountExists(mount, user)) {
+		if(fileService.checkMountExists(mount, currentUser)) {
 			throw new UsageException(String.format("%s is alredy mounted", mount));
 		}
 		
@@ -154,7 +154,7 @@ public class Mount extends AbstractVFSCommand {
 			mm.mount(new VirtualMountTemplate(mount, uri.toASCIIString(), factory));
 			
 			if(permanent) {
-				users.add(user);
+				users.add(currentUser);
 				saveMount(folder, roles, users);
 			}
 		} catch (URISyntaxException e) {
