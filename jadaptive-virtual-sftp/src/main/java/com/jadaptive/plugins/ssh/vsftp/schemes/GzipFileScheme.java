@@ -10,5 +10,4 @@ public class GzipFileScheme extends AbstractFileScheme {
 		super("Gzip File", new GzipFileProvider(), "gzip");
 	}
 
-
 }

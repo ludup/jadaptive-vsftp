@@ -120,7 +120,7 @@ public class Mount extends AbstractVFSCommand {
 		if(StringUtils.isNotBlank(tmp)) {
 			for(String name : tmp.split(",")) {
 				try {
-				users.add(userService.findUsername(name));
+				users.add(userService.getUser(name));
 				} catch(EntityNotFoundException e) { 
 					throw new UsageException(String.format("%s is not a valid user name", name));
 				} 
@@ -151,7 +151,7 @@ public class Mount extends AbstractVFSCommand {
 			VFSFileFactory factory = fileService.resolveMount(folder);
 			
 			VirtualMountManager mm = getFileFactory().getMountManager(console.getConnection());
-			mm.mount(new VirtualMountTemplate(mount, uri.toASCIIString(), factory));
+			mm.mount(new VirtualMountTemplate(mount, uri.toASCIIString(), factory, false));
 			
 			if(permanent) {
 				users.add(currentUser);

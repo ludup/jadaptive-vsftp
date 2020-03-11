@@ -45,7 +45,7 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 
 	@Override
 	public VirtualMountTemplate getHomeMount() throws IOException {
-		return new VirtualMountTemplate("/", "tmp:///", new VFSFileFactory());
+		return new VirtualMountTemplate("/", "tmp:///", new VFSFileFactory(), true);
 	}
 
 }

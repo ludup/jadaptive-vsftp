@@ -29,6 +29,11 @@ public class GCSFileScheme extends AbstractFileScheme {
 	public boolean requiresCredentials() {
 		return true;
 	}
+	
+	@Override
+	public boolean createRoot() {
+		return false;
+	}
 
 	@Override
 	public EntityTemplate getCredentialsTemplate() {

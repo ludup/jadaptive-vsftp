@@ -11,4 +11,8 @@ public class LocalFileScheme extends AbstractFileScheme {
 	}
 
 
+	@Override
+	public boolean createRoot() {
+		return true;
+	}
 }

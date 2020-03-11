@@ -197,7 +197,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 
 			return new VirtualMountTemplate(folder.getMountPath(),
 					scheme.generateUri(folder.getDestinationUri()).toASCIIString(),
-					new VFSFileFactory(manager, opts, new VFSHomeFactory()));
+					new VFSFileFactory(manager, opts, new VFSHomeFactory()), scheme.createRoot());
 		} catch (URISyntaxException e) {
 			throw new IOException(e);
 		}

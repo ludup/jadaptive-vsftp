@@ -28,7 +28,7 @@ public abstract class AbstractFileScheme implements FileScheme {
 	FileProvider provider; 
 	
 	@Autowired
-	EncryptionService encryptionService; 
+	private EncryptionService encryptionService; 
 	
 	protected AbstractFileScheme(String name, FileProvider provider, String... types) {
 		this.name = name;
@@ -38,6 +38,11 @@ public abstract class AbstractFileScheme implements FileScheme {
 	
 	protected String decryptCredentials(String value) {
 		return encryptionService.decrypt(value);
+	}
+	
+	@Override
+	public boolean createRoot() {
+		return false;
 	}
 	
 	@Override

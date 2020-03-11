@@ -30,4 +30,6 @@ public interface FileScheme extends ExtensionPoint {
 	String getScheme();
 
 	String getName();
+
+	boolean createRoot();
 }

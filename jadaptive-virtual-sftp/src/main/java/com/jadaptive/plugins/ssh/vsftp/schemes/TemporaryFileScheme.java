@@ -10,4 +10,8 @@ public class TemporaryFileScheme extends AbstractFileScheme {
 		super("Temporary", new TemporaryFileProvider(), "tmp");
 	}
 	
+	@Override
+	public boolean createRoot() {
+		return true;
+	}
 }
