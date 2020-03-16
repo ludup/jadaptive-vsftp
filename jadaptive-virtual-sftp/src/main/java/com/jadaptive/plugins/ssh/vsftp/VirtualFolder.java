@@ -4,9 +4,9 @@ import org.apache.commons.vfs2.CacheStrategy;
 
 import com.jadaptive.api.entity.EntityType;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
-import com.jadaptive.api.template.Template;
-import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.FieldType;
+import com.jadaptive.api.template.Template;
 
 @Template(name="Virtual Folder", resourceKey = VirtualFolder.RESOURCE_KEY, type = EntityType.COLLECTION)
 public class VirtualFolder extends AssignableUUIDEntity {
@@ -26,6 +26,9 @@ public class VirtualFolder extends AssignableUUIDEntity {
 	
 	@Column(name = "Credentials", description = "The credentials to use to access this folder", type = FieldType.OBJECT_EMBEDDED)
 	VirtualFolderCredentials credentials; 
+	
+	@Column(name = "Options", description = "The options available for this folder", type = FieldType.OBJECT_EMBEDDED)
+	VirtualFolderOptions options; 
 	
 	public String getMountPath() {
 		return getUuid();
@@ -66,5 +69,13 @@ public class VirtualFolder extends AssignableUUIDEntity {
 	
 	public void setCredentials(VirtualFolderCredentials credentials) {
 		this.credentials = credentials;
+	}
+
+	public VirtualFolderOptions getOptions() {
+		return options;
+	}
+
+	public void setOptions(VirtualFolderOptions options) {
+		this.options = options;
 	}
 }

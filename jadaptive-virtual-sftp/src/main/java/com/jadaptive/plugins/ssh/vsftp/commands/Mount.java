@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +34,9 @@ import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
 import com.jadaptive.utils.FileUtils;
+import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountManager;
@@ -126,9 +129,20 @@ public class Mount extends AbstractVFSCommand {
 				} 
 			}
 		}
-		
+
 		FileScheme provider = fileService.getFileScheme(type);
+		Map<String,String> mountOptions = new HashMap<>();
 		
+		if(provider.hasExtendedOptions() && CliHelper.hasOption(args, 'o', "options")) {
+			String options = CliHelper.getValue(args, 'o', "options");
+			if(StringUtils.isNotBlank(options)) {
+				for(String option : options.split(",")) {
+					mountOptions.put(StringUtils.substringBefore(option, "="), 
+							StringUtils.substringAfter(option, "="));
+				}
+			}
+		}
+				
 		VirtualFolderCredentials credentials = null;
 		if(provider.requiresCredentials()) {
 			try {
@@ -147,19 +161,83 @@ public class Mount extends AbstractVFSCommand {
 			folder.setDestinationUri(path);
 			folder.setType(uri.getScheme());
 			folder.setCredentials(credentials);
+			if(!mountOptions.isEmpty() && provider.hasExtendedOptions()) {
+				folder.setOptions(generateMountOptions(mountOptions, provider));
+			}
 			
 			VFSFileFactory factory = fileService.resolveMount(folder);
 			
 			VirtualMountManager mm = getFileFactory().getMountManager(console.getConnection());
-			mm.mount(new VirtualMountTemplate(mount, uri.toASCIIString(), factory, false));
+			mm.mount(new VirtualMountTemplate(mount, uri.toASCIIString(), factory, provider.createRoot()));
 			
 			if(permanent) {
 				users.add(currentUser);
 				saveMount(folder, roles, users);
 			}
-		} catch (URISyntaxException e) {
+		} catch (ParseException | URISyntaxException e) {
 			throw new IOException(e.getMessage(), e);
 		}
+	}
+
+	private VirtualFolderOptions generateMountOptions(Map<String, String> mountOptions, FileScheme provider) throws ParseException, IOException {
+		
+		Map<String, Object> obj = new HashMap<>();
+		
+		EntityTemplate template = provider.getCredentialsTemplate();
+		
+		for(String fieldName : mountOptions.keySet()) {
+			
+			FieldTemplate t = template.getField(fieldName);
+			if(Objects.isNull(t)) {
+				throw new IOException(String.format("%s is not a valid option", fieldName));
+			}
+			
+			String val = mountOptions.get(fieldName);
+			switch(t.getFieldType()) {
+			case TEXT:
+			case TEXT_AREA:
+			case PASSWORD:
+			case ENUM:
+				obj.put(fieldName, val);
+				break;
+			case LONG:
+				try {
+					obj.put(fieldName, Long.parseLong(val));
+				} catch (NumberFormatException e) {
+					throw new IOException(String.format("%s is a number field and %s is not a number", fieldName, val));
+				}
+				break;
+			case INTEGER:
+				try {
+					obj.put(fieldName, Integer.parseInt(val));
+				} catch (NumberFormatException e) {
+					throw new IOException(String.format("%s is a number field and %s is not a number", fieldName, val));
+				}
+				break;
+			case DECIMAL:
+				try {
+					obj.put(fieldName, Double.parseDouble(val));
+				} catch (NumberFormatException e) {
+					throw new IOException(String.format("%s is a decimal field and %s is not a decimal", fieldName, val));
+				}
+				break;
+			case TIMESTAMP:
+				try {
+					obj.put(fieldName, Utils.parseDate(val, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+				} catch(IllegalStateException e) {
+					throw new IOException(String.format("%s is a timestamp field and %s is not a timestamp", fieldName, val));
+				}
+				break;
+			case BOOL:
+				obj.put(fieldName, Boolean.parseBoolean(val));
+				break;
+			default:
+				throw new IOException("Mount option type is a complext object and that's just not supported right now");
+			}
+		}
+
+		return templateService.createObject(obj, provider.getOptionsClass());
+
 	}
 
 	private VirtualFolderCredentials promptForCredentials(FileScheme provider) throws ParseException, PermissionDeniedException, IOException {
@@ -273,19 +351,32 @@ public class Mount extends AbstractVFSCommand {
 					
 					break;
 				}
-				case NUMBER:
+				case LONG:
 				{
 					String val; 
 					while(true) {
 						val = console.readLine(String.format("%s: ", field.getName()));
 						try {
-							Long.parseLong(val);
+							obj.put(field.getResourceKey(), Long.parseLong(val));
 							break;
 						} catch(NumberFormatException e) {
-							continue;
+							console.println(String.format("Invalid entry: %s expecting long value but got %s instead", field.getName(), val));
 						}
 					}
-					obj.put(field.getResourceKey(), val);
+					break;
+				}
+				case INTEGER:
+				{
+					String val; 
+					while(true) {
+						val = console.readLine(String.format("%s: ", field.getName()));
+						try {
+							obj.put(field.getResourceKey(), Integer.parseInt(val));
+							break;
+						} catch(NumberFormatException e) {
+							console.println(String.format("Invalid entry: %s expecting int value but got %s instead", field.getName(), val));
+						}
+					}
 					break;
 				}
 				default:

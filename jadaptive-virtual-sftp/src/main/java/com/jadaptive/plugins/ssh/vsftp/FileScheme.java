@@ -27,9 +27,15 @@ public interface FileScheme extends ExtensionPoint {
 
 	Class<? extends VirtualFolderCredentials> getCredentialsClass();
 
+	EntityTemplate getOptionsTemplate();
+	
+	Class<? extends VirtualFolderOptions> getOptionsClass();
+	
 	String getScheme();
 
 	String getName();
 
 	boolean createRoot();
+
+	boolean hasExtendedOptions();
 }

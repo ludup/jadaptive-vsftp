@@ -18,6 +18,7 @@ import com.jadaptive.api.template.EntityTemplate;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
 
 public abstract class AbstractFileScheme implements FileScheme {
 
@@ -56,6 +57,11 @@ public abstract class AbstractFileScheme implements FileScheme {
 	}
 
 	@Override
+	public boolean hasExtendedOptions() {
+		return false;
+	}
+	
+	@Override
 	public Set<String> types() {
 		return new HashSet<>(Arrays.asList(types));
 	}
@@ -71,6 +77,16 @@ public abstract class AbstractFileScheme implements FileScheme {
 	}
 
 	@Override
+	public EntityTemplate getOptionsTemplate() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Class<? extends VirtualFolderOptions> getOptionsClass() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public EntityTemplate getCredentialsTemplate() {
 		throw new UnsupportedOperationException();
 	}
@@ -79,7 +95,7 @@ public abstract class AbstractFileScheme implements FileScheme {
 	public Class<? extends VirtualFolderCredentials> getCredentialsClass() {
 		throw new UnsupportedOperationException();
 	}
-
+	
 	@Override
 	public String getScheme() {
 		return types[0];
