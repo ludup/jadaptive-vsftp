@@ -15,6 +15,8 @@ public class BasicCredentials extends VirtualFolderCredentials {
 	@Column(name = "Password", description = "The password for this set of credentials", type = FieldType.PASSWORD, manualEncryption = true)
 	String password;
 	
+	public BasicCredentials() { }
+	
 	public String getUsername() {
 		return username;
 	}

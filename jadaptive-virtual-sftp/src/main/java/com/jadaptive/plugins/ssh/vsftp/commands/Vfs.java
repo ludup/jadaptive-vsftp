@@ -11,6 +11,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.Utils;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.server.vsession.CliHelper;
+import com.sshtools.server.vsession.ShellCommand;
 import com.sshtools.server.vsession.UsageException;
 import com.sshtools.server.vsession.UsageHelper;
 import com.sshtools.server.vsession.VirtualConsole;
@@ -21,7 +22,7 @@ public class Vfs extends AbstractVFSCommand {
 	private VirtualFileService fileService; 
 	
 	public Vfs() {
-		super("vfs", "Virtual File System", UsageHelper.build("vfs [options]",
+		super("vfs", ShellCommand.SUBSYSTEM_FILESYSTEM, UsageHelper.build("vfs [options]",
 				"-l, --list                          List all the permanent mounts",
 				"-t, --types                         List all the supported mount types"), 
 				"VFS information");

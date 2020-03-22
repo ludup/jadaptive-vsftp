@@ -15,6 +15,8 @@ public class PrivateKeyCredentials extends VirtualFolderCredentials {
 	@Column(name = "Passphrase", description = "The private key passphrase", type = FieldType.PASSWORD, manualEncryption = true)
 	String passphrase;
 
+	public PrivateKeyCredentials() { }
+	
 	public String getPrivateKey() {
 		return privateKey;
 	}

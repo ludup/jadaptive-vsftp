@@ -12,6 +12,7 @@ import com.sshtools.common.files.vfs.VirtualMount;
 import com.sshtools.common.files.vfs.VirtualMountManager;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.server.vsession.CliHelper;
+import com.sshtools.server.vsession.ShellCommand;
 import com.sshtools.server.vsession.UsageException;
 import com.sshtools.server.vsession.UsageHelper;
 import com.sshtools.server.vsession.VirtualConsole;
@@ -22,7 +23,7 @@ public class Unmount extends AbstractVFSCommand {
 	private VirtualFileService fileService; 
 	
 	public Unmount() {
-		super("umount", "Virtual File System", UsageHelper.build("umount [options] path",
+		super("umount", ShellCommand.SUBSYSTEM_FILESYSTEM, UsageHelper.build("umount [options] path",
 				"-p, --permanent						Remove this permanent mount"), 
 				"Unmount virtual folders");
 	}

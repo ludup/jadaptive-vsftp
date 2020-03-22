@@ -26,25 +26,21 @@ import org.springframework.stereotype.Service;
 
 import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.db.AssignableObjectDatabase;
+import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.entity.EntityNotFoundException;
-import com.jadaptive.api.permissions.PermissionService;
+import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
-import com.sshtools.common.files.AbstractFileHomeFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
-import com.sshtools.common.ssh.SshConnection;
 
 @Service
-public class VirtualFileServiceImpl implements VirtualFileService {
+public class VirtualFileServiceImpl extends AuthenticatedService implements VirtualFileService {
 
 	static Logger log = LoggerFactory.getLogger(VirtualFileServiceImpl.class);
 	
 	@Autowired
 	private AssignableObjectDatabase<VirtualFolder> repository;
-	
-	@Autowired
-	private PermissionService permissionService;
 	
 	@Autowired
 	private ApplicationService applicationService; 
@@ -59,7 +55,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 	public Collection<VirtualFolder> getVirtualFolders() {
 		return repository.getAssignedObjects(
 				VirtualFolder.class, 
-				permissionService.getCurrentUser());
+				getCurrentUser());
 	}
 
 	@Override
@@ -100,7 +96,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 	@Override
 	public VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles) {
 		
-		permissionService.assertReadWrite(VirtualFolder.RESOURCE_KEY);
+		assertWrite(VirtualFolder.RESOURCE_KEY);
 		
 		folder.getRoles().clear();
 		folder.getUsers().clear();
@@ -131,7 +127,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 				throw new FileNotFoundException("Destination of mount was not found");
 			}
 			
-			return new VFSFileFactory(mgr, opts, new VFSHomeFactory());
+			return new VFSFileFactory(mgr, opts);
 		} catch (URISyntaxException e) {
 			throw new IOException(e.getMessage(), e);
 		}
@@ -197,20 +193,11 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 
 			return new VirtualMountTemplate(folder.getMountPath(),
 					scheme.generateUri(folder.getDestinationUri()).toASCIIString(),
-					new VFSFileFactory(manager, opts, new VFSHomeFactory()), scheme.createRoot());
+					new VFSFileFactory(manager, opts), scheme.createRoot());
 		} catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	
-	}
-
-	class VFSHomeFactory implements AbstractFileHomeFactory {
-
-		@Override
-		public String getHomeDirectory(SshConnection con) {
-			return "/";
-		}
-
 	}
 
 	@Override
@@ -220,7 +207,7 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 
 	@Override
 	public void deleteVirtualFolder(VirtualFolder virtualFolder) {
-		permissionService.assertReadWrite(VirtualFolder.RESOURCE_KEY);
+		assertWrite(VirtualFolder.RESOURCE_KEY);
 		repository.deleteObject(virtualFolder);
 		
 	}
@@ -229,5 +216,10 @@ public class VirtualFileServiceImpl implements VirtualFileService {
 	public Collection<FileScheme> getSchemes() {
 		checkSchemes();
 		return Collections.unmodifiableCollection(schemes);
+	}
+
+	@Override
+	public VirtualFolder getHomeMount() {
+		return repository.getObject(VirtualFolder.class, getCurrentUser(), SearchField.eq("mount", "/"));
 	}
 }

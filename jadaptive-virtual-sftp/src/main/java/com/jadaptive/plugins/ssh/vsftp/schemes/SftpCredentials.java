@@ -17,6 +17,8 @@ public class SftpCredentials extends VirtualFolderCredentials {
 	@Column(name = "Private Key", description = "", type = FieldType.OBJECT_EMBEDDED)
 	PrivateKeyCredentials privateKeyCredentials;
 
+	public SftpCredentials() { }
+	
 	public BasicCredentials getBasicCredentials() {
 		return basicCredentials;
 	}

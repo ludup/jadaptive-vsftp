@@ -30,6 +30,9 @@ public class VirtualFolder extends AssignableUUIDEntity {
 	@Column(name = "Options", description = "The options available for this folder", type = FieldType.OBJECT_EMBEDDED)
 	VirtualFolderOptions options; 
 	
+	@Column(name = "Home", description = "This is the home mount for this tenant", type = FieldType.BOOL, hidden = true)
+	Boolean home;
+	
 	public String getMountPath() {
 		return getUuid();
 	}
@@ -77,5 +80,13 @@ public class VirtualFolder extends AssignableUUIDEntity {
 
 	public void setOptions(VirtualFolderOptions options) {
 		this.options = options;
+	}
+
+	public Boolean getHome() {
+		return home;
+	}
+
+	public void setHome(Boolean home) {
+		this.home = home;
 	}
 }

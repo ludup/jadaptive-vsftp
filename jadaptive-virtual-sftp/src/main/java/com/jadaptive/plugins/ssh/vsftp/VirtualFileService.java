@@ -35,4 +35,6 @@ public interface VirtualFileService {
 
 	Collection<FileScheme> getSchemes();
 
+	VirtualFolder getHomeMount();
+
 }

@@ -17,7 +17,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.vfs2.CacheStrategy;
-import org.jline.reader.LineReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.app.ApplicationService;
@@ -44,6 +43,7 @@ import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.IOUtils;
 import com.sshtools.server.vsession.CliHelper;
+import com.sshtools.server.vsession.ShellCommand;
 import com.sshtools.server.vsession.UsageException;
 import com.sshtools.server.vsession.UsageHelper;
 import com.sshtools.server.vsession.VirtualConsole;
@@ -67,8 +67,9 @@ public class Mount extends AbstractVFSCommand {
 	
 	
 	public Mount() {
-		super("mount", "Virtual File System",  UsageHelper.build("mount [options] path destination",
+		super("mount", ShellCommand.SUBSYSTEM_FILESYSTEM,  UsageHelper.build("mount [options] path destination",
 				"-p, --permanent						Store this mount for future use",
+				"-o, --override						    Override an existing mount",
 				"-t, --type <name>						The type of file system to mount",
 				"-r, --roles <names>					Comma separated list of role names to assign to",
 				"-u, --users <names>					Comma separated list of user names to assign to"), 
@@ -102,10 +103,6 @@ public class Mount extends AbstractVFSCommand {
 			throw new UsageException(String.format("%s is not a supported file type", type));
 		}
 		
-		if(fileService.checkMountExists(mount, currentUser)) {
-			throw new UsageException(String.format("%s is alredy mounted", mount));
-		}
-		
 		Set<Role> roles = new HashSet<>();
 		String tmp = CliHelper.getValue(args, 'r', "roles", "");
 		if(StringUtils.isNotBlank(tmp)) {
@@ -129,6 +126,18 @@ public class Mount extends AbstractVFSCommand {
 				} 
 			}
 		}
+		
+		boolean performMount = users.contains(currentUser) || roleService.hasRole(currentUser, roles);
+		boolean unmountFirst = CliHelper.hasOption(args, 'o', "override");
+		
+		if(!unmountFirst) {
+			if(performMount) {
+				if(fileService.checkMountExists(mount, currentUser)) {
+					throw new UsageException(String.format("%s is alredy mounted", mount));
+				}
+			}
+		}
+		
 
 		FileScheme provider = fileService.getFileScheme(type);
 		Map<String,String> mountOptions = new HashMap<>();
@@ -168,12 +177,21 @@ public class Mount extends AbstractVFSCommand {
 			VFSFileFactory factory = fileService.resolveMount(folder);
 			
 			VirtualMountManager mm = getFileFactory().getMountManager(console.getConnection());
-			mm.mount(new VirtualMountTemplate(mount, uri.toASCIIString(), factory, provider.createRoot()));
+			VirtualMountTemplate template = new VirtualMountTemplate(mount, 
+					uri.toASCIIString(), 
+					factory, 
+					provider.createRoot());
+					
+			if(performMount) {
+				mm.mount(template, unmountFirst);
+			} else {
+				mm.test(template);
+			}
 			
 			if(permanent) {
-				users.add(currentUser);
 				saveMount(folder, roles, users);
 			}
+			
 		} catch (ParseException | URISyntaxException e) {
 			throw new IOException(e.getMessage(), e);
 		}
@@ -242,153 +260,171 @@ public class Mount extends AbstractVFSCommand {
 
 	private VirtualFolderCredentials promptForCredentials(FileScheme provider) throws ParseException, PermissionDeniedException, IOException {
 		
-		console.getLineReader().getVariables().put(LineReader.DISABLE_HISTORY, Boolean.TRUE);
-        
-		try {
-			EntityTemplate template = provider.getCredentialsTemplate();
-			
-			Map<String, Object> obj = new HashMap<>();
-			for(FieldTemplate field : template.getFields()) {
-				switch(field.getFieldType()) {
-				case PASSWORD:
-					obj.put(field.getResourceKey(), 
-							console.getLineReader().readLine(
-									String.format("%s: ", field.getName()), '*'));
-					break;
-				case TEXT:
-					obj.put(field.getResourceKey(), console.readLine(
-							String.format("%s: ", field.getName())));
-					break;
-				case TEXT_AREA:
-				{
+		Map<String,Object> doc =  promptForCredentials(provider, 
+				provider.getCredentialsTemplate(), 
+				provider.getCredentialsClass().getName());
+		return templateService.createObject(doc, 
+				provider.getCredentialsClass());
+		
+	}
+	
+	private Map<String, Object> promptForCredentials(FileScheme provider, 
+			EntityTemplate template, String objectType) throws ParseException, PermissionDeniedException, IOException {
+		
+		Map<String, Object> obj = new HashMap<>();
+		obj.put("_clz", objectType);
+		for(FieldTemplate field : template.getFields()) {
+			switch(field.getFieldType()) {
+			case OBJECT_EMBEDDED:
+				EntityTemplate objectTemplate = templateService.get(field.getValidationValue(ValidationType.RESOURCE_KEY));
+				console.println(objectTemplate.getName());
+				obj.put(field.getResourceKey(), promptForCredentials(provider, 
+						objectTemplate, field.getValidationValue(ValidationType.OBJECT_TYPE)));
+				break;
+			case PASSWORD:
+				obj.put(field.getResourceKey(), 
+						console.getLineReader().readLine(
+								String.format("%s: ", field.getName()), '*'));
+				break;
+			case TEXT:
+				obj.put(field.getResourceKey(), console.readLine(
+						String.format("%s: ", field.getName())));
+				break;
+			case TEXT_AREA:
+			{
+				while(true) {
 					console.println("Enter path to ".concat(field.getName()));
 					String filename = console.readLine("Path: ");
 					
-					AbstractFile file = getFileFactory().getFile(
-							filename, 
-							console.getConnection());
+					if(StringUtils.isNotBlank(filename)) {
+						AbstractFile file = getFileFactory().getFile(
+								filename, console.getConnection());
+						
+						if(!file.exists())  {
+							console.println(String.format("%s does not exist", filename));
+						}
+						
+						obj.put(field.getResourceKey(), IOUtils.readUTF8StringFromStream(file.getInputStream()));
+						break;
+					} else if(field.isRequired()) {
+						console.println(String.format("%s is required", field.getName()));
+					} else {
+						break;
+					}
+				}
+
+				break;
+			}
+			case DECIMAL:
+			{
+				String val; 
+				while(true) {
+					val = console.readLine(String.format("%s: ", field.getName()));
+					try {
+						Double.parseDouble(val);
+						break;
+					} catch(NumberFormatException e) {
+						continue;
+					}
+				}
+				obj.put(field.getResourceKey(), val);
+				break;
+			}
+			case BOOL:
+			{
+				String val; 
+				Set<String> validAnswers = new HashSet<>(Arrays.asList("y", "n", "yes", "no"));
+				do {
+					val = console.readLine(String.format("%s (y/n): ", field.getName()));		 
+				} while(!validAnswers.contains(val.toLowerCase()));
+				obj.put(field.getResourceKey(), val);
+				break;
+			}
+			case ENUM:
+			{
+				console.println("Select ".concat(field.getName()).concat(" from the list (type name or index number)"));
+				String enumType = field.getValidationValue(ValidationType.OBJECT_TYPE);
+				try {
+					@SuppressWarnings("unchecked")
+					Class<? extends Enum<?>> clz = (Class<? extends Enum<?>>) applicationService.resolveClass(enumType);
 					
-					if(!file.exists())  {
-						throw new IOException("Could not find file");
+					List<String> values = new ArrayList<>();
+					Enum<?>[] constants = clz.getEnumConstants();
+					int maximumSize = 0;
+					for(Enum<?> e : constants) {
+						values.add(e.name());
+						maximumSize = Math.max(maximumSize, e.name().length());
 					}
 					
-					obj.put(field.getResourceKey(), IOUtils.readUTF8StringFromStream(file.getInputStream()));
-	
-					break;
-				}
-				case DECIMAL:
-				{
-					String val; 
+					int columns = console.getTerminal().getSize().getColumns();
+					maximumSize += 8;
+					int perLine = (columns / maximumSize) - 1;
+					int i = 0;
+					int y = 0;
+					for(String name : values) {
+						if(++y > perLine) {
+							y = 1;
+							console.println();
+						}
+						console.print(StringUtils.rightPad(String.format("%02d. %s ", ++i, name), maximumSize));
+					}
+					console.println();
+					String val;
 					while(true) {
 						val = console.readLine(String.format("%s: ", field.getName()));
-						try {
-							Double.parseDouble(val);
-							break;
-						} catch(NumberFormatException e) {
-							continue;
-						}
-					}
-					obj.put(field.getResourceKey(), val);
-					break;
-				}
-				case BOOL:
-				{
-					String val; 
-					Set<String> validAnswers = new HashSet<>(Arrays.asList("y", "n", "yes", "no"));
-					do {
-						val = console.readLine(String.format("%s (y/n): ", field.getName()));		 
-					} while(!validAnswers.contains(val.toLowerCase()));
-					obj.put(field.getResourceKey(), val);
-					break;
-				}
-				case ENUM:
-				{
-					console.println("Select ".concat(field.getName()).concat(" from the list (type name or index number)"));
-					String type = field.getValidationValue(ValidationType.OBJECT_TYPE);
-					try {
-						@SuppressWarnings("unchecked")
-						Class<? extends Enum<?>> clz = (Class<? extends Enum<?>>) applicationService.resolveClass(type);
-						
-						List<String> values = new ArrayList<>();
-						Enum<?>[] constants = clz.getEnumConstants();
-						int maximumSize = 0;
-						for(Enum<?> e : constants) {
-							values.add(e.name());
-							maximumSize = Math.max(maximumSize, e.name().length());
-						}
-						
-						int columns = console.getTerminal().getSize().getColumns();
-						maximumSize += 8;
-						int perLine = (columns / maximumSize) - 1;
-						int i = 0;
-						int y = 0;
-						for(String name : values) {
-							if(++y > perLine) {
-								y = 1;
-								console.println();
-							}
-							console.print(StringUtils.rightPad(String.format("%02d. %s ", ++i, name), maximumSize));
-						}
-						console.println();
-						String val;
-						while(true) {
-							val = console.readLine(String.format("%s: ", field.getName()));
-							if(NumberUtils.isNumber(val)) {
-								int idx = Integer.parseInt(val);
-								if(idx > 0 && idx <= values.size()) {
-									val = values.get(i-1);
-									break;
-								}
-							} else if(values.contains(val)) {
+						if(NumberUtils.isNumber(val)) {
+							int idx = Integer.parseInt(val);
+							if(idx > 0 && idx <= values.size()) {
+								val = values.get(i-1);
 								break;
 							}
-							console.println("Invalid value. Try again.");
-						}
-						obj.put(field.getResourceKey(), val);
-					} catch (ClassNotFoundException e) {
-						throw new IOException(e.getMessage(), e);
-					}
-					
-					break;
-				}
-				case LONG:
-				{
-					String val; 
-					while(true) {
-						val = console.readLine(String.format("%s: ", field.getName()));
-						try {
-							obj.put(field.getResourceKey(), Long.parseLong(val));
+						} else if(values.contains(val)) {
 							break;
-						} catch(NumberFormatException e) {
-							console.println(String.format("Invalid entry: %s expecting long value but got %s instead", field.getName(), val));
 						}
+						console.println("Invalid value. Try again.");
 					}
-					break;
+					obj.put(field.getResourceKey(), val);
+				} catch (ClassNotFoundException e) {
+					throw new IOException(e.getMessage(), e);
 				}
-				case INTEGER:
-				{
-					String val; 
-					while(true) {
-						val = console.readLine(String.format("%s: ", field.getName()));
-						try {
-							obj.put(field.getResourceKey(), Integer.parseInt(val));
-							break;
-						} catch(NumberFormatException e) {
-							console.println(String.format("Invalid entry: %s expecting int value but got %s instead", field.getName(), val));
-						}
-					}
-					break;
-				}
-				default:
-					
-				}
+				
+				break;
 			}
-			
-			return templateService.createObject(obj, provider.getCredentialsClass());
-			
-		} finally {
-			console.getLineReader().getVariables().remove(LineReader.DISABLE_HISTORY);
+			case LONG:
+			{
+				String val; 
+				while(true) {
+					val = console.readLine(String.format("%s: ", field.getName()));
+					try {
+						obj.put(field.getResourceKey(), Long.parseLong(val));
+						break;
+					} catch(NumberFormatException e) {
+						console.println(String.format("Invalid entry: %s expecting long value but got %s instead", field.getName(), val));
+					}
+				}
+				break;
+			}
+			case INTEGER:
+			{
+				String val; 
+				while(true) {
+					val = console.readLine(String.format("%s: ", field.getName()));
+					try {
+						obj.put(field.getResourceKey(), Integer.parseInt(val));
+						break;
+					} catch(NumberFormatException e) {
+						console.println(String.format("Invalid entry: %s expecting int value but got %s instead", field.getName(), val));
+					}
+				}
+				break;
+			}
+			default:
+				
+			}
 		}
+			
+		return obj;	
+		
 	}
 
 	private void saveMount(VirtualFolder folder, Collection<Role> roles, Collection<User> users) {

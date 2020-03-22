@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.schemes;
 import java.io.IOException;
 
 import org.apache.commons.vfs2.FileSystemOptions;
+import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,10 +31,15 @@ public class SftpFileScheme extends AbstractFileScheme {
 		FileSystemOptions opts = new FileSystemOptions();
 		SftpCredentials creds = (SftpCredentials) folder.getCredentials();
 		
+		StaticUserAuthenticator auth = new StaticUserAuthenticator("", 
+				creds.getBasicCredentials().getUsername(), 
+				creds.getBasicCredentials().getPassword());
+		
+		SftpFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
 		SftpFileSystemConfigBuilder.getInstance().setPrivateKey(opts, creds.getPrivateKeyCredentials().getPrivateKey());
 		SftpFileSystemConfigBuilder.getInstance().setPassphrase(opts, creds.getPrivateKeyCredentials().getPassphrase());
-		
-		return super.buildFileSystemOptions(folder);
+
+		return opts;
 	}
 
 	@Override
