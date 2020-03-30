@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jadaptive.api.entity.EntityNotFoundException;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.utils.FileUtils;
+import com.sshtools.common.files.vfs.VirtualFileFactory;
 import com.sshtools.common.files.vfs.VirtualMount;
 import com.sshtools.common.files.vfs.VirtualMountManager;
 import com.sshtools.common.permissions.PermissionDeniedException;
@@ -40,7 +41,8 @@ public class Unmount extends AbstractVFSCommand {
 		String mount = FileUtils.checkStartsWithSlash(
 				FileUtils.checkEndsWithNoSlash(args[args.length-1]));
 		
-		VirtualMountManager mm = getFileFactory().getMountManager(console.getConnection());
+		VirtualFileFactory ff = (VirtualFileFactory) console.getCurrentDirectory().getFileFactory();
+		VirtualMountManager mm = ff.getMountManager();
 		VirtualMount m = mm.getMount(mount);
 		
 		if(Objects.isNull(m)) {

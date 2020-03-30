@@ -18,13 +18,19 @@
 		<plugin.version>${project.version}</plugin.version>
 		<plugin.provider>JADAPTIVE Limited</plugin.provider>
 		<plugin.projectUrl>https://github.com/ludup/jadpative-vsftp</plugin.projectUrl>
-		<plugin.dependencies>jadaptive-ssh-server</plugin.dependencies>	
+		<plugin.dependencies>jadaptive-ssh-server,jadaptive-ssh-management</plugin.dependencies>	
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.jadaptive</groupId>
 			<artifactId>jadaptive-api</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jadaptive</groupId>
+			<artifactId>jadaptive-ssh-management</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
