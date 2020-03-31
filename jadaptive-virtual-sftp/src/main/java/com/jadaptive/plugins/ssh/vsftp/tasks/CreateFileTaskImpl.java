@@ -33,7 +33,7 @@ public class CreateFileTaskImpl extends AbstractFileTaskImpl<CreateFileTask> {
 						new FileAlreadyExistsException(task.getTarget().getFilename()));
 			}
 			
-			if(file.createFolder()) {
+			if(file.createNewFile()) {
 				return new CreateFolderTaskResult(task.getTarget().getFilename());
 			}
 			
