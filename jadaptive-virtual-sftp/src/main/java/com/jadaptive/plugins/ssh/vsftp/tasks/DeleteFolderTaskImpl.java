@@ -1,5 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 
@@ -11,9 +12,9 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 
 @Extension
-public class CreateFolderTaskImpl extends AbstractFileTaskImpl<CreateFolderTask> {
+public class DeleteFolderTaskImpl extends AbstractFileTaskImpl<DeleteFolderTask> {
 
-	public static final String RESOURCE_KEY = "createFolder";
+	public static final String RESOURCE_KEY = "deleteFolder";
 	
 	@Override
 	public String getResourceKey() {
@@ -21,7 +22,7 @@ public class CreateFolderTaskImpl extends AbstractFileTaskImpl<CreateFolderTask>
 	}
 	
 	@Override
-	public TaskResult doTask(CreateFolderTask task) {
+	public TaskResult doTask(DeleteFolderTask task) {
 		
 		String targetName = FileUtils.getFilename(task.getTarget().getFilename());
 		try {	
@@ -31,18 +32,20 @@ public class CreateFolderTaskImpl extends AbstractFileTaskImpl<CreateFolderTask>
 			AbstractFile file = parentFolder.resolveFile(targetName);
 			
 			if(file.exists()) {
-				return new CreateFolderTaskResult(task.getTarget().getFilename(),
+				if(file.delete(task.getDeleteContents())) {
+					return new DeleteFolderTaskResult(task.getTarget().getFilename(),
 						new FileAlreadyExistsException(task.getTarget().getFilename()));
+				}
+				
+				return new DeleteFolderTaskResult(task.getTarget().getFilename(),
+						new IOException("The folder could not be deleted"));
+			} else {
+				return new DeleteFolderTaskResult(task.getTarget().getFilename(),
+						new FileNotFoundException("The folder does not exist"));
 			}
 			
-			if(file.createFolder()) {
-				return new CreateFolderTaskResult(task.getTarget().getFilename());
-			}
-			
-			return new CreateFolderTaskResult(task.getTarget().getFilename(),
-					new IOException("The folder could not be created"));
 		} catch(IOException | PermissionDeniedException e) {
-			return new CreateFolderTaskResult(task.getTarget().getFilename(), e);
+			return new DeleteFolderTaskResult(task.getTarget().getFilename(), e);
 		}
 	}
 

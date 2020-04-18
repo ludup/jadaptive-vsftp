@@ -32,6 +32,11 @@ public class PasswordCredentials extends VirtualFolderCredentials {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
+	}
 	
 	
 }

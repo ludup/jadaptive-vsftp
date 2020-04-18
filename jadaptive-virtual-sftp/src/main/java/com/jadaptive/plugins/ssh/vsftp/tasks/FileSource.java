@@ -6,15 +6,15 @@ import com.jadaptive.api.template.Column;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
-@Template(name = "File Target", resourceKey = FileTarget.RESOURCE_KEY, type = EntityType.OBJECT)
-public class FileTarget extends AbstractUUIDEntity {
+@Template(name = "File Source", resourceKey = FileSource.RESOURCE_KEY, type = EntityType.OBJECT)
+public class FileSource extends AbstractUUIDEntity {
 
-	public static final String RESOURCE_KEY = "fileTarget";
+	public static final String RESOURCE_KEY = "fileSource";
 
-	@Column(name="Location", description = "The target location", type = FieldType.ENUM)
+	@Column(name="Location", description = "The source location", type = FieldType.ENUM)
 	FileLocation location;
 	
-	@Column(name="File", description = "The filename on the target location", type = FieldType.TEXT)
+	@Column(name="File", description = "The filename on the source location", type = FieldType.TEXT)
 	String filename;
 
 	public FileLocation getLocation() {

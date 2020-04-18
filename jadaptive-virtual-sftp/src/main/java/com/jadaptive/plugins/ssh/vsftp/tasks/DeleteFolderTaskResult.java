@@ -6,21 +6,21 @@ import com.jadaptive.api.template.Column;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
-@Template(name = "Create Folder Result", recurse = false, resourceKey = "createFolderTaskResult", type = EntityType.OBJECT)
-public class CreateFolderTaskResult extends TaskResult {
+@Template(name = "Delete Folder Result", recurse = false, resourceKey = "deleteFolderTaskResult", type = EntityType.OBJECT)
+public class DeleteFolderTaskResult extends TaskResult {
 
-	public static final String RESOURCE_KEY = "folderCreation.result";
-	public static final String EVENT_NAME = "Folder Created";
+	public static final String RESOURCE_KEY = "folderDeletion.result";
+	public static final String EVENT_NAME = "Folder Deleted";
 	
-	@Column(name = "Folder Name", description = "The name of the folder created", type = FieldType.TEXT)
+	@Column(name = "Folder Name", description = "The name of the folder deleted", type = FieldType.TEXT)
 	String filename;
 
-	public CreateFolderTaskResult(String filename, Throwable e) {
+	public DeleteFolderTaskResult(String filename, Throwable e) {
 		super(RESOURCE_KEY, e);
 		this.filename = filename;
 	}
 
-	public CreateFolderTaskResult(String filename) {
+	public DeleteFolderTaskResult(String filename) {
 		super(RESOURCE_KEY);
 		this.filename = filename;
 	}

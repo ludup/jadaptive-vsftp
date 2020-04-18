@@ -194,6 +194,7 @@ public class Mount extends AbstractVFSCommand {
 		
 		consoleHelper.promptTemplate(console, doc, 
 				provider.getCredentialsTemplate(), 
+				null,
 				provider.getCredentialsClass().getName());
 		
 		return templateService.createObject(doc, provider.getOptionsClass());
@@ -205,6 +206,7 @@ public class Mount extends AbstractVFSCommand {
 		Map<String,Object> doc =  new HashMap<>();	
 		consoleHelper.promptTemplate(console, doc, 
 				provider.getCredentialsTemplate(), 
+				null,
 				provider.getCredentialsClass().getName());
 		return templateService.createObject(doc, 
 				provider.getCredentialsClass());

@@ -9,5 +9,10 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
 public class SftpOptions extends VirtualFolderOptions {
 
 	public static final String RESOURCE_KEY = "sftpOptions";
+
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
+	}
 	
 }

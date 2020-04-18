@@ -35,4 +35,9 @@ public class SftpCredentials extends VirtualFolderCredentials {
 		this.privateKeyCredentials = privateKeyCredentials;
 	}
 
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
+	}
+
 }

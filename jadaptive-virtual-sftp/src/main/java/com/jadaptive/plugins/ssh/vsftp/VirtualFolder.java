@@ -12,6 +12,7 @@ import com.jadaptive.api.template.Template;
 public class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String RESOURCE_KEY = "vfolder";
+	
 	@Column(name="Mount Path", description = "The path on which this folder is mounted within the virtual file system", type = FieldType.TEXT)
 	String mountPath;
 	
@@ -88,5 +89,10 @@ public class VirtualFolder extends AssignableUUIDEntity {
 
 	public void setHome(Boolean home) {
 		this.home = home;
+	}
+
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
 	}
 }

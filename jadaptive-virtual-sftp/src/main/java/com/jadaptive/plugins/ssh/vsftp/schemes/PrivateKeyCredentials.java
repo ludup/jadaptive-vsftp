@@ -6,8 +6,10 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
-@Template(name = "Private Key", resourceKey = "privateKeyCredentials", type = EntityType.OBJECT)
+@Template(name = "Private Key", resourceKey = PrivateKeyCredentials.RESOURCE_KEY, type = EntityType.OBJECT)
 public class PrivateKeyCredentials extends VirtualFolderCredentials {
+
+	public static final String RESOURCE_KEY = "privateKeyCredentials";
 
 	@Column(name = "Private Key", description = "The encoded private key", type = FieldType.TEXT_AREA)
 	String privateKey;
@@ -31,6 +33,11 @@ public class PrivateKeyCredentials extends VirtualFolderCredentials {
 
 	public void setPassphrase(String passphrase) {
 		this.passphrase = passphrase;
+	}
+
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
 	}
 	
 	

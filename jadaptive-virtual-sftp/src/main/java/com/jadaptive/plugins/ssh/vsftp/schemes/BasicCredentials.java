@@ -6,8 +6,10 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
-@Template(name = "Basic Credentials", resourceKey = "basicCredentials",type = EntityType.OBJECT)
+@Template(name = "Basic Credentials", resourceKey = BasicCredentials.RESOURCE_KEY, type = EntityType.OBJECT)
 public class BasicCredentials extends VirtualFolderCredentials {
+
+	public static final String RESOURCE_KEY =  "basicCredentials";
 
 	@Column(name = "Username", description = "The username for this set of credentials", type = FieldType.TEXT)
 	String username;
@@ -28,6 +30,11 @@ public class BasicCredentials extends VirtualFolderCredentials {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
 	}
 	
 	

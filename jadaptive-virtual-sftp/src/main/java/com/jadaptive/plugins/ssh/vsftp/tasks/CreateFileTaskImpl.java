@@ -25,7 +25,10 @@ public class CreateFileTaskImpl extends AbstractFileTaskImpl<CreateFileTask> {
 		
 		String targetName = FileUtils.getFilename(task.getTarget().getFilename());
 		try {	
-			AbstractFile parentFolder = resolveParent(task);
+			AbstractFile parentFolder = resolveParent(
+					task.getTarget().getLocation(), 
+					task.getTarget().getFilename());
+			
 			AbstractFile file = parentFolder.resolveFile(targetName);
 			
 			if(file.exists()) {

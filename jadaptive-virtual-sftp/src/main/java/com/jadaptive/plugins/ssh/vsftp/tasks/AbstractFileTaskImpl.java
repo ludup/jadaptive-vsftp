@@ -16,14 +16,14 @@ public abstract class AbstractFileTaskImpl<T extends Task> implements TaskImpl<T
 	@Autowired
 	FileSystemJobContext fsContext;
 	
-	protected AbstractFile resolveFile(FileLocation target, String filename)
+	protected AbstractFile resolveFile(FileLocation location, String filename)
 			throws PermissionDeniedException, IOException {
-		AbstractFileFactory<?> fileFactory = fsContext.getFileSystem(target);
+		AbstractFileFactory<?> fileFactory = fsContext.getFileSystem(location);
 		return fileFactory.getFile(filename);
 	}
 
-	protected AbstractFile resolveParent(AbstractFileTargetTask task) throws PermissionDeniedException, IOException {
-		String parent = FileUtils.getParentPath(task.getTarget().getFilename());
-		return resolveFile(task.getTarget().getLocation(), parent);
+	protected AbstractFile resolveParent(FileLocation location, String filename) throws PermissionDeniedException, IOException {
+		String parent = FileUtils.getParentPath(filename);
+		return resolveFile(location, parent);
 	}
 }

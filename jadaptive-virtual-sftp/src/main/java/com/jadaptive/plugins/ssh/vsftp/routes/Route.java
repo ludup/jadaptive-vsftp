@@ -11,8 +11,10 @@ import com.jadaptive.api.template.Column;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
-@Template(name = "Route", resourceKey = "route", type = EntityType.COLLECTION)
+@Template(name = "Route", resourceKey = Route.RESOURCE_KEY, type = EntityType.COLLECTION)
 public class Route extends NamedUUIDEntity {
+
+	public static final String RESOURCE_KEY = "route";
 
 	@Column(name = "User", 
 			description = "Active this route if the username of the file transaction matches this value",
@@ -83,5 +85,10 @@ public class Route extends NamedUUIDEntity {
 	private boolean doRegexMatch(String path) {
 		Pattern p = Pattern.compile(path);
 		return p.matcher(path).matches();
+	}
+
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
 	}
 }
