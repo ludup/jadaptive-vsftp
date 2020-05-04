@@ -165,7 +165,7 @@ public class Mount extends AbstractVFSCommand {
 			
 			VFSFileFactory factory = fileService.resolveMount(folder);
 			
-			VirtualFileFactory ff = (VirtualFileFactory) console.getCurrentDirectory().getFileFactory();
+			VirtualFileFactory ff = (VirtualFileFactory) console.getFileFactory();
 			
 			VirtualMountManager mm = ff.getMountManager();
 			VirtualMountTemplate template = new VirtualMountTemplate(mount, 
