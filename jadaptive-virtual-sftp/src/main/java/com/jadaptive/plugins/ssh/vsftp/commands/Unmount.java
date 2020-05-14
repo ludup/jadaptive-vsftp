@@ -41,7 +41,7 @@ public class Unmount extends AbstractVFSCommand {
 		String mount = FileUtils.checkStartsWithSlash(
 				FileUtils.checkEndsWithNoSlash(args[args.length-1]));
 		
-		VirtualFileFactory ff = (VirtualFileFactory) console.getCurrentDirectory().getFileFactory();
+		VirtualFileFactory ff = (VirtualFileFactory) console.getFileFactory();
 		VirtualMountManager mm = ff.getMountManager();
 		VirtualMount m = mm.getMount(mount);
 		
