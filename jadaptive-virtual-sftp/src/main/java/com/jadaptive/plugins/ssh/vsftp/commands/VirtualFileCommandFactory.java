@@ -16,6 +16,8 @@ public class VirtualFileCommandFactory extends AbstractAutowiredCommandFactory i
 		tryCommand("mount", Mount.class, "vfolder.readWrite");
 		tryCommand("umount", Unmount.class, "vfolder.readWrite");
 		tryCommand("vfs", Vfs.class, "vfolder.readWrite");
+		tryCommand("assign-mount", AssignMount.class, "vfolder.readWrite");
+		tryCommand("unassign-mount", UnassignMount.class, "vfolder.readWrite");
 		return this;
 	}
 

@@ -113,6 +113,16 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	}
 	
 	@Override
+	public VirtualFolder createOrUpdate(VirtualFolder folder) {
+		
+		assertWrite(VirtualFolder.RESOURCE_KEY);
+		
+		repository.saveOrUpdate(folder);
+		
+		return folder;
+	}
+	
+	@Override
 	public VFSFileFactory resolveMount(VirtualFolder folder) throws IOException {
 		
 		try {

@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp;
+package com.jadaptive.plugins.ssh.vsftp.upload;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,6 +41,7 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 			}
 			IOUtils.copy(in, file.getOutputStream());
 			
+			// 
 		} catch(Throwable e) {
 			throw new IOException(e.getMessage(), e);
 		} finally {

@@ -37,4 +37,6 @@ public interface VirtualFileService {
 
 	VirtualFolder getHomeMount();
 
+	VirtualFolder createOrUpdate(VirtualFolder folder);
+
 }
