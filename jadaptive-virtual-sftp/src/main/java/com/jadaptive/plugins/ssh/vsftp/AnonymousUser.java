@@ -7,7 +7,7 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 import com.jadaptive.api.user.UserImpl;
 
-@Template(name = "Administration Users", resourceKey = AnonymousUser.RESOURCE_KEY, scope = EntityScope.GLOBAL, type = EntityType.COLLECTION)
+@Template(name = "Anonymous Users", resourceKey = AnonymousUser.RESOURCE_KEY, scope = EntityScope.GLOBAL, type = EntityType.COLLECTION)
 public class AnonymousUser extends UserImpl {
 
 	public static final String RESOURCE_KEY = "anonymousUser";
