@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:webbits="http://webbits.org/webbits"
+	webbits:depends="Bootstrap,Widgets,FontAwesome">
+<body>
+<div class="wrapper">
+<header webbits:id="com.jadaptive.app.ui.Header"></header>
+<main class="container mt-3">
+   <div class="row my-1">
+         <div class="col-8 offset-2">
+         	<form enctype="multipart/form-data" action="/upload/public" method="POST">
+		    <div class="form-group">
+		       <label class="col-form-label" for="name">Your Name</label><input type="text" name="name">
+		       <small class="form-text text-muted">Please enter your name so we know whom the file is from.</small>
+		    </div>
+		    <div class="form-group">
+		       <label class="col-form-label" for="email">Your Email</label><input type="email" name="email">
+		       <small class="form-text text-muted">Please enter your email so that we can contact you if required.</small>
+		    </div>		   
+    		<input id="file" type="file" name="file"/>	
+    		<input type="submit">
+		</form>
+         </div>
+   </div>
+</main>
+</div>
+<footer webbits:id="com.jadaptive.app.ui.Footer"></footer>
+</body>
+</html>

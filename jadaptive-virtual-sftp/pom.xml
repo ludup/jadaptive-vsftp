@@ -30,6 +30,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.jadaptive</groupId>
+			<artifactId>jadaptive-boot</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jadaptive</groupId>
 			<artifactId>jadaptive-ssh-management</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
@@ -45,6 +51,12 @@
 					<artifactId>commons-logging</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.codesmith</groupId>
+			<artifactId>webbits-bootstrap</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sshtools</groupId>
