@@ -2,7 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.tasks.TaskResult;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
@@ -12,7 +12,7 @@ public class DeleteFolderTaskResult extends TaskResult {
 	public static final String RESOURCE_KEY = "folderDeletion.result";
 	public static final String EVENT_NAME = "Folder Deleted";
 	
-	@Column(name = "Folder Name", description = "The name of the folder deleted", type = FieldType.TEXT)
+	@ObjectField(name = "Folder Name", description = "The name of the folder deleted", type = FieldType.TEXT)
 	String filename;
 
 	public DeleteFolderTaskResult(String filename, Throwable e) {

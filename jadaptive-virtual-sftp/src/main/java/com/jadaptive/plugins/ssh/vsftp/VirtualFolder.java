@@ -4,7 +4,7 @@ import org.apache.commons.vfs2.CacheStrategy;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
@@ -13,25 +13,25 @@ public class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String RESOURCE_KEY = "vfolder";
 	
-	@Column(name="Mount Path", description = "The path on which this folder is mounted within the virtual file system", type = FieldType.TEXT)
+	@ObjectField(name="Mount Path", description = "The path on which this folder is mounted within the virtual file system", type = FieldType.TEXT)
 	String mountPath;
 	
-	@Column(name = "Destination URI", description = "The destination URI serving as the source for this virutal folder", type = FieldType.TEXT)
+	@ObjectField(name = "Destination URI", description = "The destination URI serving as the source for this virutal folder", type = FieldType.TEXT)
 	String destinationUri;
 	
-	@Column(name = "Mount Type", description = "The type of mount", type = FieldType.TEXT)
+	@ObjectField(name = "Mount Type", description = "The type of mount", type = FieldType.TEXT)
 	String type;
 	
-	@Column(name = "Cache Strategy", description = "The cache strategy to use for this mount", type = FieldType.ENUM)
+	@ObjectField(name = "Cache Strategy", description = "The cache strategy to use for this mount", type = FieldType.ENUM)
 	CacheStrategy cacheStrategy;
 	
-	@Column(name = "Credentials", description = "The credentials to use to access this folder", type = FieldType.OBJECT_EMBEDDED)
+	@ObjectField(name = "Credentials", description = "The credentials to use to access this folder", type = FieldType.OBJECT_EMBEDDED)
 	VirtualFolderCredentials credentials; 
 	
-	@Column(name = "Options", description = "The options available for this folder", type = FieldType.OBJECT_EMBEDDED)
+	@ObjectField(name = "Options", description = "The options available for this folder", type = FieldType.OBJECT_EMBEDDED)
 	VirtualFolderOptions options; 
 	
-	@Column(name = "Home", description = "This is the home mount for this tenant", type = FieldType.BOOL, hidden = true)
+	@ObjectField(name = "Home", description = "This is the home mount for this tenant", type = FieldType.BOOL, hidden = true)
 	Boolean home;
 	
 	public String getMountPath() {

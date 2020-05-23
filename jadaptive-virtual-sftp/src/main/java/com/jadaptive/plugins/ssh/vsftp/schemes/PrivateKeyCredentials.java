@@ -1,7 +1,7 @@
 package com.jadaptive.plugins.ssh.vsftp.schemes;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
@@ -11,10 +11,10 @@ public class PrivateKeyCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "privateKeyCredentials";
 
-	@Column(name = "Private Key", description = "The encoded private key", type = FieldType.TEXT_AREA)
+	@ObjectField(name = "Private Key", description = "The encoded private key", type = FieldType.TEXT_AREA)
 	String privateKey;
 
-	@Column(name = "Passphrase", description = "The private key passphrase", type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(name = "Passphrase", description = "The private key passphrase", type = FieldType.PASSWORD, manualEncryption = true)
 	String passphrase;
 
 	public PrivateKeyCredentials() { }

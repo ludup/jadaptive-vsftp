@@ -2,7 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 import com.jadaptive.api.user.UserImpl;
@@ -12,7 +12,7 @@ public class AnonymousUser extends UserImpl {
 
 	public static final String RESOURCE_KEY = "anonymousUser";
 	
-	@Column(name = "Username", 
+	@ObjectField(name = "Username", 
 			description = "The logon name of the user",
 			required = true,
 			searchable = true,
@@ -20,7 +20,7 @@ public class AnonymousUser extends UserImpl {
 			unique = true)
 	String username;
 	
-	@Column(name = "Full Name", 
+	@ObjectField(name = "Full Name", 
 			description = "The full name of the user",
 			required = true,
 			searchable = true,

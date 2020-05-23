@@ -1,17 +1,17 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.tasks.Task;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 
 public class AbstractFileSourceTargetTask extends Task {
 
-	@Column(name = "Source", 
+	@ObjectField(name = "Source", 
 			description = "The source information for this task", 
 			type = FieldType.OBJECT_EMBEDDED)
 	FileTarget source;
 	
-	@Column(name = "Target", 
+	@ObjectField(name = "Target", 
 			description = "The target information for this task", 
 			type = FieldType.OBJECT_EMBEDDED)
 	FileTarget target;

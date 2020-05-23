@@ -1,7 +1,7 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
@@ -10,7 +10,7 @@ public class DeleteFolderTask extends AbstractFileTargetTask {
 
 	public static final String RESOURCE_KEY = "deleteFolder";
 	
-	@Column(name = "Delete Contents", 
+	@ObjectField(name = "Delete Contents", 
 			description = "Delete the folder and its contents",
 			type = FieldType.BOOL)
 	Boolean deleteContents;

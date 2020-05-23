@@ -2,7 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.tasks.TaskResult;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
@@ -12,7 +12,7 @@ public class CreateFolderTaskResult extends TaskResult {
 	public static final String RESOURCE_KEY = "folderCreation.result";
 	public static final String EVENT_NAME = "Folder Created";
 	
-	@Column(name = "Folder Name", description = "The name of the folder created", type = FieldType.TEXT)
+	@ObjectField(name = "Folder Name", description = "The name of the folder created", type = FieldType.TEXT)
 	String filename;
 
 	public CreateFolderTaskResult(String filename, Throwable e) {

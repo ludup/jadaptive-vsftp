@@ -4,17 +4,17 @@ import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.Template;
 import com.jadaptive.api.template.FieldType;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 
 @Template(name = "Password Credentials", resourceKey=  PasswordCredentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class PasswordCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "passwordCredentials";
 	
-	@Column(name = "Username", description = "The username of this user", type = FieldType.TEXT)
+	@ObjectField(name = "Username", description = "The username of this user", type = FieldType.TEXT)
 	String username;
 	
-	@Column(name = "Password", description = "The password for this user", type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(name = "Password", description = "The password for this user", type = FieldType.PASSWORD, manualEncryption = true)
 	String password;
 
 	public String getUsername() {

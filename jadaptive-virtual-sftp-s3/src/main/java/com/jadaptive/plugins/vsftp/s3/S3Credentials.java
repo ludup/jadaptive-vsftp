@@ -2,7 +2,7 @@ package com.jadaptive.plugins.vsftp.s3;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
@@ -12,10 +12,10 @@ public class S3Credentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "s3Credentials";
 
-	@Column(name="Access Key ID", description = "The access key", required = true, type = FieldType.TEXT)
+	@ObjectField(name="Access Key ID", description = "The access key", required = true, type = FieldType.TEXT)
 	String accessKey;
 
-	@Column(name="Secret Access Key", description = "The secret key", required = true, type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(name="Secret Access Key", description = "The secret key", required = true, type = FieldType.PASSWORD, manualEncryption = true)
 	String secretKey;
 	
 	public String getAccessKey() {

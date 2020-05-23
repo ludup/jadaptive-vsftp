@@ -2,7 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
-import com.jadaptive.api.template.Column;
+import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
@@ -11,10 +11,10 @@ public class FileSource extends AbstractUUIDEntity {
 
 	public static final String RESOURCE_KEY = "fileSource";
 
-	@Column(name="Location", description = "The source location", type = FieldType.ENUM)
+	@ObjectField(name="Location", description = "The source location", type = FieldType.ENUM)
 	FileLocation location;
 	
-	@Column(name="File", description = "The filename on the source location", type = FieldType.TEXT)
+	@ObjectField(name="File", description = "The filename on the source location", type = FieldType.TEXT)
 	String filename;
 
 	public FileLocation getLocation() {
