@@ -2,13 +2,13 @@ package com.jadaptive.plugins.ssh.vsftp;
 
 import org.apache.commons.vfs2.CacheStrategy;
 
-import com.jadaptive.api.entity.EntityType;
+import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
 import com.jadaptive.api.template.Column;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
-@Template(name="Virtual Folder", resourceKey = VirtualFolder.RESOURCE_KEY, type = EntityType.COLLECTION)
+@Template(name="Virtual Folder", resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION)
 public class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String RESOURCE_KEY = "vfolder";

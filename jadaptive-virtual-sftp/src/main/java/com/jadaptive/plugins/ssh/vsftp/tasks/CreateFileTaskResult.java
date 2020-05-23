@@ -1,12 +1,12 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
-import com.jadaptive.api.entity.EntityType;
+import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.tasks.TaskResult;
 import com.jadaptive.api.template.Column;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
-@Template(name = "Create File Result", recurse = false, resourceKey = "createFileTaskResult", type = EntityType.OBJECT)
+@Template(name = "Create File Result", recurse = false, resourceKey = "createFileTaskResult", type = ObjectType.OBJECT)
 public class CreateFileTaskResult extends TaskResult {
 
 	public static final String RESOURCE_KEY = "fileCreation.result";

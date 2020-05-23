@@ -1,13 +1,13 @@
 package com.jadaptive.plugins.vsftp.gcs;
 
-import com.jadaptive.api.entity.EntityScope;
-import com.jadaptive.api.entity.EntityType;
+import com.jadaptive.api.entity.ObjectScope;
+import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.Template;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Column;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
-@Template(name="Google Credentials", resourceKey = GCSCredentials.RESOURCE_KEY, scope = EntityScope.GLOBAL, type = EntityType.OBJECT)
+@Template(name="Google Credentials", resourceKey = GCSCredentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class GCSCredentials extends VirtualFolderCredentials {
 
 	public  static final String RESOURCE_KEY = "googleCredentials";

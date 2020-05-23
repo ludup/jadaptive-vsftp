@@ -7,8 +7,8 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.entity.EntityException;
-import com.jadaptive.api.entity.EntityNotFoundException;
+import com.jadaptive.api.entity.ObjectException;
+import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.user.User;
@@ -57,7 +57,7 @@ public abstract class AbstractMountCommand extends AbstractVFSCommand {
 			for(String name : tmp.split(",")) {
 				try {
 				roles.add(roleService.getRoleByName(name));
-				} catch(EntityNotFoundException e) { 
+				} catch(ObjectNotFoundException e) { 
 					throw new UsageException(String.format("%s is not a valid role name", name));
 				} 
 			}
@@ -69,7 +69,7 @@ public abstract class AbstractMountCommand extends AbstractVFSCommand {
 			for(String name : tmp.split(",")) {
 				try {
 				users.add(userService.getUser(name));
-				} catch(EntityNotFoundException e) { 
+				} catch(ObjectNotFoundException e) { 
 					throw new UsageException(String.format("%s is not a valid user name", name));
 				} 
 			}
@@ -84,7 +84,7 @@ public abstract class AbstractMountCommand extends AbstractVFSCommand {
 			
 			fileService.createOrUpdate(folder);
 			
-		} catch (EntityException e) {
+		} catch (ObjectException e) {
 			throw new IOException(e.getMessage(), e);
 		}
 	}

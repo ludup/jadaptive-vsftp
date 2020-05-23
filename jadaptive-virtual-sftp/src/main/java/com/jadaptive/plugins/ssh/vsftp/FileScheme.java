@@ -9,7 +9,7 @@ import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.FileProvider;
 import org.pf4j.ExtensionPoint;
 
-import com.jadaptive.api.template.EntityTemplate;
+import com.jadaptive.api.template.ObjectTemplate;
 
 public interface FileScheme extends ExtensionPoint {
 
@@ -23,11 +23,11 @@ public interface FileScheme extends ExtensionPoint {
 
 	FileProvider getFileProvider();
 	
-	EntityTemplate getCredentialsTemplate();
+	ObjectTemplate getCredentialsTemplate();
 
 	Class<? extends VirtualFolderCredentials> getCredentialsClass();
 
-	EntityTemplate getOptionsTemplate();
+	ObjectTemplate getOptionsTemplate();
 	
 	Class<? extends VirtualFolderOptions> getOptionsClass();
 	

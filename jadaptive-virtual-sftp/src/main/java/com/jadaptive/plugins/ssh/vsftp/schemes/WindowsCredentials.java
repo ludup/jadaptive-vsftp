@@ -1,12 +1,12 @@
 package com.jadaptive.plugins.ssh.vsftp.schemes;
 
-import com.jadaptive.api.entity.EntityType;
+import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.Template;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Column;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
-@Template(name = "Windows Credentials", resourceKey = WindowsCredentials.RESOURCE_KEY, type = EntityType.OBJECT)
+@Template(name = "Windows Credentials", resourceKey = WindowsCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class WindowsCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY =  "windowsCredentials";

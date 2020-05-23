@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.encrypt.EncryptionService;
-import com.jadaptive.api.template.EntityTemplate;
+import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
@@ -77,7 +77,7 @@ public abstract class AbstractFileScheme implements FileScheme {
 	}
 
 	@Override
-	public EntityTemplate getOptionsTemplate() {
+	public ObjectTemplate getOptionsTemplate() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -87,7 +87,7 @@ public abstract class AbstractFileScheme implements FileScheme {
 	}
 
 	@Override
-	public EntityTemplate getCredentialsTemplate() {
+	public ObjectTemplate getCredentialsTemplate() {
 		throw new UnsupportedOperationException();
 	}
 

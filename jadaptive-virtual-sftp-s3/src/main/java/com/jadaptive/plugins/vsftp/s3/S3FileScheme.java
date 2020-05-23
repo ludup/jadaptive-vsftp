@@ -10,8 +10,8 @@ import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.template.EntityTemplate;
-import com.jadaptive.api.template.EntityTemplateService;
+import com.jadaptive.api.template.ObjectTemplate;
+import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
@@ -21,7 +21,7 @@ import com.sshtools.vfs.s3.provider.s3.S3FileProvider;
 public class S3FileScheme extends AbstractFileScheme {
 	
 	@Autowired
-	private EntityTemplateService templateService; 
+	private TemplateService templateService; 
 	
 	public S3FileScheme() {
 		super("Amazon S3", new S3FileProvider(), "s3", "aws", "amazon");
@@ -51,7 +51,7 @@ public class S3FileScheme extends AbstractFileScheme {
 		return true;
 	}
 
-	public EntityTemplate getCredentialsTemplate() {
+	public ObjectTemplate getCredentialsTemplate() {
 		return templateService.get("s3Credentials");
 	}
 

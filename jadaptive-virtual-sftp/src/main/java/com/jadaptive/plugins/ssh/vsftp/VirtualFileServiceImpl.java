@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.db.AssignableObjectDatabase;
 import com.jadaptive.api.db.SearchField;
-import com.jadaptive.api.entity.EntityNotFoundException;
+import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
@@ -64,7 +64,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		try {
 			repository.getObjectByUUID(VirtualFolder.class, mount);
 			return true;
-		} catch(EntityNotFoundException e) { } 
+		} catch(ObjectNotFoundException e) { } 
 		return false;
 	}
 

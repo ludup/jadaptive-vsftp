@@ -7,8 +7,8 @@ import org.apache.commons.vfs2.FileSystemOptions;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.template.EntityTemplate;
-import com.jadaptive.api.template.EntityTemplateService;
+import com.jadaptive.api.template.ObjectTemplate;
+import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
@@ -19,7 +19,7 @@ import com.sshtools.vfs.gcs.GoogleStorageFileSystemConfigBuilder;
 public class GCSFileScheme extends AbstractFileScheme {
 
 	@Autowired
-	private EntityTemplateService templateService; 
+	private TemplateService templateService; 
 	
 	public GCSFileScheme() {
 		super("Google Storage", new GoogleStorageFileProvider(), "gcs", "google");
@@ -36,7 +36,7 @@ public class GCSFileScheme extends AbstractFileScheme {
 	}
 
 	@Override
-	public EntityTemplate getCredentialsTemplate() {
+	public ObjectTemplate getCredentialsTemplate() {
 		return templateService.get("googleCredentials");
 	}
 

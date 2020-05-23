@@ -13,8 +13,8 @@ import org.apache.commons.vfs2.provider.smb.SmbFileProvider;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.template.EntityTemplate;
-import com.jadaptive.api.template.EntityTemplateService;
+import com.jadaptive.api.template.ObjectTemplate;
+import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
@@ -23,7 +23,7 @@ public class SmbFileScheme extends AbstractFileScheme {
 
 	
 	@Autowired
-	EntityTemplateService templateService; 
+	TemplateService templateService; 
 
 	public SmbFileScheme() {
 		super("Windows CIFS", new SmbFileProvider(), "smb", "windows", "cifs");
@@ -72,7 +72,7 @@ public class SmbFileScheme extends AbstractFileScheme {
 	}
 
 	@Override
-	public EntityTemplate getCredentialsTemplate() {
+	public ObjectTemplate getCredentialsTemplate() {
 		return templateService.get(WindowsCredentials.RESOURCE_KEY);
 	}
 

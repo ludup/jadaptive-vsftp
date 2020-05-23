@@ -14,10 +14,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.CacheStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.entity.EntityNotFoundException;
+import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.role.RoleService;
-import com.jadaptive.api.template.EntityTemplateService;
+import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.management.ConsoleHelper;
@@ -50,7 +50,7 @@ public class Mount extends AbstractVFSCommand {
 	private UserService userService;  
 	
 	@Autowired
-	private EntityTemplateService templateService; 
+	private TemplateService templateService; 
 	
 	@Autowired
 	private ConsoleHelper consoleHelper;
@@ -98,7 +98,7 @@ public class Mount extends AbstractVFSCommand {
 			for(String name : tmp.split(",")) {
 				try {
 				roles.add(roleService.getRoleByName(name));
-				} catch(EntityNotFoundException e) { 
+				} catch(ObjectNotFoundException e) { 
 					throw new UsageException(String.format("%s is not a valid role name", name));
 				} 
 			}
@@ -110,7 +110,7 @@ public class Mount extends AbstractVFSCommand {
 			for(String name : tmp.split(",")) {
 				try {
 				users.add(userService.getUser(name));
-				} catch(EntityNotFoundException e) { 
+				} catch(ObjectNotFoundException e) { 
 					throw new UsageException(String.format("%s is not a valid user name", name));
 				} 
 			}

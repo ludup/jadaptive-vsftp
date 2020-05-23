@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.entity.EntityNotFoundException;
+import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.utils.FileUtils;
 import com.sshtools.common.files.vfs.VirtualFileFactory;
@@ -54,7 +54,7 @@ public class Unmount extends AbstractVFSCommand {
 		if(permanent) {
 			try {
 				fileService.deleteVirtualFolder(fileService.getVirtualFolder(mount));
-			} catch(EntityNotFoundException e) {
+			} catch(ObjectNotFoundException e) {
 				throw new IOException(String.format("%s cannot be deleted because it is not permanent", mount));
 			}
 			

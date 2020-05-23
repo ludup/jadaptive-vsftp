@@ -7,8 +7,8 @@ import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.template.EntityTemplate;
-import com.jadaptive.api.template.EntityTemplateService;
+import com.jadaptive.api.template.ObjectTemplate;
+import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
@@ -19,7 +19,7 @@ import com.sshtools.vfs.sftp.SftpFileSystemConfigBuilder;
 public class SftpFileScheme extends AbstractFileScheme {
 
 	@Autowired
-	EntityTemplateService templateService; 
+	TemplateService templateService; 
 	
 	public SftpFileScheme() {
 		super("sftp", new SftpFileProvider(), "sftp", "ssh", "scp");
@@ -48,7 +48,7 @@ public class SftpFileScheme extends AbstractFileScheme {
 	}
 
 	@Override
-	public EntityTemplate getCredentialsTemplate() {
+	public ObjectTemplate getCredentialsTemplate() {
 		return templateService.get(SftpCredentials.RESOURCE_KEY);
 	}
 
@@ -63,7 +63,7 @@ public class SftpFileScheme extends AbstractFileScheme {
 	}
 
 	@Override
-	public EntityTemplate getOptionsTemplate() {
+	public ObjectTemplate getOptionsTemplate() {
 		return templateService.get(SftpOptions.RESOURCE_KEY);
 	}
 

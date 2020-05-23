@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.entity.EntityNotFoundException;
+import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.plugins.sshd.PluginFileSystemMount;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
@@ -54,7 +54,7 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 	public VirtualMountTemplate getHomeMount() throws IOException {
 		try {
 			return fileService.getVirtualMountTemplate(fileService.getHomeMount());
-		} catch(EntityNotFoundException e) {
+		} catch(ObjectNotFoundException e) {
 			return new VirtualMountTemplate("/", "tmp://${username}", new VFSFileFactory(), true);
 		}
 	}

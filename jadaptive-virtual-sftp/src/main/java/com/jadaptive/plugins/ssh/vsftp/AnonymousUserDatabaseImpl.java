@@ -9,8 +9,8 @@ import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.db.TenantAwareObjectDatabase;
-import com.jadaptive.api.template.EntityTemplate;
-import com.jadaptive.api.template.EntityTemplateService;
+import com.jadaptive.api.template.ObjectTemplate;
+import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.tenant.Tenant;
 import com.jadaptive.api.tenant.TenantAware;
 import com.jadaptive.api.tenant.TenantService;
@@ -31,7 +31,7 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	private TenantService tenantService; 
 	
 	@Autowired
-	private EntityTemplateService templateService; 
+	private TemplateService templateService; 
 	
 	@Override
 	public void setPassword(User user, char[] password, boolean passwordChangeRequired) {
@@ -66,7 +66,7 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	}
 
 	@Override
-	public EntityTemplate getUserTemplate() {
+	public ObjectTemplate getUserTemplate() {
 		return templateService.get(AnonymousUser.RESOURCE_KEY);
 	}
 

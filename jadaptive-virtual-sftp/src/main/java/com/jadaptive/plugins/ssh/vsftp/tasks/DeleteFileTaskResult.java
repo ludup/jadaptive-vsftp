@@ -1,12 +1,12 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
-import com.jadaptive.api.entity.EntityType;
+import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.tasks.TaskResult;
 import com.jadaptive.api.template.Column;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.Template;
 
-@Template(name = "Delete File Result", recurse = false, resourceKey = "deleteFileTaskResult", type = EntityType.OBJECT)
+@Template(name = "Delete File Result", recurse = false, resourceKey = "deleteFileTaskResult", type = ObjectType.OBJECT)
 public class DeleteFileTaskResult extends TaskResult {
 
 	public static final String RESOURCE_KEY = "fileDeletion.result";
