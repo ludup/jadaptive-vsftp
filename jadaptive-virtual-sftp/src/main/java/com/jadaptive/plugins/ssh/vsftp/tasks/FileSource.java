@@ -4,9 +4,9 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
-import com.jadaptive.api.template.Template;
+import com.jadaptive.api.template.ObjectDefinition;
 
-@Template(name = "File Source", resourceKey = FileSource.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(name = "File Source", resourceKey = FileSource.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class FileSource extends AbstractUUIDEntity {
 
 	public static final String RESOURCE_KEY = "fileSource";

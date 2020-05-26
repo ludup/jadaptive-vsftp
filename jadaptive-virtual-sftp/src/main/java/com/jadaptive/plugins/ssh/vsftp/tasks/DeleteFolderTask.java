@@ -3,9 +3,9 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
-import com.jadaptive.api.template.Template;
+import com.jadaptive.api.template.ObjectDefinition;
 
-@Template(name = "Delete Folder", resourceKey = DeleteFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(name = "Delete Folder", resourceKey = DeleteFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class DeleteFolderTask extends AbstractFileTargetTask {
 
 	public static final String RESOURCE_KEY = "deleteFolder";

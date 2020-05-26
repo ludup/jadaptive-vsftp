@@ -1,14 +1,17 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
+import java.util.Objects;
+
 import org.apache.commons.vfs2.CacheStrategy;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
-import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
-import com.jadaptive.api.template.Template;
+import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectDefinition;
+import com.jadaptive.utils.Utils;
 
-@Template(name="Virtual Folder", resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION)
+@ObjectDefinition(name="Virtual Folder", resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION)
 public class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String RESOURCE_KEY = "vfolder";
@@ -33,6 +36,13 @@ public class VirtualFolder extends AssignableUUIDEntity {
 	
 	@ObjectField(name = "Home", description = "This is the home mount for this tenant", type = FieldType.BOOL, hidden = true)
 	Boolean home;
+	
+	@ObjectField(name = "Short Code", 
+			description = "A unique code for anonymously identifying this folder",
+			type = FieldType.TEXT, 
+			hidden = true,
+			searchable = true)
+	String shortCode;
 	
 	public String getMountPath() {
 		return getUuid();
@@ -95,4 +105,17 @@ public class VirtualFolder extends AssignableUUIDEntity {
 	public String getResourceKey() {
 		return RESOURCE_KEY;
 	}
+
+	public String getShortCode() {
+		if(Objects.isNull(shortCode)) {
+			shortCode = Utils.generateRandomAlphaNumericString(8);
+		}
+		return shortCode;
+	}
+
+	public void setShortCode(String shortCode) {
+		this.shortCode = shortCode;
+	}
+	
+	
 }

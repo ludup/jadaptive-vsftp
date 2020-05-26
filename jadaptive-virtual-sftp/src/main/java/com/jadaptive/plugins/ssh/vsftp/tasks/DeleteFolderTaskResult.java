@@ -4,9 +4,9 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.tasks.TaskResult;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
-import com.jadaptive.api.template.Template;
+import com.jadaptive.api.template.ObjectDefinition;
 
-@Template(name = "Delete Folder Result", recurse = false, resourceKey = "deleteFolderTaskResult", type = ObjectType.OBJECT)
+@ObjectDefinition(name = "Delete Folder Result", recurse = false, resourceKey = "deleteFolderTaskResult", type = ObjectType.OBJECT)
 public class DeleteFolderTaskResult extends TaskResult {
 
 	public static final String RESOURCE_KEY = "folderDeletion.result";

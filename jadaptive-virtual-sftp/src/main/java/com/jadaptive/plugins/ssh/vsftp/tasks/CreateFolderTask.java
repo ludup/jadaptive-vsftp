@@ -1,9 +1,9 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.template.Template;
+import com.jadaptive.api.template.ObjectDefinition;
 
-@Template(name = "Create Folder", resourceKey = CreateFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(name = "Create Folder", resourceKey = CreateFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class CreateFolderTask extends AbstractFileTargetTask {
 
 	public static final String RESOURCE_KEY = "createFolder";

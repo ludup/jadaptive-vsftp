@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:webbits="http://webbits.org/webbits"
-	webbits:depends="Bootstrap,Widgets,FontAwesome">
+	webbits:depends="Bootstrap,Widgets,FontAwesome,FreeMarker">
 <body>
 <div class="wrapper">
 <header webbits:id="com.jadaptive.app.ui.Header"></header>
 <main class="container mt-3">
    <div class="row my-1">
          <div class="col-8 offset-2">
-         	<form enctype="multipart/form-data" action="/upload/public" method="POST">
+         	<form enctype="multipart/form-data" action="/upload/${view.shortCode}" method="POST">
+      
 		    <div class="form-group">
 		       <label class="col-form-label" for="name">Your Name</label><input type="text" name="name">
 		       <small class="form-text text-muted">Please enter your name so we know whom the file is from.</small>

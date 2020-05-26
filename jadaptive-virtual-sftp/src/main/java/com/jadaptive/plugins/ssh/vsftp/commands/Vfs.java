@@ -1,10 +1,12 @@
 package com.jadaptive.plugins.ssh.vsftp.commands;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.permissions.AccessDeniedException;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -49,14 +51,26 @@ public class Vfs extends AbstractVFSCommand {
 			
 			console.print(StringUtils.rightPad("Mount", 15));
 			console.print(StringUtils.rightPad("Scheme", 10));
+			console.print(StringUtils.rightPad("Short Code", 12));
 			console.println("Destination");
-			console.print(StringUtils.rightPad("_____", 15));
-			console.print(StringUtils.rightPad("______", 10));
-			console.println("___________");
-			console.println();
-			for(VirtualFolder folder : fileService.getVirtualFolders()) {
+			console.print(StringUtils.rightPad("-----", 15));
+			console.print(StringUtils.rightPad("------", 10));
+			console.print(StringUtils.rightPad("----------", 12));
+			console.println("-----------");
+			
+			Collection<VirtualFolder> folders;
+			
+			try {
+				assertAdministrationPermission();
+				folders = fileService.getVirtualFolders();
+			} catch(AccessDeniedException e) {
+				folders = fileService.getPersonalFolders();
+			}
+			
+			for(VirtualFolder folder : folders) {
 				console.print(StringUtils.rightPad(folder.getMountPath(), 15));
 				console.print(StringUtils.rightPad(folder.getType(), 10));
+				console.print(StringUtils.rightPad(folder.getShortCode(), 12));
 				console.println(folder.getDestinationUri());
 			}
 		}

@@ -53,6 +53,12 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	
 	@Override
 	public Collection<VirtualFolder> getVirtualFolders() {
+		return repository.getObjects(
+				VirtualFolder.class);
+	}
+	
+	@Override
+	public Collection<VirtualFolder> getPersonalFolders() {
 		return repository.getAssignedObjects(
 				VirtualFolder.class, 
 				getCurrentUser());
@@ -231,5 +237,10 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Override
 	public VirtualFolder getHomeMount() {
 		return repository.getObject(VirtualFolder.class, getCurrentUser(), SearchField.eq("mount", "/"));
+	}
+
+	@Override
+	public VirtualFolder getVirtualFolderByShortCode(String shortCode) {
+		return repository.getObject(VirtualFolder.class, getCurrentUser(), SearchField.eq("shortCode", shortCode));
 	}
 }

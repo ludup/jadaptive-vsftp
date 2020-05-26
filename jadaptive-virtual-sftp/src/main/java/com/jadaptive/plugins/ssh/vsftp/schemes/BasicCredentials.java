@@ -3,10 +3,10 @@ package com.jadaptive.plugins.ssh.vsftp.schemes;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
-import com.jadaptive.api.template.Template;
+import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
-@Template(name = "Basic Credentials", resourceKey = BasicCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(name = "Basic Credentials", resourceKey = BasicCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class BasicCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY =  "basicCredentials";

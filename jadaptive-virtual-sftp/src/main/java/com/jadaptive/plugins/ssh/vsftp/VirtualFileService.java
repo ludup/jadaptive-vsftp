@@ -39,4 +39,8 @@ public interface VirtualFileService {
 
 	VirtualFolder createOrUpdate(VirtualFolder folder);
 
+	VirtualFolder getVirtualFolderByShortCode(String shortCode);
+
+	Collection<VirtualFolder> getPersonalFolders();
+
 }

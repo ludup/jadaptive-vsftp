@@ -117,4 +117,9 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 		}
 	}
 
+	@Override
+	public User getAnonymousUser() {
+		return getUser(ANONYMOUS_USER_UUID);
+	}
+
 }

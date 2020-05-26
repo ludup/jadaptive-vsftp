@@ -2,11 +2,11 @@ package com.jadaptive.plugins.ssh.vsftp;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.template.Template;
+import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectField;
 
-@Template(name = "Password Credentials", resourceKey=  PasswordCredentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
+@ObjectDefinition(name = "Password Credentials", resourceKey=  PasswordCredentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class PasswordCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "passwordCredentials";

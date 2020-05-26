@@ -13,6 +13,9 @@ import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.upload.UploadHandler;
+import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 
@@ -22,14 +25,24 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 	@Autowired
 	private SSHDService sshdService;
 	
+	@Autowired
+	private VirtualFileService fileService; 
+	
+	@Autowired
+	private AnonymousUserDatabase anonymousDatabase;
+	
 	@Override
 	public void handleUpload(String handlerName, String uri, Map<String, String> parameters, String filename,
 			InputStream in) throws IOException, SessionTimeoutException, UnauthorizedException {
 		
-		setupSystemContext();
+		setupUserContext(anonymousDatabase.getAnonymousUser());
 		
 		try { 
-			AbstractFile file = sshdService.getFileFactory(getCurrentUser()).getFile("/public");
+			/**
+			 * Handler "short code" name should be assigned to an anonymous user
+			 */
+			VirtualFolder folder = fileService.getVirtualFolderByShortCode(handlerName);
+			AbstractFile file = sshdService.getFileFactory(getCurrentUser()).getFile(folder.getMountPath());
 
 			if(!file.exists()) {
 				throw new FileNotFoundException("No public area to place files");
