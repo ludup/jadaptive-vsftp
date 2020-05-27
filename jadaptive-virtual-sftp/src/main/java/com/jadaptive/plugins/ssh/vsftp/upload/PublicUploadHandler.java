@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,7 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 			/**
 			 * Handler "short code" name should be assigned to an anonymous user
 			 */
-			VirtualFolder folder = fileService.getVirtualFolderByShortCode(handlerName);
+			VirtualFolder folder = fileService.getVirtualFolderByShortCode(uri);
 			AbstractFile file = sshdService.getFileFactory(getCurrentUser()).getFile(folder.getMountPath());
 
 			if(!file.exists()) {
@@ -62,6 +64,11 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 		}
 	}
 
+	@Override
+	public void sendSuccessfulResponse(HttpServletResponse resp, String handlerName, String uri) throws IOException {
+		resp.sendRedirect("/app/ui/upload/" + uri);
+	}
+	
 	@Override
 	public boolean isSessionRequired() {
 		return false;
