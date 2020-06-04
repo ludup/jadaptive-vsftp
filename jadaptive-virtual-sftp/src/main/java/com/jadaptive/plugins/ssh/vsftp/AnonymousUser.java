@@ -10,6 +10,8 @@ import com.jadaptive.api.user.UserImpl;
 @ObjectDefinition(name = "Anonymous Users", resourceKey = AnonymousUser.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.COLLECTION)
 public class AnonymousUser extends UserImpl {
 
+	private static final long serialVersionUID = -541052280964473585L;
+
 	public static final String RESOURCE_KEY = "anonymousUser";
 	
 	@ObjectField(name = "Username", 
