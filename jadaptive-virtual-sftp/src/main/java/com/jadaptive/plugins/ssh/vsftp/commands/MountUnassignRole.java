@@ -1,9 +1,7 @@
 package com.jadaptive.plugins.ssh.vsftp.commands;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jline.reader.Candidate;
 import org.jline.reader.LineReader;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.role.RoleService;
-import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.FileUtils;

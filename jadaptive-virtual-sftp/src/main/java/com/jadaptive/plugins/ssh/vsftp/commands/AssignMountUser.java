@@ -5,22 +5,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.jline.reader.Candidate;
 import org.jline.reader.LineReader;
 import org.jline.reader.ParsedLine;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.entity.ObjectException;
-import com.jadaptive.api.entity.ObjectNotFoundException;
-import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.FileUtils;
 import com.sshtools.common.permissions.PermissionDeniedException;
-import com.sshtools.server.vsession.CliHelper;
 import com.sshtools.server.vsession.ShellCommand;
 import com.sshtools.server.vsession.UsageException;
 import com.sshtools.server.vsession.UsageHelper;
