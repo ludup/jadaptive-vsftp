@@ -10,6 +10,8 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 @ObjectDefinition(name="Google Credentials", resourceKey = GCSCredentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class GCSCredentials extends VirtualFolderCredentials {
 
+	private static final long serialVersionUID = -1474834193052904187L;
+
 	public  static final String RESOURCE_KEY = "googleCredentials";
 	
 	@ObjectField(name = "Client JSON", description = "The contents of the client json file provided by GCS", type = FieldType.TEXT_AREA, manualEncryption = true)

@@ -6,6 +6,8 @@ import com.jadaptive.api.template.FieldType;
 
 public class AbstractFileSourceTargetTask extends Task {
 
+	private static final long serialVersionUID = 2893752481039355444L;
+
 	@ObjectField(name = "Source", 
 			description = "The source information for this task", 
 			type = FieldType.OBJECT_EMBEDDED)

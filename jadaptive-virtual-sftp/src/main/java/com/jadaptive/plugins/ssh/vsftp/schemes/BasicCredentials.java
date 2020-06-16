@@ -9,6 +9,8 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 @ObjectDefinition(name = "Basic Credentials", resourceKey = BasicCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class BasicCredentials extends VirtualFolderCredentials {
 
+	private static final long serialVersionUID = 812430748866462973L;
+
 	public static final String RESOURCE_KEY =  "basicCredentials";
 
 	@ObjectField(name = "Username", description = "The username for this set of credentials", type = FieldType.TEXT)

@@ -14,6 +14,8 @@ import com.jadaptive.utils.Utils;
 @ObjectDefinition(name="Virtual Folder", resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION)
 public class VirtualFolder extends AssignableUUIDEntity {
 
+	private static final long serialVersionUID = -3428053970013170410L;
+
 	public static final String RESOURCE_KEY = "vfolder";
 	
 	@ObjectField(name="Mount Path", description = "The path on which this folder is mounted within the virtual file system", type = FieldType.TEXT)

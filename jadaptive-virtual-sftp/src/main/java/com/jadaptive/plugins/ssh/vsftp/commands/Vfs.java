@@ -1,7 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.commands;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +57,7 @@ public class Vfs extends AbstractVFSCommand {
 			console.print(StringUtils.rightPad("----------", 12));
 			console.println("-----------");
 			
-			Collection<VirtualFolder> folders;
+			Iterable<VirtualFolder> folders;
 			
 			try {
 				assertAdministrationPermission();

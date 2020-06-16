@@ -9,6 +9,8 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 @ObjectDefinition(name = "Private Key", resourceKey = PrivateKeyCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class PrivateKeyCredentials extends VirtualFolderCredentials {
 
+	private static final long serialVersionUID = 2797187386964915392L;
+
 	public static final String RESOURCE_KEY = "privateKeyCredentials";
 
 	@ObjectField(name = "Private Key", description = "The encoded private key", type = FieldType.TEXT_AREA)

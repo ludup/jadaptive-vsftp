@@ -9,6 +9,8 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 @ObjectDefinition(name = "Windows Credentials", resourceKey = WindowsCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class WindowsCredentials extends VirtualFolderCredentials {
 
+	private static final long serialVersionUID = -3545736477921126047L;
+
 	public static final String RESOURCE_KEY =  "windowsCredentials";
 
 	@ObjectField(name = "Domain", description = "The identity's domain", type = FieldType.TEXT)

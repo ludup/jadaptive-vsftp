@@ -23,7 +23,7 @@ public interface VirtualFileService {
 
 	VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles);
 
-	Collection<VirtualFolder> getVirtualFolders();
+	Iterable<VirtualFolder> getVirtualFolders();
 
 	VirtualMountTemplate getVirtualMountTemplate(VirtualFolder folder) throws IOException;
 

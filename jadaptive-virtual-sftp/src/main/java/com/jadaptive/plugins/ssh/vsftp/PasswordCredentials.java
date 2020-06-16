@@ -9,6 +9,8 @@ import com.jadaptive.api.template.ObjectField;
 @ObjectDefinition(name = "Password Credentials", resourceKey=  PasswordCredentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class PasswordCredentials extends VirtualFolderCredentials {
 
+	private static final long serialVersionUID = -2093419198418767948L;
+
 	public static final String RESOURCE_KEY = "passwordCredentials";
 	
 	@ObjectField(name = "Username", description = "The username of this user", type = FieldType.TEXT)

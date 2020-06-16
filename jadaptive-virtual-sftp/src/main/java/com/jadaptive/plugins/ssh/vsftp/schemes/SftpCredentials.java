@@ -9,6 +9,8 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 @ObjectDefinition(name = "SFTP Credentials", resourceKey = SftpCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class SftpCredentials extends VirtualFolderCredentials {
 
+	private static final long serialVersionUID = 3244595514117790021L;
+
 	public static final String RESOURCE_KEY = "sftpCredentials";
 
 	@ObjectField(name = "Password", description = "", type = FieldType.OBJECT_EMBEDDED )

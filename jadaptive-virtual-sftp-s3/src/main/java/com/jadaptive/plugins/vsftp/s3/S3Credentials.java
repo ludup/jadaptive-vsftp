@@ -10,6 +10,8 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 @ObjectDefinition(name = "S3 Credentials", resourceKey = S3Credentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class S3Credentials extends VirtualFolderCredentials {
 
+	private static final long serialVersionUID = 4755371207381130509L;
+
 	public static final String RESOURCE_KEY = "s3Credentials";
 
 	@ObjectField(name="Access Key ID", description = "The access key", required = true, type = FieldType.TEXT)

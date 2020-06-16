@@ -9,6 +9,8 @@ import com.jadaptive.api.template.ObjectDefinition;
 @ObjectDefinition(name = "Create File Result", recurse = false, resourceKey = "createFileTaskResult", type = ObjectType.OBJECT)
 public class CreateFileTaskResult extends TaskResult {
 
+	private static final long serialVersionUID = 3639394754320264199L;
+	
 	public static final String RESOURCE_KEY = "fileCreation.result";
 	public static final String EVENT_NAME = "File Created";
 	

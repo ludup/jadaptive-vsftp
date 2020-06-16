@@ -9,6 +9,8 @@ import com.jadaptive.api.template.ObjectDefinition;
 @ObjectDefinition(name = "Delete File Result", recurse = false, resourceKey = "deleteFileTaskResult", type = ObjectType.OBJECT)
 public class DeleteFileTaskResult extends TaskResult {
 
+	private static final long serialVersionUID = 96293955438850683L;
+	
 	public static final String RESOURCE_KEY = "fileDeletion.result";
 	public static final String EVENT_NAME = "File Deleted";
 	

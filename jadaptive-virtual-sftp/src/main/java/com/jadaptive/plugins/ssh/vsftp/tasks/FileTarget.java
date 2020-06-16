@@ -9,6 +9,8 @@ import com.jadaptive.api.template.ObjectDefinition;
 @ObjectDefinition(name = "File Target", resourceKey = FileTarget.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class FileTarget extends AbstractUUIDEntity {
 
+	private static final long serialVersionUID = -3213668962833520895L;
+
 	public static final String RESOURCE_KEY = "fileTarget";
 
 	@ObjectField(name="Location", description = "The target location", type = FieldType.ENUM)

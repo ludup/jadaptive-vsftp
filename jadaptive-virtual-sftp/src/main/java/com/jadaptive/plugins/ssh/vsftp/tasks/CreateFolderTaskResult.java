@@ -9,6 +9,8 @@ import com.jadaptive.api.template.ObjectDefinition;
 @ObjectDefinition(name = "Create Folder Result", recurse = false, resourceKey = "createFolderTaskResult", type = ObjectType.OBJECT)
 public class CreateFolderTaskResult extends TaskResult {
 
+	private static final long serialVersionUID = 7469143834170431561L;
+	
 	public static final String RESOURCE_KEY = "folderCreation.result";
 	public static final String EVENT_NAME = "Folder Created";
 	
