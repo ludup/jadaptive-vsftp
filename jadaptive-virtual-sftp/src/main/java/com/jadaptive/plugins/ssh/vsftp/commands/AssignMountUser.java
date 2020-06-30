@@ -1,34 +1,21 @@
 package com.jadaptive.plugins.ssh.vsftp.commands;
 
-import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jline.reader.Candidate;
-import org.jline.reader.LineReader;
-import org.jline.reader.ParsedLine;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.entity.ObjectException;
-import com.jadaptive.api.user.User;
-import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.utils.FileUtils;
-import com.sshtools.common.permissions.PermissionDeniedException;
+import com.jadaptive.plugins.sshd.commands.AbstractUserAssignmentCommand;
 import com.sshtools.server.vsession.ShellCommand;
 import com.sshtools.server.vsession.UsageException;
 import com.sshtools.server.vsession.UsageHelper;
-import com.sshtools.server.vsession.VirtualConsole;
 
-public class AssignMountUser extends AbstractVFSCommand {
+public class AssignMountUser extends AbstractUserAssignmentCommand<VirtualFolder> {
 
 	@Autowired
-	private VirtualFileService fileService; 
-	
-	@Autowired
-	private UserService userService;  
+	private VirtualFileService fileService;  
 
 	
 	public AssignMountUser() {
@@ -37,47 +24,22 @@ public class AssignMountUser extends AbstractVFSCommand {
 	}
 
 	@Override
-	protected void doRun(String[] args, VirtualConsole console)
-			throws IOException, PermissionDeniedException, UsageException {
-		
-		if(args.length < 4) {
-			throw new UsageException("Not enough arguments provided");
-		}
-		
-		String mount = FileUtils.checkStartsWithSlash(
-				FileUtils.checkEndsWithNoSlash(args[1]));
-		
-		if(!fileService.checkMountExists(mount, currentUser)) {
-			throw new UsageException(String.format("%s is alredy mounted", mount));
-		}
-	
-		
-		Set<User> users = new HashSet<>();
-		
-		for(int i=2;i<args.length;i++) {
-			users.add(userService.getUser(args[i]));
-		}
-
-		try {
-			
-			VirtualFolder folder = fileService.getVirtualFolder(mount);
-			fileService.createOrUpdate(folder);
-			
-		} catch (ObjectException e) {
-			throw new IOException(e.getMessage(), e);
-		}
+	protected void saveObject(VirtualFolder obj) {
+		fileService.createOrUpdate(obj);
 	}
 
 	@Override
-	public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-		if(line.wordIndex() == 1) {
-			for(VirtualFolder mount : fileService.getVirtualFolders()) {
-				candidates.add(new Candidate(mount.getMountPath()));
-			}
-		} else if(line.wordIndex() > 1) {
-			for(User user : userService.allUsers()) {
-				candidates.add(new Candidate(user.getUsername()));
-			}
+	protected VirtualFolder loadObject(String name) throws UsageException {
+		if(!fileService.checkMountExists(name, getCurrentUser())) {
+			throw new UsageException(String.format("%s is alredy mounted", name));
+		}
+		return fileService.getVirtualFolder(name);
+	}
+
+	@Override
+	protected void loadCandidates(List<Candidate> candidates) {
+		for(VirtualFolder mount : fileService.getVirtualFolders()) {
+			candidates.add(new Candidate(mount.getMountPath()));
 		}
 	}
 

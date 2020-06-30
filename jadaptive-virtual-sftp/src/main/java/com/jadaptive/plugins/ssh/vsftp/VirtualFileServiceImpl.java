@@ -58,7 +58,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	}
 	
 	@Override
-	public Collection<VirtualFolder> getPersonalFolders() {
+	public Iterable<VirtualFolder> getPersonalFolders() {
 		return repository.getAssignedObjects(
 				VirtualFolder.class, 
 				getCurrentUser());

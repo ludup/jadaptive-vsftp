@@ -41,6 +41,6 @@ public interface VirtualFileService {
 
 	VirtualFolder getVirtualFolderByShortCode(String shortCode);
 
-	Collection<VirtualFolder> getPersonalFolders();
+	Iterable<VirtualFolder> getPersonalFolders();
 
 }
