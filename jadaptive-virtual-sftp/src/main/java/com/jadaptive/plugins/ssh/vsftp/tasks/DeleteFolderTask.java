@@ -5,7 +5,7 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 
-@ObjectDefinition(name = "Delete Folder", resourceKey = DeleteFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(resourceKey = DeleteFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class DeleteFolderTask extends AbstractFileTargetTask {
 
 	private static final long serialVersionUID = 1700728212983579995L;

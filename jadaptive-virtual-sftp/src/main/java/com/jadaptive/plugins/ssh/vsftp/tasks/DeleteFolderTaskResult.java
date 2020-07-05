@@ -6,7 +6,7 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 
-@ObjectDefinition(name = "Delete Folder Result", recurse = false, resourceKey = "deleteFolderTaskResult", type = ObjectType.OBJECT)
+@ObjectDefinition(recurse = false, resourceKey = "deleteFolderTaskResult", type = ObjectType.OBJECT)
 public class DeleteFolderTaskResult extends TaskResult {
 
 	private static final long serialVersionUID = -1139408864847443271L;

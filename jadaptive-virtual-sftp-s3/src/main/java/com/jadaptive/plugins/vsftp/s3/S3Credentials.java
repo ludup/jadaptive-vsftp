@@ -7,7 +7,7 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
-@ObjectDefinition(name = "S3 Credentials", resourceKey = S3Credentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
+@ObjectDefinition(resourceKey = S3Credentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class S3Credentials extends VirtualFolderCredentials {
 
 	private static final long serialVersionUID = 4755371207381130509L;

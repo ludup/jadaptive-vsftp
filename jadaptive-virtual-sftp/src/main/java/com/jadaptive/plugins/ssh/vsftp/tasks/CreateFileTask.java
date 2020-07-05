@@ -3,7 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.ObjectDefinition;
 
-@ObjectDefinition(name = "Create File", resourceKey = CreateFileTask.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(resourceKey = CreateFileTask.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class CreateFileTask extends AbstractFileTargetTask {
 
 	private static final long serialVersionUID = -3844905236345385176L;

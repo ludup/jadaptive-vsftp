@@ -11,7 +11,7 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.utils.Utils;
 
-@ObjectDefinition(name="Virtual Folder", resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION)
+@ObjectDefinition(resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION)
 public class VirtualFolder extends AssignableUUIDEntity {
 
 	private static final long serialVersionUID = -3428053970013170410L;

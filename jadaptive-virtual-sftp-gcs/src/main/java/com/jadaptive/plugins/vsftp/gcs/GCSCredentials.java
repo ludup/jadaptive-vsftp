@@ -7,7 +7,7 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
-@ObjectDefinition(name="Google Credentials", resourceKey = GCSCredentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
+@ObjectDefinition(resourceKey = GCSCredentials.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class GCSCredentials extends VirtualFolderCredentials {
 
 	private static final long serialVersionUID = -1474834193052904187L;

@@ -6,7 +6,7 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 
-@ObjectDefinition(name = "File Source", resourceKey = FileSource.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(resourceKey = FileSource.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class FileSource extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = 4479279858955794444L;

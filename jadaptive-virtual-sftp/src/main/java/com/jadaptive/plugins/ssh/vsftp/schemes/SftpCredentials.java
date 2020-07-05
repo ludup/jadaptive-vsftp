@@ -6,7 +6,7 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
-@ObjectDefinition(name = "SFTP Credentials", resourceKey = SftpCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(resourceKey = SftpCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class SftpCredentials extends VirtualFolderCredentials {
 
 	private static final long serialVersionUID = 3244595514117790021L;

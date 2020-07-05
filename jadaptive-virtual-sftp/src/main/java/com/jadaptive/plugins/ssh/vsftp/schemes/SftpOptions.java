@@ -5,7 +5,7 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
 
-@ObjectDefinition(name = "SFTP Options", resourceKey = SftpOptions.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
+@ObjectDefinition(resourceKey = SftpOptions.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class SftpOptions extends VirtualFolderOptions {
 
 	private static final long serialVersionUID = -8772571009383063875L;

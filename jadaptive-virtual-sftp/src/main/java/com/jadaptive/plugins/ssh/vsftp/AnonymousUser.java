@@ -7,7 +7,7 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.user.UserImpl;
 
-@ObjectDefinition(name = "Anonymous Users", resourceKey = AnonymousUser.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.COLLECTION)
+@ObjectDefinition(resourceKey = AnonymousUser.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.COLLECTION)
 public class AnonymousUser extends UserImpl {
 
 	private static final long serialVersionUID = -541052280964473585L;
