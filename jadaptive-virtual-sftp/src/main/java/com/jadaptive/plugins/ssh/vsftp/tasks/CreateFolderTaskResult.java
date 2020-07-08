@@ -14,7 +14,7 @@ public class CreateFolderTaskResult extends TaskResult {
 	public static final String RESOURCE_KEY = "folderCreation.result";
 	public static final String EVENT_NAME = "Folder Created";
 	
-	@ObjectField(name = "Folder Name", description = "The name of the folder created", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String filename;
 
 	public CreateFolderTaskResult(String filename, Throwable e) {

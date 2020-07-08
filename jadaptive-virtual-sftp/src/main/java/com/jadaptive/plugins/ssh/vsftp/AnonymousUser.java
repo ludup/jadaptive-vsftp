@@ -14,17 +14,13 @@ public class AnonymousUser extends UserImpl {
 
 	public static final String RESOURCE_KEY = "anonymousUser";
 	
-	@ObjectField(name = "Username", 
-			description = "The logon name of the user",
-			required = true,
+	@ObjectField(required = true,
 			searchable = true,
 			type = FieldType.TEXT, 
 			unique = true)
 	String username;
 	
-	@ObjectField(name = "Full Name", 
-			description = "The full name of the user",
-			required = true,
+	@ObjectField(required = true,
 			searchable = true,
 			type = FieldType.TEXT)
 	String name;

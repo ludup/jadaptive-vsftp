@@ -13,10 +13,10 @@ public class PrivateKeyCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "privateKeyCredentials";
 
-	@ObjectField(name = "Private Key", description = "The encoded private key", type = FieldType.TEXT_AREA)
+	@ObjectField(type = FieldType.TEXT_AREA)
 	String privateKey;
 
-	@ObjectField(name = "Passphrase", description = "The private key passphrase", type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
 	String passphrase;
 
 	public PrivateKeyCredentials() { }

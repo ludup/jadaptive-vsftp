@@ -12,9 +12,7 @@ public class DeleteFolderTask extends AbstractFileTargetTask {
 
 	public static final String RESOURCE_KEY = "deleteFolder";
 	
-	@ObjectField(name = "Delete Contents", 
-			description = "Delete the folder and its contents",
-			type = FieldType.BOOL)
+	@ObjectField(type = FieldType.BOOL)
 	Boolean deleteContents;
 
 	public Boolean getDeleteContents() {

@@ -13,10 +13,10 @@ public class BasicCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY =  "basicCredentials";
 
-	@ObjectField(name = "Username", description = "The username for this set of credentials", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String username;
 	
-	@ObjectField(name = "Password", description = "The password for this set of credentials", type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
 	String password;
 	
 	public BasicCredentials() { }

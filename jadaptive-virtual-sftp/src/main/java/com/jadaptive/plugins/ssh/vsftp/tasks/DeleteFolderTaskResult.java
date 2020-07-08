@@ -14,7 +14,7 @@ public class DeleteFolderTaskResult extends TaskResult {
 	public static final String RESOURCE_KEY = "folderDeletion.result";
 	public static final String EVENT_NAME = "Folder Deleted";
 	
-	@ObjectField(name = "Folder Name", description = "The name of the folder deleted", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String filename;
 
 	public DeleteFolderTaskResult(String filename, Throwable e) {

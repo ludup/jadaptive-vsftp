@@ -14,7 +14,7 @@ public class GCSCredentials extends VirtualFolderCredentials {
 
 	public  static final String RESOURCE_KEY = "googleCredentials";
 	
-	@ObjectField(name = "Client JSON", description = "The contents of the client json file provided by GCS", type = FieldType.TEXT_AREA, manualEncryption = true)
+	@ObjectField(type = FieldType.TEXT_AREA, manualEncryption = true)
 	String clientJson;
 	
 	public void setClientJson(String clientJson) {

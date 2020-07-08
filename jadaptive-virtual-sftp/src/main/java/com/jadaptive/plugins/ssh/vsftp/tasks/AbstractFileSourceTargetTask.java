@@ -8,14 +8,10 @@ public class AbstractFileSourceTargetTask extends Task {
 
 	private static final long serialVersionUID = 2893752481039355444L;
 
-	@ObjectField(name = "Source", 
-			description = "The source information for this task", 
-			type = FieldType.OBJECT_EMBEDDED)
+	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	FileTarget source;
 	
-	@ObjectField(name = "Target", 
-			description = "The target information for this task", 
-			type = FieldType.OBJECT_EMBEDDED)
+	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	FileTarget target;
 
 	public FileTarget getSource() {

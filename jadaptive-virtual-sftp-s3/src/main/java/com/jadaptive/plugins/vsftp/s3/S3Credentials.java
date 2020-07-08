@@ -14,10 +14,10 @@ public class S3Credentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "s3Credentials";
 
-	@ObjectField(name="Access Key ID", description = "The access key", required = true, type = FieldType.TEXT)
+	@ObjectField(required = true, type = FieldType.TEXT)
 	String accessKey;
 
-	@ObjectField(name="Secret Access Key", description = "The secret key", required = true, type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(required = true, type = FieldType.PASSWORD, manualEncryption = true)
 	String secretKey;
 	
 	public String getAccessKey() {

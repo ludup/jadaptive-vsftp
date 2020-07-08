@@ -13,10 +13,10 @@ public class PasswordCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "passwordCredentials";
 	
-	@ObjectField(name = "Username", description = "The username of this user", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String username;
 	
-	@ObjectField(name = "Password", description = "The password for this user", type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
 	String password;
 
 	public String getUsername() {

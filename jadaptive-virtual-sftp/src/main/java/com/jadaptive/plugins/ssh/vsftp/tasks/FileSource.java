@@ -13,10 +13,10 @@ public class FileSource extends AbstractUUIDEntity {
 
 	public static final String RESOURCE_KEY = "fileSource";
 
-	@ObjectField(name="Location", description = "The source location", type = FieldType.ENUM)
+	@ObjectField(type = FieldType.ENUM)
 	FileLocation location;
 	
-	@ObjectField(name="File", description = "The filename on the source location", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String filename;
 
 	public FileLocation getLocation() {

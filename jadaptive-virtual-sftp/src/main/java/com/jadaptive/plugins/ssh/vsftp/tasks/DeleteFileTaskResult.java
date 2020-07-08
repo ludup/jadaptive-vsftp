@@ -14,10 +14,10 @@ public class DeleteFileTaskResult extends TaskResult {
 	public static final String RESOURCE_KEY = "fileDeletion.result";
 	public static final String EVENT_NAME = "File Deleted";
 	
-	@ObjectField(name = "Location", description = "The target file system for this task", type = FieldType.ENUM)
+	@ObjectField(type = FieldType.ENUM)
 	FileLocation location;
 	
-	@ObjectField(name = "File Name", description = "The name of the file deleted", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String filename;
 
 	public DeleteFileTaskResult(String filename, Throwable e) {

@@ -13,13 +13,13 @@ public class WindowsCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY =  "windowsCredentials";
 
-	@ObjectField(name = "Domain", description = "The identity's domain", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String domain;
 	
-	@ObjectField(name = "Username", description = "The username of the identity", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String username;
 	
-	@ObjectField(name = "Password", description = "The password for this identity", type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
 	String password;
 
 	public String getDomain() {

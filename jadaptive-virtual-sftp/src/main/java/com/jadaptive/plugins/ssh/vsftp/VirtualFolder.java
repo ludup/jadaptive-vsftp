@@ -18,30 +18,28 @@ public class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String RESOURCE_KEY = "vfolder";
 	
-	@ObjectField(name="Mount Path", description = "The path on which this folder is mounted within the virtual file system", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String mountPath;
 	
-	@ObjectField(name = "Destination URI", description = "The destination URI serving as the source for this virutal folder", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String destinationUri;
 	
-	@ObjectField(name = "Mount Type", description = "The type of mount", type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT)
 	String type;
 	
-	@ObjectField(name = "Cache Strategy", description = "The cache strategy to use for this mount", type = FieldType.ENUM)
+	@ObjectField(type = FieldType.ENUM)
 	CacheStrategy cacheStrategy;
 	
-	@ObjectField(name = "Credentials", description = "The credentials to use to access this folder", type = FieldType.OBJECT_EMBEDDED)
+	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	VirtualFolderCredentials credentials; 
 	
-	@ObjectField(name = "Options", description = "The options available for this folder", type = FieldType.OBJECT_EMBEDDED)
+	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	VirtualFolderOptions options; 
 	
-	@ObjectField(name = "Home", description = "This is the home mount for this tenant", type = FieldType.BOOL, hidden = true)
+	@ObjectField(type = FieldType.BOOL, hidden = true)
 	Boolean home;
 	
-	@ObjectField(name = "Short Code", 
-			description = "A unique code for anonymously identifying this folder",
-			type = FieldType.TEXT, 
+	@ObjectField(type = FieldType.TEXT, 
 			hidden = true,
 			searchable = true)
 	String shortCode;

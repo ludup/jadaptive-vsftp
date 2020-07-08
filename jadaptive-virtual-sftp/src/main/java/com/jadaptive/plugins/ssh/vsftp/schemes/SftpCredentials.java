@@ -13,10 +13,10 @@ public class SftpCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "sftpCredentials";
 
-	@ObjectField(name = "Password", description = "", type = FieldType.OBJECT_EMBEDDED )
+	@ObjectField(type = FieldType.OBJECT_EMBEDDED )
 	BasicCredentials basicCredentials;
 	
-	@ObjectField(name = "Private Key", description = "", type = FieldType.OBJECT_EMBEDDED)
+	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	PrivateKeyCredentials privateKeyCredentials;
 
 	public SftpCredentials() { }
