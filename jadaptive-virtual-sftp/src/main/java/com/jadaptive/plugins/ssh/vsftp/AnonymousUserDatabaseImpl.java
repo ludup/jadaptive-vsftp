@@ -122,4 +122,8 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 		return getUserByUUID(ANONYMOUS_USER_UUID);
 	}
 
+	@Override
+	public Integer weight() {
+		return Integer.MIN_VALUE + 1;
+	};
 }

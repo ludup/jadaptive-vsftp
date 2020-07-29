@@ -49,5 +49,10 @@ public class AnonymousUser extends UserImpl {
 	public String getResourceKey() {
 		return RESOURCE_KEY;
 	}
+	
+	@Override
+	public String getSystemName() {
+		return getUsername();
+	}
 
 }
