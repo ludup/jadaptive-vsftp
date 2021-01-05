@@ -6,6 +6,8 @@ import org.pf4j.Extension;
 @Extension
 public class TemporaryFileScheme extends AbstractFileScheme {
 
+	public static final String SCHEME_TYPE = "tmp";
+	
 	public TemporaryFileScheme() {
 		super("Temporary", new TemporaryFileProvider(), "tmp");
 	}
@@ -13,5 +15,10 @@ public class TemporaryFileScheme extends AbstractFileScheme {
 	@Override
 	public boolean createRoot() {
 		return true;
+	}
+	
+	@Override
+	public String getIcon() {
+		return "far fa-hdd";
 	}
 }

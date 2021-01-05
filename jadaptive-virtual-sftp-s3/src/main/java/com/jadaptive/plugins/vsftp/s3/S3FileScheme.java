@@ -20,6 +20,8 @@ import com.sshtools.vfs.s3.provider.s3.S3FileProvider;
 @Extension
 public class S3FileScheme extends AbstractFileScheme {
 	
+	public static final String SCHEME_TYPE = "s3";
+	
 	@Autowired
 	private TemplateService templateService; 
 	
@@ -27,8 +29,9 @@ public class S3FileScheme extends AbstractFileScheme {
 		super("Amazon S3", new S3FileProvider(), "s3", "aws", "amazon");
 	}
 	
-	public FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException {
+	public FileSystemOptions buildFileSystemOptions(VirtualFolder vf) throws IOException {
 		
+		S3Folder folder = (S3Folder)vf;
 		FileSystemOptions opts = new FileSystemOptions();
 		
 		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof S3Credentials) {
@@ -57,5 +60,10 @@ public class S3FileScheme extends AbstractFileScheme {
 
 	public Class<? extends VirtualFolderCredentials> getCredentialsClass() {
 		return S3Credentials.class;
+	}
+	
+	@Override
+	public String getIcon() {
+		return "fab fa-aws";
 	}
 }

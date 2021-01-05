@@ -38,4 +38,12 @@ public interface FileScheme extends ExtensionPoint {
 	boolean createRoot();
 
 	boolean hasExtendedOptions();
+
+	VirtualFolder createFolder();
+
+	void setCredentials(VirtualFolder folder, VirtualFolderCredentials credentials);
+
+	void setOptions(VirtualFolder folder, VirtualFolderOptions generateMountOptions);
+
+	String getIcon();
 }

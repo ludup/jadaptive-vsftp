@@ -1,0 +1,25 @@
+[{
+  "resourceKey" : "applicationMenu",
+  "uuid": "3ac8ab15-0cda-4b73-88cb-ee729e3cba89",
+  "title": "Browse Files",
+  "path": "/app/ui/tree",
+  "permissions": [ "users.login" ],
+  "keywords": "",
+  "description": "",
+  "system" : true,
+  "hidden" : false,
+  "icon": "far fa-folder-open",
+  "parent": "82b7ad6b-fe1d-4fc7-910e-064b3545e188"
+},{
+  "resourceKey" : "applicationMenu",
+  "uuid": "f1432b86-63f7-4f80-97ff-0a843e43b2e4",
+  "title": "Configure Filesystem",
+  "path": "/app/ui/table/virtualFolder",
+  "permissions": [  "virtualFolder.read" ],
+  "keywords": "",
+  "description": "",
+  "system" : true,
+  "hidden" : false,
+  "icon": "far fa-cabinet-filing",
+  "parent": "e2361a2c-4f3e-4b9b-adc0-56d5d700863a"
+}]

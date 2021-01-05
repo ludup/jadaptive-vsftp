@@ -6,9 +6,15 @@ import org.pf4j.Extension;
 @Extension
 public class TarFileScheme extends AbstractFileScheme {
 
+	public static final String SCHEME_TYPE = "tar";
+	
 	public TarFileScheme() {
 		super("Tar File", new TarFileProvider(), "tar");
 	}
-
+	
+	@Override
+	public String getIcon() {
+		return "far fa-file-archive";
+	}
 
 }

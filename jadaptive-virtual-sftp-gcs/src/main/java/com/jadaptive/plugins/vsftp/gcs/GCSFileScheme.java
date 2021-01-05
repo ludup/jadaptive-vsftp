@@ -18,6 +18,8 @@ import com.sshtools.vfs.gcs.GoogleStorageFileSystemConfigBuilder;
 @Extension
 public class GCSFileScheme extends AbstractFileScheme {
 
+	public static final String SCHEME_TYPE = "google";
+	
 	@Autowired
 	private TemplateService templateService; 
 	
@@ -46,8 +48,9 @@ public class GCSFileScheme extends AbstractFileScheme {
 	}
 
 	@Override
-	public FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException {
+	public FileSystemOptions buildFileSystemOptions(VirtualFolder vf) throws IOException {
 		
+		GCSFolder folder = (GCSFolder) vf;
 		FileSystemOptions options = new FileSystemOptions();
 		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof GCSCredentials) {
 			
@@ -57,5 +60,10 @@ public class GCSFileScheme extends AbstractFileScheme {
 					options, credentials);
 		}
 		return options;
+	}
+
+	@Override
+	public String getIcon() {
+		return "fab fa-google";
 	}
 }

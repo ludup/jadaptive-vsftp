@@ -243,4 +243,20 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public VirtualFolder getVirtualFolderByShortCode(String shortCode) {
 		return repository.getObject(VirtualFolder.class, getCurrentUser(), SearchField.eq("shortCode", shortCode));
 	}
+
+	@Override
+	public VirtualFolder getObjectByUUID(String uuid) {
+		return repository.getObjectByUUID(VirtualFolder.class, uuid);
+	}
+
+	@Override
+	public String saveOrUpdate(VirtualFolder folder) {
+		createOrUpdate(folder);
+		return folder.getUuid();
+	}
+
+	@Override
+	public void deleteObject(VirtualFolder object) {
+		deleteVirtualFolder(object);
+	}
 }

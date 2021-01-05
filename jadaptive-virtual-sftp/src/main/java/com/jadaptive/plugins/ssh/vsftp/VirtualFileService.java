@@ -6,12 +6,13 @@ import java.util.Collection;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.provider.FileProvider;
 
+import com.jadaptive.api.repository.UUIDObjectService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 
-public interface VirtualFileService {
+public interface VirtualFileService extends UUIDObjectService<VirtualFolder> {
 
 	boolean checkMountExists(String mount, User user);
 

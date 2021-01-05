@@ -3,18 +3,16 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 import java.io.IOException;
 
 import org.jsoup.nodes.Document;
+import org.pf4j.Extension;
 
-import com.codesmith.webbits.ClasspathResource;
-import com.codesmith.webbits.In;
-import com.codesmith.webbits.Page;
-import com.codesmith.webbits.View;
-import com.codesmith.webbits.bootstrap.Bootstrap;
-import com.codesmith.webbits.extensions.Widgets;
-import com.codesmith.webbits.freemarker.FreeMarker;
+import com.jadaptive.api.ui.PageDependencies;
+import com.jadaptive.api.ui.PageProcessors;
+import com.jadaptive.api.ui.RequestPage;
 
-@Page({Bootstrap.class, Widgets.class, FreeMarker.class})
-@View(contentType = "text/html", paths = { "/upload/{shortCode}" })
-@ClasspathResource
+@Extension
+@RequestPage(path = "public-upload/{shortCode}")
+@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "jadaptive-utils"} )
+@PageProcessors(extensions = { "freemarker", "i18n"} )
 public class Upload extends AnonymousPage {
 	
 	String shortCode;
@@ -23,8 +21,13 @@ public class Upload extends AnonymousPage {
 		return shortCode;
 	}
 	
-    public Document serviceAnonymous(@In Document contents) throws IOException {
+    public Document serviceAnonymous(Document contents) throws IOException {
 	
 		return contents;
+	}
+
+	@Override
+	public String getUri() {
+		return "public-upload";
 	}
 }

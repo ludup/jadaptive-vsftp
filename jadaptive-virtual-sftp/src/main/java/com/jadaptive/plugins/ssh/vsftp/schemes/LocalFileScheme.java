@@ -6,6 +6,8 @@ import org.pf4j.Extension;
 @Extension
 public class LocalFileScheme extends AbstractFileScheme {
 
+	public static final String SCHEME_TYPE = "local";
+	
 	public LocalFileScheme() {
 		super("Local Files", new DefaultLocalFileProvider(), "file", "local");
 	}
@@ -15,4 +17,10 @@ public class LocalFileScheme extends AbstractFileScheme {
 	public boolean createRoot() {
 		return true;
 	}
+	
+	@Override
+	public String getIcon() {
+		return "far fa-hdd";
+	}
 }
+

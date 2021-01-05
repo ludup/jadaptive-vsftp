@@ -1,17 +1,16 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.codesmith.webbits.In;
-import com.codesmith.webbits.Out;
 import com.jadaptive.api.permissions.PermissionService;
+import com.jadaptive.api.ui.HtmlPage;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 
-public abstract class AnonymousPage {
+public abstract class AnonymousPage extends HtmlPage {
 
 	@Autowired
 	private PermissionService permissionService; 
@@ -19,17 +18,20 @@ public abstract class AnonymousPage {
 	@Autowired
 	private UserService userService;
 	
-	@Out
-    public Document service(@In Document contents) throws IOException {
+	@Override
+	protected void generateContent(Document contents) throws FileNotFoundException {
 	
 		permissionService.setupUserContext(userService.getUser(AnonymousUserDatabaseImpl.ANONYMOUS_USERNAME));
 		
 		try {
-			return serviceAnonymous(contents);
+			generateAnonymousContent(contents);
 		} finally {
 			permissionService.clearUserContext();
 		}
 	}
 
-	protected abstract Document serviceAnonymous(Document contents) throws IOException;
+	protected void generateAnonymousContent(Document contents) {
+
+	}
+
 }

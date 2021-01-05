@@ -12,12 +12,15 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
+import com.jadaptive.plugins.ssh.vsftp.folders.SftpFolder;
 import com.sshtools.vfs.sftp.SftpFileProvider;
 import com.sshtools.vfs.sftp.SftpFileSystemConfigBuilder;
 
 @Extension
 public class SftpFileScheme extends AbstractFileScheme {
 
+	public static final String SCHEME_TYPE = "sftp";
+	
 	@Autowired
 	TemplateService templateService; 
 	
@@ -26,10 +29,11 @@ public class SftpFileScheme extends AbstractFileScheme {
 	}
 	
 	@Override
-	public FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException {
+	public FileSystemOptions buildFileSystemOptions(VirtualFolder vf) throws IOException {
 		
+		SftpFolder folder = (SftpFolder) vf;
 		FileSystemOptions opts = new FileSystemOptions();
-		SftpCredentials creds = (SftpCredentials) folder.getCredentials();
+		SftpCredentials creds = folder.getCredentials();
 		
 		StaticUserAuthenticator auth = new StaticUserAuthenticator("", 
 				creds.getBasicCredentials().getUsername(), 
@@ -72,6 +76,23 @@ public class SftpFileScheme extends AbstractFileScheme {
 		return SftpOptions.class;
 	}	
 
+	@Override
+	public VirtualFolder createFolder() {
+		return new SftpFolder();
+	}
 
+	@Override
+	public void setCredentials(VirtualFolder folder, VirtualFolderCredentials credentials) {
+		((SftpFolder)folder).setCredentials((SftpCredentials) credentials);
+	}
 
+	@Override
+	public void setOptions(VirtualFolder folder, VirtualFolderOptions options) {
+		((SftpFolder)folder).setOptions((SftpOptions) options);
+	}
+
+	@Override
+	public String getIcon() {
+		return "far fa-terminal";
+	}
 }

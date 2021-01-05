@@ -17,10 +17,12 @@ import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
+import com.jadaptive.plugins.ssh.vsftp.folders.WindowsFolder;
 
 @Extension
 public class SmbFileScheme extends AbstractFileScheme {
 
+	public static final String SCHEME_TYPE = "windows";
 	
 	@Autowired
 	TemplateService templateService; 
@@ -30,8 +32,9 @@ public class SmbFileScheme extends AbstractFileScheme {
 	}
 
 	@Override
-	public FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException {
+	public FileSystemOptions buildFileSystemOptions(VirtualFolder vf) throws IOException {
 
+		WindowsFolder folder = (WindowsFolder) vf;
 		FileSystemOptions opts = new FileSystemOptions();
 		
 		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof WindowsCredentials) {
@@ -43,7 +46,6 @@ public class SmbFileScheme extends AbstractFileScheme {
 			
 			StaticUserAuthenticator auth = new StaticUserAuthenticator(domain, username, password);
 			
-	        
 	        try {
 				DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
 			} catch (FileSystemException e) {
@@ -79,5 +81,20 @@ public class SmbFileScheme extends AbstractFileScheme {
 	@Override
 	public Class<? extends VirtualFolderCredentials> getCredentialsClass() {
 		return WindowsCredentials.class;
+	}
+	
+	@Override
+	public VirtualFolder createFolder() {
+		return new WindowsFolder();
+	}
+
+	@Override
+	public void setCredentials(VirtualFolder folder, VirtualFolderCredentials credentials) {
+		((WindowsFolder)folder).setCredentials((WindowsCredentials) credentials);
+	}
+	
+	@Override
+	public String getIcon() {
+		return "fab fa-windows";
 	}
 }

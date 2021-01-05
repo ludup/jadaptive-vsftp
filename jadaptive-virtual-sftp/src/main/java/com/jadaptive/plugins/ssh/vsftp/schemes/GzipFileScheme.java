@@ -6,8 +6,14 @@ import org.pf4j.Extension;
 @Extension
 public class GzipFileScheme extends AbstractFileScheme {
 
+	public static final String SCHEME_TYPE = "gzip";
+	
 	public GzipFileScheme() {
 		super("Gzip File", new GzipFileProvider(), "gzip");
 	}
 
+	@Override
+	public String getIcon() {
+		return "far fa-file-archive";
+	}
 }

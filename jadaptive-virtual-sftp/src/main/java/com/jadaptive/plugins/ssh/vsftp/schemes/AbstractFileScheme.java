@@ -106,4 +106,19 @@ public abstract class AbstractFileScheme implements FileScheme {
 		return name;
 	}
 
+	@Override
+	public VirtualFolder createFolder() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setCredentials(VirtualFolder folder, VirtualFolderCredentials credentials) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setOptions(VirtualFolder folder, VirtualFolderOptions options) {
+		throw new UnsupportedOperationException();
+	}
+	
 }

@@ -32,19 +32,9 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	
 	@Autowired
 	private TemplateService templateService; 
-	
-	@Override
-	public void setPassword(User user, char[] password, boolean passwordChangeRequired) {
-		throw new UnsupportedOperationException();
-	}
 
 	@Override
-	public boolean verifyPassword(User user, char[] password) {
-		return false;
-	}
-
-	@Override
-	public User getUser(String username) {
+	public AnonymousUser getUser(String username) {
 		if(username.equals(ANONYMOUS_USERNAME)) {
 			return anonymousDatabase.get(ANONYMOUS_USER_UUID, AnonymousUser.class);
 		}
@@ -52,7 +42,7 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	}
 
 	@Override
-	public User getUserByUUID(String uuid) {
+	public AnonymousUser getUserByUUID(String uuid) {
 		if(uuid.equals(ANONYMOUS_USER_UUID)) {
 			return anonymousDatabase.get(uuid, AnonymousUser.class);
 		}
@@ -76,29 +66,10 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	}
 
 	@Override
-	public Class<? extends User> getUserClass() {
-		return AnonymousUser.class;
-	}
-
-	@Override
 	public Set<UserDatabaseCapabilities> getCapabilities() {
 		return new HashSet<>();
 	}
 
-	@Override
-	public void deleteUser(User user) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateUser(User user) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void createUser(User user, char[] password, boolean forceChange) {
-		throw new UnsupportedOperationException();
-	}
 
 	@Override
 	public void initializeSystem(boolean newSchema) {
@@ -118,12 +89,42 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	}
 
 	@Override
-	public User getAnonymousUser() {
+	public AnonymousUser getAnonymousUser() {
 		return getUserByUUID(ANONYMOUS_USER_UUID);
 	}
 
 	@Override
 	public Integer weight() {
 		return Integer.MIN_VALUE + 1;
+	}
+
+	@Override
+	public void setPassword(User user, char[] password, boolean passwordChangeRequired) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean verifyPassword(User user, char[] password) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Class<? extends User> getUserClass() {
+		return AnonymousUser.class;
+	}
+
+	@Override
+	public void deleteUser(User user) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void updateUser(User user) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void createUser(User user, char[] password, boolean forceChange) {
+		throw new UnsupportedOperationException();
 	};
 }

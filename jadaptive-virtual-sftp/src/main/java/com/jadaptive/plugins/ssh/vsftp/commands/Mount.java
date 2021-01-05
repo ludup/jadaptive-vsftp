@@ -153,14 +153,16 @@ public class Mount extends AbstractVFSCommand {
 		try {
 			URI uri = provider.generateUri(path);
 			
-			VirtualFolder folder = new VirtualFolder();
+			VirtualFolder folder = provider.createFolder();
 			folder.setMountPath(mount);
 			folder.setCacheStrategy(cacheStrategy);
 			folder.setDestinationUri(path);
-			folder.setType(uri.getScheme());
-			folder.setCredentials(credentials);
+			
+			if(provider.requiresCredentials()) {
+				provider.setCredentials(folder, credentials);
+			}
 			if(!mountOptions.isEmpty() && provider.hasExtendedOptions()) {
-				folder.setOptions(generateMountOptions(mountOptions, provider));
+				provider.setOptions(folder, generateMountOptions(mountOptions, provider));
 			}
 			
 			VFSFileFactory factory = fileService.resolveMount(folder);
