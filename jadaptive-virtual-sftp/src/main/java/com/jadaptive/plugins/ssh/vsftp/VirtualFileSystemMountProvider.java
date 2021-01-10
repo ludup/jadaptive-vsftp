@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.entity.ObjectNotFoundException;
+import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.sshd.PluginFileSystemMount;
+import com.sshtools.common.files.ReadOnlyFileFactoryAdapter;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 
@@ -51,11 +53,13 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 	}
 
 	@Override
-	public VirtualMountTemplate getHomeMount() throws IOException {
+	public VirtualMountTemplate getHomeMount(User user) throws IOException {
 		try {
 			return fileService.getVirtualMountTemplate(fileService.getHomeMount());
 		} catch(ObjectNotFoundException e) {
-			return new VirtualMountTemplate("/", "tmp://${username}", new VFSFileFactory(), true);
+			return new VirtualMountTemplate("/", 
+					String.format("ram://%s", user.getUsername()), 
+						new ReadOnlyFileFactoryAdapter(new VFSFileFactory()), true);
 		}
 	}
 

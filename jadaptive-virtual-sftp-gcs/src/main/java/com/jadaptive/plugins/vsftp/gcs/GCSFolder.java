@@ -16,6 +16,11 @@ public class GCSFolder extends VirtualFolder {
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	GCSCredentials credentials; 
 	
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
+	}
+	
 	public String getType() {
 		return GCSFileScheme.SCHEME_TYPE;
 	}

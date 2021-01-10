@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.pf4j.Extension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -45,6 +47,8 @@ import com.sshtools.common.util.FileUtils;
 @Controller
 public class VirtualFileController extends AuthenticatedController implements PluginController {
 
+	static Logger log = LoggerFactory.getLogger(VirtualFileController.class);
+	
 	@Autowired
 	private SSHDService sshdService;
 	
@@ -128,6 +132,7 @@ public class VirtualFileController extends AuthenticatedController implements Pl
 			}
 			return new BootstrapTableResult<>(folderResults.subList(offset, page), folderResults.size());
 		} catch (Throwable e) {
+			log.error("File listing failed", e);
 			return new BootstrapTableResult<>(e.getMessage());
 		}
 	}

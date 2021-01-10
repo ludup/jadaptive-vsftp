@@ -20,6 +20,11 @@ public class WindowsFolder extends VirtualFolder {
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	WindowsCredentials credentials; 
 
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
+	}
+	
 	public WindowsCredentials getCredentials() {
 		return credentials;
 	}

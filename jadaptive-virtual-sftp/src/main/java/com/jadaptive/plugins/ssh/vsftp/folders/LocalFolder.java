@@ -17,6 +17,11 @@ public class LocalFolder extends VirtualFolder {
 
 	public static final String RESOURCE_KEY = "localFolder";
 	
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
+	}
+	
 	public String getType() {
 		return LocalFileScheme.SCHEME_TYPE;
 	}

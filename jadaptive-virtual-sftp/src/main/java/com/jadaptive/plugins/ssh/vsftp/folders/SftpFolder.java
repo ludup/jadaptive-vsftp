@@ -24,6 +24,11 @@ public class SftpFolder extends VirtualFolder {
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	SftpOptions options;
 	
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
+	}
+	
 	public SftpCredentials getCredentials() {
 		return credentials;
 	}

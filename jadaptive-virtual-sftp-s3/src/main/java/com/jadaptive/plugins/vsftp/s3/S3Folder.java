@@ -16,6 +16,11 @@ public class S3Folder extends VirtualFolder {
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	S3Credentials credentials; 
 	
+	@Override
+	public String getResourceKey() {
+		return RESOURCE_KEY;
+	}
+	
 	public S3Credentials getCredentials() {
 		return credentials;
 	}

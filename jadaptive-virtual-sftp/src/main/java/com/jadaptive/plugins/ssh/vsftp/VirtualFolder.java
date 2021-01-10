@@ -95,11 +95,6 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 //		this.home = home;
 //	}
 
-	@Override
-	public String getResourceKey() {
-		return RESOURCE_KEY;
-	}
-
 	public String getShortCode() {
 		if(Objects.isNull(shortCode)) {
 			shortCode = Utils.generateRandomAlphaNumericString(8);
