@@ -3,8 +3,6 @@ package com.jadaptive.plugins.ssh.vsftp;
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +41,6 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory {
 	
 	@Autowired
 	private PermissionService permissionService; 
-	
-	@Autowired
-	private SingletonObjectDatabase<SSHDConfiguration> configService; 
 	
 	@Autowired
 	@Qualifier("defaultPasswordAuthenticator")
