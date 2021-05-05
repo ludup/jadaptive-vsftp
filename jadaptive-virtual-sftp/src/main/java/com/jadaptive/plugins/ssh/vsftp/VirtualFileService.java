@@ -24,7 +24,7 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder> {
 
 	VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles);
 
-	Iterable<VirtualFolder> getVirtualFolders();
+	Iterable<VirtualFolder> allObjects();
 
 	VirtualMountTemplate getVirtualMountTemplate(VirtualFolder folder) throws IOException;
 

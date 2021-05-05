@@ -65,11 +65,11 @@ public class MountUnassignUser extends AbstractVFSCommand {
 	@Override
 	public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
 		if(line.wordIndex() == 1) {
-			for(VirtualFolder mount : fileService.getVirtualFolders()) {
+			for(VirtualFolder mount : fileService.allObjects()) {
 				candidates.add(new Candidate(mount.getMountPath()));
 			}
 		} else if(line.wordIndex() > 1) {
-			for(User user : userService.allUsers()) {
+			for(User user : userService.allObjects()) {
 				candidates.add(new Candidate(user.getUsername()));
 			}
 		}

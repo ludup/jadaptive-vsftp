@@ -50,7 +50,7 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	}
 
 	@Override
-	public Iterable<User> iterateUsers() {
+	public Iterable<User> allObjects() {
 		return new ArrayList<User>(Arrays.asList(
 				anonymousDatabase.get(ANONYMOUS_USER_UUID, AnonymousUser.class)));
 	}

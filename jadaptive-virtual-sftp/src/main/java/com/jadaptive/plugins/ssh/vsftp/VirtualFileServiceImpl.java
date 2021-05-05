@@ -52,7 +52,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	private Map<String, FileSystemManager> managers = new HashMap<>();
 	
 	@Override
-	public Iterable<VirtualFolder> getVirtualFolders() {
+	public Iterable<VirtualFolder> allObjects() {
 		return repository.getObjects(
 				VirtualFolder.class);
 	}

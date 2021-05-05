@@ -38,7 +38,7 @@ public class AssignMountRole extends AbstractRoleAssignmentCommand<VirtualFolder
 
 	@Override
 	protected void loadCandidates(List<Candidate> candidates) {
-		for(VirtualFolder mount : fileService.getVirtualFolders()) {
+		for(VirtualFolder mount : fileService.allObjects()) {
 			candidates.add(new Candidate(mount.getMountPath()));
 		}
 	}

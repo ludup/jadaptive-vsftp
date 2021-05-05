@@ -30,7 +30,7 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 		
 		List<VirtualMountTemplate> templates = new ArrayList<>();
 		
-		for(VirtualFolder folder : fileService.getVirtualFolders()) {
+		for(VirtualFolder folder : fileService.allObjects()) {
 			if(folder.getMountPath().equals("/")) {
 				/**
 				 * Skip the home mount

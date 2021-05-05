@@ -65,7 +65,7 @@ public class VirtualFileController extends AuthenticatedController implements Pl
 		try {
 			List<Mount> mounts = new ArrayList<>();
 			boolean home = false;
-			for(VirtualFolder m : fileService.getVirtualFolders()) {
+			for(VirtualFolder m : fileService.allObjects()) {
 				home |= m.isHome();
 				FileScheme scheme = fileService.getFileScheme(m.getType());
 				mounts.add(new Mount(m, scheme.getIcon()));
@@ -76,6 +76,8 @@ public class VirtualFileController extends AuthenticatedController implements Pl
 			return new ResourceList<Mount>(mounts);
 		} catch (Throwable e) {
 			return new ResourceList<>(false, e.getMessage());
+		} finally {
+			clearUserContext();
 		}
 	}
 	
@@ -134,6 +136,8 @@ public class VirtualFileController extends AuthenticatedController implements Pl
 		} catch (Throwable e) {
 			log.error("File listing failed", e);
 			return new BootstrapTableResult<>(e.getMessage());
+		} finally {
+			clearUserContext();
 		}
 	}
 	
@@ -197,6 +201,8 @@ public class VirtualFileController extends AuthenticatedController implements Pl
 			}
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);
+		} finally {
+			clearUserContext();
 		}
 	}
 }

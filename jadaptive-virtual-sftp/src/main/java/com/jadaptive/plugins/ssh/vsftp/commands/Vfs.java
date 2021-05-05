@@ -61,7 +61,7 @@ public class Vfs extends AbstractVFSCommand {
 			
 			try {
 				assertAdministrationPermission();
-				folders = fileService.getVirtualFolders();
+				folders = fileService.allObjects();
 			} catch(AccessDeniedException e) {
 				folders = fileService.getPersonalFolders();
 			}

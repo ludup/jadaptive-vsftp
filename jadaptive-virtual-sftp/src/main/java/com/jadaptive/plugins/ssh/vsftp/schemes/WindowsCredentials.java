@@ -15,15 +15,15 @@ public class WindowsCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY =  "windowsCredentials";
 
-	@ObjectField(type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT, automaticEncryption = true)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW)
 	String domain;
 	
-	@ObjectField(type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT, automaticEncryption = true)
 	@ObjectView(VirtualFolder.CREDS_VIEW)
 	String username;
 	
-	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
 	@ObjectView(VirtualFolder.CREDS_VIEW)
 	String password;
 
