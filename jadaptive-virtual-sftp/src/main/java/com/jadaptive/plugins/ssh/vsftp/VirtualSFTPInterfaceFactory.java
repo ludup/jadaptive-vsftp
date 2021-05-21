@@ -27,6 +27,7 @@ import com.sshtools.common.policy.FileFactory;
 import com.sshtools.common.policy.FileSystemPolicy;
 import com.sshtools.common.publickey.InvalidPassphraseException;
 import com.sshtools.common.publickey.SshKeyPairGenerator;
+import com.sshtools.common.scp.ScpCommand;
 import com.sshtools.common.ssh.SshConnection;
 import com.sshtools.common.ssh.SshException;
 import com.sshtools.server.DefaultServerChannelFactory;
@@ -74,6 +75,8 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory {
 		} catch (InvalidPassphraseException e) {
 			throw new IOException(e.getMessage(), e);
 		}
+		
+		ctx.addCommand("scp", ScpCommand.class);
 		
 		ctx.getPolicy(FileSystemPolicy.class).setFileFactory(new FileFactory() {
 
