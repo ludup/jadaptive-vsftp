@@ -1,5 +1,5 @@
 [{
-  "resourceKey" : "virtualFolder",
+  "resourceKey" : "localFolder",
   "uuid": "9e391f3d-28eb-43ce-835d-ee0b1b8a711d",
   "name": "Home",
   "mountPath": "/",

@@ -30,18 +30,22 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 		
 		List<VirtualMountTemplate> templates = new ArrayList<>();
 		
-		for(VirtualFolder folder : fileService.allObjects()) {
-			if(folder.getMountPath().equals("/")) {
-				/**
-				 * Skip the home mount
-				 */
-				continue;
+		try {
+			for(VirtualFolder folder : fileService.allObjects()) {
+				if(folder.getMountPath().equals("/")) {
+					/**
+					 * Skip the home mount
+					 */
+					continue;
+				}
+				try {
+					templates.add(fileService.getVirtualMountTemplate(folder));
+				} catch (IOException e) {
+					log.error("Failed to process mount", e);
+				}
 			}
-			try {
-				templates.add(fileService.getVirtualMountTemplate(folder));
-			} catch (IOException e) {
-				log.error("Failed to process mount", e);
-			}
+		} catch(Throwable e) {
+			log.error("An error occurred loading users file mounts", e);
 		}
 		return templates;
 		
@@ -57,10 +61,12 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 		try {
 			return fileService.getVirtualMountTemplate(fileService.getHomeMount(user));
 		} catch(ObjectNotFoundException e) {
-			return new VirtualMountTemplate("/", 
-					String.format("ram://%s", user.getUsername()), 
-						new ReadOnlyFileFactoryAdapter(new VFSFileFactory()), true);
+		} catch(Throwable e) {
+			log.error("Home mount could not be resolved due to an error", e);
 		}
+		return new VirtualMountTemplate("/", 
+				String.format("ram://%s", user.getUsername()), 
+					new ReadOnlyFileFactoryAdapter(new VFSFileFactory()), true);
 	}
 
 }

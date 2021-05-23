@@ -29,6 +29,7 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String RESOURCE_KEY = "virtualFolder";
 	
+	
 	@ObjectField(type = FieldType.TEXT, nameField = true)
 	String name;
 	
@@ -86,14 +87,6 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	public void setCacheStrategy(CacheStrategy cacheStrategy) {
 		this.cacheStrategy = cacheStrategy;
 	}
-
-//	public Boolean getHome() {
-//		return home;
-//	}
-//
-//	public void setHome(Boolean home) {
-//		this.home = home;
-//	}
 
 	public String getShortCode() {
 		if(Objects.isNull(shortCode)) {
