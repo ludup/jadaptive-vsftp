@@ -36,7 +36,7 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder> {
 
 	Collection<FileScheme> getSchemes();
 
-	VirtualFolder getHomeMount();
+	VirtualFolder getHomeMount(User user);
 
 	VirtualFolder createOrUpdate(VirtualFolder folder);
 

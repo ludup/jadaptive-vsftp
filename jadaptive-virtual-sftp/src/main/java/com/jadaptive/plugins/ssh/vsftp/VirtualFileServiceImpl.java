@@ -1,5 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -208,12 +209,17 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileSystemManager manager = getManager(folder.getUuid(), folder.getCacheStrategy());
 
 			return new VirtualMountTemplate(folder.getMountPath(),
-					scheme.generateUri(folder.getDestinationUri()).toASCIIString(),
+					scheme.generateUri(replaceVariables(folder.getDestinationUri())).toASCIIString(),
 					new VFSFileFactory(manager, opts), scheme.createRoot());
 		} catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
 	
+	}
+
+	private String replaceVariables(String destinationUri) {
+		return destinationUri.replace("${username}", getCurrentUser().getUsername())
+				.replace("${installPath}", new File(".").getAbsolutePath());
 	}
 
 	@Override
@@ -235,8 +241,8 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	}
 
 	@Override
-	public VirtualFolder getHomeMount() {
-		return repository.getObject(VirtualFolder.class, getCurrentUser(), SearchField.eq("mountPath", "/"));
+	public VirtualFolder getHomeMount(User user) {
+		return repository.getObject(VirtualFolder.class, user, SearchField.eq("mountPath", "/"));
 	}
 
 	@Override

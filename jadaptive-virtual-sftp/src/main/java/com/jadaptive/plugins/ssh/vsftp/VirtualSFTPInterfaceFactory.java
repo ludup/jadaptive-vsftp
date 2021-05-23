@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.jadaptive.api.app.ApplicationProperties;
-import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.permissions.PermissionService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.sshd.AuthorizedKeyProvider;
-import com.jadaptive.plugins.sshd.SSHDConfiguration;
+import com.jadaptive.plugins.sshd.SSHDService;
 import com.jadaptive.plugins.sshd.SSHInterface;
 import com.jadaptive.plugins.sshd.SSHInterfaceFactory;
 import com.sshtools.common.auth.DefaultAuthenticationMechanismFactory;
@@ -27,10 +26,8 @@ import com.sshtools.common.policy.FileFactory;
 import com.sshtools.common.policy.FileSystemPolicy;
 import com.sshtools.common.publickey.InvalidPassphraseException;
 import com.sshtools.common.publickey.SshKeyPairGenerator;
-import com.sshtools.common.scp.ScpCommand;
 import com.sshtools.common.ssh.SshConnection;
 import com.sshtools.common.ssh.SshException;
-import com.sshtools.server.DefaultServerChannelFactory;
 import com.sshtools.server.SshServerContext;
 import com.sshtools.synergy.nio.SshEngineContext;
 
@@ -53,14 +50,23 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory {
 	@Autowired
 	private VirtualFileSystemMountProvider mountProvider; 
 	
+	@Autowired
+	private SSHDService sshdService; 
+	
 	@Override
 	public SshServerContext createContext(SshEngineContext daemonContext, SocketChannel sc, SSHInterface intf)
 			throws IOException, SshException {
 		SshServerContext ctx = new VirtualSFTPContext(daemonContext.getEngine(), intf);
+		
+		sshdService.applyConfiguration(ctx);
+		
 		ctx.setAuthenicationMechanismFactory(new DefaultAuthenticationMechanismFactory<SshServerContext>());
 		ctx.getAuthenticationMechanismFactory().addProvider(passwordAuthenticator);
 		ctx.getAuthenticationMechanismFactory().addProvider(publicKeyAuthenticator);
-		ctx.setChannelFactory(new DefaultServerChannelFactory());
+		
+		/**
+		 * TODO host keys should be configurable from the UI
+		 */
 		try {
 			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfFolder(), 
 					"vsftp_host_key_rsa"), SshServerContext.PUBLIC_KEY_SSHRSA, 4098);
@@ -75,8 +81,6 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory {
 		} catch (InvalidPassphraseException e) {
 			throw new IOException(e.getMessage(), e);
 		}
-		
-		ctx.addCommand("scp", ScpCommand.class);
 		
 		ctx.getPolicy(FileSystemPolicy.class).setFileFactory(new FileFactory() {
 

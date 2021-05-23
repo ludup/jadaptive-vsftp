@@ -55,7 +55,7 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 	@Override
 	public VirtualMountTemplate getHomeMount(User user) throws IOException {
 		try {
-			return fileService.getVirtualMountTemplate(fileService.getHomeMount());
+			return fileService.getVirtualMountTemplate(fileService.getHomeMount(user));
 		} catch(ObjectNotFoundException e) {
 			return new VirtualMountTemplate("/", 
 					String.format("ram://%s", user.getUsername()), 
