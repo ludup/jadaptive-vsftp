@@ -231,7 +231,6 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public void deleteVirtualFolder(VirtualFolder virtualFolder) {
 		assertWrite(VirtualFolder.RESOURCE_KEY);
 		repository.deleteObject(virtualFolder);
-		
 	}
 
 	@Override
@@ -264,5 +263,15 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Override
 	public void deleteObject(VirtualFolder object) {
 		deleteVirtualFolder(object);
+	}
+
+	@Override
+	public long getTotalResources() {
+		return repository.countObjects(VirtualFolder.class);
+	}
+
+	@Override
+	public String getI18NKey() {
+		return "virtualFolder";
 	}
 }

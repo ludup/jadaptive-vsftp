@@ -56,7 +56,6 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 			}
 			IOUtils.copy(in, file.getOutputStream());
 			
-			// 
 		} catch(Throwable e) {
 			throw new IOException(e.getMessage(), e);
 		} finally {

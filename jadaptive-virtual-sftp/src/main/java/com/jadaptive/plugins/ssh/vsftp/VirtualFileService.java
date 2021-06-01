@@ -8,11 +8,12 @@ import org.apache.commons.vfs2.provider.FileProvider;
 
 import com.jadaptive.api.repository.UUIDObjectService;
 import com.jadaptive.api.role.Role;
+import com.jadaptive.api.stats.ResourceService;
 import com.jadaptive.api.user.User;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 
-public interface VirtualFileService extends UUIDObjectService<VirtualFolder> {
+public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, ResourceService {
 
 	boolean checkMountExists(String mount, User user);
 
