@@ -3,7 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 import java.io.File;
 import java.io.IOException;
 
-import org.pf4j.Extension;
+import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.jobs.JobRunnerContext;
 import com.sshtools.common.files.AbstractFileFactory;
@@ -13,7 +13,7 @@ import com.sshtools.common.files.vfs.VirtualFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
 
-@Extension
+@Component
 public class FileSystemJobContext implements JobRunnerContext {
 
 	ThreadLocal<AbstractFileFactory<?>> vfs = new ThreadLocal<>();

@@ -7,44 +7,44 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.permissions.AuthenticatedService;
+import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.SessionTimeoutException;
+import com.jadaptive.api.session.SessionUtils;
 import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.upload.UploadHandler;
-import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 
 @Extension
-public class PublicUploadHandler extends AuthenticatedService implements UploadHandler {
+public class BrowseFilesUploadHandler extends AuthenticatedService implements UploadHandler {
 
 	@Autowired
 	private SSHDService sshdService;
 	
 	@Autowired
-	private VirtualFileService fileService; 
-	
-	@Autowired
-	private AnonymousUserDatabase anonymousDatabase;
+	SessionUtils sessionUtils;
 	
 	@Override
 	public void handleUpload(String handlerName, String uri, Map<String, String> parameters, String filename,
 			InputStream in) throws IOException, SessionTimeoutException, UnauthorizedException {
 		
-		setupUserContext(anonymousDatabase.getAnonymousUser());
+
+		setupUserContext(sessionUtils.getActiveSession(Request.get()).getUser());
 		
 		try { 
-			/**
-			 * Handler "short code" name should be assigned to an anonymous user
-			 */
-			VirtualFolder folder = fileService.getVirtualFolderByShortCode(uri);
-			AbstractFile file = sshdService.getFileFactory(getCurrentUser()).getFile(folder.getMountPath());
+			String path = parameters.get("path");
+			
+			if(StringUtils.isBlank(path)) {
+				throw new IOException("No path parameter provided!");
+			}
+			
+			AbstractFile file = sshdService.getFileFactory(getCurrentUser()).getFile(path);
 
 			if(!file.exists()) {
 				throw new FileNotFoundException("No public area to place files");
@@ -55,8 +55,7 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 				file.createNewFile();
 			}
 			IOUtils.copy(in, file.getOutputStream());
-			
-			// 
+
 		} catch(Throwable e) {
 			throw new IOException(e.getMessage(), e);
 		} finally {
@@ -66,17 +65,17 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 
 	@Override
 	public void sendSuccessfulResponse(HttpServletResponse resp, String handlerName, String uri, Map<String,String> params) throws IOException {
-		resp.sendRedirect("/app/ui/upload/" + uri);
+		resp.sendRedirect("/app/ui/tree" + params.get("path"));
 	}
 	
 	@Override
 	public boolean isSessionRequired() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public String getURIName() {
-		return "public";
+		return "tree";
 	}
 
 }
