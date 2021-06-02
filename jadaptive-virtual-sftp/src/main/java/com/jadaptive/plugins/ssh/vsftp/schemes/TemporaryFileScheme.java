@@ -4,7 +4,7 @@ import org.apache.commons.vfs2.provider.temp.TemporaryFileProvider;
 import org.pf4j.Extension;
 
 @Extension
-public class TemporaryFileScheme extends AbstractFileScheme {
+public class TemporaryFileScheme extends AbstractFileScheme<TemporaryFileProvider> {
 
 	public static final String SCHEME_TYPE = "tmp";
 	

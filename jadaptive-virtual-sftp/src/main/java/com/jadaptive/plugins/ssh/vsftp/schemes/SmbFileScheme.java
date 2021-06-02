@@ -20,7 +20,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.folders.WindowsFolder;
 
 @Extension
-public class SmbFileScheme extends AbstractFileScheme {
+public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 
 	public static final String SCHEME_TYPE = "windows";
 	

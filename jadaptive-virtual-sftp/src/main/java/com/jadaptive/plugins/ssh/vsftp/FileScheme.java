@@ -11,7 +11,7 @@ import org.pf4j.ExtensionPoint;
 
 import com.jadaptive.api.template.ObjectTemplate;
 
-public interface FileScheme extends ExtensionPoint {
+public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 
 	FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException;
 	
@@ -21,7 +21,7 @@ public interface FileScheme extends ExtensionPoint {
 
 	URI generateUri(String path) throws URISyntaxException;
 
-	FileProvider getFileProvider();
+	T getFileProvider();
 	
 	ObjectTemplate getCredentialsTemplate();
 

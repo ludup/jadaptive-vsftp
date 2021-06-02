@@ -17,7 +17,7 @@ import com.sshtools.vfs.sftp.SftpFileProvider;
 import com.sshtools.vfs.sftp.SftpFileSystemConfigBuilder;
 
 @Extension
-public class SftpFileScheme extends AbstractFileScheme {
+public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
 
 	public static final String SCHEME_TYPE = "sftp";
 	

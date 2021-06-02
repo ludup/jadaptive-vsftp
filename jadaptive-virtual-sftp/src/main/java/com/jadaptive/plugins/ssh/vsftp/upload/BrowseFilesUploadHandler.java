@@ -12,6 +12,9 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jadaptive.api.json.RequestStatus;
+import com.jadaptive.api.json.RequestStatusImpl;
 import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.SessionTimeoutException;
@@ -29,6 +32,8 @@ public class BrowseFilesUploadHandler extends AuthenticatedService implements Up
 	
 	@Autowired
 	SessionUtils sessionUtils;
+	
+	private ObjectMapper objectMapper = new ObjectMapper();
 	
 	@Override
 	public void handleUpload(String handlerName, String uri, Map<String, String> parameters, String filename,
@@ -61,11 +66,6 @@ public class BrowseFilesUploadHandler extends AuthenticatedService implements Up
 		} finally {
 			clearUserContext();
 		}
-	}
-
-	@Override
-	public void sendSuccessfulResponse(HttpServletResponse resp, String handlerName, String uri, Map<String,String> params) throws IOException {
-		resp.sendRedirect("/app/ui/tree" + params.get("path"));
 	}
 	
 	@Override

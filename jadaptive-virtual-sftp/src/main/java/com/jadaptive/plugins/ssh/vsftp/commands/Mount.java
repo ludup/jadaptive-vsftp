@@ -128,7 +128,7 @@ public class Mount extends AbstractVFSCommand {
 		}
 		
 
-		FileScheme provider = fileService.getFileScheme(type);
+		FileScheme<?> provider = fileService.getFileScheme(type);
 		Map<String,String> mountOptions = new HashMap<>();
 		
 		if(provider.hasExtendedOptions() && CliHelper.hasOption(args, 'o', "options")) {
@@ -190,7 +190,7 @@ public class Mount extends AbstractVFSCommand {
 		}
 	}
 
-	private VirtualFolderOptions generateMountOptions(Map<String, String> mountOptions, FileScheme provider) throws ParseException, IOException, PermissionDeniedException {
+	private VirtualFolderOptions generateMountOptions(Map<String, String> mountOptions, FileScheme<?> provider) throws ParseException, IOException, PermissionDeniedException {
 		
 		Map<String, Object> doc = new HashMap<>();
 		
@@ -203,7 +203,7 @@ public class Mount extends AbstractVFSCommand {
 
 	}
 
-	private VirtualFolderCredentials promptForCredentials(FileScheme provider) throws ParseException, PermissionDeniedException, IOException {
+	private VirtualFolderCredentials promptForCredentials(FileScheme<?> provider) throws ParseException, PermissionDeniedException, IOException {
 		
 		Map<String,Object> doc =  new HashMap<>();	
 		consoleHelper.promptTemplate(console, doc, 

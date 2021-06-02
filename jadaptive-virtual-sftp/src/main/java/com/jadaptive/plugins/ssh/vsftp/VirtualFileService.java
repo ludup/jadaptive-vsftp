@@ -19,7 +19,7 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 
 	boolean checkSupportedMountType(String type);
 
-	FileScheme getFileScheme(String type);
+	FileScheme<?> getFileScheme(String type);
 
 	VFSFileFactory resolveMount(VirtualFolder folder) throws IOException;
 
@@ -35,7 +35,7 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 
 	void addProvider(String scheme, FileProvider provider) throws FileSystemException;
 
-	Collection<FileScheme> getSchemes();
+	Collection<FileScheme<?>> getSchemes();
 
 	VirtualFolder getHomeMount(User user);
 

@@ -67,7 +67,7 @@ public class VirtualFileController extends AuthenticatedController implements Pl
 			boolean home = false;
 			for(VirtualFolder m : fileService.allObjects()) {
 				home |= m.isHome();
-				FileScheme scheme = fileService.getFileScheme(m.getType());
+				FileScheme<?> scheme = fileService.getFileScheme(m.getType());
 				mounts.add(new Mount(m, scheme.getIcon()));
 			}
 			if(!home) {

@@ -4,7 +4,7 @@ import org.apache.commons.vfs2.provider.gzip.GzipFileProvider;
 import org.pf4j.Extension;
 
 @Extension
-public class GzipFileScheme extends AbstractFileScheme {
+public class GzipFileScheme extends AbstractFileScheme<GzipFileProvider> {
 
 	public static final String SCHEME_TYPE = "gzip";
 	

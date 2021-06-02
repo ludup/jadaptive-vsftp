@@ -18,7 +18,7 @@ import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
 import com.sshtools.vfs.s3.provider.s3.S3FileProvider;
 
 @Extension
-public class S3FileScheme extends AbstractFileScheme {
+public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 	
 	public static final String SCHEME_TYPE = "s3";
 	

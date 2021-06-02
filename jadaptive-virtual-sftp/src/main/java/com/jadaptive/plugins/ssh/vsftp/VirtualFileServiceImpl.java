@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.CacheStrategy;
 import org.apache.commons.vfs2.FileObject;
@@ -34,6 +35,7 @@ import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
+import com.sshtools.common.util.Utils;
 
 @Service
 public class VirtualFileServiceImpl extends AuthenticatedService implements VirtualFileService {
@@ -48,8 +50,8 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 
 	
 	private Set<String> types;
-	private Set<FileScheme> schemes = new HashSet<>();
-	private Map<String, FileScheme> providers = new HashMap<>();
+	private Set<FileScheme<?>> schemes = new HashSet<>();
+	private Map<String, FileScheme<?>> providers = new HashMap<>();
 	private Map<String, FileSystemManager> managers = new HashMap<>();
 	
 	@Override
@@ -81,7 +83,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		if(Objects.isNull(types)) {
 			types = new HashSet<>();
 			checkSchemes();
-			for(FileScheme scheme : schemes) {
+			for(FileScheme<?> scheme : schemes) {
 				types.addAll(scheme.types());
 				for(String t : scheme.types()) {
 					log.info("Registering file scheme {}", t);
@@ -93,7 +95,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	}
 
 	@Override
-	public FileScheme getFileScheme(String type) {
+	public FileScheme<?> getFileScheme(String type) {
 		if(providers.isEmpty()) {
 			checkSupportedMountType(type);
 		}
@@ -124,6 +126,9 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		
 		assertWrite(VirtualFolder.RESOURCE_KEY);
 		
+		if(StringUtils.isBlank(folder.getShortCode())) {
+			folder.setShortCode(Utils.randomAlphaNumericString(16));
+		}
 		repository.saveOrUpdate(folder);
 		
 		return folder;
@@ -133,7 +138,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public VFSFileFactory resolveMount(VirtualFolder folder) throws IOException {
 		
 		try {
-			FileScheme scheme = getFileScheme(folder.getType());
+			FileScheme<?> scheme = getFileScheme(folder.getType());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager mgr = getManager(folder.getUuid(), folder.getCacheStrategy());
 			FileObject obj = mgr.resolveFile(
@@ -162,7 +167,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 				DefaultFileSystemManager vfsMgr = new DefaultFileSystemManager();
 				vfsMgr.setLogger(LogFactory.getLog(key));
 				vfsMgr.setCacheStrategy(cacheStrategy);
-				for(FileScheme scheme : schemes) {
+				for(FileScheme<?> scheme : schemes) {
 					if(!vfsMgr.hasProvider(scheme.getScheme())) {
 						log.info("Registering {} file scheme", scheme.getScheme());
 						vfsMgr.addProvider(scheme.getScheme(), scheme.getFileProvider());
@@ -179,7 +184,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	private void checkSchemes() {
 		
 		if(schemes.isEmpty()) {
-			for(FileScheme scheme : applicationService.getBeans(FileScheme.class)) {
+			for(FileScheme<?> scheme : applicationService.getBeans(FileScheme.class)) {
 				schemes.add(scheme);
 			}
 		}
@@ -204,7 +209,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public VirtualMountTemplate getVirtualMountTemplate(VirtualFolder folder) throws IOException {
 		
 		try {
-			FileScheme scheme = getFileScheme(folder.getType());
+			FileScheme<?> scheme = getFileScheme(folder.getType());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager manager = getManager(folder.getUuid(), folder.getCacheStrategy());
 
@@ -234,9 +239,9 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	}
 
 	@Override
-	public Collection<FileScheme> getSchemes() {
+	public Collection<FileScheme<?>> getSchemes() {
 		checkSchemes();
-		return Collections.unmodifiableCollection(schemes);
+		return Collections.<FileScheme<?>>unmodifiableCollection(schemes);
 	}
 
 	@Override

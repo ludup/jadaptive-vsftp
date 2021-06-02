@@ -62,11 +62,6 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 			clearUserContext();
 		}
 	}
-
-	@Override
-	public void sendSuccessfulResponse(HttpServletResponse resp, String handlerName, String uri, Map<String,String> params) throws IOException {
-		resp.sendRedirect("/app/ui/upload/" + uri);
-	}
 	
 	@Override
 	public boolean isSessionRequired() {

@@ -4,7 +4,7 @@ import org.apache.commons.vfs2.provider.tar.TarFileProvider;
 import org.pf4j.Extension;
 
 @Extension
-public class TarFileScheme extends AbstractFileScheme {
+public class TarFileScheme extends AbstractFileScheme<TarFileProvider> {
 
 	public static final String SCHEME_TYPE = "tar";
 	

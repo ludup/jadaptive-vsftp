@@ -9,21 +9,22 @@
             <div class="card">
          	   	<div class="card-header">Public Upload</div>
        			<div class="card-body">		
-      
-      	<form enctype="multipart/form-data" action="/upload/public/${page.shortCode}" method="POST">
-		    <div class="form-group">
-		       <label class="col-form-label" for="name">Your Name</label><input type="text" name="name">
-		       <small class="form-text text-muted">Please enter your name so we know whom the file is from.</small>
-		    </div>
-		    <div class="form-group">
-		       <label class="col-form-label" for="email">Your Email</label><input type="email" name="email">
-		       <small class="form-text text-muted">Please enter your email so that we can contact you if required.</small>
-		    </div>	
-		    <div class="form-group">
-		       <input type="checkbox" name="receipt"><span>Email me a receipt when the upload has completed</span>
-		    </div>	
-		    <div id="uploadHolder" jad:id="uploadWidget" class="col-12 mb-3"></div>
-		</form>
+      	<div class="col-12" id="feedback">
+      	
+      	</div>
+	    <div class="form-group">
+	       <label class="col-form-label" for="name">Your Name</label><input type="text" id="name" name="name">
+	       <small class="form-text text-muted">Please enter your name so we know whom the file is from.</small>
+	    </div>
+	    <div class="form-group">
+	       <label class="col-form-label" for="email">Your Email</label><input type="email" id="email" name="email">
+	       <small class="form-text text-muted">Please enter your email so that we can contact you if required.</small>
+	    </div>	
+	    <div class="form-group">
+	       <input type="checkbox" name="receipt"><span>Email me a receipt when the upload has completed</span>
+	    </div>	
+	    <div id="uploadHolder" jad:id="uploadWidget" class="col-12 mb-3"></div>
+
 		</div>
          </div>
          </div>
@@ -31,5 +32,14 @@
 </main>
 </div>
 <footer jad:id="footer"></footer>
+<script type="text/javascript">
+
+	$(function() {
+		UploadWidget.init('/upload/public/${page.shortCode}', '/app/ui/public-upload/${page.shortCode}', "#feedback", function(fd) {
+			fd.append("name", $('#name').val());
+			fd.append("email", $('#email').val());
+		});
+	});
+</script>
 </body>
 </html>

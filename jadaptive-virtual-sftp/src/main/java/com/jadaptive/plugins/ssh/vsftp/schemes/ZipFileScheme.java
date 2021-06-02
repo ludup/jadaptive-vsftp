@@ -4,7 +4,7 @@ import org.apache.commons.vfs2.provider.zip.ZipFileProvider;
 import org.pf4j.Extension;
 
 @Extension
-public class ZipFileScheme extends AbstractFileScheme {
+public class ZipFileScheme extends AbstractFileScheme<ZipFileProvider> {
 
 	public static final String SCHEME_TYPE = "zip";
 	

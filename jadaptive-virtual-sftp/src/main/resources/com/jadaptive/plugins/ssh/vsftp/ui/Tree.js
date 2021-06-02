@@ -126,12 +126,16 @@ function updateBreadcrumb(path) {
 		changePath(path);
 	}
 
-$(document).ready(function() {
+$(function() {
 	$(document).on('click', '.clickPath', function(e) {
 		e.preventDefault();
 		changePath($(this).attr('href'));
 	});
 	
+	UploadWidget.init('/upload/tree', '/app/ui/tree', "#feedback", function(fd) {
+			fd.append("path", $('#path').val());
+	});
+		
 	$('#table').bootstrapTable({
 		sidePagination: 'server',
 		pagination: true,

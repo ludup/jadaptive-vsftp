@@ -16,7 +16,7 @@ import com.sshtools.vfs.gcs.GoogleStorageFileProvider;
 import com.sshtools.vfs.gcs.GoogleStorageFileSystemConfigBuilder;
 
 @Extension
-public class GCSFileScheme extends AbstractFileScheme {
+public class GCSFileScheme extends AbstractFileScheme<GoogleStorageFileProvider> {
 
 	public static final String SCHEME_TYPE = "google";
 	

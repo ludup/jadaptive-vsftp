@@ -20,18 +20,18 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
 
-public abstract class AbstractFileScheme implements FileScheme {
+public abstract class AbstractFileScheme<T extends FileProvider> implements FileScheme<T> {
 
 	protected Logger log = LoggerFactory.getLogger(AbstractFileScheme.class);
 	
 	String name;
 	String[] types;
-	FileProvider provider; 
+	T provider; 
 	
 	@Autowired
 	private EncryptionService encryptionService; 
 	
-	protected AbstractFileScheme(String name, FileProvider provider, String... types) {
+	protected AbstractFileScheme(String name, T provider, String... types) {
 		this.name = name;
 		this.types = types;
 		this.provider = provider;
@@ -72,7 +72,7 @@ public abstract class AbstractFileScheme implements FileScheme {
 	}
 
 	@Override
-	public FileProvider getFileProvider() {
+	public T getFileProvider() {
 		return provider;
 	}
 

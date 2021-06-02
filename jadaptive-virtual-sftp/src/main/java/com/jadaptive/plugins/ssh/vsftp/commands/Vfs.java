@@ -41,7 +41,7 @@ public class Vfs extends AbstractVFSCommand {
 			console.print(StringUtils.rightPad("____", 20));
 			console.println("_______");
 			console.println();
-			for(FileScheme scheme : fileService.getSchemes()) {
+			for(FileScheme<?> scheme : fileService.getSchemes()) {
 				console.print(StringUtils.rightPad(scheme.getScheme(), 10));
 				console.print(StringUtils.rightPad(scheme.getName(), 20));
 				console.println(Utils.csv(scheme.types()));
