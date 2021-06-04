@@ -6,10 +6,6 @@ Object.defineProperty(Number.prototype,'fileSize',{value:function(a,b,c,d){
 	
 $(document).ready(function() {
 	
-	$('.dropzoneClick').click(function(e) {
-		$('.file-input').last().trigger('click');
-	});
-	
 	$(document).on('change', '.file-input', function(e) {
 		var row = $(this).parents('.jfiles').find('tr').last();
 		row.parent().append(row.clone());
@@ -37,11 +33,21 @@ var UploadWidget = {
 		_self._options.successUrl = successUrl;
 		_self._options.feedbackDiv = feedbackDiv ? feedbackDiv : "#uploadForm";
 		_self._options.callback = callback;
+		_self.reset();
 	},
 	clearFiles: function() {
 		parent = $('.file-input').parent();
 		$('.file-input').remove();
 		parent.append('<input class="file-input" type="file" name="file" style="display: none;" />');
+	},
+	reset: function() {
+			$('#progressBar').css("width", 0).attr('aria-valuenow', "0");
+			$('#helpText').show(); 
+			$('.dropzoneClick').on('click', function(e) {
+				$('.file-input').last().trigger('click');
+			});
+			$('#uploadButton').attr('disabled', false);
+			$('#uploadProgress').hide();
 	},
     upload: function() {
 	
@@ -55,7 +61,7 @@ var UploadWidget = {
 			}
 			$('.file-input').last().remove();
 			
-			JadaptiveUtils.startAwesomeSpin($('#uploadButton i', 'upload'));
+			JadaptiveUtils.startAwesomeSpin($('#uploadButton i'), 'fa-upload');
 
 			var fd = new FormData();
 			if(_self._options.callback) {
@@ -66,6 +72,11 @@ var UploadWidget = {
 				fd.append('file', this.files[0]);
 			});
 		    
+			$('#progressBar').css("width", 0).attr('aria-valuenow', "0");
+			$('#helpText').hide(); 
+			$('.dropzoneClick').off('click');
+			$('#uploadButton').attr('disabled', 'disabled');
+			$('#uploadProgress').show();
 		    $.ajax({
 		           type: "POST",
 		           url: _self._options.postUrl,
@@ -76,7 +87,17 @@ var UploadWidget = {
 		           success: function(data)
 		           {
 		        	   if(data.success) {
-		        		   window.location = _self._options.successUrl;
+					       
+						   setTimeout(function() {
+							
+							JadaptiveUtils.stopAwesomeSpin($('#uploadButton i'), 'fa-upload');
+							_self.reset();
+							
+							if(_self._options.successUrl) {
+								window.location = _self._options.successUrl;
+							}
+						   }, 2000);
+		        		   
 		        	   } else {
 		        		   $(_self._options.feedbackDiv).prepend('<p class="alert alert-danger">' + data.message + '</p>');
 							_self.clearFiles();
@@ -84,7 +105,20 @@ var UploadWidget = {
 		           },
 		           always: function() {
 		        	   JadaptiveUtils.stopAwesomeSpin($('#uploadButton i', 'upload'));
-		           }
+		           },
+				   xhr: function() {
+				        var xhr = new window.XMLHttpRequest();
+				
+				        // Upload progress
+				        xhr.upload.addEventListener("progress", function(evt){
+				            if (evt.lengthComputable) {
+				                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+							  $('#progressBar').css('width', percentComplete + "%").attr('aria-valuenow', percentComplete);
+				            }
+				       }, false);
+				       
+				       return xhr;
+				    }
 		     });
     }
 };

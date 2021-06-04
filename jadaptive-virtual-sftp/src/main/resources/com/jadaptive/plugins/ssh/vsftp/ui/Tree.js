@@ -132,7 +132,7 @@ $(function() {
 		changePath($(this).attr('href'));
 	});
 	
-	UploadWidget.init('/upload/tree', '/app/ui/tree', "#feedback", function(fd) {
+	UploadWidget.init('/upload/tree', null, "#feedback", function(fd) {
 			fd.append("path", $('#path').val());
 	});
 		
