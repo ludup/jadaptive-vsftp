@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jadaptive.api.db.TenantAwareObjectDatabase;
 import com.jadaptive.api.template.ObjectTemplate;
@@ -18,6 +19,7 @@ import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserDatabaseCapabilities;
 
 @Extension
+@Service
 public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantAware {
 
 	public static final String ANONYMOUS_USER_UUID = "39ce8047-bd8d-49d8-a17f-5938a23f87fd";

@@ -4,18 +4,29 @@ Object.defineProperty(Number.prototype,'fileSize',{value:function(a,b,c,d){
 		 +' '+(d?(a[1]+'MGTPEZY')[--d]+a[2]:'Bytes');
 		},writable:false,enumerable:false});
 	
-$(document).ready(function() {
+$(function() {
 	
 	$(document).on('change', '.file-input', function(e) {
 		var row = $(this).parents('.jfiles').find('tr').last();
 		row.parent().append(row.clone());
+		var index = Date.now();
+		row.attr('data-index', index);
+		row.addClass('file-index');
 		var fileInput = $('.file-input').last();
-		fileInput.parent().append('<input class="file-input" type="file" name="file" style="display: none;" />');
+		fileInput.attr('data-index', index);
+		
+		fileInput.parent().append('<input class="file-input file-index" type="file" name="file" style="display: none;" />');
 		row.find(".filename").text(fileInput[0].files[0].name);
 		row.find(".size").text((fileInput[0].files[0].size).fileSize(1));
 		row.show();
 		
 		$('.jfiles').show();
+	});
+	
+	$(document).on('click', '.deleteFile', function(e) {
+		e.preventDefault();
+		var index=  $(this).parents('tr').data('index');
+		$('.file-index[data-index="' + index + '"]').remove();
 	});
 	
 	$('#uploadForm').submit(function(e) {

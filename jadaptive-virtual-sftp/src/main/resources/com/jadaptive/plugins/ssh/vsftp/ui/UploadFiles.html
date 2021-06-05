@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:jad="http://jadaptive.com/jadaptive">
+<body>
+<div class="wrapper">
+<header jad:id="header"></header>
+<main class="container mt-3">
+  <div class="row">
+	<ol class="breadcrumb col-12">
+	  <li class="breadcrumb-item"><a href="/app/ui/dashboard">Home</a></li>
+	   <li class="breadcrumb-item active"><span jad:bundle="virtualFolder" jad:i18n="uploadFiles.name"></span></li>
+	</ol>
+  </div>
+    <div class="row w-100 h-100">
+     	<div class="col-12">
+     		<h2 jad:bundle="virtualFolder" jad:i18n="uploadFiles.names">Upload Files</h2>
+     	</div>
+     	<div class="col-12">
+     		<nav aria-label="breadcrumb">
+			  <ol id="breadcrumb" class="breadcrumb">
+			    <li class="breadcrumb-item active"><a class="clickPath" href="/"><i class="far fa-hdd"></i></a></li>
+			  </ol>
+			</nav>
+     	</div>
+     	<div id="feedback" class="col-12">
+     	</div>
+     	<div id="content" class="col-md-12 my-3">
+     	    <input type="hidden" id="path" name="path" value="/">  
+     	    <div id="uploadHolder" jad:id="uploadWidget" class="w-100"></div>
+     	</div>
+  </div>
+</main>
+</div>
+<footer jad:id="footer"></footer>
+</body>
+</html>

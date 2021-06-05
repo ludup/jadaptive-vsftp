@@ -5,6 +5,7 @@
 	}
 	
 	function renderName(val, obj) {
+		debugger;
 		var icon = (obj.directory ? '<i class="far fa-folder"></i>' : '<i class="far fa-file"></i>');
 		if(obj.directory) {
 			return '<a class="clickPath" href="' + obj.path + '">' +  icon + ' ' + obj.name + '</a><br><small>' + obj.path + '</small>';
@@ -61,6 +62,7 @@
 		$('#feedback').empty();
 		
 		var path = getPath();
+		$('#uploadFiles').attr('href', '/app/ui/upload-files' + path);
 	    var url = '/app/vfs/listDirectory' + path;
 
 	    params.data.filter = $('#filter').val();
@@ -92,6 +94,7 @@
 	function changePath(path) {
 		
 		$('#path').val(path);
+		$('#uploadFiles').attr('href', '/app/ui/upload-files' + path);
 		$('table').bootstrapTable('refresh');
 		
 }
@@ -131,10 +134,6 @@ $(function() {
 		e.preventDefault();
 		changePath($(this).attr('href'));
 	});
-	
-	UploadWidget.init('/upload/tree', null, "#feedback", function(fd) {
-			fd.append("path", $('#path').val());
-	});
 		
 	$('#table').bootstrapTable({
 		sidePagination: 'server',
@@ -150,13 +149,13 @@ $(function() {
 	$('#spinner').hide();
 	$('table').show();
 	
-	$.getJSON('/app/vfs/mounts', function(data) {
-		if(data.success) {
-			$.each(data.resources, function(idx, mount) {
-				$('#mounts').append('<div class="col-md-3 mb-1"><a href="' + mount.path + '" class="clickPath btn btn-block btn-outline-dark"><i class="' + mount.icon + '"></i> ' + mount.text + '</a></div>');
-			});
-		}
-	});
+//	$.getJSON('/app/vfs/mounts', function(data) {
+//		if(data.success) {
+//			$.each(data.resources, function(idx, mount) {
+//				$('#mounts').append('<div class="col-md-3 mb-1"><a href="' + mount.path + '" class="clickPath btn btn-block btn-outline-dark"><i class="' + mount.icon + '"></i> ' + mount.text + '</a></div>');
+//			});
+//		}
+//	});
 	
 	$('.filter').change(function(e) {
 		refresh();

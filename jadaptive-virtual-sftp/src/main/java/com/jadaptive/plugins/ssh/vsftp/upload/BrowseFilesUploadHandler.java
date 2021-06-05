@@ -33,8 +33,6 @@ public class BrowseFilesUploadHandler extends AuthenticatedService implements Up
 	@Autowired
 	SessionUtils sessionUtils;
 	
-	private ObjectMapper objectMapper = new ObjectMapper();
-	
 	@Override
 	public void handleUpload(String handlerName, String uri, Map<String, String> parameters, String filename,
 			InputStream in) throws IOException, SessionTimeoutException, UnauthorizedException {
@@ -75,7 +73,7 @@ public class BrowseFilesUploadHandler extends AuthenticatedService implements Up
 
 	@Override
 	public String getURIName() {
-		return "tree";
+		return "files";
 	}
 
 }
