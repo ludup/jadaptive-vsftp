@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.jadaptive.api.entity.ObjectException;
+import com.jadaptive.api.json.RequestStatus;
+import com.jadaptive.api.json.RequestStatusImpl;
 import com.jadaptive.api.json.ResourceList;
 import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.repository.RepositoryException;
@@ -201,6 +203,67 @@ public class VirtualFileController extends AuthenticatedController implements Pl
 			}
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);
+		} finally {
+			clearUserContext();
+		}
+	}
+	
+	@RequestMapping(value="/app/vfs/createFolder", method = { RequestMethod.POST }, produces = {"application/json"})
+	@ResponseStatus(value=HttpStatus.OK)
+	@ResponseBody
+	public RequestStatus createFolder(HttpServletRequest request, HttpServletResponse response, 
+			@RequestParam String name,
+			@RequestParam String path) throws RepositoryException, UnknownEntityException, ObjectException {
+
+		setupUserContext(request);
+		
+		try {
+			AbstractFile parent = sshdService.getFileFactory(getCurrentUser()).getFile(path);
+			
+			if(!parent.isDirectory()) {
+				throw new IllegalStateException("Parent path is not a folder");
+			}
+			
+			AbstractFile newFolder = parent.resolveFile(name);
+			
+			if(newFolder.exists()) {
+				return new RequestStatusImpl(false, "The folder already exists!");
+			}
+			
+			if(!newFolder.createFolder()) {
+				return new RequestStatusImpl(false, "The folder was not created");
+			}
+			
+			return new RequestStatusImpl(true, "Created folder " + name + " in " + path);
+		} catch (Throwable e) {
+			return new RequestStatusImpl(false, e.getMessage());
+		} finally {
+			clearUserContext();
+		}
+	}
+	
+	@RequestMapping(value="/app/vfs/delete", method = { RequestMethod.POST }, produces = {"application/json"})
+	@ResponseStatus(value=HttpStatus.OK)
+	@ResponseBody
+	public RequestStatus delete(HttpServletRequest request, HttpServletResponse response, 
+			@RequestParam String path) throws RepositoryException, UnknownEntityException, ObjectException {
+
+		setupUserContext(request);
+		
+		try {
+			AbstractFile obj = sshdService.getFileFactory(getCurrentUser()).getFile(path);
+			
+			if(!obj.exists()) {
+				return new RequestStatusImpl(false, "The object does not exist!");
+			}
+				
+			if(!obj.delete(obj.isDirectory())) {
+				return new RequestStatusImpl(false, String.format("The %s was not deleted", obj.isDirectory() ? "folder" : "file"));
+			}
+			
+			return new RequestStatusImpl(true, "Deleted " + path);
+		} catch (Throwable e) {
+			return new RequestStatusImpl(false, e.getMessage());
 		} finally {
 			clearUserContext();
 		}

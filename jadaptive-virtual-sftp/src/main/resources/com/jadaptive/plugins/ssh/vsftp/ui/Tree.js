@@ -5,7 +5,6 @@
 	}
 	
 	function renderName(val, obj) {
-		debugger;
 		var icon = (obj.directory ? '<i class="far fa-folder"></i>' : '<i class="far fa-file"></i>');
 		if(obj.directory) {
 			return '<a class="clickPath" href="' + obj.path + '">' +  icon + ' ' + obj.name + '</a><br><small>' + obj.path + '</small>';
@@ -24,10 +23,11 @@
 	}
 	
 	function renderActions(val, obj) {
+		var html =  '<a class="deleteFile mr-1" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash"></i></a>';
 		if(!obj.directory) {
-			return '<a class="downloadFile" target="_blank" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download"></i></a>';
+			html += '<a class="downloadFile mr-1" target="_blank" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download"></i></a>';
 		}
-		return '';
+		return html;
 	}
 	
 	function getMaximumFiles() {
@@ -80,7 +80,7 @@
 		    	  params.success(res);
                   $('#path').val(path);
 		      } else {
-		    	  $('#feedback').append('<p class="alert alert-danger"><i class="far fa-exclamation-square"></i> ' + res.error + '</p>');
+		    	  JadaptiveUtils.error($('#feedback'), data.message);
 		    	  params.success({
 		    		 rows: [],
 		    		 total: 0
@@ -149,20 +149,86 @@ $(function() {
 	$('#spinner').hide();
 	$('table').show();
 	
-//	$.getJSON('/app/vfs/mounts', function(data) {
-//		if(data.success) {
-//			$.each(data.resources, function(idx, mount) {
-//				$('#mounts').append('<div class="col-md-3 mb-1"><a href="' + mount.path + '" class="clickPath btn btn-block btn-outline-dark"><i class="' + mount.icon + '"></i> ' + mount.text + '</a></div>');
-//			});
-//		}
-//	});
-	
 	$('.filter').change(function(e) {
 		refresh();
 	});
 	
 	$('#refresh').click(function(e){ 
 		refresh();
+	});
+	
+	$(document).on('click', '.deleteFile', function(e) {
+		e.preventDefault();
+		
+		var message = '';
+		if($(this).data('folder')) {
+			message = "Are you sure you want to delete the folder named " + $(this).data('name') + "?<br><br><strong>WARNING:</strong> If this folder contains any content it will also be deleted.";
+		} else {
+			message = "Are you sure you want to delete the file named " + $(this).data('name') + "?";
+		}
+		var path = $(this).data('path');
+		bootbox.confirm({
+    		message: message,
+		    buttons: {
+		        confirm: {
+		            label: 'Yes',
+		            className: 'btn-success'
+		        },
+		        cancel: {
+		            label: 'No',
+		            className: 'btn-danger'
+		        }
+		    },
+		    callback: function (result) {
+			debugger;
+		        if(result)
+		        {
+		        	var params = {
+							path: path
+					};
+					$.post({
+						  url: '/app/vfs/delete',
+						  data: params,
+						  dataType: 'json',
+						  success: function(data) {
+							if(data.success) {
+								refresh();
+								JadaptiveUtils.success($('#feedback'), data.message);
+							} else {
+								JadaptiveUtils.error($('#feedback'), data.message);
+							}
+						  }
+					});
+		        }
+		    }
+		});
+		
+		
+	});
+	
+	$('#createDirectory').keydown(function(e) {
+		if (e.keyCode === 13) {
+   		   	e.preventDefault();
+           	
+			var params = { name: $('#createDirectory').val(),
+						   path: $('#path').val()
+			}
+			$.post({
+			  url: '/app/vfs/createFolder',
+			  data: params,
+			  dataType: 'json',
+			  success: function(data) {
+				if(data.success) {
+					debugger;
+					$('#createDirectory').val('');
+					refresh();
+					JadaptiveUtils.success($('#feedback'), data.message);
+				} else {
+					JadaptiveUtils.error($('#feedback'), data.message);
+				}
+			  }
+			});
+        }
 	});
 	
 	changePath('');
