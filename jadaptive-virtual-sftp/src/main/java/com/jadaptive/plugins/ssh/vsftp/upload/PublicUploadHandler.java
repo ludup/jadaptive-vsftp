@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;

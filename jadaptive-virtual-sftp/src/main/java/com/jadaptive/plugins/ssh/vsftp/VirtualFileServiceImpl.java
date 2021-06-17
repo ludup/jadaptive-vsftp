@@ -223,8 +223,8 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	}
 
 	private String replaceVariables(String destinationUri) {
-		return destinationUri.replace("${username}", getCurrentUser().getUsername())
-				.replace("${installPath}", new File(".").getAbsolutePath());
+		return destinationUri.replace("%USERNAME%", getCurrentUser().getUsername())
+				.replace("%INSTALLPATH%", new File(".").getAbsolutePath());
 	}
 
 	@Override

@@ -1,8 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
@@ -11,7 +9,6 @@ import com.jadaptive.api.ui.AuthenticatedPage;
 import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
-import com.jadaptive.api.ui.renderers.DropdownInput;
 
 @Extension
 @RequestPage(path = "upload-files/")

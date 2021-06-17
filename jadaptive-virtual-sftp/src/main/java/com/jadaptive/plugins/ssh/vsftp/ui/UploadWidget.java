@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 import java.io.IOException;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.pf4j.Extension;
 
 import com.jadaptive.api.ui.AbstractPageExtension;
@@ -14,7 +15,7 @@ public class UploadWidget extends AbstractPageExtension {
 	
 	
 	@Override
-	public void process(Document document, Page page) throws IOException {
+	public void process(Document document, Element element, Page page) throws IOException {
 		
 	}
 
