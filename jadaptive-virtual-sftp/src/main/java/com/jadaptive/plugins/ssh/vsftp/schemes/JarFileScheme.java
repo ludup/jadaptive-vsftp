@@ -2,11 +2,20 @@ package com.jadaptive.plugins.ssh.vsftp.schemes;
 
 import org.apache.commons.vfs2.provider.jar.JarFileProvider;
 import org.pf4j.Extension;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.jadaptive.api.template.ObjectTemplate;
+import com.jadaptive.api.template.TemplateService;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
+import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
 
 @Extension
 public class JarFileScheme extends AbstractFileScheme<JarFileProvider> {
 
 	public static final String SCHEME_TYPE = "jar";
+	
+	@Autowired
+	private TemplateService templateService; 
 	
 	public JarFileScheme() {
 		super("Jar File", new JarFileProvider(), "jar");
@@ -16,4 +25,15 @@ public class JarFileScheme extends AbstractFileScheme<JarFileProvider> {
 	public String getIcon() {
 		return "far fa-file-archive";
 	}
+	
+	@Override
+	public ObjectTemplate getPathTemplate() {
+		return templateService.get(LocalFolderPath.RESOURCE_KEY);
+	}
+
+	@Override
+	public Class<? extends VirtualFolderPath> getPathClass() {
+		return LocalFolderPath.class;
+	}
+
 }

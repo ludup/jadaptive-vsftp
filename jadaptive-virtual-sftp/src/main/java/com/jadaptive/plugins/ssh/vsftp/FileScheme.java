@@ -23,6 +23,10 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 
 	T getFileProvider();
 	
+	ObjectTemplate getPathTemplate();
+	
+	Class<? extends VirtualFolderPath> getPathClass();
+	
 	ObjectTemplate getCredentialsTemplate();
 
 	Class<? extends VirtualFolderCredentials> getCredentialsClass();

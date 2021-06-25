@@ -2,11 +2,20 @@ package com.jadaptive.plugins.ssh.vsftp.schemes;
 
 import org.apache.commons.vfs2.provider.gzip.GzipFileProvider;
 import org.pf4j.Extension;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.jadaptive.api.template.ObjectTemplate;
+import com.jadaptive.api.template.TemplateService;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
+import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
 
 @Extension
 public class GzipFileScheme extends AbstractFileScheme<GzipFileProvider> {
 
 	public static final String SCHEME_TYPE = "gzip";
+	
+	@Autowired
+	private TemplateService templateService;
 	
 	public GzipFileScheme() {
 		super("Gzip File", new GzipFileProvider(), "gzip");
@@ -15,5 +24,15 @@ public class GzipFileScheme extends AbstractFileScheme<GzipFileProvider> {
 	@Override
 	public String getIcon() {
 		return "far fa-file-archive";
+	}
+	
+	@Override
+	public ObjectTemplate getPathTemplate() {
+		return templateService.get(LocalFolderPath.RESOURCE_KEY);
+	}
+
+	@Override
+	public Class<? extends VirtualFolderPath> getPathClass() {
+		return LocalFolderPath.class;
 	}
 }

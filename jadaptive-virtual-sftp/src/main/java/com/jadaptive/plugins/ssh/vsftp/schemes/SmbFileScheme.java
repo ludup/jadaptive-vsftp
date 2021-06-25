@@ -17,7 +17,9 @@ import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.folders.WindowsFolder;
+import com.jadaptive.plugins.ssh.vsftp.folders.WindowsFolderPath;
 
 @Extension
 public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
@@ -28,7 +30,7 @@ public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 	TemplateService templateService; 
 
 	public SmbFileScheme() {
-		super("Windows CIFS", new SmbFileProvider(), "smb", "windows", "cifs");
+		super("Windows CIFS", new SmbFileProvider(), "smb", "windows", "cifs", WindowsFolder.RESOURCE_KEY);
 	}
 
 	@Override
@@ -96,5 +98,15 @@ public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 	@Override
 	public String getIcon() {
 		return "fab fa-windows";
+	}
+
+	@Override
+	public ObjectTemplate getPathTemplate() {
+		return templateService.get(WindowsFolderPath.RESOURCE_KEY);
+	}
+
+	@Override
+	public Class<? extends VirtualFolderPath> getPathClass() {
+		return WindowsFolderPath.class;
 	}
 }

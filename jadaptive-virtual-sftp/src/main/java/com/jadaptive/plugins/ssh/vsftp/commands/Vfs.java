@@ -70,7 +70,7 @@ public class Vfs extends AbstractVFSCommand {
 				console.print(StringUtils.rightPad(folder.getMountPath(), 15));
 				console.print(StringUtils.rightPad(folder.getType(), 10));
 				console.print(StringUtils.rightPad(folder.getShortCode(), 12));
-				console.println(folder.getDestinationUri());
+				console.println(folder.getPath().getDestinationUri());
 			}
 		}
 		

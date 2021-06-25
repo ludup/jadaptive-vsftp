@@ -16,11 +16,11 @@ public class PrivateKeyCredentials extends VirtualFolderCredentials {
 	public static final String RESOURCE_KEY = "privateKeyCredentials";
 
 	@ObjectField(type = FieldType.TEXT_AREA)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW)
+	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String privateKey;
 
 	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW)
+	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String passphrase;
 
 	public PrivateKeyCredentials() { }

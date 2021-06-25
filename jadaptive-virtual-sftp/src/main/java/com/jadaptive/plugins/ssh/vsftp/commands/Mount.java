@@ -25,6 +25,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.sshd.ConsoleHelper;
 import com.jadaptive.utils.FileUtils;
 import com.sshtools.common.files.vfs.VFSFileFactory;
@@ -155,8 +156,8 @@ public class Mount extends AbstractVFSCommand {
 			
 			VirtualFolder folder = provider.createFolder();
 			folder.setMountPath(mount);
-			folder.setCacheStrategy(cacheStrategy);
-			folder.setDestinationUri(path);
+			
+			//folder.setPath(generatePath(path, cacheStrategy));
 			
 			if(provider.requiresCredentials()) {
 				provider.setCredentials(folder, credentials);
@@ -190,6 +191,18 @@ public class Mount extends AbstractVFSCommand {
 		}
 	}
 
+	private VirtualFolderPath generatePath(FileScheme<?> provider) throws ParseException, IOException, PermissionDeniedException {
+		
+		Map<String, Object> doc = new HashMap<>();
+		
+		consoleHelper.promptTemplate(console, doc, 
+				provider.getPathTemplate(),
+				null,
+				provider.getPathClass().getName());
+		
+		return templateService.createObject(doc, provider.getPathClass());
+	}
+	
 	private VirtualFolderOptions generateMountOptions(Map<String, String> mountOptions, FileScheme<?> provider) throws ParseException, IOException, PermissionDeniedException {
 		
 		Map<String, Object> doc = new HashMap<>();

@@ -12,7 +12,9 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.folders.SftpFolder;
+import com.jadaptive.plugins.ssh.vsftp.folders.SftpFolderPath;
 import com.sshtools.vfs.sftp.SftpFileProvider;
 import com.sshtools.vfs.sftp.SftpFileSystemConfigBuilder;
 
@@ -25,7 +27,7 @@ public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
 	TemplateService templateService; 
 	
 	public SftpFileScheme() {
-		super("sftp", new SftpFileProvider(), "sftp", "ssh", "scp");
+		super("sftp", new SftpFileProvider(), "sftp", "ssh", "scp", SftpFolder.RESOURCE_KEY);
 	}
 	
 	@Override
@@ -94,5 +96,15 @@ public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
 	@Override
 	public String getIcon() {
 		return "far fa-terminal";
+	}
+
+	@Override
+	public ObjectTemplate getPathTemplate() {
+		return templateService.get(SftpFolderPath.RESOURCE_KEY);
+	}
+
+	@Override
+	public Class<? extends VirtualFolderPath> getPathClass() {
+		return SftpFolderPath.class;
 	}
 }

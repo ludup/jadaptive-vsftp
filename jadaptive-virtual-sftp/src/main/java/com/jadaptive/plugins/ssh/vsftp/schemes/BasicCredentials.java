@@ -16,11 +16,11 @@ public class BasicCredentials extends VirtualFolderCredentials {
 	public static final String RESOURCE_KEY =  "basicCredentials";
 
 	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW)
+	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String username;
 	
 	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW)
+	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String password;
 	
 	public BasicCredentials() { }

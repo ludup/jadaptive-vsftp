@@ -9,6 +9,4 @@ public class VirtualSFTPPlugin extends AbstractSpringPlugin {
 	public VirtualSFTPPlugin(PluginWrapper wrapper) {
 		super(wrapper);
 	}
-
-
 }
