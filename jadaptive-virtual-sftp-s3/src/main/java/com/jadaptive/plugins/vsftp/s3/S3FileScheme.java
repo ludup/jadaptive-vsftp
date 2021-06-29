@@ -78,4 +78,17 @@ public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 	public Class<? extends VirtualFolderPath> getPathClass() {
 		return LocalFolderPath.class;
 	}
+	
+	@Override
+	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
+			VirtualFolderCredentials creds) {
+		
+		S3Folder folder = new S3Folder();
+		folder.setName(name);
+		folder.setMountPath(mountPath);
+		folder.setPath(path);
+		folder.setCredentials((S3Credentials) creds);
+		
+		return folder;
+	}
 }

@@ -78,4 +78,17 @@ public class GCSFileScheme extends AbstractFileScheme<GoogleStorageFileProvider>
 	public Class<? extends VirtualFolderPath> getPathClass() {
 		return LocalFolderPath.class;
 	}
+
+	@Override
+	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
+			VirtualFolderCredentials creds) {
+		
+		GCSFolder folder = new GCSFolder();
+		folder.setName(name);
+		folder.setMountPath(mountPath);
+		folder.setPath(path);
+		folder.setCredentials((GCSCredentials) creds);
+		
+		return folder;
+	}
 }

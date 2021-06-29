@@ -9,7 +9,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
 @ObjectDefinition(resourceKey = WindowsCredentials.RESOURCE_KEY, type = ObjectType.OBJECT)
-public class WindowsCredentials extends VirtualFolderCredentials {
+public class WindowsCredentials extends VirtualFolderCredentials implements UsernameAndPasswordCredentials {
 
 	private static final long serialVersionUID = -3545736477921126047L;
 

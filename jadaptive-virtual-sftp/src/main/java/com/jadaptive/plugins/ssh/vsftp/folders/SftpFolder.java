@@ -5,6 +5,7 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.schemes.SftpCredentials;
 import com.jadaptive.plugins.ssh.vsftp.schemes.SftpFileScheme;
@@ -37,8 +38,8 @@ public class SftpFolder extends VirtualFolder {
 		return credentials;
 	}
 	
-	public void setCredentials(SftpCredentials credentials) {
-		this.credentials = credentials;
+	public void setCredentials(VirtualFolderCredentials credentials) {
+		this.credentials = (SftpCredentials) credentials;
 	}
 
 	public SftpOptions getOptions() {

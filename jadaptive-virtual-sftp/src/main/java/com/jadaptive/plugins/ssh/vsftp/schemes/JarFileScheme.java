@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
 
@@ -36,4 +38,10 @@ public class JarFileScheme extends AbstractFileScheme<JarFileProvider> {
 		return LocalFolderPath.class;
 	}
 
+	
+	@Override
+	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
+			VirtualFolderCredentials creds) {
+		throw new UnsupportedOperationException();
+	}
 }

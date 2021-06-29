@@ -5,6 +5,7 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.schemes.SmbFileScheme;
 import com.jadaptive.plugins.ssh.vsftp.schemes.WindowsCredentials;
@@ -33,8 +34,8 @@ public class WindowsFolder extends VirtualFolder {
 		return credentials;
 	}
 	
-	public void setCredentials(WindowsCredentials credentials) {
-		this.credentials = credentials;
+	public void setCredentials(VirtualFolderCredentials credentials) {
+		this.credentials = (WindowsCredentials) credentials;
 	}
 
 	@Override

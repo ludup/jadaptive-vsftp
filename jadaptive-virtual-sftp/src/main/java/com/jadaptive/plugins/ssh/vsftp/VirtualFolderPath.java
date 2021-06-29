@@ -10,8 +10,6 @@ import com.jadaptive.api.template.FieldView;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectView;
-import com.jadaptive.api.template.ObjectViewDefinition;
-import com.jadaptive.api.template.ObjectViews;
 
 @ObjectDefinition(resourceKey = "virtualFolderPath", type = ObjectType.OBJECT)
 public abstract class VirtualFolderPath extends AbstractUUIDEntity {

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolder;
 import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
@@ -49,6 +51,18 @@ public class LocalFileScheme extends AbstractFileScheme<DefaultLocalFileProvider
 	@Override
 	public Class<? extends VirtualFolderPath> getPathClass() {
 		return LocalFolderPath.class;
+	}
+
+	@Override
+	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
+			VirtualFolderCredentials creds) {
+		
+		LocalFolder folder = new LocalFolder();
+		folder.setName(name);
+		folder.setMountPath(mountPath);
+		folder.setPath(path);
+		
+		return folder;
 	}
 }
 

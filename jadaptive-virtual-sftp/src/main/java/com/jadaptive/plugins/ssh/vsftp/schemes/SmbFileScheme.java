@@ -62,6 +62,7 @@ public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 		return true;
 	}
 
+
 	@Override
 	public URI generateUri(String path) throws URISyntaxException {
 		return new URI("smb://" + convertWindowsUNCPath(path));
@@ -108,5 +109,18 @@ public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 	@Override
 	public Class<? extends VirtualFolderPath> getPathClass() {
 		return WindowsFolderPath.class;
+	}
+
+	@Override
+	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
+			VirtualFolderCredentials creds) {
+		
+		WindowsFolder folder = new WindowsFolder();
+		folder.setName(name);
+		folder.setMountPath(mountPath);
+		folder.setPath(path);
+		folder.setCredentials(creds);
+		
+		return folder;
 	}
 }

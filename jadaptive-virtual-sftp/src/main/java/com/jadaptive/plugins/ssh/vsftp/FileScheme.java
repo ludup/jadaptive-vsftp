@@ -50,4 +50,6 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 	void setOptions(VirtualFolder folder, VirtualFolderOptions generateMountOptions);
 
 	String getIcon();
+
+	VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path, VirtualFolderCredentials creds);
 }

@@ -107,4 +107,17 @@ public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
 	public Class<? extends VirtualFolderPath> getPathClass() {
 		return SftpFolderPath.class;
 	}
+
+	@Override
+	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
+			VirtualFolderCredentials creds) {
+		
+		SftpFolder folder = new SftpFolder();
+		folder.setName(name);
+		folder.setMountPath(mountPath);
+		folder.setPath(path);
+		folder.setCredentials(creds);
+		
+		return folder;
+	}
 }
