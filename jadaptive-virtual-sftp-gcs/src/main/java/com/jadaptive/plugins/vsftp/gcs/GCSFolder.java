@@ -19,14 +19,14 @@ public class GCSFolder extends VirtualFolder {
 	GCSCredentials credentials; 
 	
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
-	LocalFolderPath path;
+	GCSFolderPath path;
 	
-	public LocalFolderPath getPath() {
+	public GCSFolderPath getPath() {
 		return path;
 	}
 	
 	public void setPath(VirtualFolderPath path) {
-		this.path = (LocalFolderPath) path;
+		this.path = (GCSFolderPath) path;
 	}
 	
 	@Override

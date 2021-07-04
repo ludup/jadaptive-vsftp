@@ -83,9 +83,6 @@ public class SelectMount extends SetupSection {
 		FileScheme<?> scheme = fileService.getFileScheme(folderType);
 		
 		VirtualFolderPath path = ObjectUtils.assertObject(state.getObjectAt(sectionIndex), scheme.getPathClass());
-		if(!path.getDestinationUri().contains("%USERNAME%")) {
-			path.setDestinationUri(FileUtils.checkEndsWithSlash(path.getDestinationUri()) + "%USERNAME%");
-		}
 		
 		VirtualFolderCredentials creds = null;
 		if(scheme.requiresCredentials()) {

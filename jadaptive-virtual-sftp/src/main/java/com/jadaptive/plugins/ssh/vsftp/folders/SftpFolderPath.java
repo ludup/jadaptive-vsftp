@@ -26,6 +26,10 @@ public class SftpFolderPath extends VirtualFolderPath {
 	@Validator(type = ValidationType.RANGE, value = "1-65535", bundle = VirtualFolder.RESOURCE_KEY, i18n = "port.invalid")
 	Integer port;
 	
+	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 100, bundle = VirtualFolder.RESOURCE_KEY)
+	String remotePath;
+	
 	@Override
 	public String getResourceKey() {
 		return RESOURCE_KEY;
@@ -46,6 +50,21 @@ public class SftpFolderPath extends VirtualFolderPath {
 	public void setPort(Integer port) {
 		this.port = port;
 	}
+
+	@Override
+	public String getDestinationUri() {
+		return remotePath;
+	}
+
+	public String getRemotePath() {
+		return remotePath;
+	}
+
+	public void setRemotePath(String remotePath) {
+		this.remotePath = remotePath;
+	}
+	
+	
 
 	
 }
