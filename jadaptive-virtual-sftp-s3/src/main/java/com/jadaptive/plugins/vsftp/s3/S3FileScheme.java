@@ -71,12 +71,12 @@ public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 
 	@Override
 	public ObjectTemplate getPathTemplate() {
-		return templateService.get(LocalFolderPath.RESOURCE_KEY);
+		return templateService.get(S3FolderPath.RESOURCE_KEY);
 	}
 
 	@Override
 	public Class<? extends VirtualFolderPath> getPathClass() {
-		return LocalFolderPath.class;
+		return S3FolderPath.class;
 	}
 	
 	@Override
