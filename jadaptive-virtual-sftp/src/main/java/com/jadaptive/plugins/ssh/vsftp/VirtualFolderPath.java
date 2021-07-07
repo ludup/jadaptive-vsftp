@@ -10,6 +10,7 @@ import com.jadaptive.api.template.FieldView;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectView;
+import com.sshtools.common.util.FileUtils;
 
 @ObjectDefinition(resourceKey = "virtualFolderPath", type = ObjectType.OBJECT)
 public abstract class VirtualFolderPath extends AbstractUUIDEntity {
@@ -26,7 +27,7 @@ public abstract class VirtualFolderPath extends AbstractUUIDEntity {
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = 9999)
 	CacheStrategy cacheStrategy;
 
-	public abstract String getDestinationUri();
+	protected abstract String getDestinationUri();
 
 	public CacheStrategy getCacheStrategy() {
 		return cacheStrategy;
@@ -42,6 +43,13 @@ public abstract class VirtualFolderPath extends AbstractUUIDEntity {
 
 	public void setAppendUsername(Boolean appendUsername) {
 		this.appendUsername = appendUsername;
+	}
+
+	public String generatePath() {
+		if(getAppendUsername()) {
+			return FileUtils.checkEndsWithSlash(getDestinationUri()) + "%USERNAME%";
+		}
+		return getDestinationUri();
 	}
 	
 }

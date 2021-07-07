@@ -18,14 +18,18 @@ public class LocalFolderPath extends VirtualFolderPath {
 	
 	@ObjectField(type = FieldType.TEXT)
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 100, bundle = VirtualFolder.RESOURCE_KEY)
-	String destinationUri;
+	String localPath;
 	
-	public String getDestinationUri() {
-		return destinationUri;
+	public String getLocalPath() {
+		return localPath;
 	}
 
-	public void setDestinationUri(String destinationUri) {
-		this.destinationUri = destinationUri;
+	public void setLocalPath(String localPath) {
+		this.localPath = localPath;
+	}
+
+	protected String getDestinationUri() {
+		return localPath;
 	}
 	
 	@Override

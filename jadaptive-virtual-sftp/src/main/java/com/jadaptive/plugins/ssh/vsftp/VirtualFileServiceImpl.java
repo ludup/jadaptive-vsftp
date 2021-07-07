@@ -157,7 +157,11 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager mgr = getManager(folder.getUuid(), folder.getPath().getCacheStrategy());
 			FileObject obj = mgr.resolveFile(
-							scheme.generateUri(folder.getPath().getDestinationUri()).toASCIIString(), opts);
+							scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString(), opts);
+			
+			if(!obj.exists() && scheme.createRoot()) {
+				obj.createFolder();
+			}
 			
 			if(!obj.exists()) {
 				throw new FileNotFoundException("Destination of mount was not found");
@@ -228,7 +232,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileSystemManager manager = getManager(folder.getUuid(), folder.getPath().getCacheStrategy());
 
 			return new VirtualMountTemplate(folder.getMountPath(),
-					scheme.generateUri(replaceVariables(folder.getPath().getDestinationUri())).toASCIIString(),
+					scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString(),
 					new VFSFileFactory(manager, opts), scheme.createRoot());
 		} catch (URISyntaxException e) {
 			throw new IOException(e);

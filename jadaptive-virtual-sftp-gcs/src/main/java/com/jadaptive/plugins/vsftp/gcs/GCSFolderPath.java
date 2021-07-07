@@ -24,7 +24,7 @@ public class GCSFolderPath extends VirtualFolderPath {
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 200, bundle = GCSFolder.RESOURCE_KEY)
 	String filePath;
 	
-	public String getDestinationUri() {
+	protected String getDestinationUri() {
 		return FileUtils.checkStartsWithSlash(bucket)  + FileUtils.checkStartsWithSlash(filePath);
 	}
 	

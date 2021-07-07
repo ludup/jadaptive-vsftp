@@ -90,7 +90,10 @@ public class SelectMount extends SetupSection {
 		
 		String uuid = (String) state.getParameter(HOME_UUID);
 		if(StringUtils.isNotBlank(uuid)) {
-			fileService.deleteObject(fileService.getObjectByUUID(uuid));
+			VirtualFolder f = fileService.getObjectByUUID(uuid);
+			f.setSystem(false);
+			fileService.saveOrUpdate(f);
+			fileService.deleteObject(f);
 		}
 		VirtualFolder folder = scheme.createVirtualFolder("Home", "/", path, creds);
 		folder.setSystem(true);
@@ -190,7 +193,7 @@ public class SelectMount extends SetupSection {
 								.addClass("col-9")
 								.appendChild(new Element("span")
 										.appendChild(new Element("strong")
-												.text(path.getDestinationUri()))))
+												.text(path.generatePath()))))
 					.appendChild(new Element("div")
 							.addClass("col-3")
 							.appendChild(new Element("span")

@@ -24,7 +24,7 @@ public class S3FolderPath extends VirtualFolderPath {
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 200, bundle = S3Folder.RESOURCE_KEY)
 	String filePath;
 	
-	public String getDestinationUri() {
+	protected String getDestinationUri() {
 		return FileUtils.checkStartsWithSlash(bucket)  + FileUtils.checkStartsWithSlash(filePath);
 	}
 	
