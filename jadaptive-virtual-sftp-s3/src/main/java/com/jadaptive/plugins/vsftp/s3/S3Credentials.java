@@ -2,12 +2,10 @@ package com.jadaptive.plugins.vsftp.s3;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
-import com.jadaptive.api.template.ValidationType;
-import com.jadaptive.api.template.Validator;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
+import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 

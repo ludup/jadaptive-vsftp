@@ -25,7 +25,7 @@
 	function renderActions(val, obj) {
 		var html =  '<a class="deleteFile mr-1" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash"></i></a>';
 		if(!obj.directory) {
-			html += '<a class="downloadFile mr-1" target="_blank" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download"></i></a>';
+			html += '<a class="downloadFile mr-1" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download"></i></a>';
 		}
 		return html;
 	}
@@ -141,6 +141,7 @@ $(function() {
 		pageList: "[10, 25, 50, 100, 200, All]",
 		pageSize: 10,
 		pageNumber: 1,
+		showRefresh: true,
 		mobileResponsive: true,
 		ajax: 'ajaxRequest',
 		loadingTemplate: '<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>'

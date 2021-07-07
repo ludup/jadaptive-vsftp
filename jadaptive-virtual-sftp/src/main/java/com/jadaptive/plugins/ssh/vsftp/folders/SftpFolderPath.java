@@ -9,6 +9,7 @@ import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
+import com.sshtools.common.util.FileUtils;
 
 @ObjectDefinition(resourceKey = SftpFolderPath.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class SftpFolderPath extends VirtualFolderPath {
@@ -53,7 +54,7 @@ public class SftpFolderPath extends VirtualFolderPath {
 
 	@Override
 	public String getDestinationUri() {
-		return remotePath;
+		return hostname + ":" + port + FileUtils.checkStartsWithSlash(remotePath);
 	}
 
 	public String getRemotePath() {

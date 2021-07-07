@@ -1,7 +1,5 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
-import java.util.Objects;
-
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
 import com.jadaptive.api.template.FieldType;
@@ -11,7 +9,6 @@ import com.jadaptive.api.template.ObjectServiceBean;
 import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
-import com.jadaptive.utils.Utils;
 
 @ObjectDefinition(resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION)
 @ObjectServiceBean(bean = VirtualFileService.class)
@@ -66,9 +63,6 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	public abstract String getType();
 
 	public String getShortCode() {
-		if(Objects.isNull(shortCode)) {
-			shortCode = Utils.generateRandomAlphaNumericString(8);
-		}
 		return shortCode;
 	}
 

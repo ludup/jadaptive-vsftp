@@ -9,6 +9,7 @@ import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
+import com.sshtools.common.util.FileUtils;
 
 @ObjectDefinition(resourceKey = WindowsFolderPath.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class WindowsFolderPath extends VirtualFolderPath {
@@ -29,7 +30,17 @@ public class WindowsFolderPath extends VirtualFolderPath {
 
 	@Override
 	public String getDestinationUri() {
-		return share.replace('\\', '/').replace("//", "/");
+		return FileUtils.checkStartsWithNoSlash(share.replace('\\', '/').replace("//", "/"));
 	}
+
+	public String getShare() {
+		return share;
+	}
+
+	public void setShare(String share) {
+		this.share = share;
+	}
+	
+	
 
 }

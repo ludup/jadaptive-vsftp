@@ -7,6 +7,7 @@ import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.encrypt.EncryptionService;
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -24,7 +25,10 @@ public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
 	public static final String SCHEME_TYPE = "sftp";
 	
 	@Autowired
-	TemplateService templateService; 
+	private TemplateService templateService; 
+	
+	@Autowired
+	private EncryptionService encryptionService; 
 	
 	public SftpFileScheme() {
 		super("sftp", new SftpFileProvider(), "sftp", "ssh", "scp", SftpFolder.RESOURCE_KEY);
@@ -39,11 +43,12 @@ public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
 		
 		StaticUserAuthenticator auth = new StaticUserAuthenticator("", 
 				creds.getBasicCredentials().getUsername(), 
-				creds.getBasicCredentials().getPassword());
+				encryptionService.decrypt(creds.getBasicCredentials().getPassword()));
 		
 		SftpFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, auth);
 		SftpFileSystemConfigBuilder.getInstance().setPrivateKey(opts, creds.getPrivateKeyCredentials().getPrivateKey());
-		SftpFileSystemConfigBuilder.getInstance().setPassphrase(opts, creds.getPrivateKeyCredentials().getPassphrase());
+		SftpFileSystemConfigBuilder.getInstance().setPassphrase(opts, 
+				encryptionService.decrypt(creds.getPrivateKeyCredentials().getPassphrase()));
 
 		return opts;
 	}

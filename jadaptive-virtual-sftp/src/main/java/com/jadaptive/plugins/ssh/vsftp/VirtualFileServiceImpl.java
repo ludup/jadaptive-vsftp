@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.db.AssignableObjectDatabase;
 import com.jadaptive.api.db.SearchField;
+import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.role.Role;
@@ -107,6 +108,15 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		
 		assertWrite(VirtualFolder.RESOURCE_KEY);
 		
+		try {
+			resolveMount(folder);
+		} catch(IOException e) {
+			throw new ObjectException(String.format("Cannot resolve folder %s", folder.getName()), e);
+		}
+		if(StringUtils.isBlank(folder.getShortCode())) {
+			folder.setShortCode(Utils.randomAlphaNumericString(16));
+		}
+		
 		folder.getRoles().clear();
 		folder.getUsers().clear();
 		for(Role role : roles) {
@@ -126,6 +136,11 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		
 		assertWrite(VirtualFolder.RESOURCE_KEY);
 		
+		try {
+			resolveMount(folder);
+		} catch(IOException e) {
+			throw new ObjectException(String.format("Cannot resolve folder %s", folder.getName()), e);
+		}
 		if(StringUtils.isBlank(folder.getShortCode())) {
 			folder.setShortCode(Utils.randomAlphaNumericString(16));
 		}

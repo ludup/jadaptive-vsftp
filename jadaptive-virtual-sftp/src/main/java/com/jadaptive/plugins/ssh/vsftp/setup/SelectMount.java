@@ -39,7 +39,6 @@ import com.jadaptive.utils.Utils;
 import com.sshtools.common.publickey.InvalidPassphraseException;
 import com.sshtools.common.publickey.SshKeyUtils;
 import com.sshtools.common.ssh.components.SshKeyPair;
-import com.sshtools.common.util.FileUtils;
 
 @Extension
 public class SelectMount extends SetupSection {
@@ -63,7 +62,7 @@ public class SelectMount extends SetupSection {
 	private static final String HOME_UUID = "homeUUID";
 	
 	public SelectMount() {
-		super("selectMount", "selectMount", "SelectMount.html", VSFTP_SECTIONS + 1);
+		super("selectMount", "selectMount", "SelectMount.html", VSFTP_SECTIONS + 100);
 	}
 
 	@Override
@@ -289,6 +288,7 @@ public class SelectMount extends SetupSection {
 						.appendChild(new Element("strong")
 						.text(Utils.maskingString(basic.getPassword(), 2, "*")))));
 	}
+	
 	class CredentialsSetupSection extends SetupSection {
 
 		FileScheme<?> scheme;

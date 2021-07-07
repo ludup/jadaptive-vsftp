@@ -6,7 +6,6 @@ import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
 
 @ObjectDefinition(resourceKey = GCSFolder.RESOURCE_KEY, type = ObjectType.COLLECTION)
 public class GCSFolder extends VirtualFolder {
