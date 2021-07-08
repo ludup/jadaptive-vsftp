@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:jad="http://jadaptive.com/jadaptive">
+<body>
+<div class="jumbotron">
+  <h1 class="display-4" jad:bundle="publicUploadWizard" jad:i18n="setup.title"></h1>
+  <p class="lead" jad:bundle="publicUploadWizard" jad:i18n="setup.info"></p>
+  <hr class="my-4">
+  <p><span jad:bundle="vendor" jad:i18n="product.name"></span> <span jad:bundle="vendor" jad:i18n="product.version"></span><br/>
+  <span jad:bundle="vendor" jad:i18n="product.copyright"></span></p>
+  <a id="startButton" class="btn btn-success btn-lg" href="#" role="button"><i class="far fa-thumbs-up"></i> <span jad:bundle="publicUploadWizard" jad:i18n="setup.getStarted"></span></a>
+  <script type="text/javascript">
+	$(function() {
+		$('#startButton').click(function(e) {
+			e.preventDefault();
+			Wizard.start('publicUploadWizard');
+		});
+	});
+</script>
+</div>
+</body>
+</html>

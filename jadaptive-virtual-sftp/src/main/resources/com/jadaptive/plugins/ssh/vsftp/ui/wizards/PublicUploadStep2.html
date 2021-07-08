@@ -2,7 +2,7 @@
 <html lang="en" xmlns:jad="http://jadaptive.com/jadaptive">
 <body>
 <div class="col-12">
-	<p class="alert alert-info"><i class="far fa-info"></i> <span jad:bundle="selectMount" jad:i18n="selectMount.summary"></span></p>
+	<p class="alert alert-info"><i class="far fa-info"></i> <span jad:bundle="publicUploadWizard" jad:i18n="selectMount.summary"></span></p>
 </div>
 <div id="feedback" class="col-12"></div>
 <div class="col-12" id="content">
@@ -13,7 +13,7 @@
 
  $(function() {
 	 
-	    $('input[name="type"]').change(function() {
+	   $('input[name="type"]').change(function() {
 			var idx;
 			var url = window.location.href;
 			if((idx = url.indexOf('?')) > -1) {
@@ -22,7 +22,7 @@
 			window.location = url + "?type=" + $(this).val(); 	
 		});
 	
-		 Wizard.initStep('setup', function(success, cancel) {
+		 Wizard.initStep('publicUploadWizard', function(success, cancel) {
 			 
 		 $.ajax({
 	           type: "POST",

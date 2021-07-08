@@ -71,12 +71,12 @@ public class GCSFileScheme extends AbstractFileScheme<GoogleStorageFileProvider>
 	
 	@Override
 	public ObjectTemplate getPathTemplate() {
-		return templateService.get(LocalFolderPath.RESOURCE_KEY);
+		return templateService.get(GCSFolderPath.RESOURCE_KEY);
 	}
 
 	@Override
 	public Class<? extends VirtualFolderPath> getPathClass() {
-		return LocalFolderPath.class;
+		return GCSFolderPath.class;
 	}
 
 	@Override

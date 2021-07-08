@@ -1,16 +1,15 @@
-package com.jadaptive.plugins.ssh.vsftp.setup;
+package com.jadaptive.plugins.ssh.vsftp.ui.wizards;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.repository.UUIDEntity;
 import com.jadaptive.api.role.RoleService;
@@ -21,9 +20,12 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.ui.Page;
 import com.jadaptive.api.ui.renderers.DropdownInput;
 import com.jadaptive.api.ui.renderers.I18nOption;
-import com.jadaptive.api.user.User;
+import com.jadaptive.api.user.UserDatabase;
+import com.jadaptive.api.user.UserService;
 import com.jadaptive.api.wizards.WizardService;
 import com.jadaptive.api.wizards.WizardState;
+import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
+import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -40,12 +42,11 @@ import com.sshtools.common.publickey.InvalidPassphraseException;
 import com.sshtools.common.publickey.SshKeyUtils;
 import com.sshtools.common.ssh.components.SshKeyPair;
 
-@Extension
-public class SelectMount extends SetupSection {
+@Component
+public class PublicUploadStep2 extends PublicUploadSection {
 
 	private static final String REQUEST_PARAM_TYPE = "type";
 
-	public static final int SETUP_WIZARD_POSITION =  SetupSection.END_OF_DEFAULT + 1;
 	@Autowired
 	private TemplateService templateService; 
 	
@@ -58,14 +59,13 @@ public class SelectMount extends SetupSection {
 	@Autowired
 	private RoleService roleService; 
 	
-	private static final String HOME_UUID = "homeUUID";
+	@Autowired
+	private UserService userDatabase;
 	
-	public SelectMount() {
-		this(SETUP_WIZARD_POSITION);
-	}
+	private static final String EXISTING_UUID = "existingUUID";
 	
-	public SelectMount(int position) {
-		super("selectMount", "selectMount", "SelectMount.html", position);
+	public PublicUploadStep2() {
+		super("publicUploadWizard", "publicUploadStep2", "PublicUploadStep2.html", 2000);
 	}
 
 	@Override
@@ -83,41 +83,34 @@ public class SelectMount extends SetupSection {
 		
 		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 		FileScheme<?> scheme = fileService.getFileScheme(folderType);
-		
+	
+		PublicUploadName name = ObjectUtils.assertObject(state.getObjectAt(sectionIndex-1), PublicUploadName.class);
 		VirtualFolderPath path = ObjectUtils.assertObject(state.getObjectAt(sectionIndex), scheme.getPathClass());
-		
+	
 		VirtualFolderCredentials creds = null;
 		if(scheme.requiresCredentials()) {
 			creds = ObjectUtils.assertObject(state.getObjectAt(getPosition()+1), scheme.getCredentialsClass());
 		}
 		
-		String uuid = (String) state.getParameter(HOME_UUID);
+		String uuid = (String) state.getParameter(EXISTING_UUID);
 		if(StringUtils.isNotBlank(uuid)) {
 			VirtualFolder f = fileService.getObjectByUUID(uuid);
-			f.setSystem(false);
-			fileService.saveOrUpdate(f);
 			fileService.deleteObject(f);
 		}
 		
-		VirtualFolder folder = createVirtualFolder(scheme, path, creds);
+		VirtualFolder folder = scheme.createVirtualFolder(name.getName(), String.format("/public/%s", name.getName()), path, creds);
 		
 		fileService.createOrUpdate(folder, 
-				Collections.<User>emptySet(),
+				Arrays.asList(userDatabase.getUserByUUID(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID)),
 				Arrays.asList(roleService.getEveryoneRole()));
 		
-		state.setParameter(HOME_UUID, folder.getUuid());
+		state.setParameter(EXISTING_UUID, folder.getUuid());
 	}
 	
-	private VirtualFolder createVirtualFolder(FileScheme<?> scheme, VirtualFolderPath path, VirtualFolderCredentials creds) {
-		VirtualFolder folder = scheme.createVirtualFolder("Home", "/", path, creds);
-		folder.setSystem(true);
-		return folder;
-	}
-
 	@Override
 	public void process(Document document, Element element, Page page) throws IOException {
 		
-		WizardState state = wizardService.getWizard("setup").getState(Request.get());
+		WizardState state = wizardService.getWizard("publicUploadWizard").getState(Request.get());
 		
 		if(state.containsPage(CredentialsSetupSection.class)) {
 			state.removePage(CredentialsSetupSection.class);
@@ -155,7 +148,7 @@ public class SelectMount extends SetupSection {
 		content.appendChild(new Element("div")
 				.attr("jad:bundle", template.getBundle())
 				.attr("jad:id", "objectRenderer")
-				.attr("jad:handler", "setup")
+				.attr("jad:handler", PublicUploadWizard.RESOURCE_KEY)
 				.attr("jad:disableViews", "true")
 				.attr("jad:resourceKey", scheme.getPathTemplate().getResourceKey()));
 		
@@ -177,9 +170,9 @@ public class SelectMount extends SetupSection {
 				.addClass("col-12 w-100 my-3")
 				.appendChild(new Element("h4")
 					.attr("jad:i18n", "review.homeMount.header")
-					.attr("jad:bundle", "selectMount"))
+					.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY))
 				.appendChild(new Element("p")
-						.attr("jad:bundle", "selectMount")
+						.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
 						.attr("jad:i18n", "review.homeMount.desc"))
 				.appendChild(info = new Element("div")
 					.addClass("row")
@@ -306,10 +299,10 @@ public class SelectMount extends SetupSection {
 
 		FileScheme<?> scheme;
 		public CredentialsSetupSection(FileScheme<?> scheme) {
-			super("setup", 
+			super("publicUploadWizard", 
 					"homeCredentials", 
 					"HomeCredentials.html", 
-					SelectMount.this.getPosition()+1);
+					PublicUploadStep2.this.getPosition()+1);
 			this.scheme = scheme;
 		}
 

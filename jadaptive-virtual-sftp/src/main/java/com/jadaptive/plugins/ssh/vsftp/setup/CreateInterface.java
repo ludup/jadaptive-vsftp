@@ -20,7 +20,7 @@ public class CreateInterface extends InterfaceSection {
 
 	@Override
 	public Integer getPosition() {
-		return SelectMount.VSFTP_SECTIONS + 1;
+		return SelectMount.SETUP_WIZARD_POSITION + 1;
 	}
 	
 	
