@@ -94,8 +94,6 @@ public class SelectMount extends SetupSection {
 		String uuid = (String) state.getParameter(HOME_UUID);
 		if(StringUtils.isNotBlank(uuid)) {
 			VirtualFolder f = fileService.getObjectByUUID(uuid);
-			f.setSystem(false);
-			fileService.saveOrUpdate(f);
 			fileService.deleteObject(f);
 		}
 		
@@ -109,8 +107,7 @@ public class SelectMount extends SetupSection {
 	}
 	
 	private VirtualFolder createVirtualFolder(FileScheme<?> scheme, VirtualFolderPath path, VirtualFolderCredentials creds) {
-		VirtualFolder folder = scheme.createVirtualFolder("Home", "/", path, creds);
-		folder.setSystem(true);
+		VirtualFolder folder = scheme.createVirtualFolder("Home", "/home", path, creds);
 		return folder;
 	}
 
