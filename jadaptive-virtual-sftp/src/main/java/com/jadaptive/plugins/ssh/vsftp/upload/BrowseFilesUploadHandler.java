@@ -18,6 +18,7 @@ import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.upload.UploadHandler;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
+import com.sshtools.common.util.URLUTF8Encoder;
 
 @Extension
 public class BrowseFilesUploadHandler extends AuthenticatedService implements UploadHandler {
@@ -36,7 +37,7 @@ public class BrowseFilesUploadHandler extends AuthenticatedService implements Up
 		setupUserContext(sessionUtils.getActiveSession(Request.get()).getUser());
 		
 		try { 
-			String path = parameters.get("path");
+			String path = URLUTF8Encoder.decode(parameters.get("path"));
 			
 			if(StringUtils.isBlank(path)) {
 				throw new IOException("No path parameter provided!");
@@ -45,7 +46,7 @@ public class BrowseFilesUploadHandler extends AuthenticatedService implements Up
 			AbstractFile file = sshdService.getFileFactory(getCurrentUser()).getFile(path);
 
 			if(!file.exists()) {
-				throw new FileNotFoundException("No public area to place files");
+				throw new FileNotFoundException(String.format("No public area at %s", path));
 			}
 			
 			file = file.resolveFile(filename);

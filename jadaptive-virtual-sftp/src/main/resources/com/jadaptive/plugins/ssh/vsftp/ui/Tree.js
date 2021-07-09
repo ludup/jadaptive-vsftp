@@ -100,6 +100,7 @@
 }
 
 function updateBreadcrumb(path) {
+	    path = decodeURI(path);
 		$('#breadcrumb').empty();
 		$('#breadcrumb').append('<li class="breadcrumb-item"><a class="clickPath" href="/"><i class="far fa-hdd"></i></a></li>');
 		var lastIdx = path.indexOf('/');

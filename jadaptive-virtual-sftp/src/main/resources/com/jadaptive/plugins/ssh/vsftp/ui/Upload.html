@@ -12,17 +12,19 @@
       	<div class="col-12" id="feedback">
       	
       	</div>
-	    <div class="form-group">
-	       <label class="col-form-label" for="name">Your Name</label><input type="text" id="name" name="name">
-	       <small class="form-text text-muted">Please enter your name so we know whom the file is from.</small>
-	    </div>
-	    <div class="form-group">
-	       <label class="col-form-label" for="email">Your Email</label><input type="email" id="email" name="email">
-	       <small class="form-text text-muted">Please enter your email so that we can contact you if required.</small>
-	    </div>	
-	    <div class="form-group">
-	       <input type="checkbox" name="receipt"><span>Email me a receipt when the upload has completed</span>
-	    </div>	
+	    <div class="form-group"> 
+          <label for="name" class="col-form-label" jad:bundle="virtualFolder" jad:i18n="publicUpload.user.name">Name</label> 
+          <input id="name" name="name" class="form-control" value="" type="text" required="true"> 
+          <small class="form-text text-muted" jad:bundle="virtualFolder" jad:i18n="publicUpload.user.desc"></small> 
+         </div>	
+	    <div class="form-group"> 
+          <label for="email" class="col-form-label" jad:bundle="virtualFolder" jad:i18n="publicUpload.email.name">Email</label> 
+          <input id="email" name="email" class="form-control" value="" type="text" required="true"> 
+          <small class="form-text text-muted" jad:bundle="virtualFolder" jad:i18n="publicUpload.email.desc"></small> 
+         </div>
+<!-- 	    <div class="form-group"> -->
+<!-- 	       <input type="checkbox" name="receipt"><span>Email me a receipt when the upload has completed</span> -->
+<!-- 	    </div>	 -->
 	    <div id="uploadHolder" jad:id="uploadWidget" class="col-12 mb-3"></div>
 
 		</div>

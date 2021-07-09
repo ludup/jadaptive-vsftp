@@ -63,6 +63,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	private UserService userDatabase;
 	
 	private static final String EXISTING_UUID = "existingUUID";
+	public static final String SHORTCODE = "shortcode";
 	
 	public PublicUploadStep2() {
 		super("publicUploadWizard", "publicUploadStep2", "PublicUploadStep2.html", 2000);
@@ -104,6 +105,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 				Arrays.asList(userDatabase.getUserByUUID(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID)),
 				Arrays.asList(roleService.getEveryoneRole()));
 		
+		state.setParameter(SHORTCODE, folder.getShortCode());
 		state.setParameter(EXISTING_UUID, folder.getUuid());
 	}
 	

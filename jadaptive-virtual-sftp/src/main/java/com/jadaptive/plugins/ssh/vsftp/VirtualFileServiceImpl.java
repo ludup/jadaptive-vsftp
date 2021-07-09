@@ -164,7 +164,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			}
 			
 			if(!obj.exists()) {
-				throw new FileNotFoundException("Destination of mount was not found");
+				throw new FileNotFoundException("Destination of mount does not exist");
 			}
 			
 			return new VFSFileFactory(mgr, opts);

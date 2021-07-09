@@ -1,6 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public abstract class AnonymousPage extends HtmlPage {
 	private UserService userService;
 	
 	@Override
-	protected void generateContent(Document contents) throws FileNotFoundException {
+	protected void generateContent(Document contents) throws IOException {
 	
 		permissionService.setupUserContext(userService.getUser(AnonymousUserDatabaseImpl.ANONYMOUS_USERNAME));
 		
@@ -30,7 +30,7 @@ public abstract class AnonymousPage extends HtmlPage {
 		}
 	}
 
-	protected void generateAnonymousContent(Document contents) {
+	protected void generateAnonymousContent(Document contents) throws IOException {
 
 	}
 

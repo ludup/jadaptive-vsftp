@@ -44,6 +44,7 @@ import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
+import com.sshtools.common.util.URLUTF8Encoder;
 
 @Extension
 @Controller
@@ -102,7 +103,7 @@ public class VirtualFileController extends AuthenticatedController implements Pl
 			
 			List<File> fileResults = new ArrayList<>();
 			List<File> folderResults = new ArrayList<>();
-			String path = FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22));
+			String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22)));
 			AbstractFile parent = sshdService.getFileFactory(getCurrentUser()).getFile(path);
 			PathMatcher matcher = null;
 			if(StringUtils.isNotBlank(filter)) {

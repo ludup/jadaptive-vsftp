@@ -8,9 +8,12 @@ import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jadaptive.api.permissions.AccessDeniedException;
+import com.jadaptive.api.permissions.PermissionService;
 import com.jadaptive.api.ui.Page;
 import com.jadaptive.api.ui.PageCache;
 import com.jadaptive.api.wizards.AbstractWizard;
+import com.jadaptive.api.wizards.WizardState;
 
 @Extension
 @Component
@@ -21,6 +24,9 @@ public class PublicUploadWizard extends AbstractWizard<PublicUploadSection> {
 	@Autowired
 	private PageCache pageCache; 
 	
+	@Autowired
+	private PermissionService permissionService; 
+	
 	public static final String STATE_ATTR = "publicUploadWizardState";
 	
 	@Override
@@ -30,7 +36,7 @@ public class PublicUploadWizard extends AbstractWizard<PublicUploadSection> {
 
 	@Override
 	public Page getCompletePage() throws FileNotFoundException {
-		return pageCache.resolvePage("dashboard");
+		return pageCache.resolvePage(PublicUploadComplete.class);
 	}
 
 	@Override
@@ -56,6 +62,13 @@ public class PublicUploadWizard extends AbstractWizard<PublicUploadSection> {
 	@Override
 	protected Collection<PublicUploadSection> getDefaultSections() {
 		return Arrays.asList();
+	}
+
+	@Override
+	protected void assertPermissions(WizardState state) throws AccessDeniedException {
+		if(!permissionService.hasUserContext()) {
+			throw new AccessDeniedException("No user context available for public upload wizard!");
+		}
 	}
 
 
