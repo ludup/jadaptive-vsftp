@@ -48,7 +48,7 @@ import com.sshtools.common.util.URLUTF8Encoder;
 
 @Extension
 @Controller
-public class VirtualFileController extends AuthenticatedController implements PluginController {
+public class VirtualFileController extends AuthenticatedController {
 
 	static Logger log = LoggerFactory.getLogger(VirtualFileController.class);
 	
@@ -98,7 +98,7 @@ public class VirtualFileController extends AuthenticatedController implements Pl
 			@RequestParam int limit) throws RepositoryException, UnknownEntityException, ObjectException {
 
 		setupUserContext(request);
-		
+
 		try {
 			
 			List<File> fileResults = new ArrayList<>();
