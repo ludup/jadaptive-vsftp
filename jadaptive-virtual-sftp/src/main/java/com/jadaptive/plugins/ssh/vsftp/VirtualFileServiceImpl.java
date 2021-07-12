@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.CacheStrategy;
@@ -33,7 +35,9 @@ import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.role.Role;
+import com.jadaptive.api.ui.PageCache;
 import com.jadaptive.api.user.User;
+import com.jadaptive.plugins.ssh.vsftp.ui.Tree;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.util.Utils;
@@ -49,11 +53,18 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Autowired
 	private ApplicationService applicationService; 
 
+	@Autowired
+	private PageCache pageCache; 
 	
 	private Set<String> types;
 	private Set<FileScheme<?>> schemes = new HashSet<>();
 	private Map<String, FileScheme<?>> providers = new HashMap<>();
 	private Map<String, FileSystemManager> managers = new HashMap<>();
+	
+	@PostConstruct
+	private void postConstruct() {
+		pageCache.setHomePage(Tree.class);
+	}
 	
 	@Override
 	public Iterable<VirtualFolder> allObjects() {
