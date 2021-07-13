@@ -49,6 +49,10 @@ public class BrowseFilesUploadHandler extends AuthenticatedService implements Up
 				throw new FileNotFoundException(String.format("No public area at %s", path));
 			}
 			
+			if(!file.isWritable()) {
+				throw new IOException(String.format("%s is not writable", path));
+			}
+			
 			file = file.resolveFile(filename);
 			if(!file.exists()) {
 				file.createNewFile();

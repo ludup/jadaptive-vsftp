@@ -114,8 +114,8 @@ var UploadWidget = {
 							_self.clearFiles();
 		        	   }
 		           },
-		           always: function() {
-		        	   JadaptiveUtils.stopAwesomeSpin($('#uploadButton i', 'upload'));
+		           complete: function() {
+		        	   JadaptiveUtils.stopAwesomeSpin($('#uploadButton i'), 'fa-upload');
 		           },
 				   xhr: function() {
 				        var xhr = new window.XMLHttpRequest();
