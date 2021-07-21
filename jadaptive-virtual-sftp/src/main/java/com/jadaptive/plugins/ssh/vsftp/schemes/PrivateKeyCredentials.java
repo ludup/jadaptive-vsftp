@@ -19,7 +19,7 @@ public class PrivateKeyCredentials extends VirtualFolderCredentials {
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String privateKey;
 
-	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String passphrase;
 

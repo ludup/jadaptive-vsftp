@@ -41,7 +41,7 @@ public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 	        	S3Credentials credentials = (S3Credentials) folder.getCredentials();
 	            DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, 
 	            		new StaticUserAuthenticator(null, credentials.getAccessKey(), 
-	            				decryptCredentials(credentials.getSecretKey())));
+	            				credentials.getSecretKey()));
 
 	        } catch (FileSystemException e) {
 	            log.error(String.format("Failed to set credentials on %s", folder.getMountPath()));

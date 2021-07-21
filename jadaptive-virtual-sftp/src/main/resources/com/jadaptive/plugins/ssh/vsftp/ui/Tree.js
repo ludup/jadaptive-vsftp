@@ -60,7 +60,7 @@
 	function ajaxRequest(params) {
 		
 		$('#feedback').empty();
-		
+		debugger;
 		var path = getPath();
 		$('#uploadFiles').attr('href', '/app/ui/upload-files' + path);
 	    var url = '/app/vfs/listDirectory' + path;
@@ -233,5 +233,5 @@ $(function() {
         }
 	});
 	
-	changePath('');
+	//changePath('');
 });

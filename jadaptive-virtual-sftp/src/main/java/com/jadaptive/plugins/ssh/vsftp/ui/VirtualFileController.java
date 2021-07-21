@@ -36,7 +36,6 @@ import com.jadaptive.api.json.RequestStatusImpl;
 import com.jadaptive.api.json.ResourceList;
 import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.repository.RepositoryException;
-import com.jadaptive.api.servlet.PluginController;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -98,12 +97,16 @@ public class VirtualFileController extends AuthenticatedController {
 			@RequestParam int limit) throws RepositoryException, UnknownEntityException, ObjectException {
 
 		setupUserContext(request);
-
+		
+		String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22)));
+		
 		try {
+			
+			log.info("Start Listing directory {}", path);
 			
 			List<File> fileResults = new ArrayList<>();
 			List<File> folderResults = new ArrayList<>();
-			String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22)));
+			
 			AbstractFile parent = sshdService.getFileFactory(getCurrentUser()).getFile(path);
 			PathMatcher matcher = null;
 			if(StringUtils.isNotBlank(filter)) {
@@ -128,8 +131,8 @@ public class VirtualFileController extends AuthenticatedController {
 				public int compare(File o1, File o2) {
 					return o1.getName().compareTo(o2.getName());
 				}
-				
 			});
+			
 			folderResults.addAll(fileResults);
 			int page = Math.min(folderResults.size(), offset+limit);
 			if(offset > folderResults.size()) {
@@ -140,6 +143,7 @@ public class VirtualFileController extends AuthenticatedController {
 			log.error("File listing failed", e);
 			return new BootstrapTableResult<>(e.getMessage());
 		} finally {
+			log.info("Finished Listing directory {}", path);
 			clearUserContext();
 		}
 	}

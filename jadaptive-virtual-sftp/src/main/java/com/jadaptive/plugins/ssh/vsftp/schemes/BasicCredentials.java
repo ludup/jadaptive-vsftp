@@ -19,7 +19,7 @@ public class BasicCredentials extends VirtualFolderCredentials implements Userna
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String username;
 	
-	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String password;
 	

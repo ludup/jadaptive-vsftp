@@ -20,7 +20,7 @@ public class S3Credentials extends VirtualFolderCredentials {
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = S3Folder.RESOURCE_KEY)
 	String accessKey;
 
-	@ObjectField(required = true, type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(required = true, type = FieldType.PASSWORD, automaticEncryption = true)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = S3Folder.RESOURCE_KEY)
 	String secretKey;
 	
