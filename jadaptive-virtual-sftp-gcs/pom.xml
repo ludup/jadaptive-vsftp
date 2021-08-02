@@ -18,7 +18,7 @@
 		<plugin.version>${project.version}</plugin.version>
 		<plugin.provider>JADAPTIVE Limited</plugin.provider>
 		<plugin.projectUrl>https://github.com/ludup/jadpative-vsftp</plugin.projectUrl>
-		<plugin.dependencies>jadaptive-virtual-sftp</plugin.dependencies>	
+		<plugin.dependencies>jadaptive-virtual-sftp,jadaptive-ssh-synergy</plugin.dependencies>	
 	</properties>
 
 	<dependencies>
@@ -37,6 +37,12 @@
 		<dependency>
 			<groupId>com.jadaptive</groupId>
 			<artifactId>jadaptive-ssh-server</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jadaptive</groupId>
+			<artifactId>jadaptive-ssh-synergy</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -96,8 +102,8 @@
 	<repositories>
 		<repository>
 			<id>ext-releases-local</id>
-			<name>artifactory.javassh.com-ext-releases</name>
-			<url>http://artifactory.javassh.com/ext-releases-local</url>
+			<name>artifactory.jadaptive.com-ext-releases</name>
+			<url>https://artifactory.jadaptive.com/ext-releases-local</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>

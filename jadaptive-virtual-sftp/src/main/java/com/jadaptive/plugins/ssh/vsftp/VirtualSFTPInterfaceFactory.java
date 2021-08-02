@@ -14,7 +14,6 @@ import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.sshd.AuthorizedKeyProvider;
 import com.jadaptive.plugins.sshd.SSHDService;
-import com.jadaptive.plugins.sshd.SSHInterface;
 import com.jadaptive.plugins.sshd.SSHInterfaceFactory;
 import com.sshtools.common.auth.DefaultAuthenticationMechanismFactory;
 import com.sshtools.common.auth.PasswordAuthenticationProvider;
@@ -32,7 +31,7 @@ import com.sshtools.server.SshServerContext;
 import com.sshtools.synergy.nio.SshEngineContext;
 
 @Extension
-public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory {
+public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServerContext,VirtualSFTPInterface> {
 
 	@Autowired
 	private UserService userService; 
@@ -54,7 +53,7 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory {
 	private SSHDService sshdService; 
 	
 	@Override
-	public SshServerContext createContext(SshEngineContext daemonContext, SocketChannel sc, SSHInterface intf)
+	public SshServerContext createContext(SshEngineContext daemonContext, SocketChannel sc, VirtualSFTPInterface intf)
 			throws IOException, SshException {
 		SshServerContext ctx = new VirtualSFTPContext(daemonContext.getEngine(), intf);
 		
