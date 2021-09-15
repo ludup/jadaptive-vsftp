@@ -194,7 +194,7 @@ public class VirtualFileController extends AuthenticatedController {
 		setupUserContext(request);
 		
 		try {
-			String path = FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22));
+			String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22)));
 			AbstractFile parent = sshdService.getFileFactory(getCurrentUser()).getFile(path);
 			
 			if(parent.isDirectory()) {
@@ -223,6 +223,10 @@ public class VirtualFileController extends AuthenticatedController {
 		setupUserContext(request);
 		
 		try {
+			
+			name = URLUTF8Encoder.decode(name);
+			path = URLUTF8Encoder.decode(path);
+			
 			AbstractFile parent = sshdService.getFileFactory(getCurrentUser()).getFile(path);
 			
 			if(!parent.isDirectory()) {
@@ -256,6 +260,8 @@ public class VirtualFileController extends AuthenticatedController {
 		setupUserContext(request);
 		
 		try {
+			path = URLUTF8Encoder.decode(path);
+			
 			AbstractFile obj = sshdService.getFileFactory(getCurrentUser()).getFile(path);
 			
 			if(!obj.exists()) {
