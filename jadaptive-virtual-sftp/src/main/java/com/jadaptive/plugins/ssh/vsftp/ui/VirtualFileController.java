@@ -41,6 +41,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
+import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 import com.sshtools.common.util.URLUTF8Encoder;
@@ -48,6 +49,8 @@ import com.sshtools.common.util.URLUTF8Encoder;
 @Extension
 @Controller
 public class VirtualFileController extends AuthenticatedController {
+
+	private static final String ABSTRACT_FILE_FACTORY = "abstractFileFactory";
 
 	static Logger log = LoggerFactory.getLogger(VirtualFileController.class);
 	
@@ -107,7 +110,7 @@ public class VirtualFileController extends AuthenticatedController {
 			List<File> fileResults = new ArrayList<>();
 			List<File> folderResults = new ArrayList<>();
 			
-			AbstractFile parent = sshdService.getFileFactory(getCurrentUser()).getFile(path);
+			AbstractFile parent = getFactory(request).getFile(path);
 			PathMatcher matcher = null;
 			if(StringUtils.isNotBlank(filter)) {
 				matcher = FileSystems.getDefault().getPathMatcher("glob:" + filter);
@@ -195,7 +198,7 @@ public class VirtualFileController extends AuthenticatedController {
 		
 		try {
 			String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22)));
-			AbstractFile parent = sshdService.getFileFactory(getCurrentUser()).getFile(path);
+			AbstractFile parent = getFactory(request).getFile(path);
 			
 			if(parent.isDirectory()) {
 				throw new IllegalStateException("You cannot download a directory using the downloadFile URL");
@@ -213,6 +216,16 @@ public class VirtualFileController extends AuthenticatedController {
 		}
 	}
 	
+	private AbstractFileFactory<?> getFactory(HttpServletRequest request) {
+		
+		AbstractFileFactory<?> factory = (AbstractFileFactory<?>) request.getSession().getAttribute(ABSTRACT_FILE_FACTORY);
+		if(Objects.isNull(factory)) {
+			factory = sshdService.getFileFactory(getCurrentUser());
+			request.getSession().setAttribute(ABSTRACT_FILE_FACTORY, factory);
+		}
+		return factory;
+	}
+
 	@RequestMapping(value="/app/vfs/createFolder", method = { RequestMethod.POST }, produces = {"application/json"})
 	@ResponseStatus(value=HttpStatus.OK)
 	@ResponseBody
@@ -227,7 +240,7 @@ public class VirtualFileController extends AuthenticatedController {
 			name = URLUTF8Encoder.decode(name);
 			path = URLUTF8Encoder.decode(path);
 			
-			AbstractFile parent = sshdService.getFileFactory(getCurrentUser()).getFile(path);
+			AbstractFile parent = getFactory(request).getFile(path);
 			
 			if(!parent.isDirectory()) {
 				throw new IllegalStateException("Parent path is not a folder");
@@ -262,7 +275,7 @@ public class VirtualFileController extends AuthenticatedController {
 		try {
 			path = URLUTF8Encoder.decode(path);
 			
-			AbstractFile obj = sshdService.getFileFactory(getCurrentUser()).getFile(path);
+			AbstractFile obj = getFactory(request).getFile(path);
 			
 			if(!obj.exists()) {
 				return new RequestStatusImpl(false, "The object does not exist!");
