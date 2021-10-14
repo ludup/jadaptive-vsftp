@@ -7,7 +7,7 @@ import com.jadaptive.plugins.sshd.SSHInterface;
 import com.jadaptive.plugins.sshd.setup.InterfaceSection;
 
 @Extension
-public class CreateInterface extends InterfaceSection {
+public class CreateInterfaceSection extends InterfaceSection {
 
 	@Override
 	protected SSHInterface createInterface(com.jadaptive.plugins.sshd.setup.CreateInterface iface) {
