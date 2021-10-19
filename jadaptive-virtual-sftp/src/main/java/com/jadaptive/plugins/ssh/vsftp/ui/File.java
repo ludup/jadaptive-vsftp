@@ -65,5 +65,13 @@ public class File {
 		}
 	}
 	
+	public long getLastModified() {
+		try {
+			return file.lastModified();
+		} catch (IOException | PermissionDeniedException e) {
+			return 0L;
+		}
+	}
+	
 
 }

@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,11 @@ public class PublicUploadDashboard implements DashboardWidget {
 
 	@Override
 	public String getName() {
-		return "publicUpload.dashboard";
+		return "publicUpload";
 	}
 
 	@Override
-	public void renderWidget(Element element) {
+	public void renderWidget(Document document, Element element) {
 		
 		List<VirtualFolder> publicFolders = new ArrayList<>();
 		for(VirtualFolder folder : fileService.allObjects()) {
@@ -68,6 +69,11 @@ public class PublicUploadDashboard implements DashboardWidget {
 	@Override
 	public Integer weight() {
 		return 9999;
+	}
+
+	@Override
+	public boolean wantsDisplay() {
+		return true;
 	}
 
 }
