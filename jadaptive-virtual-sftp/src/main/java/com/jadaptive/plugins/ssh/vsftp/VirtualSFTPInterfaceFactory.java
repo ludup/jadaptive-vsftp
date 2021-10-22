@@ -13,6 +13,7 @@ import com.jadaptive.api.permissions.PermissionService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.sshd.AuthorizedKeyProvider;
+import com.jadaptive.plugins.sshd.SSHDConfiguration;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.jadaptive.plugins.sshd.SSHInterfaceFactory;
 import com.sshtools.common.auth.DefaultAuthenticationMechanismFactory;
@@ -57,11 +58,11 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServe
 			throws IOException, SshException {
 		SshServerContext ctx = new VirtualSFTPContext(daemonContext.getEngine(), intf);
 		
-		sshdService.applyConfiguration(ctx);
+		sshdService.applyConfiguration(ctx, passwordAuthenticator);
 		
 		ctx.setSoftwareVersionComments("VirtualSFTP");
 		ctx.setAuthenicationMechanismFactory(new DefaultAuthenticationMechanismFactory<SshServerContext>());
-		ctx.getAuthenticationMechanismFactory().addProvider(passwordAuthenticator);
+		
 		ctx.getAuthenticationMechanismFactory().addProvider(publicKeyAuthenticator);
 		
 		/**
