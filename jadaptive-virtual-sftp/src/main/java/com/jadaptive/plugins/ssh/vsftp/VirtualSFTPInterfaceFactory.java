@@ -13,7 +13,6 @@ import com.jadaptive.api.permissions.PermissionService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.sshd.AuthorizedKeyProvider;
-import com.jadaptive.plugins.sshd.SSHDConfiguration;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.jadaptive.plugins.sshd.SSHInterfaceFactory;
 import com.sshtools.common.auth.DefaultAuthenticationMechanismFactory;
