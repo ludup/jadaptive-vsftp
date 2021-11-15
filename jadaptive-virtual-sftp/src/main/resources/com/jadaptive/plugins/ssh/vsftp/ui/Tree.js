@@ -37,9 +37,9 @@ function renderDate(val) {
 }
 
 function renderActions(val, obj) {
-	var html = '<a class="deleteFile mr-1" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash"></i></a>';
+	var html = '<a class="deleteFile me-1" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash"></i></a>';
 	if (!obj.directory) {
-		html += '<a class="downloadFile mr-1" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download"></i></a>';
+		html += '<a class="downloadFile me-1" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download"></i></a>';
 	}
 	return html;
 }
