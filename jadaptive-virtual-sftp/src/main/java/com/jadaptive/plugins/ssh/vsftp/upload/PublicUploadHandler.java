@@ -13,6 +13,8 @@ import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.upload.UploadHandler;
+import com.jadaptive.plugins.email.EmailNotificationService;
+import com.jadaptive.plugins.email.MessageService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -22,6 +24,9 @@ import com.sshtools.common.files.AbstractFile;
 @Extension
 public class PublicUploadHandler extends AuthenticatedService implements UploadHandler {
 
+	public static String MESSAGE_SENDER_FILE_UPLOADED = "publicUploadReceived";
+	public static String MESSAGE_NOTIFY_FILE_RECEIVED = "publicUploadNotification";
+	
 	@Autowired
 	private SSHDService sshdService;
 	
@@ -31,13 +36,22 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 	@Autowired
 	private AnonymousUserDatabase anonymousDatabase;
 	
-	@Override
+	@Autowired
+	private EmailNotificationService notificationService; 
+	
+	@Autowired
+	private MessageService messageService;
+	
 	public void handleUpload(String handlerName, String uri, Map<String, String> parameters, String filename,
 			InputStream in) throws IOException, SessionTimeoutException, UnauthorizedException {
 		
 		setupUserContext(anonymousDatabase.getAnonymousUser());
 		
 		try { 
+			
+			String name = parameters.get("name");
+			String email = parameters.get("email");
+			
 			/**
 			 * Handler "short code" name should be assigned to an anonymous user
 			 */
@@ -54,6 +68,8 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 			}
 			IOUtils.copy(in, file.getOutputStream());
 			
+			sendNotifications(name, email);
+			
 		} catch(Throwable e) {
 			throw new IOException(e.getMessage(), e);
 		} finally {
@@ -61,6 +77,11 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 		}
 	}
 	
+	private void sendNotifications(String name, String email) {
+		
+
+	}
+
 	@Override
 	public boolean isSessionRequired() {
 		return false;

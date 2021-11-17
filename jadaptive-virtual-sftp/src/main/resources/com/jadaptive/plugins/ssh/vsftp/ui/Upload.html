@@ -38,8 +38,15 @@
 
 	$(function() {
 		UploadWidget.init('/upload/public/${page.shortCode}', '/app/ui/public-upload/${page.shortCode}', "#feedback", function(fd) {
-			fd.append("name", $('#name').val());
-			fd.append("email", $('#email').val());
+			
+			var name = $('#name').val();
+			var email = $('#email').val();
+			
+			if(name.trim() === '' || email.trim() === '') {
+				$('#feedback').append('<p class="alert alert-danger">Please provide your name and email address to upload the file.</p>');
+			}
+			fd.append("name", name);
+			fd.append("email", email);
 		});
 	});
 </script>
