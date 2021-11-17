@@ -1,3 +1,4 @@
+
 package com.jadaptive.plugins.ssh.vsftp.setup;
 
 import java.io.IOException;
