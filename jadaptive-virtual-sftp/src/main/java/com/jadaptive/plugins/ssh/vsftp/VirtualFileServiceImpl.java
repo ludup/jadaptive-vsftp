@@ -308,4 +308,9 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public String getResourceKey() {
 		return VirtualFolder.RESOURCE_KEY;
 	}
+
+	@Override
+	public void deleteObjectByUUID(String uuid) {
+		deleteObject(getObjectByUUID(uuid));
+	}
 }
