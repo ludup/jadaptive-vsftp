@@ -83,6 +83,7 @@ public class Mount extends AbstractVFSCommand {
 		}
 		
 		type = type.toLowerCase();
+		@SuppressWarnings("unused")
 		CacheStrategy cacheStrategy = CacheStrategy.ON_RESOLVE;
 		
 		String mount = FileUtils.checkStartsWithSlash(
@@ -191,6 +192,7 @@ public class Mount extends AbstractVFSCommand {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private VirtualFolderPath generatePath(FileScheme<?> provider) throws ParseException, IOException, PermissionDeniedException {
 		
 		Map<String, Object> doc = new HashMap<>();
