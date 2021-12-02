@@ -26,7 +26,7 @@ import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.permissions.PermissionDeniedException;
 
 @Extension
-@RequestPage(path = "public-download/{shortCode}")
+@RequestPage(path = "public-download/{shortCode}/{filename}")
 @PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrap-tree", "bootstrapTable", "jadaptive-utils", "i18n"} )
 @PageProcessors(extensions = { "i18n"} )
 public class DownloadPublicFile extends HtmlPage {
@@ -45,6 +45,9 @@ public class DownloadPublicFile extends HtmlPage {
 	
 	@Autowired
 	private PageCache pageCache;
+
+	String shortCode;
+	String filename;
 
 	@Override
 	protected void generateContent(Document document) throws IOException {
@@ -71,14 +74,14 @@ public class DownloadPublicFile extends HtmlPage {
 				document.select(".filename").html(fileObject.getName());
 			}
 			
-			document.selectFirst("#downloadLink").attr("href", "/app/vfs/downloadLink/" + shortCode);
+			document.selectFirst("#downloadLink").attr("href", download.getDirectLink());
 			
 		} catch (ObjectNotFoundException | PermissionDeniedException e) {
 			throw new PageRedirect(pageCache.resolvePage(PublicFileNotFound.class));
 		} 
 	}
 
-	String shortCode;
+	
 	
 	@Override
 	public String getUri() {

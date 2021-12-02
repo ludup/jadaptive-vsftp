@@ -44,7 +44,6 @@ function renderActions(val, obj) {
 	html += '<span class="dropdown"><a class="createLink me-1 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="far fa-link"></i></a>';
 	html += '<ul class="dropdown-menu" aria-labelledby="' + obj.id + '" style="z-index: 999999;">';
 	html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="far fa-copy me-1"></i> Copy Link</a></li></ul></span>';
-	
 	return html;
 }
 
@@ -191,7 +190,7 @@ $(function() {
 			dataType: 'json',
 			success: function(data) {
 				if (data.success) {
-					var link = window.location.origin + "/app/ui/public-download/" + data.resource.shortCode;
+					var link = window.location.origin + data.resource.publicLink;
 					navigator.clipboard.writeText(link);
 					JadaptiveUtils.success($('#feedback'), "The public link has been copied to the clipboard.");
 				} else {

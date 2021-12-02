@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
@@ -48,6 +49,7 @@ import com.jadaptive.plugins.ssh.vsftp.zip.ZipFolderInputStream;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
+import com.sshtools.common.files.vfs.VirtualMount;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 import com.sshtools.common.util.IOUtils;
@@ -165,6 +167,9 @@ public class VirtualFileController extends AuthenticatedController {
 				Collection<File> folderResults, Collection<File> fileResults, 
 				boolean folders, boolean files, boolean hidden, int maximumFiles, 
 					int maximumDepth, int currentDepth) throws IOException, PermissionDeniedException {
+		
+		VirtualMount parentMount = null;
+		
 		for(AbstractFile file : parent.getChildren()) {
 			
 			boolean matches = true;
@@ -222,16 +227,24 @@ public class VirtualFileController extends AuthenticatedController {
 		
 		InputStream in = null;
 		OutputStream out = null;
-		try {
+		String filename;
 		
-			response.setContentType("application/octet-stream");
+		try {
 			if(fileObject.isDirectory()) {
 				in = new ZipFolderInputStream(fileObject);
-				response.setHeader("Content-Disposition", "attachment; filename=\"" + fileObject.getName() + ".zip\"");
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + (filename = fileObject.getName() + ".zip\""));
 			} else {
 				in = fileObject.getInputStream();
-				response.setHeader("Content-Disposition", "attachment; filename=\"" + fileObject.getName() + "\"");
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + (filename = fileObject.getName()) + "\"");
 			}
+			
+			
+			String mimeType = URLConnection.guessContentTypeFromName(filename);
+			if(StringUtils.isBlank(mimeType)) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			
 			out = response.getOutputStream();
 			IOUtils.copy(in, out);
 		} finally {
@@ -241,7 +254,7 @@ public class VirtualFileController extends AuthenticatedController {
 		
 	}
 
-	@RequestMapping(value="/app/vfs/downloadLink/{shortCode}", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/octet-stream"})
+	@RequestMapping(value="/app/vfs/downloadLink/{shortCode}/**", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/octet-stream"})
 	@ResponseStatus(value=HttpStatus.OK)
 	public void downloadFile(HttpServletRequest request, HttpServletResponse response, @PathVariable String shortCode) throws RepositoryException, UnknownEntityException, ObjectException {
 
@@ -272,7 +285,10 @@ public class VirtualFileController extends AuthenticatedController {
 				PublicDownload link = linkService.getDownloadByPath(path);
 				return new ResourceStatus<>(link);
 			} catch(ObjectNotFoundException e) {
-				return new ResourceStatus<>(linkService.createDownloadLink(path));
+				
+				AbstractFile fileObject = getFactory(request).getFile(path);
+				PublicDownload link = linkService.createDownloadLink(fileObject);
+				return new ResourceStatus<>(link);
 			}
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);

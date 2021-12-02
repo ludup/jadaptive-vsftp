@@ -23,6 +23,9 @@ public class PublicDownload extends AbstractUUIDEntity {
 	@ObjectField(type = FieldType.TEXT, unique = true)
 	String shortCode;
 	
+	@ObjectField(type = FieldType.TEXT)
+	String filename;
+
 	@Override
 	public String getResourceKey() {
 		return RESOURCE_KEY;
@@ -30,6 +33,14 @@ public class PublicDownload extends AbstractUUIDEntity {
 
 	public String getVirtualPath() {
 		return virtualPath;
+	}
+	
+	public String getPublicLink() {
+		return "/app/ui/public-download/" + shortCode + "/" + filename;
+	}
+	
+	public String getDirectLink() {
+		return "/app/vfs/downloadLink/" + shortCode + "/" + filename;
 	}
 
 	public void setVirtualPath(String virtualPath) {
@@ -43,4 +54,14 @@ public class PublicDownload extends AbstractUUIDEntity {
 	public void setShortCode(String shortCode) {
 		this.shortCode = shortCode;
 	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+	
+	
 }

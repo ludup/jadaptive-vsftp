@@ -3,6 +3,8 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.mongodb.internal.HexUtils;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
@@ -10,9 +12,11 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 public class File {
 
 	AbstractFile file;
+	VirtualFolder container;
 	
-	public File(AbstractFile file) {
+	public File(AbstractFile file/*, VirtualFolder container*/) {
 		this.file = file;
+//		this.container = container;
 	}
 	
 	public String getId() {
@@ -82,6 +86,10 @@ public class File {
 			return 0L;
 		}
 	}
+	
+//	public boolean isPublic() {
+//		return container.getUsers().contains(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID);
+//	}
 	
 
 }
