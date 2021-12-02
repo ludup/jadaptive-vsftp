@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:jad="http://jadaptive.com/jadaptive">
+<body>
+<div class="wrapper">
+<header jad:id="header"></header>
+<main class="container my-auto">
+   <div class="row justify-content-center">
+         <div class="col-10">
+            <div class="card">
+         	   	<div class="card-header"><span>Download</span><div class="float-end"></div></div>
+       			<div class="card-body text-center">	
+       		<h2 class="filename"></h2>
+       		<p><i class="fad fa-file-archive fa-5x"></i></p>
+       		<div class="col-8 offset-2">
+	         	<p jad:bundle="publicDownload" jad:i18n="download.instructions"></p>
+	         	<p class="ipAddress"></p>
+	         	<p><a id="downloadLink" class="btn btn-primary"><i class="far fa-download"></i> <span jad:bundle="default" jad:i18n="download.name"></span></a></p>
+         	</div>
+		</div>
+         </div>
+         </div>
+   </div>
+</main>
+</div>
+<footer jad:id="footer"></footer>
+</body>
+</html>

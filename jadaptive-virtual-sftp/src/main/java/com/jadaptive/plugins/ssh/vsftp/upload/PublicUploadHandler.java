@@ -36,11 +36,11 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 	@Autowired
 	private AnonymousUserDatabase anonymousDatabase;
 	
-	@Autowired
-	private EmailNotificationService notificationService; 
-	
-	@Autowired
-	private MessageService messageService;
+//	@Autowired
+//	private EmailNotificationService notificationService; 
+//	
+//	@Autowired
+//	private MessageService messageService;
 	
 	public void handleUpload(String handlerName, String uri, Map<String, String> parameters, String filename,
 			InputStream in) throws IOException, SessionTimeoutException, UnauthorizedException {

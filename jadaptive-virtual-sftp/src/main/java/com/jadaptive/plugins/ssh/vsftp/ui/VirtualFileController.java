@@ -2,6 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
@@ -17,13 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,19 +32,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.jadaptive.api.entity.ObjectException;
+import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.json.RequestStatus;
 import com.jadaptive.api.json.RequestStatusImpl;
 import com.jadaptive.api.json.ResourceList;
+import com.jadaptive.api.json.ResourceStatus;
 import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.repository.RepositoryException;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.links.PublicDownload;
+import com.jadaptive.plugins.ssh.vsftp.links.PublicDownloadService;
+import com.jadaptive.plugins.ssh.vsftp.zip.ZipFolderInputStream;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
+import com.sshtools.common.util.IOUtils;
 import com.sshtools.common.util.URLUTF8Encoder;
 
 @Extension
@@ -59,6 +66,9 @@ public class VirtualFileController extends AuthenticatedController {
 	
 	@Autowired
 	private VirtualFileService fileService; 
+	
+	@Autowired
+	private PublicDownloadService linkService; 
 	
 	@RequestMapping(value="/app/vfs/mounts", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/json"})
 	@ResponseBody
@@ -190,6 +200,7 @@ public class VirtualFileController extends AuthenticatedController {
 		
 		return maximumFiles;
 	}
+	
 	@RequestMapping(value="/app/vfs/downloadFile/**", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/octet-stream"})
 	@ResponseStatus(value=HttpStatus.OK)
 	public void downloadFile(HttpServletRequest request, HttpServletResponse response) throws RepositoryException, UnknownEntityException, ObjectException {
@@ -198,16 +209,70 @@ public class VirtualFileController extends AuthenticatedController {
 		
 		try {
 			String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22)));
-			AbstractFile parent = getFactory(request).getFile(path);
-			
-			if(parent.isDirectory()) {
-				throw new IllegalStateException("You cannot download a directory using the downloadFile URL");
-			}
-			
+			AbstractFile fileObject = getFactory(request).getFile(path);
+			sendFileOrZipFolder(fileObject, response);
+		} catch (Throwable e) {
+			throw new IllegalStateException(e);
+		} finally {
+			clearUserContext();
+		}
+	}
+	
+	private void sendFileOrZipFolder(AbstractFile fileObject, HttpServletResponse response) throws IOException, PermissionDeniedException {
+		
+		InputStream in = null;
+		OutputStream out = null;
+		try {
+		
 			response.setContentType("application/octet-stream");
-			response.setHeader("Content-Disposition", "attachment filename=\"" + parent.getName() + "\"");
-			try(InputStream in = parent.getInputStream()) {
-				IOUtils.copy(in, response.getOutputStream());
+			if(fileObject.isDirectory()) {
+				in = new ZipFolderInputStream(fileObject);
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + fileObject.getName() + ".zip\"");
+			} else {
+				in = fileObject.getInputStream();
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + fileObject.getName() + "\"");
+			}
+			out = response.getOutputStream();
+			IOUtils.copy(in, out);
+		} finally {
+			IOUtils.closeStream(in);
+			IOUtils.closeStream(out);
+		}
+		
+	}
+
+	@RequestMapping(value="/app/vfs/downloadLink/{shortCode}", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/octet-stream"})
+	@ResponseStatus(value=HttpStatus.OK)
+	public void downloadFile(HttpServletRequest request, HttpServletResponse response, @PathVariable String shortCode) throws RepositoryException, UnknownEntityException, ObjectException {
+
+		setupSystemContext();
+		
+		try {
+			
+			PublicDownload download = linkService.getDownloadByShortCode(shortCode);
+			AbstractFile fileOjbect = getFactory(request).getFile(download.getVirtualPath());
+			sendFileOrZipFolder(fileOjbect, response);
+		} catch (Throwable e) {
+			throw new IllegalStateException(e);
+		} finally {
+			clearUserContext();
+		}
+	}
+	
+	@RequestMapping(value="/app/vfs/createPublicDownload", method = { RequestMethod.POST}, produces = {"application/json"})
+	@ResponseBody
+	@ResponseStatus(value=HttpStatus.OK)
+	public ResourceStatus<PublicDownload> createPublicDownload(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam String path) throws RepositoryException, UnknownEntityException, ObjectException {
+
+		setupUserContext(request);
+		
+		try {
+			try {
+				PublicDownload link = linkService.getDownloadByPath(path);
+				return new ResourceStatus<>(link);
+			} catch(ObjectNotFoundException e) {
+				return new ResourceStatus<>(linkService.createDownloadLink(path));
 			}
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);

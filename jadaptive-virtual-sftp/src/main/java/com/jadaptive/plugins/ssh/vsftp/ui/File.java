@@ -1,7 +1,9 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
+import com.mongodb.internal.HexUtils;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
 
@@ -11,6 +13,14 @@ public class File {
 	
 	public File(AbstractFile file) {
 		this.file = file;
+	}
+	
+	public String getId() {
+		try {
+			return "f" + HexUtils.hexMD5(getPath().getBytes("UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
 	}
 	
 	public String getName() {
