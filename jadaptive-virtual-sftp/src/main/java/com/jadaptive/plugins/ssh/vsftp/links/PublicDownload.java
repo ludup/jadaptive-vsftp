@@ -7,6 +7,7 @@ import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectServiceBean;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.utils.Utils;
 
 @ObjectDefinition(resourceKey = PublicDownload.RESOURCE_KEY, bundle = PublicDownload.RESOURCE_KEY, 
 	type = ObjectType.COLLECTION, creatable = false)
@@ -36,11 +37,11 @@ public class PublicDownload extends AbstractUUIDEntity {
 	}
 	
 	public String getPublicLink() {
-		return "/app/ui/public-download/" + shortCode + "/" + filename;
+		return Utils.encodeURIPath("/app/ui/public-download/" + shortCode + "/" + filename);
 	}
 	
 	public String getDirectLink() {
-		return "/app/vfs/downloadLink/" + shortCode + "/" + filename;
+		return Utils.encodeURIPath("/app/vfs/downloadLink/" + shortCode + "/" + filename);
 	}
 
 	public void setVirtualPath(String virtualPath) {
