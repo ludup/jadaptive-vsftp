@@ -69,6 +69,10 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	public void setShortCode(String shortCode) {
 		this.shortCode = shortCode;
 	}
+
+	public boolean isPublicFolder() {
+		return getUsers().contains(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID);
+	}
 	
 	
 }

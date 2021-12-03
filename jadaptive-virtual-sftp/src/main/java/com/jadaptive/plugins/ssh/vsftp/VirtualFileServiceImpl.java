@@ -242,7 +242,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager manager = getManager(folder.getUuid(), folder.getPath().getCacheStrategy());
 
-			return new VirtualMountTemplate(folder.getMountPath(),
+			return new VirtualFolderMount(folder,
 					scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString(),
 					new VFSFileFactory(manager, opts), scheme.createRoot());
 		} catch (URISyntaxException e) {

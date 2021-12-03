@@ -37,13 +37,19 @@ function renderDate(val) {
 }
 
 function renderActions(val, obj) {
-	var html = '<a class="deleteFile me-1" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash"></i></a>';
+	var html = '';
+	debugger;
+	if(!obj.mount) {
+		html += '<a class="deleteFile me-1" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash"></i></a>';
+	}
 	if (!obj.directory) {
 		html += '<a class="downloadFile me-1" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download"></i></a>';
 	}
-	html += '<span class="dropdown"><a class="createLink me-1 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="far fa-link"></i></a>';
-	html += '<ul class="dropdown-menu" aria-labelledby="' + obj.id + '" style="z-index: 999999;">';
-	html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="far fa-copy me-1"></i> Copy Link</a></li></ul></span>';
+	if(obj.public) {
+		html += '<span class="dropdown"><a class="createLink me-1 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="far fa-link"></i></a>';
+		html += '<ul class="dropdown-menu" aria-labelledby="' + obj.id + '" style="z-index: 999999;">';
+		html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="far fa-copy me-1"></i> Copy Link</a></li></ul></span>';
+	}
 	return html;
 }
 
@@ -77,43 +83,53 @@ function getPath() {
 function ajaxRequest(params) {
 
 	$('#feedback').empty();
-	debugger;
+
 	var path = getPath();
-	$('#uploadFiles').attr('href', '/app/ui/upload-files' + path);
-	var url = '/app/vfs/listDirectory' + path;
-
-	params.data.filter = $('#filter').val();
-	params.data.files = $('#files').is(":checked");
-	params.data.folders = $('#folders').is(":checked");
-	params.data.hidden = $('#hidden').is(":checked");
-	params.data.maximumResults = getMaximumFiles();
-	params.data.searchDepth = $('#searchDepth').val();
-
-	$.get(url + '?' + $.param(params.data)).then(function(res) {
-
-		$('table').show();
-
+	
+	$.get('/app/vfs/stat' + path).then(function(res) {
 		if (res.success) {
-			params.success(res);
-			$('#path').val(path);
-		} else {
-			JadaptiveUtils.error($('#feedback'), data.message);
-			params.success({
-				rows: [],
-				total: 0
+			$('#uploadFiles').attr('href', '/app/ui/upload-files' + path);
+			if(res.resource.writable) {
+				$('#uploadFiles').show();
+			} else {
+				$('#uploadFiles').hide();
+			}
+			var url = '/app/vfs/listDirectory' + path;
+		
+			params.data.filter = $('#filter').val();
+			params.data.files = $('#files').is(":checked");
+			params.data.folders = $('#folders').is(":checked");
+			params.data.hidden = $('#hidden').is(":checked");
+			params.data.maximumResults = getMaximumFiles();
+			params.data.searchDepth = $('#searchDepth').val();
+		
+			$.get(url + '?' + $.param(params.data)).then(function(res) {
+		
+				$('table').show();
+		
+				if (res.success) {
+					params.success(res);
+					$('#path').val(path);
+				} else {
+					JadaptiveUtils.error($('#feedback'), data.message);
+					params.success({
+						rows: [],
+						total: 0
+					});
+				}
+		
+				updateBreadcrumb(path);
 			});
+		} else {
+			JadaptiveUtils.error($('#feedback'), res.message);
 		}
-
-		updateBreadcrumb(path);
 	});
 }
 
 function changePath(path) {
 
 	$('#path').val(path);
-	$('#uploadFiles').attr('href', '/app/ui/upload-files' + path);
 	$('table').bootstrapTable('refresh');
-
 }
 
 function updateBreadcrumb(path) {

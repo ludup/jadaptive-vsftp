@@ -12,11 +12,13 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 public class File {
 
 	AbstractFile file;
-	VirtualFolder container;
+	boolean isPublic;
+	boolean isMount;
 	
-	public File(AbstractFile file/*, VirtualFolder container*/) {
+	public File(AbstractFile file, boolean publicFile, boolean isMount) {
 		this.file = file;
-//		this.container = container;
+		this.isPublic = publicFile;
+		this.isMount = isMount;
 	}
 	
 	public String getId() {
@@ -87,9 +89,13 @@ public class File {
 		}
 	}
 	
-//	public boolean isPublic() {
-//		return container.getUsers().contains(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID);
-//	}
+	public boolean isPublic() {
+		return isPublic;
+	}
+	
+	public boolean isMount() {
+		return isMount;
+	}
 	
 
 }

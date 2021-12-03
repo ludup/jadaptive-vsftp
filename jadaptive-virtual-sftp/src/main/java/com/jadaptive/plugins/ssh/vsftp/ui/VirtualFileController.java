@@ -43,12 +43,14 @@ import com.jadaptive.api.repository.RepositoryException;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderMount;
 import com.jadaptive.plugins.ssh.vsftp.links.PublicDownload;
 import com.jadaptive.plugins.ssh.vsftp.links.PublicDownloadService;
 import com.jadaptive.plugins.ssh.vsftp.zip.ZipFolderInputStream;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
+import com.sshtools.common.files.vfs.VirtualFileObject;
 import com.sshtools.common.files.vfs.VirtualMount;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
@@ -98,6 +100,41 @@ public class VirtualFileController extends AuthenticatedController {
 		}
 	}
 	
+	@RequestMapping(value="/app/vfs/stat/**", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/json"})
+	@ResponseBody
+	@ResponseStatus(value=HttpStatus.OK)
+	public ResourceStatus<File> statFile(HttpServletRequest request) 
+			throws RepositoryException, UnknownEntityException, ObjectException {
+
+		setupUserContext(request);
+		
+		String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(13)));
+		
+		try {
+			
+			log.info("Start stat {}", path);
+			
+			AbstractFile parent = getFactory(request).getFile(path);
+			
+			VirtualMount parentMount = ((VirtualFileObject)parent).getParentMount();
+			boolean publicFiles = false;
+			if(parentMount.getTemplate() instanceof VirtualFolderMount) {
+				VirtualFolderMount virtualMount = (VirtualFolderMount) parentMount.getTemplate();
+				publicFiles = virtualMount.getVirtualFolder().isPublicFolder();
+			}
+
+			return new ResourceStatus<File>(new File(parent, publicFiles,
+					FileUtils.isSamePath(parent.getAbsolutePath(),parentMount.getMount())));
+			
+		} catch (Throwable e) {
+			log.error("Stat failed", e);
+			return new ResourceStatus<>(false, e.getMessage());
+		} finally {
+			log.info("Finished stat {}", path);
+			clearUserContext();
+		}
+	}
+	
 	@RequestMapping(value="/app/vfs/listDirectory/**", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/json"})
 	@ResponseBody
 	@ResponseStatus(value=HttpStatus.OK)
@@ -128,8 +165,15 @@ public class VirtualFileController extends AuthenticatedController {
 				matcher = FileSystems.getDefault().getPathMatcher("glob:" + filter);
 			}
 			
+			VirtualMount parentMount = ((VirtualFileObject)parent).getParentMount();
+			boolean publicFiles = false;
+			if(parentMount.getTemplate() instanceof VirtualFolderMount) {
+				VirtualFolderMount virtualMount = (VirtualFolderMount) parentMount.getTemplate();
+				publicFiles = virtualMount.getVirtualFolder().isPublicFolder();
+			}
+			
 			search(parent, matcher, folderResults, fileResults, 
-					folders, files, hidden, maximumResults, searchDepth, 0);
+					folders, files, hidden, maximumResults, searchDepth, 0, publicFiles);
 			
 			Collections.sort(folderResults, new Comparator<File>() {
 
@@ -166,9 +210,7 @@ public class VirtualFileController extends AuthenticatedController {
 	int search(AbstractFile parent, PathMatcher matcher, 
 				Collection<File> folderResults, Collection<File> fileResults, 
 				boolean folders, boolean files, boolean hidden, int maximumFiles, 
-					int maximumDepth, int currentDepth) throws IOException, PermissionDeniedException {
-		
-		VirtualMount parentMount = null;
+					int maximumDepth, int currentDepth, boolean publicFiles) throws IOException, PermissionDeniedException {
 		
 		for(AbstractFile file : parent.getChildren()) {
 			
@@ -182,25 +224,38 @@ public class VirtualFileController extends AuthenticatedController {
 			if(matches) {
 				if(file.isDirectory() && folders) {
 					if((file.isHidden() && hidden) || !file.isHidden()) {
-						folderResults.add(new File(file));
+						
+						
+						boolean isFolderPublic = false;
+						VirtualMount parentMount = ((VirtualFileObject)file).getParentMount();
+						if(parentMount.getTemplate() instanceof VirtualFolderMount) {
+							VirtualFolderMount virtualMount = (VirtualFolderMount) parentMount.getTemplate();
+							isFolderPublic = virtualMount.getVirtualFolder().isPublicFolder();
+						}
+						
+						
+						folderResults.add(new File(file, isFolderPublic,
+								FileUtils.isSamePath(file.getAbsolutePath(),parentMount.getMount())));
 						--maximumFiles;
+						
+						if(maximumFiles > 0) {
+							if(file.isDirectory() && currentDepth < maximumDepth) {
+								maximumFiles = search(file, matcher, folderResults, fileResults, folders, files, hidden, maximumFiles, maximumDepth, currentDepth + 1, isFolderPublic);
+							}
+						} else {
+							break;
+						}
 					}
 					
 				} else if(file.isFile() && files) {
 					if((file.isHidden() && hidden) || !file.isHidden()) {
-						fileResults.add(new File(file));
+						fileResults.add(new File(file, publicFiles, false));
 						--maximumFiles;
 					}
 				} 
 			}
 			
-			if(maximumFiles > 0) {
-				if(file.isDirectory() && currentDepth < maximumDepth) {
-					maximumFiles = search(file, matcher, folderResults, fileResults, folders, files, hidden, maximumFiles, maximumDepth, currentDepth + 1);
-				}
-			} else {
-				break;
-			}
+
 		}
 		
 		return maximumFiles;
