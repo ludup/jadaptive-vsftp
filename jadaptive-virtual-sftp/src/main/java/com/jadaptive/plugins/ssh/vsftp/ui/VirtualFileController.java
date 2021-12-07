@@ -291,6 +291,7 @@ public class VirtualFileController extends AuthenticatedController {
 			} else {
 				in = fileObject.getInputStream();
 				response.setHeader("Content-Disposition", "attachment; filename=\"" + (filename = fileObject.getName()) + "\"");
+				response.setContentLengthLong(fileObject.length());
 			}
 			
 			
