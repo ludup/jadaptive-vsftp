@@ -43,7 +43,7 @@
 			var email = $('#email').val();
 			
 			if(name.trim() === '' || email.trim() === '') {
-				$('#feedback').append('<p class="alert alert-danger">Please provide your name and email address to upload the file.</p>');
+				$('#feedback').append('<p class="alert alert-danger"><i class="far fa-exclamation-circle"></i> Please provide your name and email address to upload the file.</p>');
 			}
 			fd.append("name", name);
 			fd.append("email", email);

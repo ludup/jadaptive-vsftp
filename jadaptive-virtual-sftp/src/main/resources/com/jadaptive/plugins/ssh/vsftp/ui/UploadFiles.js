@@ -1,9 +1,9 @@
 $(function() {
 	
 	var path = window.location.pathname.replace('/app/ui/upload-files', '');
-	debugger;
 	
-			$('#breadcrumb').empty();
+	
+		$('#breadcrumb').empty();
 		$('#breadcrumb').append('<li class="breadcrumb-item"><a class="clickPath" href="/app/ui/tree/"><i class="far fa-hdd"></i></a></li>');
 		var lastIdx = path.indexOf('/');
 		
@@ -19,7 +19,7 @@ $(function() {
 		}
 		$('.breadcrumb-item').last().addClass('active');
 		
-	UploadWidget.init('/upload/files', '/app/ui/tree' + path, "#feedback", function(fd) {
+	UploadWidget.init('/upload/files', null, "#feedback", function(fd) {
 			fd.append("path", path);
 	});
 

@@ -9,12 +9,8 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
-import com.jadaptive.api.upload.UploadHandler;
-import com.jadaptive.plugins.email.EmailNotificationService;
-import com.jadaptive.plugins.email.MessageService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -22,7 +18,7 @@ import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 
 @Extension
-public class PublicUploadHandler extends AuthenticatedService implements UploadHandler {
+public class PublicUploadHandler extends AbstractFilesUploadHandler {
 
 	public static String MESSAGE_SENDER_FILE_UPLOADED = "publicUploadReceived";
 	public static String MESSAGE_NOTIFY_FILE_RECEIVED = "publicUploadNotification";
@@ -56,17 +52,8 @@ public class PublicUploadHandler extends AuthenticatedService implements UploadH
 			 * Handler "short code" name should be assigned to an anonymous user
 			 */
 			VirtualFolder folder = fileService.getVirtualFolderByShortCode(uri);
-			AbstractFile file = sshdService.getFileFactory(getCurrentUser()).getFile(folder.getMountPath());
-
-			if(!file.exists()) {
-				throw new FileNotFoundException("No public area to place files");
-			}
 			
-			file = file.resolveFile(filename);
-			if(!file.exists()) {
-				file.createNewFile();
-			}
-			IOUtils.copy(in, file.getOutputStream());
+			doUpload(folder.getMountPath(), filename, in);
 			
 			sendNotifications(name, email);
 			
