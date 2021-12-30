@@ -16,10 +16,8 @@ import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.links.PublicDownload;
 import com.jadaptive.plugins.ssh.vsftp.links.PublicDownloadService;
-import com.jadaptive.plugins.ssh.vsftp.zip.ZipFolderInputStream;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
@@ -33,9 +31,6 @@ public class DownloadPublicFile extends HtmlPage {
 
 	@Autowired
 	private PublicDownloadService downloadService; 
-	
-	@Autowired
-	private VirtualFileService fileService; 
 	
 	@Autowired
 	private SSHDService sshdService; 

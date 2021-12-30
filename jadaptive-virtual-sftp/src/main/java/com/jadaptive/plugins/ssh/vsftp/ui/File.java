@@ -3,8 +3,6 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.mongodb.internal.HexUtils;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.permissions.PermissionDeniedException;

@@ -6,7 +6,6 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectServiceBean;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.Utils;
 
 @ObjectDefinition(resourceKey = PublicDownload.RESOURCE_KEY, bundle = PublicDownload.RESOURCE_KEY, 

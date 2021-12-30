@@ -1,11 +1,9 @@
 package com.jadaptive.plugins.ssh.vsftp.upload;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,17 +12,12 @@ import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.sshd.SSHDService;
-import com.sshtools.common.files.AbstractFile;
 
 @Extension
 public class PublicUploadHandler extends AbstractFilesUploadHandler {
 
 	public static String MESSAGE_SENDER_FILE_UPLOADED = "publicUploadReceived";
 	public static String MESSAGE_NOTIFY_FILE_RECEIVED = "publicUploadNotification";
-	
-	@Autowired
-	private SSHDService sshdService;
 	
 	@Autowired
 	private VirtualFileService fileService; 
