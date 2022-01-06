@@ -7,6 +7,9 @@ import java.net.URLConnection;
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
+import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.json.RequestStatus;
 import com.jadaptive.api.json.RequestStatusImpl;
 import com.jadaptive.api.json.ResourceList;
@@ -73,6 +77,9 @@ public class VirtualFileController extends AuthenticatedController {
 	
 	@Autowired
 	private PublicDownloadService linkService; 
+	
+	@Autowired
+	private EventService eventService; 
 	
 	@RequestMapping(value="/app/vfs/mounts", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/json"})
 	@ResponseBody
@@ -270,7 +277,7 @@ public class VirtualFileController extends AuthenticatedController {
 		try {
 			String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22)));
 			AbstractFile fileObject = getFactory(request).getFile(path);
-			sendFileOrZipFolder(fileObject, response);
+			sendFileOrZipFolder(path, fileObject, response);
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);
 		} finally {
@@ -278,7 +285,7 @@ public class VirtualFileController extends AuthenticatedController {
 		}
 	}
 	
-	private void sendFileOrZipFolder(AbstractFile fileObject, HttpServletResponse response) throws IOException, PermissionDeniedException {
+	private void sendFileOrZipFolder(String path, AbstractFile fileObject, HttpServletResponse response) throws IOException, PermissionDeniedException {
 		
 		InputStream in = null;
 		OutputStream out = null;
@@ -301,8 +308,17 @@ public class VirtualFileController extends AuthenticatedController {
 			}
 			response.setContentType(mimeType);
 			
-			out = response.getOutputStream();
-			IOUtils.copy(in, out);
+			long started = System.currentTimeMillis();
+			long size = 0L;
+			MessageDigest digest = MessageDigest.getInstance("MD-5");
+			try(OutputStream digestOutput = new DigestOutputStream(response.getOutputStream(), digest)) {
+				size = IOUtils.copyWithCount(in, digestOutput);
+			}
+
+			eventService.publishEvent(new FileDownloadedEvent(
+					new TransferResult(filename, FileUtils.getParentPath(path), size, started, System.currentTimeMillis(), digest.digest())));
+		} catch (NoSuchAlgorithmException | IOException e) { 
+			
 		} finally {
 			IOUtils.closeStream(in);
 			IOUtils.closeStream(out);
@@ -320,7 +336,7 @@ public class VirtualFileController extends AuthenticatedController {
 			
 			PublicDownload download = linkService.getDownloadByShortCode(shortCode);
 			AbstractFile fileOjbect = getFactory(request).getFile(download.getVirtualPath());
-			sendFileOrZipFolder(fileOjbect, response);
+			sendFileOrZipFolder(download.getVirtualPath(), fileOjbect, response);
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);
 		} finally {
