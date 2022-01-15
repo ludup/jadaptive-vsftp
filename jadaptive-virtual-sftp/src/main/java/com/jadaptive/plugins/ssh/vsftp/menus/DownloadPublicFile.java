@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.ui;
+package com.jadaptive.plugins.ssh.vsftp.menus;
 
 import java.io.IOException;
 
@@ -18,6 +18,7 @@ import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.links.PublicDownload;
 import com.jadaptive.plugins.ssh.vsftp.links.PublicDownloadService;
+import com.jadaptive.plugins.ssh.vsftp.ui.PublicFileNotFound;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;

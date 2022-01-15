@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.ui;
+package com.jadaptive.plugins.ssh.vsftp.menus;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,44 +7,44 @@ import org.pf4j.Extension;
 
 import com.jadaptive.api.ui.menu.ApplicationMenu;
 import com.jadaptive.api.ui.menu.ApplicationMenuService;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 
 @Extension
-public class ConfigureFilesMenu implements ApplicationMenu {
+public class VFSConfigurationMenu implements ApplicationMenu {
 
 	@Override
 	public String getResourceKey() {
-		return "configureFiles.name";
+		return "vfsConfiguration.name";
 	}
 
 	@Override
 	public String getBundle() {
-		return VirtualFolder.RESOURCE_KEY;
+		return VFSConfiguration.RESOURCE_KEY;
 	}
 
 	@Override
 	public String getPath() {
-		return "/app/ui/table/virtualFolder";
+		return "/app/ui/config/vfsConfiguration";
 	}
 
 	@Override
 	public Collection<String> getPermissions() {
-		return Arrays.asList("virtualFolder.read");
+		return Arrays.asList("vfsConfiguration.read");
 	}
 
 	@Override
 	public String getIcon() {
-		return "cabinet-filing";
+		return "folder-open";
 	}
 
 	@Override
 	public String getParent() {
-		return ApplicationMenuService.ADMINISTRATION_MENU_UUID;
+		return ApplicationMenuService.SYSTEM_MENU_UUID;
 	}
 
 	@Override
 	public String getUuid() {
-		return "f1432b86-63f7-4f80-97ff-0a843e43b2e4";
+		return "68a66aa7-d98b-4542-8c10-20a18d61168b";
 	}
 
 	@Override

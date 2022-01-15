@@ -36,7 +36,7 @@ public class BrowseFilesUploadHandler extends AbstractFilesUploadHandler {
 			clearUserContext();
 		}
 	}
-	
+
 	@Override
 	public boolean isSessionRequired() {
 		return true;

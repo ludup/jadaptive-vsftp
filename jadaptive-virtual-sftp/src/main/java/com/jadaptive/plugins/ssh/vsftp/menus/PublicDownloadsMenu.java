@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.ui;
+package com.jadaptive.plugins.ssh.vsftp.menus;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,24 +7,24 @@ import org.pf4j.Extension;
 
 import com.jadaptive.api.ui.menu.ApplicationMenu;
 import com.jadaptive.api.ui.menu.ApplicationMenuService;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.links.PublicDownload;
 
 @Extension
-public class BrowserFilesMenu implements ApplicationMenu {
+public class PublicDownloadsMenu implements ApplicationMenu {
 
 	@Override
 	public String getResourceKey() {
-		return "browseFiles.name";
+		return "publicDownload.names";
 	}
 
 	@Override
 	public String getBundle() {
-		return VirtualFolder.RESOURCE_KEY;
+		return PublicDownload.RESOURCE_KEY;
 	}
 
 	@Override
 	public String getPath() {
-		return "/app/ui/tree";
+		return "/app/ui/table/publicDownload";
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class BrowserFilesMenu implements ApplicationMenu {
 
 	@Override
 	public String getIcon() {
-		return "folder-open";
+		return "download";
 	}
 
 	@Override
@@ -44,12 +44,12 @@ public class BrowserFilesMenu implements ApplicationMenu {
 
 	@Override
 	public String getUuid() {
-		return "3ac8ab15-0cda-4b73-88cb-ee729e3cba89";
+		return "840e6b33-af38-4ba3-8918-07bc841a9a6c";
 	}
 
 	@Override
 	public Integer weight() {
-		return 1000;
+		return 1001;
 	}
 
 }

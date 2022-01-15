@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.events.EventService;
@@ -44,7 +46,12 @@ import com.jadaptive.api.json.ResourceList;
 import com.jadaptive.api.json.ResourceStatus;
 import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.repository.RepositoryException;
+import com.jadaptive.api.servlet.Request;
+import com.jadaptive.api.ui.ErrorPage;
+import com.jadaptive.api.ui.PageRedirect;
+import com.jadaptive.plugins.ssh.vsftp.ContentHash;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
+import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderMount;
@@ -52,6 +59,7 @@ import com.jadaptive.plugins.ssh.vsftp.links.PublicDownload;
 import com.jadaptive.plugins.ssh.vsftp.links.PublicDownloadService;
 import com.jadaptive.plugins.ssh.vsftp.zip.ZipFolderInputStream;
 import com.jadaptive.plugins.sshd.SSHDService;
+import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VirtualFileObject;
@@ -60,6 +68,7 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 import com.sshtools.common.util.IOUtils;
 import com.sshtools.common.util.URLUTF8Encoder;
+import com.sshtools.humanhash.HumanHashGenerator;
 
 @Extension
 @Controller
@@ -80,6 +89,9 @@ public class VirtualFileController extends AuthenticatedController {
 	
 	@Autowired
 	private EventService eventService; 
+	
+	@Autowired
+	private SingletonObjectDatabase<VFSConfiguration> configurationService; 
 	
 	@RequestMapping(value="/app/vfs/mounts", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/json"})
 	@ResponseBody
@@ -278,6 +290,8 @@ public class VirtualFileController extends AuthenticatedController {
 			String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22)));
 			AbstractFile fileObject = getFactory(request).getFile(path);
 			sendFileOrZipFolder(path, fileObject, response);
+		} catch(PageRedirect e) {
+			throw e;
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);
 		} finally {
@@ -289,41 +303,63 @@ public class VirtualFileController extends AuthenticatedController {
 		
 		InputStream in = null;
 		OutputStream out = null;
-		String filename;
+		String filename = fileObject.getName();
+		if(fileObject.isDirectory()) {
+			filename += ".zip";
+		}
 		
+		Date started = Utils.now();
+		ContentHash contentHash = configurationService.getObject(VFSConfiguration.class).getDefaultHash();
 		try {
-			if(fileObject.isDirectory()) {
-				in = new ZipFolderInputStream(fileObject);
-				response.setHeader("Content-Disposition", "attachment; filename=\"" + (filename = fileObject.getName() + ".zip\""));
-			} else {
-				in = fileObject.getInputStream();
-				response.setHeader("Content-Disposition", "attachment; filename=\"" + (filename = fileObject.getName()) + "\"");
-				response.setContentLengthLong(fileObject.length());
-			}
-			
-			
-			String mimeType = URLConnection.guessContentTypeFromName(filename);
-			if(StringUtils.isBlank(mimeType)) {
-				mimeType = "application/octet-stream";
-			}
-			response.setContentType(mimeType);
-			
-			long started = System.currentTimeMillis();
 			long size = 0L;
-			MessageDigest digest = MessageDigest.getInstance("MD-5");
+			MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
 			try(OutputStream digestOutput = new DigestOutputStream(response.getOutputStream(), digest)) {
+			
+				if(fileObject.isDirectory()) {
+					in = new ZipFolderInputStream(fileObject);
+				} else {
+					in = fileObject.getInputStream();
+					response.setContentLengthLong(fileObject.length());
+				}
+				
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + filename  + "\"");
+				
+				String mimeType = URLConnection.guessContentTypeFromName(filename);
+				if(StringUtils.isBlank(mimeType)) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				
 				size = IOUtils.copyWithCount(in, digestOutput);
 			}
 
-			eventService.publishEvent(new FileDownloadedEvent(
-					new TransferResult(filename, FileUtils.getParentPath(path), size, started, System.currentTimeMillis(), digest.digest())));
-		} catch (NoSuchAlgorithmException | IOException e) { 
+			byte[] output = digest.digest();
+			eventService.publishEvent(new FileDownloadEvent(
+					new TransferResult(filename, FileUtils.getParentPath(path), 
+							size, started, Utils.now(), formatDigest(digest.getAlgorithm(), output), 
+								new HumanHashGenerator(output)
+									.words(contentHash.getWords())
+									.build())));
 			
+		} catch (NoSuchAlgorithmException | IOException e) { 
+			eventService.publishEvent(new FileDownloadEvent(
+					new TransferResult(filename, FileUtils.getParentPath(path), 
+							0L, started, Utils.now()), e));
+			throw new PageRedirect(new ErrorPage(e, Request.get().getHeader("Referer")));
 		} finally {
 			IOUtils.closeStream(in);
 			IOUtils.closeStream(out);
 		}
 		
+	}
+
+	private String formatDigest(String algorithm, byte[] output) {
+		
+		StringBuffer tmp = new StringBuffer();
+		tmp.append(algorithm);
+		tmp.append(":");
+		tmp.append(com.sshtools.common.util.Utils.bytesToHex(output, output.length, false, false));
+		return tmp.toString();
 	}
 
 	@RequestMapping(value="/app/vfs/downloadLink/{shortCode}/**", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/octet-stream"})
