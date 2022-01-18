@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.jadaptive.api.app.StartupAware;
 import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
@@ -47,6 +48,7 @@ import com.jadaptive.api.json.ResourceStatus;
 import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.repository.RepositoryException;
 import com.jadaptive.api.servlet.Request;
+import com.jadaptive.api.session.Session;
 import com.jadaptive.api.ui.ErrorPage;
 import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.plugins.ssh.vsftp.ContentHash;
@@ -72,7 +74,7 @@ import com.sshtools.humanhash.HumanHashGenerator;
 
 @Extension
 @Controller
-public class VirtualFileController extends AuthenticatedController {
+public class VirtualFileController extends AuthenticatedController implements StartupAware {
 
 	private static final String ABSTRACT_FILE_FACTORY = "abstractFileFactory";
 
@@ -92,6 +94,20 @@ public class VirtualFileController extends AuthenticatedController {
 	
 	@Autowired
 	private SingletonObjectDatabase<VFSConfiguration> configurationService; 
+	
+	@Override
+	public void onApplicationStartup() {
+
+		eventService.any(VirtualFolder.class, (evt) -> {
+			resetFactory();
+		});
+		eventService.updated(Session.class, (evt) -> {
+			if(evt.getObject().isClosed()) {
+				resetFactory();
+			}
+		});
+
+	}
 	
 	@RequestMapping(value="/app/vfs/mounts", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/json"})
 	@ResponseBody
@@ -135,7 +151,7 @@ public class VirtualFileController extends AuthenticatedController {
 			
 			AbstractFile parent = getFactory(request).getFile(path);
 			
-			VirtualMount parentMount = ((VirtualFileObject)parent).getParentMount();
+			VirtualMount parentMount = ((VirtualFileObject)parent).getMount();
 			boolean publicFiles = false;
 			if(parentMount.getTemplate() instanceof VirtualFolderMount) {
 				VirtualFolderMount virtualMount = (VirtualFolderMount) parentMount.getTemplate();
@@ -405,13 +421,23 @@ public class VirtualFileController extends AuthenticatedController {
 		}
 	}
 	
+	private void resetFactory() {
+		if(Request.isAvailable()) {
+			Request.get().getSession().setAttribute(ABSTRACT_FILE_FACTORY, null);
+		}
+	}
+	
 	private AbstractFileFactory<?> getFactory(HttpServletRequest request) {
+		return getFactory(request, false);
+	}
+	
+	private AbstractFileFactory<?> getFactory(HttpServletRequest request, boolean reset) {
 		
 		AbstractFileFactory<?> factory = (AbstractFileFactory<?>) request.getSession().getAttribute(ABSTRACT_FILE_FACTORY);
-		if(Objects.isNull(factory)) {
-			factory = sshdService.getFileFactory(getCurrentUser());
-			request.getSession().setAttribute(ABSTRACT_FILE_FACTORY, factory);
+		if(Objects.isNull(factory) || reset) {
+			factory = sshdService.getFileFactory(getCurrentUser());	
 		}
+		request.getSession().setAttribute(ABSTRACT_FILE_FACTORY, factory);
 		return factory;
 	}
 
@@ -480,5 +506,10 @@ public class VirtualFileController extends AuthenticatedController {
 		} finally {
 			clearUserContext();
 		}
+	}
+	
+	@Override
+	public Integer getStartupPosition() {
+		return 0;
 	}
 }

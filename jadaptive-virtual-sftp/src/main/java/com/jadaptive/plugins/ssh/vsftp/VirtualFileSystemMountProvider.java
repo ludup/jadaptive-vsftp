@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.entity.ObjectNotFoundException;
+import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.sshd.PluginFileSystemMount;
 import com.sshtools.common.files.ReadOnlyFileFactoryAdapter;
@@ -18,7 +19,7 @@ import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 
 @Extension
-public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
+public class VirtualFileSystemMountProvider extends AuthenticatedService implements PluginFileSystemMount {
 
 	static Logger log = LoggerFactory.getLogger(VirtualFileSystemMountProvider.class);
 	
@@ -31,7 +32,8 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 		List<VirtualMountTemplate> templates = new ArrayList<>();
 		
 		try {
-			for(VirtualFolder folder : fileService.allObjects()) {
+			
+			for(VirtualFolder folder : fileService.getPersonalFolders()) {
 				if(folder.getMountPath().equals("/")) {
 					/**
 					 * Skip the home mount

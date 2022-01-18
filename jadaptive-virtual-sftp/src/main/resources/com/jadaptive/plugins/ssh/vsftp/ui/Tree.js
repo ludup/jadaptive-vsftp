@@ -228,6 +228,7 @@ $(function() {
 		var path = $(this).data('path');
 		bootbox.confirm({
 			message: message,
+			closeButton: false,
 			buttons: {
 				confirm: {
 					label: 'Yes',

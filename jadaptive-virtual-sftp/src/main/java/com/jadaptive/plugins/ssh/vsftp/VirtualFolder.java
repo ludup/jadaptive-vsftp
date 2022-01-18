@@ -1,6 +1,7 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
 import com.jadaptive.api.entity.ObjectType;
+import com.jadaptive.api.events.AuditedObject;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.FieldView;
@@ -17,6 +18,7 @@ import com.jadaptive.api.template.ObjectViews;
 @ObjectViews({ 
 	@ObjectViewDefinition(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -50),
 	@ObjectViewDefinition(value = VirtualFolder.FOLDER_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -100)})
+@AuditedObject
 public abstract class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String FOLDER_VIEW = "folderView";
@@ -77,5 +79,7 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 		return getUsers().contains(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID);
 	}
 	
-	
+	public String getEventGroup() {
+		return RESOURCE_KEY;
+	}
 }
