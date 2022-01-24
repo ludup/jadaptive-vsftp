@@ -26,7 +26,7 @@ public class FileUploadEvent extends ObjectEvent<TransferResult> {
 	@Validator(type = ValidationType.RESOURCE_KEY, value = TransferResult.RESOURCE_KEY)
 	TransferResult object;
 	
-	public static final String RESOURCE_KEY = "fileUpload.event";
+	public static final String RESOURCE_KEY = "fileUploadEvent";
 	public FileUploadEvent(TransferResult result) {
 		super(RESOURCE_KEY, "files");
 		this.object = result;

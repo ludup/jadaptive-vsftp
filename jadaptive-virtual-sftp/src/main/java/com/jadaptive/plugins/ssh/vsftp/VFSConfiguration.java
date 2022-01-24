@@ -2,6 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.events.AuditedObject;
+import com.jadaptive.api.events.Events;
 import com.jadaptive.api.repository.SingletonUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
@@ -10,9 +11,8 @@ import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
 
-@ObjectDefinition(resourceKey = VFSConfiguration.RESOURCE_KEY, type = ObjectType.SINGLETON)
+@ObjectDefinition(resourceKey = VFSConfiguration.RESOURCE_KEY, type = ObjectType.SINGLETON, aliases = { VFSConfiguration.RESOURCE_KEY + ".updated" })
 @ObjectViews({@ObjectViewDefinition(value = VFSConfiguration.GENERAL_VIEW, bundle = VFSConfiguration.RESOURCE_KEY)})
-@AuditedObject
 public class VFSConfiguration extends SingletonUUIDEntity {
 
 	private static final long serialVersionUID = 8028157806019041591L;

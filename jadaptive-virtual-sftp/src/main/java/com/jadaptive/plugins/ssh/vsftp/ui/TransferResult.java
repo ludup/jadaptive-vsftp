@@ -6,6 +6,7 @@ import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.events.ObjectEvent;
 import com.jadaptive.api.repository.UUIDEntity;
+import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -36,11 +37,11 @@ public class TransferResult extends UUIDEntity {
 	Date ended;
 	
 	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY, renderer = FieldRenderer.OPTIONAL)
 	String contentHash;
 	
 	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY, renderer = FieldRenderer.OPTIONAL)
 	String humanHash;
 	
 	@ObjectField(type = FieldType.LONG)

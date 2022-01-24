@@ -313,4 +313,9 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public void deleteObjectByUUID(String uuid) {
 		deleteObject(getObjectByUUID(uuid));
 	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }
