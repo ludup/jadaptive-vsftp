@@ -200,7 +200,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 				matcher = FileSystems.getDefault().getPathMatcher("glob:" + filter);
 			}
 			
-			VirtualMount parentMount = ((VirtualFileObject)parent).getParentMount();
+			VirtualMount parentMount = ((VirtualFileObject)parent).getMount();
 			boolean publicFiles = false;
 			if(parentMount.getTemplate() instanceof VirtualFolderMount) {
 				VirtualFolderMount virtualMount = (VirtualFolderMount) parentMount.getTemplate();
@@ -262,7 +262,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 						
 						
 						boolean isFolderPublic = false;
-						VirtualMount parentMount = ((VirtualFileObject)file).getParentMount();
+						VirtualMount parentMount = ((VirtualFileObject)file).getMount();
 						if(parentMount.getTemplate() instanceof VirtualFolderMount) {
 							VirtualFolderMount virtualMount = (VirtualFolderMount) parentMount.getTemplate();
 							isFolderPublic = virtualMount.getVirtualFolder().isPublicFolder();
