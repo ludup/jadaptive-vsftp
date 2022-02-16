@@ -7,7 +7,7 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 
-@ObjectDefinition(resourceKey = S3Folder.RESOURCE_KEY, type = ObjectType.COLLECTION, bundle = S3Folder.RESOURCE_KEY)
+@ObjectDefinition(resourceKey = S3Folder.RESOURCE_KEY, type = ObjectType.COLLECTION, bundle = S3Folder.RESOURCE_KEY, defaultColumn = "name")
 public class S3Folder extends VirtualFolder {
 
 	private static final long serialVersionUID = 8482791046455758923L;

@@ -12,7 +12,8 @@ import com.jadaptive.plugins.ssh.vsftp.schemes.WindowsCredentials;
 
 @ObjectDefinition(resourceKey = WindowsFolder.RESOURCE_KEY, 
 					bundle = VirtualFolder.RESOURCE_KEY, 
-					type = ObjectType.COLLECTION)
+					type = ObjectType.COLLECTION, 
+					defaultColumn = "name")
 public class WindowsFolder extends VirtualFolder {
 
 	private static final long serialVersionUID = 8482791046455758923L;

@@ -7,29 +7,40 @@
    <div id="uploadForm" class="row justify-content-center">
          <div class="col-10">
             <div class="card">
-         	   	<div class="card-header">Public Upload</div>
+         	   	<div class="card-header"><i class="far fa-upload"></i>&nbsp;<span id="uploadArea"></span> <span jad:bundle="default" jad:i18n="upload.name"></span></div>
        			<div class="card-body">		
       	<div class="col-12" id="feedback">
       	
       	</div>
-	    <div class="row"> 
-          <label for="name" class="form-label" jad:bundle="virtualFolder" jad:i18n="publicUpload.user.name">Name</label> 
-          <input id="name" name="name" class="form-control" value="" type="text" required="true"> 
-          <small class="form-text text-muted" jad:bundle="virtualFolder" jad:i18n="publicUpload.user.desc"></small> 
+	    <div class="row mb-3"> 
+	    	<div class="col-12">
+	    		<label for="name" class="form-label" jad:bundle="virtualFolder" jad:i18n="user.name">Name</label> 
+         		 <input id="name" name="name" class="form-control" value="" type="text" required="true"> 
+         		 <small class="form-text text-muted" jad:bundle="virtualFolder" jad:i18n="user.desc"></small> 
+	    	</div>
          </div>	
-	    <div class="row"> 
-          <label for="email" class="form-label" jad:bundle="virtualFolder" jad:i18n="publicUpload.email.name">Email</label> 
-          <input id="email" name="email" class="form-control" value="" type="text" required="true"> 
-          <small class="form-text text-muted" jad:bundle="virtualFolder" jad:i18n="publicUpload.email.desc"></small> 
+         
+	    <div class="row mb-3"> 
+	        <div class="col-12">
+	         	<label for="email" class="form-label" jad:bundle="virtualFolder" jad:i18n="email.name">Email</label> 
+	         	 <input id="email" name="email" class="form-control" value="" type="text" required="true"> 
+	         	 <small class="form-text text-muted" jad:bundle="virtualFolder" jad:i18n="email.desc"></small> 
+	        </div>
+	    </div>
+        <div class="row mb-3"> 
+	        <div class="col-12">
+	         	<label for="reference" class="form-label" jad:bundle="virtualFolder" jad:i18n="reference.name">Email</label> 
+	         	 <input id="reference" name="reference" class="form-control" value="" type="text" required="true"> 
+	         	 <small class="form-text text-muted" jad:bundle="virtualFolder" jad:i18n="reference.desc"></small> 
+	        </div>
          </div>
-<!-- 	    <div class="row"> -->
-<!-- 	       <input type="checkbox" name="receipt"><span>Email me a receipt when the upload has completed</span> -->
-<!-- 	    </div>	 -->
-	    <div id="uploadHolder" jad:id="uploadWidget" class="col-12 mb-3"></div>
+		<div class="row"> 
+ 	   		<div id="uploadHolder" jad:id="uploadWidget" class="col-12 mb-3"></div>
 
 		</div>
-         </div>
-         </div>
+      </div>
+    </div>
+   </div>
    </div>
 </main>
 </div>
@@ -37,16 +48,18 @@
 <script type="text/javascript">
 
 	$(function() {
-		UploadWidget.init('/upload/public/${page.shortCode}', '/app/ui/public-upload/${page.shortCode}', "#feedback", function(fd) {
+		UploadWidget.init('/upload/public/${page.shortCode}', '/app/ui/', "#feedback", function(fd) {
 			
 			var name = $('#name').val();
 			var email = $('#email').val();
+			var reference = $('#reference').val();
 			
-			if(name.trim() === '' || email.trim() === '') {
-				$('#feedback').append('<p class="alert alert-danger"><i class="far fa-exclamation-circle"></i> Please provide your name and email address to upload the file.</p>');
+			if(name.trim() === '' || email.trim() === '' || reference.trim() === '') {
+				$('#feedback').append('<p class="alert alert-danger"><i class="far fa-exclamation-circle"></i> Please provide your name, email address and a reference for your files.</p>');
 			}
 			fd.append("name", name);
 			fd.append("email", email);
+			fd.append("reference", reference);
 		});
 	});
 </script>

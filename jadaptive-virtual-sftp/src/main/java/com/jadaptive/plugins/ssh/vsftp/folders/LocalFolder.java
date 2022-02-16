@@ -12,7 +12,8 @@ import com.jadaptive.plugins.ssh.vsftp.schemes.LocalFileScheme;
 
 @ObjectDefinition(resourceKey = LocalFolder.RESOURCE_KEY, 
 					bundle = VirtualFolder.RESOURCE_KEY, 
-					type = ObjectType.COLLECTION)
+					type = ObjectType.COLLECTION,
+					defaultColumn = "name")
 @ObjectServiceBean(bean = VirtualFileService.class)
 public class LocalFolder extends VirtualFolder {
 

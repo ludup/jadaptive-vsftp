@@ -7,24 +7,24 @@ import org.pf4j.Extension;
 
 import com.jadaptive.api.ui.menu.ApplicationMenu;
 import com.jadaptive.api.ui.menu.ApplicationMenuService;
-import com.jadaptive.plugins.ssh.vsftp.links.PublicDownload;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 @Extension
-public class PublicDownloadsMenu implements ApplicationMenu {
+public class IncomingFilesMenu implements ApplicationMenu {
 
 	@Override
 	public String getResourceKey() {
-		return "publicDownload.names";
+		return "incomingFiles.names";
 	}
 
 	@Override
 	public String getBundle() {
-		return PublicDownload.RESOURCE_KEY;
+		return VirtualFolder.RESOURCE_KEY;
 	}
 
 	@Override
 	public String getPath() {
-		return "/app/ui/table/publicDownload";
+		return "/app/ui/search/incomingFiles";
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class PublicDownloadsMenu implements ApplicationMenu {
 
 	@Override
 	public String getIcon() {
-		return "download";
+		return "inboxes";
 	}
 
 	@Override
@@ -44,12 +44,12 @@ public class PublicDownloadsMenu implements ApplicationMenu {
 
 	@Override
 	public String getUuid() {
-		return "840e6b33-af38-4ba3-8918-07bc841a9a6c";
+		return "ac5be4ce-f754-422c-adc5-6dc3083da590";
 	}
 
 	@Override
 	public Integer weight() {
-		return 1001;
+		return 1002;
 	}
 
 }

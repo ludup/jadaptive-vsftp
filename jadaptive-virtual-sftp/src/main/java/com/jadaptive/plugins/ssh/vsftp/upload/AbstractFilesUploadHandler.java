@@ -51,7 +51,7 @@ public abstract class AbstractFilesUploadHandler extends AuthenticatedService im
 	@Autowired
 	private EventService eventService; 
 	
-	protected void doUpload(String path, String filename, InputStream in) throws  SessionTimeoutException {
+	protected AbstractFile doUpload(String path, String filename, InputStream in) throws  SessionTimeoutException {
 
 		Date started = Utils.now();
 		
@@ -95,6 +95,7 @@ public abstract class AbstractFilesUploadHandler extends AuthenticatedService im
 					.words(contentHash.getWords())
 					.build())));
 			
+			return file;
 		} catch (IOException | PermissionDeniedException | NoSuchAlgorithmException e) {
 			
 			eventService.publishEvent(new FileUploadEvent(

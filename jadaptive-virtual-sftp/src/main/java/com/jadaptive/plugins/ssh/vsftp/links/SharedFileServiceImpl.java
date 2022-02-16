@@ -13,19 +13,19 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 
 @Service
-public class PublicDownloadServiceImpl extends AbstractUUIDObjectServceImpl<PublicDownload> implements PublicDownloadService {
+public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFile> implements SharedFileService {
 
 	@Override
-	protected Class<PublicDownload> getResourceClass() {
-		return PublicDownload.class;
+	protected Class<SharedFile> getResourceClass() {
+		return SharedFile.class;
 	}
 
-	public PublicDownload getDownloadByPath(String path) {
+	public SharedFile getDownloadByPath(String path) {
 		return objectDatabase.get(getResourceClass(), SearchField.eq("virtualPath", FileUtils.checkEndsWithNoSlash(path)));
 	}
 	
 	@Override
-	public String saveOrUpdate(PublicDownload object) {
+	public String saveOrUpdate(SharedFile object) {
 		if(StringUtils.isBlank(object.getShortCode())) {
 			object.setShortCode(Utils.generateRandomAlphaNumericString(8));
 		}
@@ -35,8 +35,8 @@ public class PublicDownloadServiceImpl extends AbstractUUIDObjectServceImpl<Publ
 	}
 
 	@Override
-	public PublicDownload createDownloadLink(AbstractFile file) throws IOException, PermissionDeniedException {
-		PublicDownload link = new PublicDownload();
+	public SharedFile createDownloadLink(AbstractFile file) throws IOException, PermissionDeniedException {
+		SharedFile link = new SharedFile();
 		link.setVirtualPath(file.getAbsolutePath());
 		if(file.isDirectory()) {
 			link.setFilename(file.getName() + ".zip");
@@ -48,7 +48,7 @@ public class PublicDownloadServiceImpl extends AbstractUUIDObjectServceImpl<Publ
 	}
 
 	@Override
-	public PublicDownload getDownloadByShortCode(String shortCode) {
+	public SharedFile getDownloadByShortCode(String shortCode) {
 		return objectDatabase.get(getResourceClass(), SearchField.eq("shortCode", shortCode));
 	}
 

@@ -39,7 +39,7 @@ public class PublicUploadComplete extends HtmlPage {
 			throw new IllegalStateException("Incomplete public upload wizard!");
 		}
 		String shortcode = (String) state.getParameter(PublicUploadStep2.SHORTCODE);
-		String generatedURL = FileUtils.checkEndsWithSlash(Request.generateBaseUrl(Request.get())) + "app/ui/public-upload/" + shortcode;
+		String generatedURL = FileUtils.checkEndsWithSlash(Request.generateBaseUrl(Request.get())) + "app/ui/incoming/" + shortcode;
 		Element url = document.selectFirst("#publicURL");
 		url.attr("href", generatedURL);
 		url.text(generatedURL);

@@ -1,8 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.events.AuditedObject;
-import com.jadaptive.api.events.Events;
 import com.jadaptive.api.repository.SingletonUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;

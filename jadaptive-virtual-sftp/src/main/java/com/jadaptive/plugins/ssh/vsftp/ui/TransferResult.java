@@ -66,7 +66,7 @@ public class TransferResult extends UUIDEntity {
 
 	@Override
 	public String getResourceKey() {
-		return "transferResult";
+		return RESOURCE_KEY;
 	}
 
 	public String getFilename() {

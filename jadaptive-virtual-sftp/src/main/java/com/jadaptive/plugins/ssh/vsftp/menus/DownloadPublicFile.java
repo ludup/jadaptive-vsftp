@@ -16,8 +16,8 @@ import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
-import com.jadaptive.plugins.ssh.vsftp.links.PublicDownload;
-import com.jadaptive.plugins.ssh.vsftp.links.PublicDownloadService;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.ui.PublicFileNotFound;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
@@ -31,7 +31,7 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 public class DownloadPublicFile extends HtmlPage {
 
 	@Autowired
-	private PublicDownloadService downloadService; 
+	private SharedFileService downloadService; 
 	
 	@Autowired
 	private SSHDService sshdService; 
@@ -51,7 +51,7 @@ public class DownloadPublicFile extends HtmlPage {
 		
 		
 		try {
-			PublicDownload download = downloadService.getDownloadByShortCode(shortCode);
+			SharedFile download = downloadService.getDownloadByShortCode(shortCode);
 
 			AbstractFileFactory<?> factory = sshdService.getFileFactory(userDatabase.getUser(AnonymousUserDatabaseImpl.ANONYMOUS_USERNAME));
 			AbstractFile fileObject  = factory.getFile(download.getVirtualPath());

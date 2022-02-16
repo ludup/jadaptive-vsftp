@@ -12,12 +12,14 @@ import com.jadaptive.api.template.ObjectServiceBean;
 import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
+import com.jadaptive.api.template.TableView;
 
-@ObjectDefinition(resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION)
+@ObjectDefinition(resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION, defaultColumn = "name")
 @ObjectServiceBean(bean = VirtualFileService.class)
 @ObjectViews({ 
 	@ObjectViewDefinition(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -50),
 	@ObjectViewDefinition(value = VirtualFolder.FOLDER_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -100)})
+@TableView(defaultColumns = { "name", "mountPath"})
 @AuditedObject
 public abstract class VirtualFolder extends AssignableUUIDEntity {
 

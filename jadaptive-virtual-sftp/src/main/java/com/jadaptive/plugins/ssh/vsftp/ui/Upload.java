@@ -10,13 +10,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.entity.ObjectException;
+import com.jadaptive.api.ui.ModalPage;
 import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 @Extension
-@RequestPage(path = "public-upload/{shortCode}")
+@ModalPage
+@RequestPage(path = "incoming/{shortCode}")
 @PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "jadaptive-utils"} )
 @PageProcessors(extensions = { "freemarker", "i18n"} )
 public class Upload extends AnonymousPage {
@@ -35,7 +38,8 @@ public class Upload extends AnonymousPage {
     public void generateAnonymousContent(Document contents) throws IOException {
     	
     	try {
-    		fileService.getVirtualFolderByShortCode(shortCode);
+    		VirtualFolder folder = fileService.getVirtualFolderByShortCode(shortCode);
+    		contents.selectFirst("#uploadArea").text(folder.getName());
     	} catch(ObjectException e) {
     		log.error("Failed to lookup shortcode", e);
     		throw new FileNotFoundException(String.format("%s is not a valid public folder code", shortCode));
@@ -44,6 +48,6 @@ public class Upload extends AnonymousPage {
 
 	@Override
 	public String getUri() {
-		return "public-upload";
+		return "incoming";
 	}
 }

@@ -57,9 +57,13 @@ import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderMount;
-import com.jadaptive.plugins.ssh.vsftp.links.PublicDownload;
-import com.jadaptive.plugins.ssh.vsftp.links.PublicDownloadService;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
+import com.jadaptive.plugins.ssh.vsftp.upload.FileUpload;
+import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFile;
+import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFileService;
 import com.jadaptive.plugins.ssh.vsftp.zip.ZipFolderInputStream;
+import com.jadaptive.plugins.ssh.vsftp.zip.ZipMultipleFilesInputStream;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
@@ -87,13 +91,16 @@ public class VirtualFileController extends AuthenticatedController implements St
 	private VirtualFileService fileService; 
 	
 	@Autowired
-	private PublicDownloadService linkService; 
+	private SharedFileService linkService; 
 	
 	@Autowired
 	private EventService eventService; 
 	
 	@Autowired
 	private SingletonObjectDatabase<VFSConfiguration> configurationService; 
+	
+	@Autowired
+	private IncomingFileService incomingService; 
 	
 	@Override
 	public void onApplicationStartup() {
@@ -315,6 +322,50 @@ public class VirtualFileController extends AuthenticatedController implements St
 		}
 	}
 	
+	private void sendZippedFiles(String folder, String filename, List<AbstractFile> files, HttpServletResponse response) {
+		
+		InputStream in = null;
+		OutputStream out = null;
+		
+		Date started = Utils.now();
+		ContentHash contentHash = configurationService.getObject(VFSConfiguration.class).getDefaultHash();
+		try {
+			long size = 0L;
+			MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
+			try(OutputStream digestOutput = new DigestOutputStream(response.getOutputStream(), digest)) {
+			
+				in = new ZipMultipleFilesInputStream(folder, files);
+				
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + filename  + "\"");
+				
+				String mimeType = URLConnection.guessContentTypeFromName(filename);
+				if(StringUtils.isBlank(mimeType)) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				
+				size = IOUtils.copyWithCount(in, digestOutput);
+			}
+
+			byte[] output = digest.digest();
+			eventService.publishEvent(new FileDownloadEvent(
+					new TransferResult(filename, "", 
+							size, started, Utils.now(), formatDigest(digest.getAlgorithm(), output), 
+								new HumanHashGenerator(output)
+									.words(contentHash.getWords())
+									.build())));
+			
+		} catch (NoSuchAlgorithmException | IOException | PermissionDeniedException e) { 
+			eventService.publishEvent(new FileDownloadEvent(
+					new TransferResult(filename, "", 
+							0L, started, Utils.now()), e));
+			throw new PageRedirect(new ErrorPage(e, Request.get().getHeader("Referer")));
+		} finally {
+			IOUtils.closeStream(in);
+			IOUtils.closeStream(out);
+		}
+	}
+	
 	private void sendFileOrZipFolder(String path, AbstractFile fileObject, HttpServletResponse response) throws IOException, PermissionDeniedException {
 		
 		InputStream in = null;
@@ -386,7 +437,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 		
 		try {
 			
-			PublicDownload download = linkService.getDownloadByShortCode(shortCode);
+			SharedFile download = linkService.getDownloadByShortCode(shortCode);
 			AbstractFile fileOjbect = getFactory(request).getFile(download.getVirtualPath());
 			sendFileOrZipFolder(download.getVirtualPath(), fileOjbect, response);
 		} catch (Throwable e) {
@@ -396,22 +447,67 @@ public class VirtualFileController extends AuthenticatedController implements St
 		}
 	}
 	
+	@RequestMapping(value="/app/vfs/incoming/zip/{uuid}", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/octet-stream"})
+	@ResponseStatus(value=HttpStatus.OK)
+	public void downloadZip(HttpServletRequest request, HttpServletResponse response, @PathVariable String uuid) throws RepositoryException, UnknownEntityException, ObjectException {
+
+		setupUserContext(request);
+		
+		try {
+			
+			IncomingFile download = incomingService.getIncomingFile(uuid);
+			List<AbstractFile> files = new ArrayList<>();
+			for(FileUpload file : download.getUploadPaths()) {
+				files.add(getFactory(request).getFile(file.getVirtualPath()));
+			}
+			sendZippedFiles(download.getReference(), download.getReference() + ".zip", files, response);
+		} catch (Throwable e) {
+			throw new IllegalStateException(e);
+		} finally {
+			clearUserContext();
+		}
+	}
+	
+	@RequestMapping(value="/app/vfs/incoming/delete/{uuid}", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/octet-stream"})
+	@ResponseStatus(value=HttpStatus.OK)
+	@ResponseBody
+	public RequestStatus deleteIncomingFile(HttpServletRequest request, HttpServletResponse response, @PathVariable String uuid) throws RepositoryException, UnknownEntityException, ObjectException {
+
+		setupUserContext(request);
+		
+		try {
+			
+			IncomingFile download = incomingService.getIncomingFile(uuid);
+			
+			for(FileUpload fileUpload : download.getUploadPaths()) {
+				AbstractFile file = getFactory(request).getFile(fileUpload.getVirtualPath());
+				file.delete(false);
+			}
+			
+			return new RequestStatusImpl(true);
+		} catch (Throwable e) {
+			return new RequestStatusImpl(false, e.getMessage());
+		} finally {
+			clearUserContext();
+		}
+	}
+
 	@RequestMapping(value="/app/vfs/createPublicDownload", method = { RequestMethod.POST}, produces = {"application/json"})
 	@ResponseBody
 	@ResponseStatus(value=HttpStatus.OK)
-	public ResourceStatus<PublicDownload> createPublicDownload(HttpServletRequest request, HttpServletResponse response,
+	public ResourceStatus<SharedFile> createPublicDownload(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam String path) throws RepositoryException, UnknownEntityException, ObjectException {
 
 		setupUserContext(request);
 		
 		try {
 			try {
-				PublicDownload link = linkService.getDownloadByPath(path);
+				SharedFile link = linkService.getDownloadByPath(path);
 				return new ResourceStatus<>(link);
 			} catch(ObjectNotFoundException e) {
 				
 				AbstractFile fileObject = getFactory(request).getFile(path);
-				PublicDownload link = linkService.createDownloadLink(fileObject);
+				SharedFile link = linkService.createDownloadLink(fileObject);
 				return new ResourceStatus<>(link);
 			}
 		} catch (Throwable e) {
