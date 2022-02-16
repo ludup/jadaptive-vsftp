@@ -14,11 +14,11 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.Utils;
 
 @ObjectDefinition(resourceKey = SharedFile.RESOURCE_KEY, bundle = SharedFile.RESOURCE_KEY, 
-	type = ObjectType.COLLECTION, creatable = false, defaultColumn = "virtualPath")
+	type = ObjectType.COLLECTION, creatable = false, defaultColumn = "filename")
 @ObjectServiceBean( bean = SharedFileService.class)
 @ObjectViews({ @ObjectViewDefinition(bundle = VirtualFolder.RESOURCE_KEY, value = "file", weight = 0),
 	@ObjectViewDefinition(bundle = VirtualFolder.RESOURCE_KEY, value = "options", weight = 100)})
-@TableView(defaultColumns = { "virtualPath" })
+@TableView(defaultColumns = { "filename", "passwordProtected", "virtualPath" })
 
 public class SharedFile extends AbstractUUIDEntity {
 
@@ -45,6 +45,10 @@ public class SharedFile extends AbstractUUIDEntity {
 	@ObjectField(type = FieldType.PASSWORD)
 	@ObjectView(value = "options")
 	String password;
+	
+	@ObjectField(type = FieldType.BOOL)
+	@ObjectView(value = "options")
+	Boolean acceptTerms;
 	
 	@ObjectField(type = FieldType.TEXT_AREA)
 	@ObjectView(value = "options")
@@ -109,5 +113,13 @@ public class SharedFile extends AbstractUUIDEntity {
 
 	public void setTerms(String terms) {
 		this.terms = terms;
+	}
+
+	public Boolean getAcceptTerms() {
+		return acceptTerms;
+	}
+
+	public void setAcceptTerms(Boolean acceptTerms) {
+		this.acceptTerms = acceptTerms;
 	}
 }

@@ -1,7 +1,8 @@
-package com.jadaptive.plugins.ssh.vsftp.menus;
+package com.jadaptive.plugins.ssh.vsftp.ui;
 
 import java.io.IOException;
 
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
-import com.jadaptive.plugins.ssh.vsftp.ui.PublicFileNotFound;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
@@ -55,6 +55,15 @@ public class DownloadPublicFile extends HtmlPage {
 
 			AbstractFileFactory<?> factory = sshdService.getFileFactory(userDatabase.getUser(AnonymousUserDatabaseImpl.ANONYMOUS_USERNAME));
 			AbstractFile fileObject  = factory.getFile(download.getVirtualPath());
+			
+			if(StringUtils.isBlank(download.getTerms())) {
+				document.selectFirst("#terms").parent().remove();
+			} else {
+				document.selectFirst("#terms").text(download.getTerms());
+				if(!download.getAcceptTerms()) {
+					document.select(".acceptedTerms").remove();
+				}
+			}
 			
 			document.select(".ipAddress").html(Request.get().getRemoteAddr());
 			

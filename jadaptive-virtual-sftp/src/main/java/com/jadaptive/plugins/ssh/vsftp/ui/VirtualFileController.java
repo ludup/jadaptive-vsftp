@@ -1,5 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -438,6 +439,20 @@ public class VirtualFileController extends AuthenticatedController implements St
 		try {
 			
 			SharedFile download = linkService.getDownloadByShortCode(shortCode);
+			if(download.getPasswordProtected()) {
+				String sessionPassword = (String) request.getSession().getAttribute("sharePassword");
+				if(StringUtils.isBlank(sessionPassword) || !download.getPassword().equals(sessionPassword)) {
+					throw new FileNotFoundException("Invalid credentials");
+				}
+			}
+			
+			if(download.getAcceptTerms()) {
+				Boolean accepted = (Boolean) request.getSession().getAttribute("acceptedTerms");
+				if(Objects.isNull(accepted) || !accepted) {
+					throw new FileNotFoundException("Invalid credentials");
+				}
+			}
+			
 			AbstractFile fileOjbect = getFactory(request).getFile(download.getVirtualPath());
 			sendFileOrZipFolder(download.getVirtualPath(), fileOjbect, response);
 		} catch (Throwable e) {
