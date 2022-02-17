@@ -9,17 +9,19 @@ import com.jadaptive.api.template.ObjectServiceBean;
 import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
+import com.jadaptive.api.template.TableAction;
+import com.jadaptive.api.template.TableAction.Target;
 import com.jadaptive.api.template.TableView;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.Utils;
 
 @ObjectDefinition(resourceKey = SharedFile.RESOURCE_KEY, bundle = SharedFile.RESOURCE_KEY, 
 	type = ObjectType.COLLECTION, creatable = false, defaultColumn = "filename")
 @ObjectServiceBean( bean = SharedFileService.class)
-@ObjectViews({ @ObjectViewDefinition(bundle = VirtualFolder.RESOURCE_KEY, value = "file", weight = 0),
-	@ObjectViewDefinition(bundle = VirtualFolder.RESOURCE_KEY, value = "options", weight = 100)})
-@TableView(defaultColumns = { "filename", "passwordProtected", "virtualPath" })
-
+@ObjectViews({ @ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = "file", weight = 0),
+	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = "options", weight = 100)})
+@TableView(defaultColumns = { "filename", "passwordProtected", "acceptTerms", "virtualPath" },
+             actions = { @TableAction(bundle = SharedFile.RESOURCE_KEY, icon = "fa-link", 
+             resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/public-download/{shortCode}/{filename}") })
 public class SharedFile extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = 6440151078128444905L;

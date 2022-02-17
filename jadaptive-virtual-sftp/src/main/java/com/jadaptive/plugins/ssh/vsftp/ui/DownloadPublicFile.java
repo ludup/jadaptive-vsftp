@@ -1,12 +1,17 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.ui.HtmlPage;
@@ -15,6 +20,7 @@ import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.api.ui.RequestPage;
+import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
@@ -45,6 +51,50 @@ public class DownloadPublicFile extends HtmlPage {
 	String shortCode;
 	String filename;
 
+	
+	@Override
+	protected void beforeProcess(String uri, HttpServletRequest request, HttpServletResponse response)
+			throws FileNotFoundException {
+		
+		try {
+			SharedFile file = downloadService.getDownloadByShortCode(shortCode);
+			
+			if(!hasPassword(request, file)) {
+				throw new UriRedirect(String.format("/app/ui/password-protected/%s/%s", shortCode, filename));
+			} else if(!hasAcceptedTerms(request, file) && !file.getAcceptTerms()){
+				throw new UriRedirect(String.format("/app/ui/download-share/%s/%s", shortCode, file.getFilename()));
+			}
+		} catch(ObjectException e) {
+			throw new FileNotFoundException();
+		}
+	}
+
+	public static boolean hasAcceptedTerms(HttpServletRequest request, SharedFile file) {
+		
+		if(file.getAcceptTerms()) {
+			Boolean accept = (Boolean) request.getSession().getAttribute(file.getUuid());
+			return Objects.nonNull(accept) && accept.booleanValue();
+		} else {
+			return true;
+		}
+	}
+
+	public static boolean hasPassword(HttpServletRequest request, SharedFile file) {
+		
+		if(file.getPasswordProtected()) {
+			String sharedPassword = (String) request.getSession().getAttribute(file.getShortCode());
+			if(Objects.isNull(sharedPassword)) {
+				return false;
+			}
+			if(file.getPassword().equalsIgnoreCase(sharedPassword)) {
+				return true;
+			}
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	@Override
 	protected void generateContent(Document document) throws IOException {
 		super.generateContent(document);
@@ -55,15 +105,6 @@ public class DownloadPublicFile extends HtmlPage {
 
 			AbstractFileFactory<?> factory = sshdService.getFileFactory(userDatabase.getUser(AnonymousUserDatabaseImpl.ANONYMOUS_USERNAME));
 			AbstractFile fileObject  = factory.getFile(download.getVirtualPath());
-			
-			if(StringUtils.isBlank(download.getTerms())) {
-				document.selectFirst("#terms").parent().remove();
-			} else {
-				document.selectFirst("#terms").text(download.getTerms());
-				if(!download.getAcceptTerms()) {
-					document.select(".acceptedTerms").remove();
-				}
-			}
 			
 			document.select(".ipAddress").html(Request.get().getRemoteAddr());
 			

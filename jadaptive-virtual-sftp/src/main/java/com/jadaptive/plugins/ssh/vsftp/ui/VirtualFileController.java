@@ -52,6 +52,7 @@ import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.Session;
 import com.jadaptive.api.ui.ErrorPage;
 import com.jadaptive.api.ui.PageRedirect;
+import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.plugins.ssh.vsftp.ContentHash;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
@@ -440,16 +441,16 @@ public class VirtualFileController extends AuthenticatedController implements St
 			
 			SharedFile download = linkService.getDownloadByShortCode(shortCode);
 			if(download.getPasswordProtected()) {
-				String sessionPassword = (String) request.getSession().getAttribute("sharePassword");
-				if(StringUtils.isBlank(sessionPassword) || !download.getPassword().equals(sessionPassword)) {
-					throw new FileNotFoundException("Invalid credentials");
+				if(!DownloadPublicFile.hasPassword(request, download)) {
+					response.sendRedirect(String.format("/app/ui/password-protected/%s/%s", shortCode, download.getFilename()));
+					return;
 				}
 			}
 			
 			if(download.getAcceptTerms()) {
-				Boolean accepted = (Boolean) request.getSession().getAttribute("acceptedTerms");
-				if(Objects.isNull(accepted) || !accepted) {
-					throw new FileNotFoundException("Invalid credentials");
+				if(!DownloadPublicFile.hasAcceptedTerms(request, download)) {
+					response.sendRedirect(String.format("/app/ui/download-share/%s/%s", shortCode, download.getFilename()));
+					return;
 				}
 			}
 			
