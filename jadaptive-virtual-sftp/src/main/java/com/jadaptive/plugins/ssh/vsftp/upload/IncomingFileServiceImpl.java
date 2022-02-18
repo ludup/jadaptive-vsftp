@@ -24,4 +24,9 @@ public class IncomingFileServiceImpl implements IncomingFileService {
 	public Collection<IncomingFile> getLatestFiles() {
 		return objectDatabase.searchTable(IncomingFile.class, 0, 5, SearchField.gt("created", Utils.thirtyDaysAgo()));
 	}
+
+	@Override
+	public void delete(IncomingFile file) {
+		objectDatabase.delete(file);
+	}
 }

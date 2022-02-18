@@ -2,6 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp;
 
 import org.pf4j.Extension;
 
+import com.jadaptive.api.app.ApplicationVersion;
 import com.jadaptive.api.product.Product;
 
 @Extension
@@ -14,12 +15,17 @@ public class VSFTP implements Product {
 
 	@Override
 	public String getVersion() {
-		return "DEV_VERSION";
+		return ApplicationVersion.getVersion();
 	}
 
 	@Override
-	public boolean supportsFeature(String feature) {
-		return false;
+	public final boolean supportsFeature(String feature) {
+		switch(feature) {
+//		case "eventLog":
+//			return true;
+		default:
+			return false;
+		}
 	}
 
 }

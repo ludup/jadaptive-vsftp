@@ -1,6 +1,5 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -51,8 +50,8 @@ import com.jadaptive.api.repository.RepositoryException;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.Session;
 import com.jadaptive.api.ui.ErrorPage;
+import com.jadaptive.api.ui.Feedback;
 import com.jadaptive.api.ui.PageRedirect;
-import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.plugins.ssh.vsftp.ContentHash;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
@@ -484,7 +483,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 		}
 	}
 	
-	@RequestMapping(value="/app/vfs/incoming/delete/{uuid}", method = { RequestMethod.POST, RequestMethod.GET }, produces = {"application/octet-stream"})
+	@RequestMapping(value="/app/vfs/incoming/delete/{uuid}", method = { RequestMethod.DELETE }, produces = {"application/json"})
 	@ResponseStatus(value=HttpStatus.OK)
 	@ResponseBody
 	public RequestStatus deleteIncomingFile(HttpServletRequest request, HttpServletResponse response, @PathVariable String uuid) throws RepositoryException, UnknownEntityException, ObjectException {
@@ -500,8 +499,11 @@ public class VirtualFileController extends AuthenticatedController implements St
 				file.delete(false);
 			}
 			
+			incomingService.delete(download);
+			Feedback.success(VirtualFolder.RESOURCE_KEY, "incomingFile.delete.success", download.getReference());
 			return new RequestStatusImpl(true);
 		} catch (Throwable e) {
+			Feedback.error(VirtualFolder.RESOURCE_KEY, "incomingFile.delete.error", e.getMessage());
 			return new RequestStatusImpl(false, e.getMessage());
 		} finally {
 			clearUserContext();

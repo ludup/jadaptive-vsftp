@@ -8,4 +8,6 @@ public interface IncomingFileService {
 
 	Collection<IncomingFile> getLatestFiles();
 
+	void delete(IncomingFile file);
+
 }
