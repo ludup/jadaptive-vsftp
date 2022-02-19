@@ -15,7 +15,7 @@ import com.jadaptive.api.template.TableView;
 import com.jadaptive.utils.Utils;
 
 @ObjectDefinition(resourceKey = SharedFile.RESOURCE_KEY, bundle = SharedFile.RESOURCE_KEY, 
-	type = ObjectType.COLLECTION, creatable = false, defaultColumn = "filename")
+	type = ObjectType.COLLECTION, creatable = true, defaultColumn = "filename")
 @ObjectServiceBean( bean = SharedFileService.class)
 @ObjectViews({ @ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = "file", weight = 0),
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = "options", weight = 100)})
@@ -36,7 +36,7 @@ public class SharedFile extends AbstractUUIDEntity {
 	@ObjectView(value = "file")
 	String shortCode;
 	
-	@ObjectField(type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT, hidden = true)
 	@ObjectView(value = "file")
 	String filename;
 

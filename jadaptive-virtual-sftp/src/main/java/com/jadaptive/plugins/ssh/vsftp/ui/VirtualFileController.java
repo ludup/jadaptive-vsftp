@@ -65,10 +65,8 @@ import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFile;
 import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFileService;
 import com.jadaptive.plugins.ssh.vsftp.zip.ZipFolderInputStream;
 import com.jadaptive.plugins.ssh.vsftp.zip.ZipMultipleFilesInputStream;
-import com.jadaptive.plugins.sshd.SSHDService;
 import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
-import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VirtualFileObject;
 import com.sshtools.common.files.vfs.VirtualMount;
 import com.sshtools.common.permissions.PermissionDeniedException;
@@ -81,12 +79,7 @@ import com.sshtools.humanhash.HumanHashGenerator;
 @Controller
 public class VirtualFileController extends AuthenticatedController implements StartupAware {
 
-	private static final String ABSTRACT_FILE_FACTORY = "abstractFileFactory";
-
 	static Logger log = LoggerFactory.getLogger(VirtualFileController.class);
-	
-	@Autowired
-	private SSHDService sshdService;
 	
 	@Autowired
 	private VirtualFileService fileService; 
@@ -107,11 +100,11 @@ public class VirtualFileController extends AuthenticatedController implements St
 	public void onApplicationStartup() {
 
 		eventService.any(VirtualFolder.class, (evt) -> {
-			resetFactory();
+			fileService.resetFactory();
 		});
 		eventService.updated(Session.class, (evt) -> {
 			if(evt.getObject().isClosed()) {
-				resetFactory();
+				fileService.resetFactory();
 			}
 		});
 
@@ -157,7 +150,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			
 			log.info("Start stat {}", path);
 			
-			AbstractFile parent = getFactory(request).getFile(path);
+			AbstractFile parent = fileService.getFactory().getFile(path);
 			
 			VirtualMount parentMount = ((VirtualFileObject)parent).getMount();
 			boolean publicFiles = false;
@@ -202,7 +195,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			List<File> fileResults = new ArrayList<>();
 			List<File> folderResults = new ArrayList<>();
 			
-			AbstractFile parent = getFactory(request).getFile(path);
+			AbstractFile parent = fileService.getFactory().getFile(path);
 			PathMatcher matcher = null;
 			if(StringUtils.isNotBlank(filter)) {
 				matcher = FileSystems.getDefault().getPathMatcher("glob:" + filter);
@@ -312,7 +305,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 		
 		try {
 			String path = URLUTF8Encoder.decode(FileUtils.checkStartsWithSlash(request.getRequestURI().substring(22)));
-			AbstractFile fileObject = getFactory(request).getFile(path);
+			AbstractFile fileObject = fileService.getFile(path);
 			sendFileOrZipFolder(path, fileObject, response);
 		} catch(PageRedirect e) {
 			throw e;
@@ -453,7 +446,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 				}
 			}
 			
-			AbstractFile fileOjbect = getFactory(request).getFile(download.getVirtualPath());
+			AbstractFile fileOjbect = fileService.getFactory().getFile(download.getVirtualPath());
 			sendFileOrZipFolder(download.getVirtualPath(), fileOjbect, response);
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);
@@ -473,7 +466,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			IncomingFile download = incomingService.getIncomingFile(uuid);
 			List<AbstractFile> files = new ArrayList<>();
 			for(FileUpload file : download.getUploadPaths()) {
-				files.add(getFactory(request).getFile(file.getVirtualPath()));
+				files.add(fileService.getFactory().getFile(file.getVirtualPath()));
 			}
 			sendZippedFiles(download.getReference(), download.getReference() + ".zip", files, response);
 		} catch (Throwable e) {
@@ -495,7 +488,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			IncomingFile download = incomingService.getIncomingFile(uuid);
 			
 			for(FileUpload fileUpload : download.getUploadPaths()) {
-				AbstractFile file = getFactory(request).getFile(fileUpload.getVirtualPath());
+				AbstractFile file = fileService.getFactory().getFile(fileUpload.getVirtualPath());
 				file.delete(false);
 			}
 			
@@ -510,13 +503,14 @@ public class VirtualFileController extends AuthenticatedController implements St
 		}
 	}
 
-	@RequestMapping(value="/app/vfs/createPublicDownload", method = { RequestMethod.POST}, produces = {"application/json"})
+	@RequestMapping(value="/app/vfs/share/public/**", method = { RequestMethod.GET}, produces = {"application/json"})
 	@ResponseBody
 	@ResponseStatus(value=HttpStatus.OK)
-	public ResourceStatus<SharedFile> createPublicDownload(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam String path) throws RepositoryException, UnknownEntityException, ObjectException {
+	public ResourceStatus<SharedFile> createPublicDownload(HttpServletRequest request, HttpServletResponse response) throws RepositoryException, UnknownEntityException, ObjectException {
 
 		setupUserContext(request);
+		
+		String path = request.getRequestURI().substring(21);
 		
 		try {
 			try {
@@ -524,7 +518,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 				return new ResourceStatus<>(link);
 			} catch(ObjectNotFoundException e) {
 				
-				AbstractFile fileObject = getFactory(request).getFile(path);
+				AbstractFile fileObject = fileService.getFactory().getFile(path);
 				SharedFile link = linkService.createDownloadLink(fileObject);
 				return new ResourceStatus<>(link);
 			}
@@ -535,24 +529,23 @@ public class VirtualFileController extends AuthenticatedController implements St
 		}
 	}
 	
-	private void resetFactory() {
-		if(Request.isAvailable()) {
-			Request.get().getSession().setAttribute(ABSTRACT_FILE_FACTORY, null);
-		}
-	}
-	
-	private AbstractFileFactory<?> getFactory(HttpServletRequest request) {
-		return getFactory(request, false);
-	}
-	
-	private AbstractFileFactory<?> getFactory(HttpServletRequest request, boolean reset) {
+	@RequestMapping(value="/app/vfs/share/create/**", method = { RequestMethod.GET}, produces = {"application/json"})
+	@ResponseBody
+	@ResponseStatus(value=HttpStatus.OK)
+	public ResourceStatus<SharedFile> createShare(HttpServletRequest request, HttpServletResponse response) throws RepositoryException, UnknownEntityException, ObjectException {
+
+		setupUserContext(request);
 		
-		AbstractFileFactory<?> factory = (AbstractFileFactory<?>) request.getSession().getAttribute(ABSTRACT_FILE_FACTORY);
-		if(Objects.isNull(factory) || reset) {
-			factory = sshdService.getFileFactory(getCurrentUser());	
+		String path = request.getRequestURI().substring(21);
+		
+		try {
+			SharedFile link = new SharedFile();
+			link.setVirtualPath(path);
+			request.getSession().setAttribute(SharedFile.RESOURCE_KEY, link);
+			return new ResourceStatus<>(link);
+		} finally {
+			clearUserContext();
 		}
-		request.getSession().setAttribute(ABSTRACT_FILE_FACTORY, factory);
-		return factory;
 	}
 
 	@RequestMapping(value="/app/vfs/createFolder", method = { RequestMethod.POST }, produces = {"application/json"})
@@ -569,7 +562,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			name = URLUTF8Encoder.decode(name);
 			path = URLUTF8Encoder.decode(path);
 			
-			AbstractFile parent = getFactory(request).getFile(path);
+			AbstractFile parent = fileService.getFactory().getFile(path);
 			
 			if(!parent.isDirectory()) {
 				throw new IllegalStateException("Parent path is not a folder");
@@ -604,7 +597,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 		try {
 			path = URLUTF8Encoder.decode(path);
 			
-			AbstractFile obj = getFactory(request).getFile(path);
+			AbstractFile obj = fileService.getFactory().getFile(path);
 			
 			if(!obj.exists()) {
 				return new RequestStatusImpl(false, "The object does not exist!");

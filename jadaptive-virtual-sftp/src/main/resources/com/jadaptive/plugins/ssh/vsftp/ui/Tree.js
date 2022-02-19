@@ -40,15 +40,17 @@ function renderActions(val, obj) {
 	var html = '';
 	debugger;
 	if(!obj.mount) {
-		html += '<a class="deleteFile me-1" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash"></i></a>';
+		html += '<a class="deleteFile me-2" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash fa-fw"></i></a>';
 	}
 	if (!obj.directory) {
-		html += '<a class="downloadFile me-1" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download"></i></a>';
+		html += '<a class="downloadFile me-2" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download fa-fw"></i></a>';
 	}
 	if(obj.public) {
-		html += '<span class="dropdown"><a class="createLink me-1 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="far fa-link"></i></a>';
+		html += '<span class="dropdown"><a class="createLink me-2 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="far fa-link fa-fw"></i></a>';
 		html += '<ul class="dropdown-menu" aria-labelledby="' + obj.id + '" style="z-index: 999999;">';
-		html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="far fa-copy me-1"></i> Copy Link</a></li></ul></span>';
+		html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="far fa-copy fa-fw me-1"></i> Copy Link</a></li>';
+		html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="far fa-share-alt fa-fw me-1"></i> Create Share</a></li>';
+		html += '</ul></span>';
 	}
 	return html;
 }
@@ -195,13 +197,9 @@ $(function() {
 
 	$(document).on('click', '.copyLink', function(e) {
 		e.preventDefault();
-		
-		var path = $(this).data('path');
-		var params = {
-			path: path
-		};
-		$.post({
-			url: '/app/vfs/createPublicDownload',
+
+		$.get({
+			url: '/app/vfs/share/public' + $(this).data('path'),
 			data: params,
 			dataType: 'json',
 			success: function(data) {
@@ -209,6 +207,22 @@ $(function() {
 					var link = window.location.origin + data.resource.publicLink;
 					navigator.clipboard.writeText(link);
 					JadaptiveUtils.success($('#feedback'), "The public link has been copied to the clipboard.");
+				} else {
+					JadaptiveUtils.error($('#feedback'), data.message);
+				}
+			}
+		});
+	});
+	
+	$(document).on('click', '.createShare', function(e) {
+		e.preventDefault();
+
+		$.get({
+			url: '/app/vfs/share/create' + $(this).data('path'),
+			dataType: 'json',
+			success: function(data) {
+				if (data.success) {
+					window.location = '/app/ui/create/sharedFiles';
 				} else {
 					JadaptiveUtils.error($('#feedback'), data.message);
 				}

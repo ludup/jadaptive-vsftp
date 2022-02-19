@@ -10,8 +10,11 @@ import com.jadaptive.api.repository.UUIDObjectService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.stats.ResourceService;
 import com.jadaptive.api.user.User;
+import com.sshtools.common.files.AbstractFile;
+import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
+import com.sshtools.common.permissions.PermissionDeniedException;
 
 public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, ResourceService {
 
@@ -44,5 +47,13 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 	VirtualFolder getVirtualFolderByShortCode(String shortCode);
 
 	Iterable<VirtualFolder> getPersonalFolders();
+
+	AbstractFile getFile(String virtualPath) throws PermissionDeniedException, IOException;
+
+	AbstractFileFactory<?> getFactory(boolean reset);
+
+	void resetFactory();
+
+	default AbstractFileFactory<?> getFactory() { return getFactory(false); }
 
 }

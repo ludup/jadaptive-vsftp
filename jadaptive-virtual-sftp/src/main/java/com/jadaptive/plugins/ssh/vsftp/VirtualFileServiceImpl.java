@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jadaptive.api.app.ApplicationService;
+import com.jadaptive.api.cache.CacheService;
 import com.jadaptive.api.db.AssignableObjectDatabase;
 import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.entity.ObjectException;
@@ -38,14 +39,20 @@ import com.jadaptive.api.role.Role;
 import com.jadaptive.api.ui.PageCache;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.ssh.vsftp.ui.Tree;
+import com.jadaptive.plugins.sshd.SSHDService;
+import com.sshtools.common.files.AbstractFile;
+import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
+import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.Utils;
 
 @Service
 public class VirtualFileServiceImpl extends AuthenticatedService implements VirtualFileService {
 
 	static Logger log = LoggerFactory.getLogger(VirtualFileServiceImpl.class);
+	
+	private static final String ABSTRACT_FILE_FACTORY = "abstractFileFactory";
 	
 	@Autowired
 	private AssignableObjectDatabase<VirtualFolder> repository;
@@ -55,6 +62,12 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 
 	@Autowired
 	private PageCache pageCache; 
+	
+	@Autowired
+	private SSHDService sshdService;
+	
+	@Autowired
+	private CacheService cacheService; 
 	
 	private Set<String> types;
 	private Set<FileScheme<?>> schemes = new HashSet<>();
@@ -317,5 +330,37 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	@Override
+	public AbstractFile getFile(String virtualPath) throws PermissionDeniedException, IOException {
+		return getFactory().getFile(virtualPath);
+	}
+
+	@Override
+	public AbstractFileFactory<?> getFactory(boolean reset) {
+
+		@SuppressWarnings("rawtypes")
+		Map<String,AbstractFileFactory> cache = 
+				cacheService.getCacheOrCreate(ABSTRACT_FILE_FACTORY, 
+						String.class, AbstractFileFactory.class);
+		
+		AbstractFileFactory<?> factory = (AbstractFileFactory<?>) cache.get(getCurrentUser().getUuid());
+		if(Objects.isNull(factory) || reset) {
+			factory = sshdService.getFileFactory(getCurrentUser());	
+		}
+		
+		cache.put(getCurrentUser().getUuid(), factory);
+		return factory;
+		
+	}
+	
+	@Override
+	public void resetFactory() {
+		@SuppressWarnings("rawtypes")
+		Map<String,AbstractFileFactory> cache = 
+				cacheService.getCacheOrCreate(ABSTRACT_FILE_FACTORY, 
+						String.class, AbstractFileFactory.class);
+		cache.remove(getCurrentUser().getUuid());
 	}
 }
