@@ -200,7 +200,6 @@ $(function() {
 
 		$.get({
 			url: '/app/vfs/share/public' + $(this).data('path'),
-			data: params,
 			dataType: 'json',
 			success: function(data) {
 				if (data.success) {
