@@ -30,11 +30,11 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String RESOURCE_KEY = "virtualFolder";
 	
-	@ObjectField(type = FieldType.TEXT, nameField = true)
+	@ObjectField(type = FieldType.TEXT, nameField = true, searchable = true)
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "")
 	String name;
 	
-	@ObjectField(type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT, searchable = true)
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "")
 	String mountPath;
 	
