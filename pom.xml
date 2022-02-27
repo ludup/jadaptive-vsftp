@@ -28,6 +28,7 @@
 		<module>jadaptive-virtual-sftp</module>
 		<module>jadaptive-virtual-sftp-gcs</module>
 		<module>jadaptive-virtual-sftp-s3</module>
+		<module>jadaptive-virtual-sftp-azure</module>
 	</modules>
 
 	<dependencies>
