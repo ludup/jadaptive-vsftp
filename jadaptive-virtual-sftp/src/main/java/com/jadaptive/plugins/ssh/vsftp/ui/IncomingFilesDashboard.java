@@ -12,9 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.ui.DashboardWidget;
 import com.jadaptive.api.ui.Html;
-import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFile;
 import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFileService;
 import com.sshtools.common.util.FileUtils;
@@ -27,6 +28,9 @@ public class IncomingFilesDashboard implements DashboardWidget {
 	
 	@Autowired
 	private IncomingFileService incomingService; 
+	
+	@Autowired
+	private SharedFileService sharingService; 
 	
 	@Override
 	public String getIcon() {
@@ -46,14 +50,12 @@ public class IncomingFilesDashboard implements DashboardWidget {
 	@Override
 	public void renderWidget(Document document, Element element) {
 		
-		List<VirtualFolder> publicFolders = new ArrayList<>();
-		for(VirtualFolder folder : fileService.allObjects()) {
-			if(folder.getUsers().contains(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID)) {
-				publicFolders.add(folder);
-			}
+		List<SharedFile> shares = new ArrayList<>();
+		for(SharedFile share : sharingService.allObjects()) {
+			shares.add(share);
 		}
 		
-		if(publicFolders.isEmpty()) {
+		if(shares.isEmpty()) {
 			element.appendChild(new Element("h6")
 							.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
 							.attr("jad:i18n", "no.publicFolders"));
@@ -64,13 +66,15 @@ public class IncomingFilesDashboard implements DashboardWidget {
 							.attr("jad:i18n", "publicFolders.text"));
 		}
 		
-		for(VirtualFolder folder : publicFolders) {
-			String url = FileUtils.checkEndsWithSlash(Request.generateBaseUrl(Request.get())) + "app/ui/incoming/" + folder.getShortCode();
+		for(SharedFile share : shares) {
+			String downloadURL = FileUtils.checkEndsWithSlash(Request.generateBaseUrl(Request.get())) + "app/ui/incoming/" + share.getShortCode();
+		
+			
 			element.appendChild(Html.div("row")
 						.appendChild(Html.div("col-10")
-							.appendChild(Html.a(url).text(folder.getName())))
+							.appendChild(Html.a(downloadURL).text(share.getName())))
 					.appendChild(Html.div("col-2")
-						.appendChild(Html.a(url, "copyURL")
+						.appendChild(Html.a(downloadURL, "copyURL")
 								.appendChild(Html.i("far", "fa-copy")))));
 		}
 

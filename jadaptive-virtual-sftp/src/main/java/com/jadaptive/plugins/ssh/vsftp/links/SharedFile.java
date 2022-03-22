@@ -1,7 +1,7 @@
 package com.jadaptive.plugins.ssh.vsftp.links;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.repository.AbstractUUIDEntity;
+import com.jadaptive.api.repository.NamedUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -12,7 +12,6 @@ import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.api.template.TableAction;
 import com.jadaptive.api.template.TableAction.Target;
 import com.jadaptive.api.template.TableView;
-import com.jadaptive.utils.Utils;
 
 @ObjectDefinition(resourceKey = SharedFile.RESOURCE_KEY, bundle = SharedFile.RESOURCE_KEY, 
 	type = ObjectType.COLLECTION, creatable = true, defaultColumn = "filename")
@@ -22,11 +21,15 @@ import com.jadaptive.utils.Utils;
 @TableView(defaultColumns = { "filename", "passwordProtected", "acceptTerms", "virtualPath" },
              actions = { @TableAction(bundle = SharedFile.RESOURCE_KEY, icon = "fa-link", 
              resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/public-download/{shortCode}/{filename}") })
-public class SharedFile extends AbstractUUIDEntity {
+public class SharedFile extends NamedUUIDEntity {
 
 	private static final long serialVersionUID = 6440151078128444905L;
 
 	public static final String RESOURCE_KEY = "sharedFiles";
+	
+	@ObjectField(type = FieldType.ENUM)
+	@ObjectView(value = "file")
+	ShareType shareType;
 	
 	@ObjectField(type = FieldType.TEXT)
 	@ObjectView(value = "file")
@@ -60,19 +63,19 @@ public class SharedFile extends AbstractUUIDEntity {
 	public String getResourceKey() {
 		return RESOURCE_KEY;
 	}
+	
+	public ShareType getShareType() {
+		return shareType;
+	}
+
+	public void setShareType(ShareType shareType) {
+		this.shareType = shareType;
+	}
 
 	public String getVirtualPath() {
 		return virtualPath;
 	}
 	
-	public String getPublicLink() {
-		return Utils.encodeURIPath("/app/ui/public-download/" + shortCode + "/" + filename);
-	}
-	
-	public String getDirectLink() {
-		return Utils.encodeURIPath("/app/vfs/downloadLink/" + shortCode + "/" + filename);
-	}
-
 	public void setVirtualPath(String virtualPath) {
 		this.virtualPath = virtualPath;
 	}

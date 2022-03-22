@@ -15,6 +15,8 @@ import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.sshtools.common.files.AbstractFile;
 
 @Extension
@@ -25,6 +27,9 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 	
 	@Autowired
 	private VirtualFileService fileService; 
+	
+	@Autowired
+	private SharedFileService shareService; 
 	
 	@Autowired
 	private AnonymousUserDatabase anonymousDatabase;
@@ -63,7 +68,8 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 			}
 
 			if(currentVirtualFolder.get() == null) {
-				currentVirtualFolder.set(fileService.getVirtualFolderByShortCode(uri));
+				SharedFile share = shareService.getDownloadByShortCode(uri);
+				currentVirtualFolder.set(fileService.getVirtualFolder(share.getVirtualPath()));
 			}
 			
 			AbstractFile file = doUpload(currentVirtualFolder.get().getMountPath(), filename, in);

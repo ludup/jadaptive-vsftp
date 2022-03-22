@@ -30,6 +30,9 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolder;
+import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.schemes.BasicCredentials;
 import com.jadaptive.plugins.ssh.vsftp.schemes.SftpCredentials;
 import com.jadaptive.plugins.ssh.vsftp.schemes.UsernameAndPasswordCredentials;
@@ -59,6 +62,9 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	
 	@Autowired
 	private UserService userDatabase;
+	
+	@Autowired
+	private SharedFileService sharingService;
 	
 	private static final String EXISTING_UUID = "existingUUID";
 	public static final String SHORTCODE = "shortcode";
@@ -97,13 +103,21 @@ public class PublicUploadStep2 extends PublicUploadSection {
 			fileService.deleteObject(f);
 		}
 		
-		VirtualFolder folder = scheme.createVirtualFolder(name.getName(), String.format("/public/%s", name.getName()), path, creds);
+		String virtualPath = String.format("/public/%s", name.getName());
+		VirtualFolder folder = scheme.createVirtualFolder(name.getName(), virtualPath, path, creds);
 		
 		fileService.createOrUpdate(folder, 
 				Arrays.asList(userDatabase.getUserByUUID(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID)),
 				Arrays.asList(roleService.getEveryoneRole()));
 		
-		state.setParameter(SHORTCODE, folder.getShortCode());
+		SharedFile share = new SharedFile();
+		share.setName(name.getName());
+		share.setShareType(ShareType.UPLOAD);
+		share.setVirtualPath(virtualPath);
+		
+		sharingService.saveOrUpdate(share);
+		
+		state.setParameter(SHORTCODE, share.getShortCode());
 		state.setParameter(EXISTING_UUID, folder.getUuid());
 	}
 	

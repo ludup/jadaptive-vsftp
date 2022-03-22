@@ -14,4 +14,8 @@ public interface SharedFileService extends AbstractUUIDObjectService<SharedFile>
 
 	SharedFile getDownloadByShortCode(String shortCode);
 
+	String getDirectLink(SharedFile download);
+
+	String getPublicLink(SharedFile share);
+
 }

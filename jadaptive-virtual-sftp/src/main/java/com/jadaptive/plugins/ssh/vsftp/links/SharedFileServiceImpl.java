@@ -38,7 +38,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		try {
 			AbstractFile file = fileService.getFile(object.getVirtualPath());
 					
-			if(file.isDirectory()) {
+			if(file.isDirectory() && object.getShareType() == ShareType.DOWNLOAD) {
 				object.setFilename(file.getName() + ".zip");
 			} else {
 				object.setFilename(file.getName());
@@ -69,5 +69,22 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	public SharedFile getDownloadByShortCode(String shortCode) {
 		return objectDatabase.get(getResourceClass(), SearchField.eq("shortCode", shortCode));
 	}
+	
+	private void assertDownload(SharedFile share) {
+		if(share.getShareType() != ShareType.DOWNLOAD) {
+			throw new IllegalStateException(String.format("%s is not an upload share!"));
+		}
+	}
 
+	@Override
+	public String getDirectLink(SharedFile share) {
+		assertDownload(share);
+		return Utils.encodeURIPath("/app/vfs/downloadLink/" + share.getShortCode() + "/" + share.getFilename());
+	}
+
+	@Override
+	public String getPublicLink(SharedFile share) {
+		assertDownload(share);
+		return Utils.encodeURIPath("/app/ui/public-download/" + share.getShortCode() + "/" + share.getFilename());
+	}
 }

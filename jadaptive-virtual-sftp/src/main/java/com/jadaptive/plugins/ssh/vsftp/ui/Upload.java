@@ -15,7 +15,9 @@ import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 
 @Extension
 @ModalPage
@@ -29,6 +31,9 @@ public class Upload extends AnonymousPage {
 	@Autowired
 	private VirtualFileService fileService; 
 	
+	@Autowired
+	private SharedFileService shareService;
+	
 	String shortCode;
 	
 	public String getShortCode() {
@@ -38,11 +43,14 @@ public class Upload extends AnonymousPage {
     public void generateAnonymousContent(Document contents) throws IOException {
     	
     	try {
-    		VirtualFolder folder = fileService.getVirtualFolderByShortCode(shortCode);
+    		SharedFile folder = shareService.getDownloadByShortCode(shortCode);
+    		if(folder.getShareType() != ShareType.UPLOAD) {
+    			throw new FileNotFoundException(String.format("%s is not a valid shared folder code", shortCode));
+    		}
     		contents.selectFirst("#uploadArea").text(folder.getName());
     	} catch(ObjectException e) {
     		log.error("Failed to lookup shortcode", e);
-    		throw new FileNotFoundException(String.format("%s is not a valid public folder code", shortCode));
+    		throw new FileNotFoundException(String.format("%s is not a valid folder code", shortCode));
     	}
 	}
 

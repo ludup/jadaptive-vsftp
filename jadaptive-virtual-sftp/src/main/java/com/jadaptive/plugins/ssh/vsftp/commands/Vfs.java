@@ -50,7 +50,7 @@ public class Vfs extends AbstractVFSCommand {
 			
 			console.print(StringUtils.rightPad("Mount", 15));
 			console.print(StringUtils.rightPad("Scheme", 10));
-			console.print(StringUtils.rightPad("Short Code", 12));
+			console.print(StringUtils.rightPad("Name", 12));
 			console.println("Destination");
 			console.print(StringUtils.rightPad("-----", 15));
 			console.print(StringUtils.rightPad("------", 10));
@@ -69,7 +69,7 @@ public class Vfs extends AbstractVFSCommand {
 			for(VirtualFolder folder : folders) {
 				console.print(StringUtils.rightPad(folder.getMountPath(), 15));
 				console.print(StringUtils.rightPad(folder.getType(), 10));
-				console.print(StringUtils.rightPad(folder.getShortCode(), 12));
+				console.print(StringUtils.rightPad(folder.getName(), 12));
 				console.println(folder.getPath().generatePath());
 			}
 		}

@@ -7,7 +7,6 @@ import java.util.Map;
 import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
 
-import com.jadaptive.api.ui.AuthenticatedPage;
 import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
@@ -17,7 +16,7 @@ import com.jadaptive.api.ui.renderers.DropdownInput;
 @RequestPage(path = "tree/")
 @PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrap-tree", "bootstrapTable", "jadaptive-utils", "i18n"} )
 @PageProcessors(extensions = { "i18n"} )
-public class Tree extends AuthenticatedPage {
+public class Tree extends AnonymousFallbackPage {
 	
 	@Override
 	public String getUri() {

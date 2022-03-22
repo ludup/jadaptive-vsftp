@@ -14,7 +14,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.CacheStrategy;
 import org.apache.commons.vfs2.FileObject;
@@ -45,7 +44,6 @@ import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
-import com.sshtools.common.util.Utils;
 
 @Service
 public class VirtualFileServiceImpl extends AuthenticatedService implements VirtualFileService {
@@ -137,9 +135,6 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		} catch(IOException e) {
 			throw new ObjectException(String.format("Cannot resolve folder %s", folder.getName()), e);
 		}
-		if(StringUtils.isBlank(folder.getShortCode())) {
-			folder.setShortCode(Utils.randomAlphaNumericString(16));
-		}
 		
 		folder.getRoles().clear();
 		folder.getUsers().clear();
@@ -165,9 +160,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		} catch(IOException e) {
 			throw new ObjectException(String.format("Cannot resolve folder %s", folder.getName()), e);
 		}
-		if(StringUtils.isBlank(folder.getShortCode())) {
-			folder.setShortCode(Utils.randomAlphaNumericString(16));
-		}
+
 		repository.saveOrUpdate(folder);
 		
 		return folder;
@@ -271,7 +264,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 
 	@Override
 	public VirtualFolder getVirtualFolder(String mount) {
-		return repository.getObjectByUUID(VirtualFolder.class, mount);
+		return repository.getObject(VirtualFolder.class, SearchField.eq("mountPath", mount));
 	}
 
 	@Override

@@ -4,8 +4,6 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.events.AuditedObject;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
 import com.jadaptive.api.template.FieldType;
-import com.jadaptive.api.template.FieldView;
-import com.jadaptive.api.template.IncludeView;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectServiceBean;
@@ -38,10 +36,10 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "")
 	String mountPath;
 	
-	@ObjectField(type = FieldType.HIDDEN, 
-			searchable = true)
-	@IncludeView(values = {FieldView.TABLE})
-	String shortCode;
+//	@ObjectField(type = FieldType.HIDDEN, 
+//			searchable = true)
+//	@IncludeView(values = {FieldView.TABLE})
+//	String shortCode;
 	
 	public abstract VirtualFolderPath getPath();
 	
@@ -69,13 +67,13 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 
 	public abstract String getType();
 
-	public String getShortCode() {
-		return shortCode;
-	}
-
-	public void setShortCode(String shortCode) {
-		this.shortCode = shortCode;
-	}
+//	public String getShortCode() {
+//		return shortCode;
+//	}
+//
+//	public void setShortCode(String shortCode) {
+//		this.shortCode = shortCode;
+//	}
 
 	public boolean isPublicFolder() {
 		return getUsers().contains(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID);

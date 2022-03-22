@@ -120,7 +120,7 @@ public class DownloadPublicFile extends HtmlPage {
 				document.select(".filename").html(fileObject.getName());
 			}
 			
-			document.selectFirst("#downloadLink").attr("href", download.getDirectLink());
+			document.selectFirst("#downloadLink").attr("href", downloadService.getDirectLink(download));
 			
 		} catch (ObjectNotFoundException | PermissionDeniedException e) {
 			throw new PageRedirect(pageCache.resolvePage(PublicFileNotFound.class));
