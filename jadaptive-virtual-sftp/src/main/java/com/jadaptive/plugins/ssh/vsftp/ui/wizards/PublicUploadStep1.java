@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.wizards.WizardState;
 import com.jadaptive.utils.ObjectUtils;
+import com.sshtools.common.util.FileUtils;
 
 @Component
 public class PublicUploadStep1 extends PublicUploadSection {
@@ -45,7 +46,18 @@ public class PublicUploadStep1 extends PublicUploadSection {
 								.addClass("col-9")
 								.appendChild(new Element("span")
 										.appendChild(new Element("strong")
-												.text(name.getName()))))));
+												.text(name.getName()))))
+					.addClass("row")
+					.appendChild(new Element("div")
+							.addClass("col-3")
+							.appendChild(new Element("span")
+									.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
+									.attr("jad:i18n", "virtualPath.name")))
+					.appendChild(new Element("div")
+								.addClass("col-9")
+								.appendChild(new Element("span")
+										.appendChild(new Element("strong")
+												.text(FileUtils.checkEndsWithSlash(name.getVirtualPath()) + name.getName()))))));
 	
 	}
 	

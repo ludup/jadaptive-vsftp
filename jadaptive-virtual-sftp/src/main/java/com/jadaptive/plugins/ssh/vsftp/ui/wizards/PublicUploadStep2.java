@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.repository.UUIDEntity;
+import com.jadaptive.api.role.Role;
 import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.setup.SetupSection;
@@ -20,6 +21,7 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.ui.Page;
 import com.jadaptive.api.ui.renderers.DropdownInput;
 import com.jadaptive.api.ui.renderers.I18nOption;
+import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.api.wizards.WizardService;
 import com.jadaptive.api.wizards.WizardState;
@@ -42,6 +44,7 @@ import com.jadaptive.utils.Utils;
 import com.sshtools.common.publickey.InvalidPassphraseException;
 import com.sshtools.common.publickey.SshKeyUtils;
 import com.sshtools.common.ssh.components.SshKeyPair;
+import com.sshtools.common.util.FileUtils;
 
 @Component
 public class PublicUploadStep2 extends PublicUploadSection {
@@ -86,39 +89,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	@Override
 	public void finish(WizardState state, Integer sectionIndex) {
 		
-		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-		FileScheme<?> scheme = fileService.getFileScheme(folderType);
-	
-		PublicUploadName name = ObjectUtils.assertObject(state.getObjectAt(sectionIndex-1), PublicUploadName.class);
-		VirtualFolderPath path = ObjectUtils.assertObject(state.getObjectAt(sectionIndex), scheme.getPathClass());
-	
-		VirtualFolderCredentials creds = null;
-		if(scheme.requiresCredentials()) {
-			creds = ObjectUtils.assertObject(state.getObjectAt(getPosition()+1), scheme.getCredentialsClass());
-		}
 		
-		String uuid = (String) state.getParameter(EXISTING_UUID);
-		if(StringUtils.isNotBlank(uuid)) {
-			VirtualFolder f = fileService.getObjectByUUID(uuid);
-			fileService.deleteObject(f);
-		}
-		
-		String virtualPath = String.format("/public/%s", name.getName());
-		VirtualFolder folder = scheme.createVirtualFolder(name.getName(), virtualPath, path, creds);
-		
-		fileService.createOrUpdate(folder, 
-				Arrays.asList(userDatabase.getUserByUUID(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID)),
-				Arrays.asList(roleService.getEveryoneRole()));
-		
-		SharedFile share = new SharedFile();
-		share.setName(name.getName());
-		share.setShareType(ShareType.UPLOAD);
-		share.setVirtualPath(virtualPath);
-		
-		sharingService.saveOrUpdate(share);
-		
-		state.setParameter(SHORTCODE, share.getShortCode());
-		state.setParameter(EXISTING_UUID, folder.getUuid());
 	}
 	
 	@Override
@@ -164,6 +135,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 				.attr("jad:id", "objectRenderer")
 				.attr("jad:handler", PublicUploadWizard.RESOURCE_KEY)
 				.attr("jad:disableViews", "true")
+				.attr("jad:ignores", "appendUsername")
 				.attr("jad:resourceKey", scheme.getPathTemplate().getResourceKey()));
 		
 		state.setParameter(REQUEST_PARAM_TYPE, folderType);
@@ -210,12 +182,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 								.addClass("col-9")
 								.appendChild(new Element("span")
 										.appendChild(new Element("strong")
-												.text(path.generatePath()))))
-					.appendChild(new Element("div")
-							.addClass("col-3")
-							.appendChild(new Element("span")
-											.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-											.attr("jad:i18n", "cacheStrategy.name")))));
+												.text(path.generatePath()))))));
 	
 		
 		if(scheme.requiresCredentials()) {

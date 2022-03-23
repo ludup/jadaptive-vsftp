@@ -24,6 +24,10 @@ public class PublicUploadName extends UUIDEntity {
 	@ObjectField(required = true, type = FieldType.TEXT)
 	@Validator(type = ValidationType.REGEX, value = "^[a-zA-Z0-9_\\- ]{4,64}$", bundle = PublicUploadWizard.RESOURCE_KEY, i18n = "name.invalid")
 	String name;
+	
+	@ObjectField(required = true, type = FieldType.TEXT, defaultValue = "/public")
+	@Validator(type = ValidationType.REGEX, value = "^/[a-zA-Z0-9_\\- \\/].+$", bundle = PublicUploadWizard.RESOURCE_KEY, i18n = "virtualPath.invalid")
+	String virtualPath;
 
 	public String getName() {
 		return name;
@@ -31,6 +35,14 @@ public class PublicUploadName extends UUIDEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getVirtualPath() {
+		return virtualPath;
+	}
+
+	public void setVirtualPath(String virtualPath) {
+		this.virtualPath = virtualPath;
 	}
 
 	
