@@ -172,7 +172,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		try {
 			FileScheme<?> scheme = getFileScheme(folder.getType());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
-			FileSystemManager mgr = getManager(folder.getUuid(), folder.getPath().getCacheStrategy());
+			FileSystemManager mgr = getManager(folder.getUuid(), folder.getCacheStrategy());
 			FileObject obj = mgr.resolveFile(
 							scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString(), opts);
 			
@@ -246,7 +246,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		try {
 			FileScheme<?> scheme = getFileScheme(folder.getType());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
-			FileSystemManager manager = getManager(folder.getUuid(), folder.getPath().getCacheStrategy());
+			FileSystemManager manager = getManager(folder.getUuid(), folder.getCacheStrategy());
 
 			return new VirtualFolderMount(folder,
 					scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString(),

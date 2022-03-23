@@ -16,9 +16,10 @@ import com.jadaptive.utils.Utils;
 @ObjectDefinition(resourceKey = FileUpload.RESOURCE_KEY, 
 					bundle = VirtualFolder.RESOURCE_KEY, 
 					type = ObjectType.OBJECT, 
+					creatable = false,
 					deletable = false, 
 					updatable = false)
-@TableView(defaultColumns = { "filename", "size"}, actions = { 
+@TableView(defaultColumns = { "filename", "size"}, requiresView = false, actions = { 
 	@TableAction(bundle = VirtualFolder.RESOURCE_KEY, 
 					icon = "fa-download", 
 					resourceKey = "downloadFile", 

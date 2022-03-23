@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.ui.DashboardWidget;
 import com.jadaptive.api.ui.Html;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
@@ -23,9 +22,6 @@ import com.sshtools.common.util.FileUtils;
 @Extension
 public class IncomingFilesDashboard implements DashboardWidget {
 
-	@Autowired
-	private VirtualFileService fileService; 
-	
 	@Autowired
 	private IncomingFileService incomingService; 
 	
@@ -72,7 +68,7 @@ public class IncomingFilesDashboard implements DashboardWidget {
 			
 			element.appendChild(Html.div("row")
 						.appendChild(Html.div("col-10")
-							.appendChild(Html.a(downloadURL).text(share.getName())))
+							.appendChild(Html.a(String.format("/app/ui/tree%s", share.getVirtualPath())).text(share.getName())))
 					.appendChild(Html.div("col-2")
 						.appendChild(Html.a(downloadURL, "copyURL")
 								.appendChild(Html.i("far", "fa-copy")))));
@@ -95,11 +91,12 @@ public class IncomingFilesDashboard implements DashboardWidget {
 		for(IncomingFile file : files) {
 			element.appendChild(Html.div("row")
 					.appendChild(Html.div("col-5")
-						.appendChild(Html.a(String.format("/app/ui/view/incomingFiles/%s", file.getUuid())).appendChild(Html.span(file.getReference()))))
+							.appendChild(Html.a(String.format("/app/ui/view/incomingFiles/%s", file.getUuid())).appendChild(Html.span(file.getReference()))))
 					.appendChild(Html.div("col-5")
-						.appendChild(Html.span(file.getUploadArea())))
+							.appendChild(Html.span(file.getUploadArea())))
+							
 					.appendChild(Html.div("col-2")
-						.appendChild(Html.a(String.format("/app/vfs/incoming/download/%s", file.getUuid()))
+						.appendChild(Html.a(String.format("/app/vfs/incoming/zip/%s", file.getUuid()))
 							.appendChild(Html.i("far", "fa-download")))));
 		}
 		

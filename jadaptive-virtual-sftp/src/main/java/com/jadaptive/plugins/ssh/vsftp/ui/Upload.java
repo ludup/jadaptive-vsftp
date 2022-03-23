@@ -14,7 +14,6 @@ import com.jadaptive.api.ui.ModalPage;
 import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
@@ -27,9 +26,6 @@ import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 public class Upload extends AnonymousPage {
 	
 	static Logger log = LoggerFactory.getLogger(Upload.class);
-	
-	@Autowired
-	private VirtualFileService fileService; 
 	
 	@Autowired
 	private SharedFileService shareService;

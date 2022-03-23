@@ -14,6 +14,8 @@ import com.jadaptive.api.template.TableAction;
 import com.jadaptive.api.template.TableAction.Target;
 import com.jadaptive.api.template.TableAction.Window;
 import com.jadaptive.api.template.TableView;
+import com.jadaptive.api.template.ValidationType;
+import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 @ObjectDefinition(
@@ -24,7 +26,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 		 creatable = false, 
 		 deletable = false,
 		 updatable = false, system = true)
-@TableView(defaultColumns = {  "reference", "uploadArea", "name", "email" }, actions = {
+@TableView(defaultColumns = {  "reference", "uploadArea", "name", "email" }, requiresCreate = false, actions = {
 		@TableAction(target = Target.ROW, bundle = VirtualFolder.RESOURCE_KEY, window = Window.SELF,
 				icon = "fa-download", resourceKey = "downloadFiles", url = "/app/vfs/incoming/zip/{uuid}"),
 		@TableAction(target = Target.ROW, bundle = VirtualFolder.RESOURCE_KEY, window = Window.SELF,
@@ -49,6 +51,7 @@ public class IncomingFile extends AbstractUUIDEntity {
 	String uploadArea;
 	
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
+	@Validator(type = ValidationType.RESOURCE_KEY, value = "fileUpload")
 	@ObjectView(value = "files")
 	Collection<FileUpload> uploadPaths;
 

@@ -201,17 +201,7 @@ public class SelectMount extends SetupSection {
 								.addClass("col-9")
 								.appendChild(new Element("span")
 										.appendChild(new Element("strong")
-												.text(path.generatePath()))))
-					.appendChild(new Element("div")
-							.addClass("col-3")
-							.appendChild(new Element("span")
-											.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-											.attr("jad:i18n", "cacheStrategy.name")))
-					.appendChild(new Element("div")
-							.addClass("col-9")
-							.appendChild(new Element("span")
-									.appendChild(new Element("strong")
-									.text(path.getCacheStrategy().name()))))));
+												.text(path.generatePath()))))));
 	
 		
 		if(scheme.requiresCredentials()) {

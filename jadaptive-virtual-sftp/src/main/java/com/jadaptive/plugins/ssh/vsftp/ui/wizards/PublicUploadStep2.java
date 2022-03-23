@@ -215,12 +215,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 							.addClass("col-3")
 							.appendChild(new Element("span")
 											.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-											.attr("jad:i18n", "cacheStrategy.name")))
-					.appendChild(new Element("div")
-							.addClass("col-9")
-							.appendChild(new Element("span")
-									.appendChild(new Element("strong")
-									.text(path.getCacheStrategy().name()))))));
+											.attr("jad:i18n", "cacheStrategy.name")))));
 	
 		
 		if(scheme.requiresCredentials()) {
