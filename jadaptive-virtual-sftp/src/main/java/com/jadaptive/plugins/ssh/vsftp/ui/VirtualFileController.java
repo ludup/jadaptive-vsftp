@@ -155,9 +155,14 @@ public class VirtualFileController extends AuthenticatedController implements St
 			
 			VirtualMount parentMount = ((VirtualFileObject)parent).getMount();
 
+			VirtualFolder folder = null;
+			try {
+				folder = fileService.getVirtualFolder(parentMount.getMount());
+			} catch(ObjectNotFoundException e) { }
+			
 			return new ResourceStatus<File>(new File(parent,
 					FileUtils.isSamePath(parent.getAbsolutePath(), parentMount.getMount()),
-					fileService.getVirtualFolder(parentMount.getMount())));
+					folder));
 			
 		} catch (Throwable e) {
 			log.error("Stat failed", e);
@@ -258,13 +263,14 @@ public class VirtualFileController extends AuthenticatedController implements St
 			if(matches) {
 			
 				VirtualMount parentMount = ((VirtualFileObject)file).getMount();
-				VirtualFolder virtualFolder = fileService.getVirtualFolder(parentMount.getMount());
+				VirtualFolder virtualFolder = null;
+				try {
+					virtualFolder = fileService.getVirtualFolder(parentMount.getMount());
+				} catch(ObjectNotFoundException e) { } 
 				
 				if(file.isDirectory() && folders) {
 					if((file.isHidden() && hidden) || !file.isHidden()) {
-						
-						
-						
+
 						folderResults.add(new File(file,
 								FileUtils.isSamePath(file.getAbsolutePath(),parentMount.getMount()),
 								virtualFolder));

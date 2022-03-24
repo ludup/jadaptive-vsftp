@@ -89,7 +89,7 @@ public class File {
 	}
 	
 	public boolean isPublic() {
-		return parent.isPublicFolder();
+		return parent == null ? false : parent.isPublicFolder();
 	}
 	
 	public boolean isMount() {
@@ -97,14 +97,14 @@ public class File {
 	}
 	
 	public boolean isShareFiles() {
-		return parent.getShareFiles();
+		return parent == null ? false : parent.getShareFiles();
 	}
 	
 	public boolean isShareFolders() {
-		return parent.getShareFolders();
+		return parent == null ? false : parent.getShareFolders();
 	}
 	
 	public boolean isReadOnly() {
-		return parent.getReadOnly();
+		return parent == null ? true : parent.getReadOnly();
 	}
 }
