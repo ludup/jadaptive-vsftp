@@ -23,6 +23,7 @@ import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
+import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.sshd.SSHDService;
@@ -31,7 +32,7 @@ import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.permissions.PermissionDeniedException;
 
 @Extension
-@RequestPage(path = "public-download/{shortCode}/{filename}")
+@RequestPage(path = "download/{shortCode}/{filename}")
 @PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrap-tree", "bootstrapTable", "jadaptive-utils", "i18n"} )
 @PageProcessors(extensions = { "i18n"} )
 public class DownloadPublicFile extends HtmlPage {
@@ -59,10 +60,14 @@ public class DownloadPublicFile extends HtmlPage {
 		try {
 			SharedFile file = downloadService.getDownloadByShortCode(shortCode);
 			
+			if(file.getShareType()==ShareType.UPLOAD) {
+				throw new FileNotFoundException();
+			}
+			
 			if(!hasPassword(request, file)) {
 				throw new UriRedirect(String.format("/app/ui/password-protected/%s/%s", shortCode, filename));
 			} else if(!hasAcceptedTerms(request, file) && !file.getAcceptTerms()){
-				throw new UriRedirect(String.format("/app/ui/download-share/%s/%s", shortCode, file.getFilename()));
+				throw new UriRedirect(String.format("/app/ui/download-terms/%s/%s", shortCode, file.getFilename()));
 			}
 		} catch(ObjectException e) {
 			throw new FileNotFoundException();
@@ -131,7 +136,7 @@ public class DownloadPublicFile extends HtmlPage {
 	
 	@Override
 	public String getUri() {
-		return "public-download";
+		return "download";
 	}
 
 }

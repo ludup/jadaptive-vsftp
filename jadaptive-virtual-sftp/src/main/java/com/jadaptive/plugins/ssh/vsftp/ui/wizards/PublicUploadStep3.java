@@ -94,9 +94,9 @@ public class PublicUploadStep3 extends PublicUploadSection {
 				Arrays.asList(roleService.getEveryoneRole()));
 		
 		SharedFile share = new SharedFile();
-		share.setName(name.getName());
 		share.setShareType(ShareType.UPLOAD);
 		share.setVirtualPath(virtualPath);
+		share.setFilename(folder.getName());
 		
 		sharingService.saveOrUpdate(share);
 		

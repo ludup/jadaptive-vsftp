@@ -1,7 +1,7 @@
 package com.jadaptive.plugins.ssh.vsftp.links;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.repository.NamedUUIDEntity;
+import com.jadaptive.api.repository.AbstractUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -20,8 +20,8 @@ import com.jadaptive.api.template.TableView;
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = "options", weight = 100)})
 @TableView(defaultColumns = { "filename", "passwordProtected", "acceptTerms", "virtualPath" },
              actions = { @TableAction(bundle = SharedFile.RESOURCE_KEY, icon = "fa-link", 
-             resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/public-download/{shortCode}/{filename}") })
-public class SharedFile extends NamedUUIDEntity {
+             resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/share/{shortCode}") })
+public class SharedFile extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = 6440151078128444905L;
 

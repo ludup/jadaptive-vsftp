@@ -26,7 +26,7 @@ public class PublicUploadName extends UUIDEntity {
 	String name;
 	
 	@ObjectField(required = true, type = FieldType.TEXT, defaultValue = "/public")
-	@Validator(type = ValidationType.REGEX, value = "^/[a-zA-Z0-9_\\- \\/].+$", bundle = PublicUploadWizard.RESOURCE_KEY, i18n = "virtualPath.invalid")
+	@Validator(type = ValidationType.REGEX, value = "^\\/[a-zA-Z0-9_\\- \\/]*$", bundle = PublicUploadWizard.RESOURCE_KEY, i18n = "virtualPath.invalid")
 	String virtualPath;
 
 	public String getName() {

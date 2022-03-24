@@ -13,6 +13,7 @@ import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.ui.DashboardWidget;
 import com.jadaptive.api.ui.Html;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFile;
@@ -63,15 +64,19 @@ public class IncomingFilesDashboard implements DashboardWidget {
 		}
 		
 		for(SharedFile share : shares) {
-			String downloadURL = FileUtils.checkEndsWithSlash(Request.generateBaseUrl(Request.get())) + "app/ui/incoming/" + share.getShortCode();
-		
 			
-			element.appendChild(Html.div("row")
-						.appendChild(Html.div("col-10")
-							.appendChild(Html.a(String.format("/app/ui/tree%s", share.getVirtualPath())).text(share.getName())))
-					.appendChild(Html.div("col-2")
-						.appendChild(Html.a(downloadURL, "copyURL")
-								.appendChild(Html.i("far", "fa-copy")))));
+			if(share.getShareType() == ShareType.UPLOAD) {
+				String downloadURL = FileUtils.checkEndsWithSlash(Request.generateBaseUrl(Request.get())) + "app/ui/share/" + share.getShortCode();
+
+				element.appendChild(Html.div("row")
+							.appendChild(Html.div("col-10")
+								.appendChild(Html.a(String.format("/app/ui/tree%s", share.getVirtualPath())).text(share.getFilename()).attr("title", "Browse upload area")))
+						.appendChild(Html.div("col-2")
+							.appendChild(Html.a(downloadURL, "copyURL").attr("title", "Copy URL to clipboard")
+									.appendChild(Html.i("far fa-fw", "fa-copy")))
+							.appendChild(Html.a(downloadURL, "").attr("title", "Goto upload area")
+									.appendChild(Html.i("far fa-fw", "fa-link")))));
+			}
 		}
 
 		Collection<IncomingFile> files = incomingService.getLatestFiles();
@@ -91,12 +96,13 @@ public class IncomingFilesDashboard implements DashboardWidget {
 		for(IncomingFile file : files) {
 			element.appendChild(Html.div("row")
 					.appendChild(Html.div("col-5")
-							.appendChild(Html.a(String.format("/app/ui/view/incomingFiles/%s", file.getUuid())).appendChild(Html.span(file.getReference()))))
+							.appendChild(Html.a(String.format("/app/ui/view/incomingFiles/%s", file.getUuid())).attr("title", "View the incoming files record")
+									.appendChild(Html.span(file.getReference()))))
 					.appendChild(Html.div("col-5")
 							.appendChild(Html.span(file.getUploadArea())))
 							
 					.appendChild(Html.div("col-2")
-						.appendChild(Html.a(String.format("/app/vfs/incoming/zip/%s", file.getUuid()))
+						.appendChild(Html.a(String.format("/app/vfs/incoming/zip/%s", file.getUuid())).attr("title", "Download archive of the incoming files")
 							.appendChild(Html.i("far", "fa-download")))));
 		}
 		

@@ -2,7 +2,7 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jue", "Jul", "Aug", "Sep", "
 
 function renderPerms(val, obj) {
 	var perms = obj.readable ? 'r' : '-';
-	perms += obj.writable ? 'w' : '-';
+	perms += (!obj.readOnly && obj.writable) ? 'w' : '-';
 	return perms;
 }
 
@@ -36,22 +36,44 @@ function renderDate(val) {
 
 }
 
+function renderShare(obj) {
+
+		var html = '<span class="dropdown"><a class="createLink me-2 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="far fa-link fa-fw"></i></a>';
+		html += '<ul class="dropdown-menu" aria-labelledby="' + obj.id + '" style="z-index: 999999;">';	
+	
+		if(obj.shareFiles && !obj.directory) {
+			html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="far fa-copy fa-fw me-1"></i> Share Link</a></li>';
+			html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="far fa-share-alt fa-fw me-1"></i> Share with Options</a></li>';
+		}
+		
+		if(obj.shareFolders && obj.directory) {
+			html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="far fa-copy fa-fw me-1"></i> Share Link</a></li>';
+			html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="far fa-share-alt fa-fw me-1"></i> Share with Options</a></li>';
+		}
+
+		if(obj.shareFiles || obj.shareFolders) {
+			html += '</ul></span>';
+		}
+		
+		return html;
+	
+}
 function renderActions(val, obj) {
 	var html = '';
-	debugger;
-	if(!obj.mount) {
+
+	if(!obj.mount && !obj.readOnly) {
 		html += '<a class="deleteFile me-2" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash fa-fw"></i></a>';
 	}
 	if (!obj.directory) {
 		html += '<a class="downloadFile me-2" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download fa-fw"></i></a>';
 	}
-	if(obj.public) {
-		html += '<span class="dropdown"><a class="createLink me-2 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="far fa-link fa-fw"></i></a>';
-		html += '<ul class="dropdown-menu" aria-labelledby="' + obj.id + '" style="z-index: 999999;">';
-		html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="far fa-copy fa-fw me-1"></i> Copy Link</a></li>';
-		html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="far fa-share-alt fa-fw me-1"></i> Create Share</a></li>';
-		html += '</ul></span>';
+	
+	if(obj.shareFiles && !obj.directory) {
+		html += renderShare(obj);
+	} else if(obj.shareFolders && obj.directory) {
+		renderShare(obj);
 	}
+
 	return html;
 }
 
@@ -91,10 +113,10 @@ function ajaxRequest(params) {
 	$.get('/app/vfs/stat' + path).then(function(res) {
 		if (res.success) {
 			$('#uploadFiles').attr('href', '/app/ui/upload-files' + path);
-			if(res.resource.writable) {
-				$('#uploadFiles').show();
+			if(!res.resource.readOnly && res.resource.writable) {
+				$('.writeActions').show();
 			} else {
-				$('#uploadFiles').hide();
+				$('.writeActions').hide();
 			}
 			var url = '/app/vfs/listDirectory' + path;
 		
@@ -253,7 +275,7 @@ $(function() {
 				}
 			},
 			callback: function(result) {
-				debugger;
+
 				if (result) {
 					var params = {
 						path: path
@@ -292,7 +314,7 @@ $(function() {
 				dataType: 'json',
 				success: function(data) {
 					if (data.success) {
-						debugger;
+
 						$('#createDirectory').val('');
 						refresh();
 						JadaptiveUtils.success($('#feedback'), data.message);

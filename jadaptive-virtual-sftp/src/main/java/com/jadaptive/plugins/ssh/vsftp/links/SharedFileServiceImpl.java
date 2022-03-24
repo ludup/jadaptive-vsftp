@@ -55,6 +55,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	@Override
 	public SharedFile createDownloadLink(AbstractFile file) throws IOException, PermissionDeniedException {
 		SharedFile link = new SharedFile();
+		link.setShareType(ShareType.DOWNLOAD);
 		link.setVirtualPath(file.getAbsolutePath());
 		if(file.isDirectory()) {
 			link.setFilename(file.getName() + ".zip");
@@ -72,7 +73,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	
 	private void assertDownload(SharedFile share) {
 		if(share.getShareType() != ShareType.DOWNLOAD) {
-			throw new IllegalStateException(String.format("%s is not an upload share!"));
+			throw new IllegalStateException(String.format("%s is not an upload share!", share.getFilename()));
 		}
 	}
 
@@ -85,6 +86,6 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	@Override
 	public String getPublicLink(SharedFile share) {
 		assertDownload(share);
-		return Utils.encodeURIPath("/app/ui/public-download/" + share.getShortCode() + "/" + share.getFilename());
+		return Utils.encodeURIPath("/app/ui/download/" + share.getShortCode() + "/" + share.getFilename());
 	}
 }

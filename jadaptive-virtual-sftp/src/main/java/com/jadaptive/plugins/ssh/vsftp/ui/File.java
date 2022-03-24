@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.mongodb.internal.HexUtils;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
@@ -10,13 +11,13 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 public class File {
 
 	AbstractFile file;
-	boolean isPublic;
 	boolean isMount;
+	VirtualFolder parent;
 	
-	public File(AbstractFile file, boolean publicFile, boolean isMount) {
+	public File(AbstractFile file, boolean isMount, VirtualFolder parent) {
 		this.file = file;
-		this.isPublic = publicFile;
 		this.isMount = isMount;
+		this.parent = parent;
 	}
 	
 	public String getId() {
@@ -88,12 +89,22 @@ public class File {
 	}
 	
 	public boolean isPublic() {
-		return isPublic;
+		return parent.isPublicFolder();
 	}
 	
 	public boolean isMount() {
 		return isMount;
 	}
 	
-
+	public boolean isShareFiles() {
+		return parent.getShareFiles();
+	}
+	
+	public boolean isShareFolders() {
+		return parent.getShareFolders();
+	}
+	
+	public boolean isReadOnly() {
+		return parent.getReadOnly();
+	}
 }

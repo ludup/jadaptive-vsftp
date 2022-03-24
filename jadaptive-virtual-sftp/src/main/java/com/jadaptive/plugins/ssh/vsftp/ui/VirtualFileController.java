@@ -58,6 +58,7 @@ import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderMount;
+import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.upload.FileUpload;
@@ -153,14 +154,10 @@ public class VirtualFileController extends AuthenticatedController implements St
 			AbstractFile parent = fileService.getFactory().getFile(path);
 			
 			VirtualMount parentMount = ((VirtualFileObject)parent).getMount();
-			boolean publicFiles = false;
-			if(parentMount.getTemplate() instanceof VirtualFolderMount) {
-				VirtualFolderMount virtualMount = (VirtualFolderMount) parentMount.getTemplate();
-				publicFiles = virtualMount.getVirtualFolder().isPublicFolder();
-			}
 
-			return new ResourceStatus<File>(new File(parent, publicFiles,
-					FileUtils.isSamePath(parent.getAbsolutePath(),parentMount.getMount())));
+			return new ResourceStatus<File>(new File(parent,
+					FileUtils.isSamePath(parent.getAbsolutePath(), parentMount.getMount()),
+					fileService.getVirtualFolder(parentMount.getMount())));
 			
 		} catch (Throwable e) {
 			log.error("Stat failed", e);
@@ -257,26 +254,25 @@ public class VirtualFileController extends AuthenticatedController implements St
 				}
 			}
 			
+			
 			if(matches) {
+			
+				VirtualMount parentMount = ((VirtualFileObject)file).getMount();
+				VirtualFolder virtualFolder = fileService.getVirtualFolder(parentMount.getMount());
+				
 				if(file.isDirectory() && folders) {
 					if((file.isHidden() && hidden) || !file.isHidden()) {
 						
 						
-						boolean isFolderPublic = false;
-						VirtualMount parentMount = ((VirtualFileObject)file).getMount();
-						if(parentMount.getTemplate() instanceof VirtualFolderMount) {
-							VirtualFolderMount virtualMount = (VirtualFolderMount) parentMount.getTemplate();
-							isFolderPublic = virtualMount.getVirtualFolder().isPublicFolder();
-						}
 						
-						
-						folderResults.add(new File(file, isFolderPublic,
-								FileUtils.isSamePath(file.getAbsolutePath(),parentMount.getMount())));
+						folderResults.add(new File(file,
+								FileUtils.isSamePath(file.getAbsolutePath(),parentMount.getMount()),
+								virtualFolder));
 						--maximumFiles;
 						
 						if(maximumFiles > 0) {
 							if(file.isDirectory() && currentDepth < maximumDepth) {
-								maximumFiles = search(file, matcher, folderResults, fileResults, folders, files, hidden, maximumFiles, maximumDepth, currentDepth + 1, isFolderPublic);
+								maximumFiles = search(file, matcher, folderResults, fileResults, folders, files, hidden, maximumFiles, maximumDepth, currentDepth + 1, virtualFolder.isPublicFolder());
 							}
 						} else {
 							break;
@@ -285,7 +281,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 					
 				} else if(file.isFile() && files) {
 					if((file.isHidden() && hidden) || !file.isHidden()) {
-						fileResults.add(new File(file, publicFiles, false));
+						fileResults.add(new File(file, false, virtualFolder));
 						--maximumFiles;
 					}
 				} 
@@ -350,6 +346,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 									.build())));
 			
 		} catch (NoSuchAlgorithmException | IOException | PermissionDeniedException e) { 
+			log.error(e.getMessage(), e);
 			eventService.publishEvent(new FileDownloadEvent(
 					new TransferResult(filename, "", 
 							0L, started, Utils.now()), e));
@@ -540,6 +537,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 		
 		try {
 			SharedFile link = new SharedFile();
+			link.setShareType(ShareType.DOWNLOAD);
 			link.setVirtualPath(path);
 			request.getSession().setAttribute(SharedFile.RESOURCE_KEY, link);
 			return new ResourceStatus<>(link);

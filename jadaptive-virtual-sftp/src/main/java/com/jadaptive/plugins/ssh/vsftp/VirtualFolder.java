@@ -46,7 +46,11 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	
 	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = PERMISSIONS_VIEW)
-	Boolean shareable;
+	Boolean shareFiles;
+	
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = PERMISSIONS_VIEW)
+	Boolean shareFolders;
 	
 	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = PERMISSIONS_VIEW)
@@ -86,14 +90,6 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	public boolean isPublicFolder() {
 		return getUsers().contains(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID);
 	}
-	
-	public Boolean getShareable() {
-		return shareable;
-	}
-
-	public void setShareable(Boolean shareable) {
-		this.shareable = shareable;
-	}
 
 	public Boolean getReadOnly() {
 		return readOnly;
@@ -111,6 +107,22 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 		this.cacheStrategy = cacheStrategy;
 	}
 	
+	public Boolean getShareFiles() {
+		return shareFiles;
+	}
+
+	public void setShareFiles(Boolean shareFiles) {
+		this.shareFiles = shareFiles;
+	}
+
+	public Boolean getShareFolders() {
+		return shareFolders;
+	}
+
+	public void setShareFolders(Boolean shareFolders) {
+		this.shareFolders = shareFolders;
+	}
+
 	public String getEventGroup() {
 		return RESOURCE_KEY;
 	}
