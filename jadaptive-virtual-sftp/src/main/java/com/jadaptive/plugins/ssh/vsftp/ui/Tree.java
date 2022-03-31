@@ -15,7 +15,7 @@ import com.jadaptive.api.ui.renderers.DropdownInput;
 
 @Extension
 @RequestPage(path = "tree/")
-@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrap-tree", "bootstrapTable", "jadaptive-utils", "i18n"} )
+@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrapTable", "jadaptive-utils", "i18n"} )
 @PageProcessors(extensions = { "i18n"} )
 public class Tree extends AuthenticatedPage {
 	

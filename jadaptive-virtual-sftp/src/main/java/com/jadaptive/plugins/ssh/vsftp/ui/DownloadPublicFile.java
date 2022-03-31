@@ -33,7 +33,7 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 
 @Extension
 @RequestPage(path = "download/{shortCode}/{filename}")
-@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrap-tree", "bootstrapTable", "jadaptive-utils", "i18n"} )
+@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrapTable", "jadaptive-utils", "i18n"} )
 @PageProcessors(extensions = { "i18n"} )
 public class DownloadPublicFile extends HtmlPage {
 

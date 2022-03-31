@@ -109,7 +109,7 @@ function ajaxRequest(params) {
 	$('#feedback').empty();
 
 	var path = getPath();
-	
+
 	$.get('/app/vfs/stat' + path).then(function(res) {
 		if (res.success) {
 			$('#uploadFiles').attr('href', '/app/ui/upload-files' + path);

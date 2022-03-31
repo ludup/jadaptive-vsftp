@@ -68,6 +68,7 @@ import com.jadaptive.plugins.ssh.vsftp.zip.ZipFolderInputStream;
 import com.jadaptive.plugins.ssh.vsftp.zip.ZipMultipleFilesInputStream;
 import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
+import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.files.vfs.VirtualFileObject;
 import com.sshtools.common.files.vfs.VirtualMount;
 import com.sshtools.common.permissions.PermissionDeniedException;
@@ -160,9 +161,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 				folder = fileService.getVirtualFolder(parentMount.getMount());
 			} catch(ObjectNotFoundException e) { }
 			
-			return new ResourceStatus<File>(new File(parent,
-					FileUtils.isSamePath(parent.getAbsolutePath(), parentMount.getMount()),
-					folder));
+			return new ResourceStatus<File>(new File((VirtualFile)parent, folder));
 			
 		} catch (Throwable e) {
 			log.error("Stat failed", e);
@@ -271,9 +270,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 				if(file.isDirectory() && folders) {
 					if((file.isHidden() && hidden) || !file.isHidden()) {
 
-						folderResults.add(new File(file,
-								FileUtils.isSamePath(file.getAbsolutePath(),parentMount.getMount()),
-								virtualFolder));
+						folderResults.add(new File((VirtualFile)file, virtualFolder));
 						--maximumFiles;
 						
 						if(maximumFiles > 0) {
@@ -287,7 +284,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 					
 				} else if(file.isFile() && files) {
 					if((file.isHidden() && hidden) || !file.isHidden()) {
-						fileResults.add(new File(file, false, virtualFolder));
+						fileResults.add(new File((VirtualFile)file, virtualFolder));
 						--maximumFiles;
 					}
 				} 

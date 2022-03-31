@@ -5,18 +5,16 @@ import java.io.UnsupportedEncodingException;
 
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.mongodb.internal.HexUtils;
-import com.sshtools.common.files.AbstractFile;
+import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
 
 public class File {
 
-	AbstractFile file;
-	boolean isMount;
+	VirtualFile file;
 	VirtualFolder parent;
 	
-	public File(AbstractFile file, boolean isMount, VirtualFolder parent) {
+	public File(VirtualFile file, VirtualFolder parent) {
 		this.file = file;
-		this.isMount = isMount;
 		this.parent = parent;
 	}
 	
@@ -74,7 +72,7 @@ public class File {
 	
 	public boolean isReadable() {
 		try {
-			return file.isReadable();
+			return !isReadOnly() && file.isReadable();
 		} catch (IOException | PermissionDeniedException e) {
 			return false;
 		}
@@ -93,7 +91,7 @@ public class File {
 	}
 	
 	public boolean isMount() {
-		return isMount;
+		return file.isMount();
 	}
 	
 	public boolean isShareFiles() {
