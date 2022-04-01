@@ -2,7 +2,6 @@ package com.jadaptive.plugins.ssh.vsftp.ui.wizards;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.repository.UUIDEntity;
-import com.jadaptive.api.role.Role;
-import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.setup.SetupSection;
 import com.jadaptive.api.template.ObjectTemplate;
@@ -21,20 +18,14 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.ui.Page;
 import com.jadaptive.api.ui.renderers.DropdownInput;
 import com.jadaptive.api.ui.renderers.I18nOption;
-import com.jadaptive.api.user.User;
-import com.jadaptive.api.user.UserService;
 import com.jadaptive.api.wizards.WizardService;
 import com.jadaptive.api.wizards.WizardState;
-import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolder;
-import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.schemes.BasicCredentials;
 import com.jadaptive.plugins.ssh.vsftp.schemes.SftpCredentials;
 import com.jadaptive.plugins.ssh.vsftp.schemes.UsernameAndPasswordCredentials;
@@ -44,7 +35,6 @@ import com.jadaptive.utils.Utils;
 import com.sshtools.common.publickey.InvalidPassphraseException;
 import com.sshtools.common.publickey.SshKeyUtils;
 import com.sshtools.common.ssh.components.SshKeyPair;
-import com.sshtools.common.util.FileUtils;
 
 @Component
 public class PublicUploadStep2 extends PublicUploadSection {
@@ -60,16 +50,6 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	@Autowired
 	private VirtualFileService fileService; 
 	
-	@Autowired
-	private RoleService roleService; 
-	
-	@Autowired
-	private UserService userDatabase;
-	
-	@Autowired
-	private SharedFileService sharingService;
-	
-	private static final String EXISTING_UUID = "existingUUID";
 	public static final String SHORTCODE = "shortcode";
 	
 	public PublicUploadStep2() {

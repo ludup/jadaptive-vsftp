@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jadaptive.api.db.TenantAwareObjectDatabase;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
+import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -83,6 +84,9 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 					file.length()));
 			
 		} catch(Throwable e) {
+			if(e instanceof PageRedirect) {
+				throw (PageRedirect) e;
+			}
 			throw new IOException(e.getMessage(), e);
 		} finally {
 			clearUserContext();
