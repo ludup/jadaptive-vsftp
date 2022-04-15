@@ -225,7 +225,7 @@ $(function() {
 			dataType: 'json',
 			success: function(data) {
 				if (data.success) {
-					var link = window.location.origin + data.resource.publicLink;
+					var link = window.location.origin + '/app/ui/share/' + data.resource.shortCode;
 					navigator.clipboard.writeText(link);
 					JadaptiveUtils.success($('#feedback'), "The public link has been copied to the clipboard.");
 				} else {

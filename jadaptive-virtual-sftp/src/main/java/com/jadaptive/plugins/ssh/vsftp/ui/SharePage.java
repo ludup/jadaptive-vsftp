@@ -36,7 +36,7 @@ public class SharePage extends HtmlPage {
 			if(file.getShareType()==ShareType.UPLOAD) {
 				throw new UriRedirect(String.format("/app/ui/incoming/%s", shortCode));
 			} else {
-				throw new UriRedirect(String.format("/app/ui/incoming/%s/%s", shortCode, file.getFilename()));
+				throw new UriRedirect(String.format("/app/ui/download/%s/%s", shortCode, file.getFilename()));
 			}
 		} catch(ObjectException e) {
 			throw new FileNotFoundException();

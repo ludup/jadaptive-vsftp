@@ -3,7 +3,9 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
@@ -509,10 +511,11 @@ public class VirtualFileController extends AuthenticatedController implements St
 	public ResourceStatus<SharedFile> createPublicDownload(HttpServletRequest request, HttpServletResponse response) throws RepositoryException, UnknownEntityException, ObjectException {
 
 		setupUserContext(request);
-		
-		String path = request.getRequestURI().substring(21);
-		
+			
 		try {
+			
+			String path = URLDecoder.decode(request.getRequestURI().substring(21), "UTF-8");
+			
 			try {
 				SharedFile link = linkService.getDownloadByPath(path);
 				return new ResourceStatus<>(link);
@@ -535,15 +538,18 @@ public class VirtualFileController extends AuthenticatedController implements St
 	public ResourceStatus<SharedFile> createShare(HttpServletRequest request, HttpServletResponse response) throws RepositoryException, UnknownEntityException, ObjectException {
 
 		setupUserContext(request);
-		
-		String path = request.getRequestURI().substring(21);
-		
+
 		try {
+			
+			String path = URLDecoder.decode(request.getRequestURI().substring(21), "UTF-8");
+			
 			SharedFile link = new SharedFile();
 			link.setShareType(ShareType.DOWNLOAD);
 			link.setVirtualPath(path);
 			request.getSession().setAttribute(SharedFile.RESOURCE_KEY, link);
 			return new ResourceStatus<>(link);
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException(e);
 		} finally {
 			clearUserContext();
 		}

@@ -27,7 +27,7 @@ public class SharedFile extends AbstractUUIDEntity {
 
 	public static final String RESOURCE_KEY = "sharedFiles";
 	
-	@ObjectField(type = FieldType.ENUM)
+	@ObjectField(type = FieldType.ENUM, readOnly = true)
 	@ObjectView(value = "file")
 	ShareType shareType;
 	
