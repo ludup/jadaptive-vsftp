@@ -176,7 +176,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileObject obj = mgr.resolveFile(
 							scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString(), opts);
 			
-			if(!obj.exists() && scheme.createRoot()) {
+			if(!obj.exists() && (scheme.createRoot() || folder.getPath().getCreateRoot())) {
 				obj.createFolder();
 			}
 			
