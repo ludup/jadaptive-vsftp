@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
@@ -43,10 +44,13 @@ import com.sshtools.common.ssh.components.SshKeyPair;
 
 @Extension
 public class SelectMount extends SetupSection {
-
+	
 	private static final String REQUEST_PARAM_TYPE = "type";
 
 	public static final int SETUP_WIZARD_POSITION =  SetupSection.END_OF_DEFAULT + 1;
+	
+	public static final String RESOURCE_BUNDLE = "selectMount";
+	
 	@Autowired
 	private TemplateService templateService; 
 	
@@ -66,7 +70,11 @@ public class SelectMount extends SetupSection {
 	}
 	
 	public SelectMount(int position) {
-		super("selectMount", "selectMount", "SelectMount.html", position);
+		super(RESOURCE_BUNDLE, "selectMount", "SelectMount.html", position);
+	}
+	
+	public String getBundle() {
+		return RESOURCE_BUNDLE;
 	}
 
 	@Override
@@ -89,7 +97,7 @@ public class SelectMount extends SetupSection {
 		
 		VirtualFolderCredentials creds = null;
 		if(scheme.requiresCredentials()) {
-			creds = ObjectUtils.assertObject(state.getObjectAt(getPosition()+1), scheme.getCredentialsClass());
+			creds = ObjectUtils.assertObject(state.getObjectAt(sectionIndex+1), scheme.getCredentialsClass());
 		}
 		
 		String uuid = (String) state.getParameter(HOME_UUID);
@@ -129,6 +137,21 @@ public class SelectMount extends SetupSection {
 			}
 		}
 		
+		FileScheme<?> scheme = fileService.getFileScheme(folderType);
+		
+		UUIDEntity obj = state.getCurrentObject();
+		
+		if(Objects.isNull(obj)) {
+			obj = (UUIDEntity) Request.get().getSession().getAttribute(folderType);
+			if(Objects.nonNull(obj)) {
+				state.setCurrentObject(obj);
+			}
+		} else if(Objects.nonNull(obj)) {
+			if(!obj.getResourceKey().equals(scheme.getPathTemplate().getResourceKey())) {
+				Request.get().getSession().setAttribute(folderType, obj);
+				state.setCurrentObject(null);
+			}
+		}
 		DropdownInput input = new DropdownInput(REQUEST_PARAM_TYPE, "selectMount");
 		
 		ObjectTemplate template = templateService.get(VirtualFolder.RESOURCE_KEY);
@@ -148,7 +171,7 @@ public class SelectMount extends SetupSection {
 		Element content = document.selectFirst("#content");
 		content.appendChild(el);
 		
-		FileScheme<?> scheme = fileService.getFileScheme(folderType);
+		
 		
 		content.appendChild(new Element("div")
 				.attr("jad:bundle", template.getBundle())
