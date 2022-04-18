@@ -91,4 +91,9 @@ public class AzureFileScheme extends AbstractFileScheme<AzureFileProvider> {
 		
 		return folder;
 	}
+
+	@Override
+	public String getBundle() {
+		return AzureFolder.RESOURCE_KEY;
+	}
 }

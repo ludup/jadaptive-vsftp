@@ -90,4 +90,9 @@ public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 		
 		return folder;
 	}
+
+	@Override
+	public String getBundle() {
+		return S3Folder.RESOURCE_KEY;
+	}
 }

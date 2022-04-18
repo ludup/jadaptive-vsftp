@@ -52,4 +52,6 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 	String getIcon();
 
 	VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path, VirtualFolderCredentials creds);
+
+	String getBundle();
 }

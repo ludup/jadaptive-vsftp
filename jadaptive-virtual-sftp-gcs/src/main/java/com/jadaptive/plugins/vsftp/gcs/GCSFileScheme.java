@@ -90,4 +90,9 @@ public class GCSFileScheme extends AbstractFileScheme<GoogleStorageFileProvider>
 		
 		return folder;
 	}
+
+	@Override
+	public String getBundle() {
+		return GCSFolder.RESOURCE_KEY;
+	}
 }

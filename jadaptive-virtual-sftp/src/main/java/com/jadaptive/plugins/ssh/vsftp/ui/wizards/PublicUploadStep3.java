@@ -62,13 +62,13 @@ public class PublicUploadStep3 extends PublicUploadSection {
 		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 		FileScheme<?> scheme = fileService.getFileScheme(folderType);
 	
-		PublicUploadName name = ObjectUtils.assertObject(state.getObjectAt(sectionIndex-2), PublicUploadName.class);
+		PublicUploadName name = ObjectUtils.assertObject(state.getObjectAt(sectionIndex - (!scheme.requiresCredentials() ? 2 : 3)), PublicUploadName.class);
 		PublicUploadAssignment assignments = ObjectUtils.assertObject(state.getObjectAt(sectionIndex), PublicUploadAssignment.class);
-		VirtualFolderPath path = ObjectUtils.assertObject(state.getObjectAt(sectionIndex-1), scheme.getPathClass());
+		VirtualFolderPath path = ObjectUtils.assertObject(state.getObjectAt(sectionIndex- (!scheme.requiresCredentials() ? 1 : 2)), scheme.getPathClass());
 	
 		VirtualFolderCredentials creds = null;
 		if(scheme.requiresCredentials()) {
-			creds = ObjectUtils.assertObject(state.getObjectAt(getPosition()+1), scheme.getCredentialsClass());
+			creds = ObjectUtils.assertObject(state.getObjectAt(sectionIndex-1), scheme.getCredentialsClass());
 		}
 		
 		String uuid = (String) state.getParameter(EXISTING_UUID);

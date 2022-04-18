@@ -31,11 +31,11 @@ public class SharedFile extends AbstractUUIDEntity {
 	@ObjectView(value = "file")
 	ShareType shareType;
 	
-	@ObjectField(type = FieldType.TEXT)
+	@ObjectField(type = FieldType.TEXT, searchable = true)
 	@ObjectView(value = "file")
 	String virtualPath;
 	
-	@ObjectField(type = FieldType.TEXT, unique = true)
+	@ObjectField(type = FieldType.TEXT, unique = true, searchable = true)
 	@ObjectView(value = "file")
 	String shortCode;
 	

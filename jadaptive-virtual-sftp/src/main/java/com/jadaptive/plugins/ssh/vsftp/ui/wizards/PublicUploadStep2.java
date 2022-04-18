@@ -151,7 +151,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 								.addClass("col-9")
 								.appendChild(new Element("span")
 										.appendChild(new Element("strong")
-												.attr("jad:bundle", "virtualFolder")
+												.attr("jad:bundle", scheme.getBundle())
 												.attr("jad:i18n", folderType + ".name"))))
 					.appendChild(new Element("div")
 							.addClass("col-3")
@@ -251,13 +251,13 @@ public class PublicUploadStep2 extends PublicUploadSection {
 						.text(Utils.maskingString(basic.getPassword(), 2, "*")))));
 	}
 	
-	class CredentialsSetupSection extends SetupSection {
+	class CredentialsSetupSection extends PublicUploadSection {
 
 		FileScheme<?> scheme;
 		public CredentialsSetupSection(FileScheme<?> scheme) {
 			super("publicUploadWizard", 
 					"homeCredentials", 
-					"HomeCredentials.html", 
+					"PublicUploadStep2a.html", 
 					PublicUploadStep2.this.getPosition()+1);
 			this.scheme = scheme;
 		}
@@ -271,7 +271,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 			content.appendChild(new Element("div")
 					.attr("jad:bundle", template.getBundle())
 					.attr("jad:id", "objectRenderer")
-					.attr("jad:handler", "setup")
+					.attr("jad:handler", PublicUploadWizard.RESOURCE_KEY)
 					.attr("jad:disableViews", "true")
 					.attr("jad:resourceKey", scheme.getCredentialsTemplate().getResourceKey()));
 			
