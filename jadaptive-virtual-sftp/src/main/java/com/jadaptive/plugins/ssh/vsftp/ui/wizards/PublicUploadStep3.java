@@ -23,9 +23,8 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 import com.jadaptive.utils.ObjectUtils;
 import com.sshtools.common.util.FileUtils;
 
@@ -47,7 +46,7 @@ public class PublicUploadStep3 extends PublicUploadSection {
 	private UserService userDatabase;
 	
 	@Autowired
-	private SharedFileService sharingService;
+	private UploadFormService uploadService;
 	
 	@Autowired
 	private UserService userService; 
@@ -92,12 +91,12 @@ public class PublicUploadStep3 extends PublicUploadSection {
 				users,
 				Arrays.asList(roleService.getEveryoneRole()));
 		
-		SharedFile share = new SharedFile();
-		share.setShareType(ShareType.UPLOAD);
+		UploadForm share = new UploadForm();
+	
 		share.setVirtualPath(virtualPath);
-		share.setFilename(folder.getName());
+		share.setName(folder.getName());
 		
-		sharingService.saveOrUpdate(share);
+		uploadService.saveOrUpdate(share);
 		
 		state.setParameter(SHORTCODE, share.getShortCode());
 		state.setParameter(EXISTING_UUID, folder.getUuid());

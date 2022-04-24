@@ -17,7 +17,6 @@ import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.ui.UriRedirect;
-import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 
@@ -58,11 +57,7 @@ public class PasswordProtectedPage extends HtmlPage {
 		if(StringUtils.isNotBlank(file.getTerms())) {
 			throw new UriRedirect(String.format("/app/ui/download-terms/%s/%s", shortCode, filename));
 		} else {
-			if(file.getShareType()==ShareType.DOWNLOAD) {
-				throw new UriRedirect(String.format("/app/ui/download/%s/%s", shortCode, filename));
-			} else {
-				throw new UriRedirect(String.format("/app/ui/incoming/%s", shortCode));
-			}
+			throw new UriRedirect(String.format("/app/ui/download/%s/%s", shortCode, filename));
 		}
 	}
 

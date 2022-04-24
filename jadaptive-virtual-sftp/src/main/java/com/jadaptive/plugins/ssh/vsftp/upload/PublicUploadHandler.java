@@ -3,21 +3,23 @@ package com.jadaptive.plugins.ssh.vsftp.upload;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Map;
 
+import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.io.DigestInputStream;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.db.TenantAwareObjectDatabase;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 import com.sshtools.common.files.AbstractFile;
 
 @Extension
@@ -30,25 +32,21 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 	private VirtualFileService fileService; 
 	
 	@Autowired
-	private SharedFileService shareService; 
+	private UploadFormService uploadService; 
 	
 	@Autowired
 	private AnonymousUserDatabase anonymousDatabase;
 	
 	@Autowired
-	private TenantAwareObjectDatabase<IncomingFile> objectDatabase;
+	private IncomingFileService incomingService;
 	
 	ThreadLocal<Collection<FileUpload>> uploadPaths = new ThreadLocal<>();
 	ThreadLocal<String> currentEmail = new ThreadLocal<>();
 	ThreadLocal<String> currentName = new ThreadLocal<>();
 	ThreadLocal<String> currentReference = new ThreadLocal<>();
 	ThreadLocal<VirtualFolder> currentVirtualFolder = new ThreadLocal<>();
-	
-//	@Autowired
-//	private EmailNotificationService notificationService; 
-//	
-//	@Autowired
-//	private MessageService messageService;
+	ThreadLocal<UploadForm> currentSharedFile = new ThreadLocal<>();
+
 	
 	public void handleUpload(String handlerName, String uri, Map<String, String> parameters, String filename, InputStream in) throws IOException, SessionTimeoutException, UnauthorizedException {
 		
@@ -69,19 +67,25 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 			}
 
 			if(currentVirtualFolder.get() == null) {
-				SharedFile share = shareService.getDownloadByShortCode(uri);
-				currentVirtualFolder.set(fileService.getVirtualFolder(share.getVirtualPath()));
+				currentSharedFile.set(uploadService.getFormByShortCode(uri));
+				currentVirtualFolder.set(fileService.getVirtualFolder(currentSharedFile.get().getVirtualPath()));
 			}
 			
-			AbstractFile file = doUpload(currentVirtualFolder.get().getMountPath(), filename, in);
-			
-			if(uploadPaths.get()==null) {
-				uploadPaths.set(new ArrayList<>());
+			try(DigestInputStream din = new DigestInputStream(in, new SHA256Digest())) {
+				AbstractFile file = doUpload(currentVirtualFolder.get().getMountPath(), filename, din);
+				
+				if(uploadPaths.get()==null) {
+					uploadPaths.set(new ArrayList<>());
+				}
+				
+				byte[] hash = new byte[din.getDigest().getDigestSize()];
+				din.getDigest().doFinal(hash, 0);
+				
+				uploadPaths.get().add(new FileUpload(file.getName(),
+						file.getAbsolutePath(),
+						file.length(),
+						String.format("SHA256:%s", Base64.getEncoder().encodeToString(hash))));
 			}
-			
-			uploadPaths.get().add(new FileUpload(file.getName(),
-					file.getAbsolutePath(),
-					file.length()));
 			
 		} catch(Throwable e) {
 			if(e instanceof PageRedirect) {
@@ -95,19 +99,30 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 
 	@Override
 	public void onUploadsComplete() {
-		Collection<FileUpload> files = uploadPaths.get();	
 		
-		IncomingFile upload = new IncomingFile();
+		setupSystemContext();
 		
-		upload.setEmail(currentEmail.get());
-		upload.setName(currentName.get());
-		upload.setReference(currentReference.get());
-		upload.setUploadPaths(files);
-		upload.setUploadArea(currentVirtualFolder.get().getName());
-		
-		objectDatabase.saveOrUpdate(upload);
-		
-		clean();
+		try {
+			Collection<FileUpload> files = uploadPaths.get();	
+			
+			IncomingFile upload = new IncomingFile();
+			
+			VirtualFolder virtualFolder = currentVirtualFolder.get();
+			UploadForm uploadForm = currentSharedFile.get();
+			
+			upload.setEmail(currentEmail.get());
+			upload.setName(currentName.get());
+			upload.setReference(currentReference.get());
+			upload.setUploadPaths(files);
+			upload.setUploadArea(virtualFolder.getName());
+			
+			incomingService.save(upload, virtualFolder, uploadForm);
+			
+			clean();
+			
+		} finally {
+			clearUserContext();
+		}
 	}
 
 	@Override

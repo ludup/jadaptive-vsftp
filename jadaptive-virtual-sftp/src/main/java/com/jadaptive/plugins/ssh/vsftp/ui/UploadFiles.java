@@ -1,6 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
@@ -22,7 +22,7 @@ public class UploadFiles extends AuthenticatedPage {
 	}
 
 	@Override
-	protected void generateAuthenticatedContent(Document document) throws FileNotFoundException {
+	protected void generateAuthenticatedContent(Document document) throws IOException {
 		super.generateAuthenticatedContent(document);
 	}
 	

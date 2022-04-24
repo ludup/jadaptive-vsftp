@@ -60,7 +60,6 @@ import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderMount;
-import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.upload.FileUpload;
@@ -544,7 +543,6 @@ public class VirtualFileController extends AuthenticatedController implements St
 			String path = URLDecoder.decode(request.getRequestURI().substring(21), "UTF-8");
 			
 			SharedFile link = new SharedFile();
-			link.setShareType(ShareType.DOWNLOAD);
 			link.setVirtualPath(path);
 			request.getSession().setAttribute(SharedFile.RESOURCE_KEY, link);
 			return new ResourceStatus<>(link);

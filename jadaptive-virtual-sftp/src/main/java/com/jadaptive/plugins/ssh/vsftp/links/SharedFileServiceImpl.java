@@ -38,7 +38,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		try {
 			AbstractFile file = fileService.getFile(object.getVirtualPath());
 					
-			if(file.isDirectory() && object.getShareType() == ShareType.DOWNLOAD) {
+			if(file.isDirectory()) {
 				object.setFilename(file.getName() + ".zip");
 			} else {
 				object.setFilename(file.getName());
@@ -55,7 +55,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	@Override
 	public SharedFile createDownloadLink(AbstractFile file) throws IOException, PermissionDeniedException {
 		SharedFile link = new SharedFile();
-		link.setShareType(ShareType.DOWNLOAD);
+
 		link.setVirtualPath(file.getAbsolutePath());
 		if(file.isDirectory()) {
 			link.setFilename(file.getName() + ".zip");
@@ -70,22 +70,14 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	public SharedFile getDownloadByShortCode(String shortCode) {
 		return objectDatabase.get(getResourceClass(), SearchField.eq("shortCode", shortCode));
 	}
-	
-	private void assertDownload(SharedFile share) {
-		if(share.getShareType() != ShareType.DOWNLOAD) {
-			throw new IllegalStateException(String.format("%s is not an upload share!", share.getFilename()));
-		}
-	}
 
 	@Override
 	public String getDirectLink(SharedFile share) {
-		assertDownload(share);
 		return Utils.encodeURIPath("/app/vfs/downloadLink/" + share.getShortCode() + "/" + share.getFilename());
 	}
 
 	@Override
 	public String getPublicLink(SharedFile share) {
-		assertDownload(share);
 		return Utils.encodeURIPath("/app/ui/download/" + share.getShortCode() + "/" + share.getFilename());
 	}
 }

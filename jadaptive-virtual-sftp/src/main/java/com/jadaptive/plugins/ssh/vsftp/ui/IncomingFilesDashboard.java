@@ -13,11 +13,10 @@ import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.ui.DashboardWidget;
 import com.jadaptive.api.ui.Html;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFile;
 import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFileService;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 import com.sshtools.common.util.FileUtils;
 
 @Extension
@@ -27,7 +26,7 @@ public class IncomingFilesDashboard implements DashboardWidget {
 	private IncomingFileService incomingService; 
 	
 	@Autowired
-	private SharedFileService sharingService; 
+	private UploadFormService uploadService; 
 	
 	@Override
 	public String getIcon() {
@@ -47,8 +46,8 @@ public class IncomingFilesDashboard implements DashboardWidget {
 	@Override
 	public void renderWidget(Document document, Element element) {
 		
-		List<SharedFile> shares = new ArrayList<>();
-		for(SharedFile share : sharingService.allObjects()) {
+		List<UploadForm> shares = new ArrayList<>();
+		for(UploadForm share : uploadService.allObjects()) {
 			shares.add(share);
 		}
 		
@@ -63,20 +62,19 @@ public class IncomingFilesDashboard implements DashboardWidget {
 							.attr("jad:i18n", "publicFolders.text"));
 		}
 		
-		for(SharedFile share : shares) {
-			
-			if(share.getShareType() == ShareType.UPLOAD) {
-				String downloadURL = FileUtils.checkEndsWithSlash(Request.generateBaseUrl(Request.get())) + "app/ui/share/" + share.getShortCode();
+		for(UploadForm share : shares) {
+		
+			String downloadURL = FileUtils.checkEndsWithSlash(Request.generateBaseUrl(Request.get())) + "app/ui/incoming/" + share.getShortCode();
 
-				element.appendChild(Html.div("row")
-							.appendChild(Html.div("col-10")
-								.appendChild(Html.a(String.format("/app/ui/tree%s", share.getVirtualPath())).text(share.getFilename()).attr("title", "Browse upload area")))
-						.appendChild(Html.div("col-2")
-							.appendChild(Html.a(downloadURL, "copyURL").attr("title", "Copy URL to clipboard")
-									.appendChild(Html.i("far fa-fw", "fa-copy")))
-							.appendChild(Html.a(downloadURL, "").attr("title", "Goto upload area")
-									.appendChild(Html.i("far fa-fw", "fa-link")))));
-			}
+			element.appendChild(Html.div("row")
+						.appendChild(Html.div("col-10")
+							.appendChild(Html.a(String.format("/app/ui/tree%s", share.getVirtualPath())).text(share.getName()).attr("title", "Browse upload area")))
+					.appendChild(Html.div("col-2")
+						.appendChild(Html.a(downloadURL, "copyURL").attr("title", "Copy URL to clipboard")
+								.appendChild(Html.i("far fa-fw", "fa-copy")))
+						.appendChild(Html.a(downloadURL, "").attr("title", "Goto upload area")
+								.appendChild(Html.i("far fa-fw", "fa-link")))));
+		
 		}
 
 		Collection<IncomingFile> files = incomingService.getLatestFiles();

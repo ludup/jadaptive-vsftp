@@ -23,7 +23,6 @@ import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
-import com.jadaptive.plugins.ssh.vsftp.links.ShareType;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.sshd.SSHDService;
@@ -59,10 +58,6 @@ public class DownloadPublicFile extends HtmlPage {
 		
 		try {
 			SharedFile file = downloadService.getDownloadByShortCode(shortCode);
-			
-			if(file.getShareType()==ShareType.UPLOAD) {
-				throw new FileNotFoundException();
-			}
 			
 			if(!hasPassword(request, file)) {
 				throw new UriRedirect(String.format("/app/ui/password-protected/%s/%s", shortCode, filename));

@@ -1,13 +1,12 @@
-package com.jadaptive.plugins.ssh.vsftp.links;
+package com.jadaptive.plugins.ssh.vsftp.uploads;
 
 import java.util.Collection;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.repository.AbstractUUIDEntity;
+import com.jadaptive.api.repository.NamedUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectServiceBean;
 import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
@@ -19,21 +18,20 @@ import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.email.AssignmentNotificationPreference;
 import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
 
-@ObjectDefinition(resourceKey = SharedFile.RESOURCE_KEY, bundle = SharedFile.RESOURCE_KEY, 
-	type = ObjectType.COLLECTION, creatable = true, defaultColumn = "filename")
-@ObjectServiceBean( bean = SharedFileService.class)
+@ObjectDefinition(resourceKey = UploadForm.RESOURCE_KEY, bundle = UploadForm.RESOURCE_KEY, 
+	type = ObjectType.COLLECTION, creatable = true, defaultColumn = "name")
 @ObjectViews({ 
-	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.FILE_VIEW, weight = 0),
-	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.OPTIONS_VIEW, weight = 100),
-	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.NOTIFICATIONS_VIEW, weight = 200) })
-@TableView(defaultColumns = { "filename", "passwordProtected", "acceptTerms", "virtualPath" },
-             actions = { @TableAction(bundle = SharedFile.RESOURCE_KEY, icon = "fa-link", 
-             resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/share/{shortCode}") })
-public class SharedFile extends AbstractUUIDEntity {
+	@ObjectViewDefinition(bundle = UploadForm.RESOURCE_KEY, value = UploadForm.FILE_VIEW, weight = 0),
+	@ObjectViewDefinition(bundle = UploadForm.RESOURCE_KEY, value = UploadForm.OPTIONS_VIEW, weight = 100),
+	@ObjectViewDefinition(bundle = UploadForm.RESOURCE_KEY, value = UploadForm.NOTIFICATIONS_VIEW, weight = 200) })
+@TableView(defaultColumns = { "name", "virtualPath" },
+             actions = { @TableAction(bundle = UploadForm.RESOURCE_KEY, icon = "fa-link", 
+             resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/incoming/{shortCode}") })
+public class UploadForm extends NamedUUIDEntity {
 
 	private static final long serialVersionUID = 6440151078128444905L;
 
-	public static final String RESOURCE_KEY = "sharedFiles";
+	public static final String RESOURCE_KEY = "uploadForms";
 	
 	static final String FILE_VIEW = "file";
 	static final String OPTIONS_VIEW = "options";
@@ -46,26 +44,6 @@ public class SharedFile extends AbstractUUIDEntity {
 	@ObjectField(type = FieldType.TEXT, unique = true, searchable = true)
 	@ObjectView(value = FILE_VIEW)
 	String shortCode;
-	
-	@ObjectField(type = FieldType.TEXT, hidden = true, nameField = true)
-	@ObjectView(value = FILE_VIEW)
-	String filename;
-
-	@ObjectField(type = FieldType.BOOL)
-	@ObjectView(value = OPTIONS_VIEW)
-	Boolean passwordProtected;
-	
-	@ObjectField(type = FieldType.PASSWORD)
-	@ObjectView(value = OPTIONS_VIEW)
-	String password;
-	
-	@ObjectField(type = FieldType.BOOL)
-	@ObjectView(value = OPTIONS_VIEW)
-	Boolean acceptTerms;
-	
-	@ObjectField(type = FieldType.TEXT_AREA)
-	@ObjectView(value = OPTIONS_VIEW)
-	String terms;
 	
 	@ObjectField(type = FieldType.ENUM)
 	@ObjectView(value = NOTIFICATIONS_VIEW)
@@ -96,46 +74,6 @@ public class SharedFile extends AbstractUUIDEntity {
 
 	public void setShortCode(String shortCode) {
 		this.shortCode = shortCode;
-	}
-
-	public String getFilename() {
-		return filename;
-	}
-
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-
-	public Boolean getPasswordProtected() {
-		return passwordProtected;
-	}
-
-	public void setPasswordProtected(Boolean passwordProtected) {
-		this.passwordProtected = passwordProtected;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getTerms() {
-		return terms;
-	}
-
-	public void setTerms(String terms) {
-		this.terms = terms;
-	}
-
-	public Boolean getAcceptTerms() {
-		return acceptTerms;
-	}
-
-	public void setAcceptTerms(Boolean acceptTerms) {
-		this.acceptTerms = acceptTerms;
 	}
 
 	public Collection<String> getOtherEmails() {

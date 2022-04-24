@@ -1,6 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +25,7 @@ public class Tree extends AuthenticatedPage {
 	}
 
 	@Override
-	protected void generateAuthenticatedContent(Document document) throws FileNotFoundException {
+	protected void generateAuthenticatedContent(Document document) throws IOException {
 		super.generateAuthenticatedContent(document);
 		
 		Map<String,String> depths = new HashMap<>();
