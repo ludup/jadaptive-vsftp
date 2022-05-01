@@ -6,10 +6,11 @@ import org.springframework.stereotype.Service;
 
 import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.db.TenantAwareObjectDatabase;
+import com.jadaptive.api.stats.ResourceService;
 import com.jadaptive.utils.Utils;
 
 @Service
-public class UploadFormServiceImpl implements UploadFormService {
+public class UploadFormServiceImpl implements UploadFormService, ResourceService {
 
 	@Autowired
 	private TenantAwareObjectDatabase<UploadForm> uploadDatabase;
@@ -32,6 +33,21 @@ public class UploadFormServiceImpl implements UploadFormService {
 	@Override
 	public Iterable<UploadForm> allObjects() {
 		return uploadDatabase.list(UploadForm.class);
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	@Override
+	public String getResourceKey() {
+		return UploadForm.RESOURCE_KEY;
+	}
+
+	@Override
+	public long getTotalResources() {
+		return uploadDatabase.count(UploadForm.class);
 	}
 
 }

@@ -13,7 +13,7 @@
 	    "locale": "DEFAULT",
 		"subject": "Your files have been received",
 		"htmlTemplate": "16fbfa1e-d012-47b3-a987-a306120ea46a",
-	    "htmlText": "<p>Thank you for uploading to ${serverName}. We can confirm that we have received the following file(s):</p>",
+	    "htmlText" : "<p>Thank you for uploading to ${shareName} on ${serverName}.</p>\r\n\r\n<table>\r\n  <tbody>\r\n    <tr>\r\n      <td><strong>Your Name:</strong></td><td>${uploaderName}</td>\r\n    </tr>\r\n    <tr>\r\n      <td><strong>Your Email:</strong></td><td>${uploaderEmail}</td>\r\n    </tr>\r\n    <tr>\r\n      <td><strong>Your Reference:</strong></td><td>${uploaderRef}</td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<p>This email is your confirmation that we have received the following file(s):</p>\r\n<table style=\"width:100%\">\r\n  <thead>\r\n    <tr>\r\n      <td style=\"padding-right: 10px;\"><strong>Filename</strong></td>\r\n      <td style=\"padding-right: 10px;\"><strong>Size</strong></td>\r\n      <td><strong>Content Hash</strong></td>\r\n    </tr>\r\n  </thead>\r\n  <tbody>\r\n[#list files as file]\r\n    <tr><td>${file.filename}</td><td>${file.displaySize}</td><td>${file.contentHash}</td></tr>\r\n[/#list]\r\n  </tbody>\r\n</table>\r\n<p>Thank you for using this service.</p>",
 	    "enabled": true,
 	    "system": true
 	}]
@@ -32,7 +32,7 @@
 	    "locale": "DEFAULT",
 		"subject": "You have received new files",
 		"htmlTemplate": "16fbfa1e-d012-47b3-a987-a306120ea46a",
-	    "htmlText": "<p>${incomgFile.name} has sent you ${incomingFile.files.size} file(s).</p>",
+	    "htmlText" : "<p>You have received new files in ${shareName} on ${serverName}.</p>\r\n\r\n<table>\r\n  <tbody>\r\n    <tr>\r\n      <td><strong>From Name:</strong></td><td>${uploaderName}</td>\r\n    </tr>\r\n    <tr>\r\n      <td><strong>From Email:</strong></td><td>${uploaderEmail}</td>\r\n    </tr>\r\n    <tr>\r\n      <td><strong>From Reference:</strong></td><td>${uploaderRef}</td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<p>You have received the following file(s):</p>\r\n<table style=\"width:100%\">\r\n  <thead>\r\n    <tr>\r\n      <td style=\"padding-right: 10px;\"><strong>Filename</strong></td>\r\n      <td style=\"padding-right: 10px;\"><strong>Size</strong></td>\r\n      <td><strong>Content Hash</strong></td>\r\n    </tr>\r\n  </thead>\r\n  <tbody>\r\n[#list files as file]\r\n    <tr><td>${file.filename}</td><td>${file.displaySize}</td><td>${file.contentHash}</td></tr>\r\n[/#list]\r\n  </tbody>\r\n</table>\r\n\r\n<p>Login to ${serverName} to access these files.</p>",
 	    "enabled": true,
 	    "system": true
 	}]
@@ -50,6 +50,25 @@
 	    "uuid": "a32d1559-2db0-465c-987a-429b3e24ef0e",
 	    "locale": "DEFAULT",
 		"subject": "Shared file download",
+		"htmlTemplate": "16fbfa1e-d012-47b3-a987-a306120ea46a",
+	    "htmlText" : "<p>The file ${filename} has just been accessed.</p>\r\n\r\n<p>The IP address that accessed the file was ${ipAddress}.</p>",
+	    "enabled": true,
+	    "system": true
+	}]
+}, {
+    "uuid": "a6a1fabd-895a-41ab-8944-1847501881d8",
+	"resourceKey": "emailMessage",
+	"group": "File Sharing",
+	"name": "Shared File Created",
+	"enabled": true,
+	"archive": true,
+	"replacementVariables": [ ],
+	"system": true,
+	"content": [{
+	    "_clz": "com.jadaptive.plugins.email.MessageContent",
+	    "uuid": "a32d1559-2db0-465c-987a-429b3e24ef0e",
+	    "locale": "DEFAULT",
+		"subject": "A new file share was created",
 		"htmlTemplate": "16fbfa1e-d012-47b3-a987-a306120ea46a",
 	    "htmlText": "<p></p>",
 	    "enabled": true,

@@ -17,28 +17,16 @@ public class AzureFolderPath extends VirtualFolderPath {
 	public static final String RESOURCE_KEY = "azureFolderPath";
 	
 	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 100, bundle = AzureFolder.RESOURCE_KEY)
-	String storageAccount;
-	
-	@ObjectField(type = FieldType.TEXT)
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 200, bundle = AzureFolder.RESOURCE_KEY)
 	String filePath;
 	
 	protected String getDestinationUri() {
-		return FileUtils.checkStartsWithSlash(storageAccount)  + FileUtils.checkStartsWithSlash(filePath);
+		return FileUtils.checkStartsWithSlash(filePath);
 	}
 	
 	@Override
 	public String getResourceKey() {
 		return RESOURCE_KEY;
-	}
-
-	public String getStorageAccount() {
-		return storageAccount;
-	}
-
-	public void setStorageAccount(String storageAccount) {
-		this.storageAccount = storageAccount;
 	}
 
 	public String getFilePath() {

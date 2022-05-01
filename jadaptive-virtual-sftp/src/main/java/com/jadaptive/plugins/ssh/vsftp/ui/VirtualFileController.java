@@ -448,6 +448,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			}
 			
 			AbstractFile fileOjbect = fileService.getFactory().getFile(download.getVirtualPath());
+			linkService.notifyShareAccess(download);
 			sendFileOrZipFolder(download.getVirtualPath(), fileOjbect, response);
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);
@@ -516,12 +517,12 @@ public class VirtualFileController extends AuthenticatedController implements St
 			String path = URLDecoder.decode(request.getRequestURI().substring(21), "UTF-8");
 			
 			try {
-				SharedFile link = linkService.getDownloadByPath(path);
+				SharedFile link = linkService.getDownloadByPath(path, getCurrentUser());
 				return new ResourceStatus<>(link);
 			} catch(ObjectNotFoundException e) {
 				
 				AbstractFile fileObject = fileService.getFactory().getFile(path);
-				SharedFile link = linkService.createDownloadLink(fileObject);
+				SharedFile link = linkService.createDownloadLink(fileObject, getCurrentUser());
 				return new ResourceStatus<>(link);
 			}
 		} catch (Throwable e) {

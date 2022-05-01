@@ -16,7 +16,6 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
-import com.jadaptive.plugins.ssh.vsftp.schemes.BasicCredentials;
 import com.sshtools.vfs.azure.AzureFileProvider;
 
 @Extension
@@ -36,13 +35,13 @@ public class AzureFileScheme extends AbstractFileScheme<AzureFileProvider> {
 		AzureFolder folder = (AzureFolder)vf;
 		FileSystemOptions opts = new FileSystemOptions();
 		
-		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof BasicCredentials) {
+		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof AzureCredentials) {
 	        try {
 	        	
-	        	BasicCredentials credentials = (BasicCredentials) folder.getCredentials();
+	        	AzureCredentials credentials = (AzureCredentials) folder.getCredentials();
 	            DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, 
-	            		new StaticUserAuthenticator(null, credentials.getUsername(), 
-	            				credentials.getPassword()));
+	            		new StaticUserAuthenticator(null, credentials.getStorageAccount(), 
+	            				credentials.getKey()));
 
 	        } catch (FileSystemException e) {
 	            log.error(String.format("Failed to set credentials on %s", folder.getMountPath()));
@@ -57,11 +56,11 @@ public class AzureFileScheme extends AbstractFileScheme<AzureFileProvider> {
 	}
 
 	public ObjectTemplate getCredentialsTemplate() {
-		return templateService.get("s3Credentials");
+		return templateService.get("azureCredentials");
 	}
 
 	public Class<? extends VirtualFolderCredentials> getCredentialsClass() {
-		return BasicCredentials.class;
+		return AzureCredentials.class;
 	}
 	
 	@Override
@@ -87,7 +86,7 @@ public class AzureFileScheme extends AbstractFileScheme<AzureFileProvider> {
 		folder.setName(name);
 		folder.setMountPath(mountPath);
 		folder.setPath(path);
-		folder.setCredentials((BasicCredentials) creds);
+		folder.setCredentials((AzureCredentials) creds);
 		
 		return folder;
 	}

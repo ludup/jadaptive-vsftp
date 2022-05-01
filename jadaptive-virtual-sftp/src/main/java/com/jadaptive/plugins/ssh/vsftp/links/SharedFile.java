@@ -4,7 +4,9 @@ import java.util.Collection;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
+import com.jadaptive.api.template.ExcludeView;
 import com.jadaptive.api.template.FieldType;
+import com.jadaptive.api.template.FieldView;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectServiceBean;
@@ -16,7 +18,8 @@ import com.jadaptive.api.template.TableAction.Target;
 import com.jadaptive.api.template.TableView;
 import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
-import com.jadaptive.plugins.email.AssignmentNotificationPreference;
+import com.jadaptive.api.template.Validators;
+import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
 
 @ObjectDefinition(resourceKey = SharedFile.RESOURCE_KEY, bundle = SharedFile.RESOURCE_KEY, 
@@ -26,7 +29,7 @@ import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.FILE_VIEW, weight = 0),
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.OPTIONS_VIEW, weight = 100),
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.NOTIFICATIONS_VIEW, weight = 200) })
-@TableView(defaultColumns = { "filename", "passwordProtected", "acceptTerms", "virtualPath" },
+@TableView(defaultColumns = { "filename", "passwordProtected", "acceptTerms", "virtualPath", "sharedBy" },
              actions = { @TableAction(bundle = SharedFile.RESOURCE_KEY, icon = "fa-link", 
              resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/share/{shortCode}") })
 public class SharedFile extends AbstractUUIDEntity {
@@ -67,15 +70,19 @@ public class SharedFile extends AbstractUUIDEntity {
 	@ObjectView(value = OPTIONS_VIEW)
 	String terms;
 	
-	@ObjectField(type = FieldType.ENUM)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "true")
 	@ObjectView(value = NOTIFICATIONS_VIEW)
-	AssignmentNotificationPreference notifyAssignedUsers;
+	Boolean notifySharer;
 	
 	@ObjectField(type = FieldType.TEXT)
 	@ObjectView(value = NOTIFICATIONS_VIEW)
-	@Validator(type = ValidationType.REGEX, value = EmailNotificationServiceImpl.EMAIL_PATTERN)
+	@Validators({@Validator(type = ValidationType.REGEX, value = EmailNotificationServiceImpl.EMAIL_PATTERN)})
 	Collection<String> otherEmails;
 	
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, readOnly = true, references = User.RESOURCE_KEY, searchable = true)
+	@Validators({@Validator(type = ValidationType.RESOURCE_KEY, value = User.RESOURCE_KEY)})
+	@ExcludeView(values = FieldView.CREATE)
+	User sharedBy;
 	
 	@Override
 	public String getResourceKey() {
@@ -146,11 +153,19 @@ public class SharedFile extends AbstractUUIDEntity {
 		this.otherEmails = otherEmails;
 	}
 
-	public AssignmentNotificationPreference getNotifyAssignedUsers() {
-		return notifyAssignedUsers;
+	public Boolean getNotifySharer() {
+		return notifySharer;
 	}
 
-	public void setNotifyAssignedUsers(AssignmentNotificationPreference notifyAssignedUsers) {
-		this.notifyAssignedUsers = notifyAssignedUsers;
+	public void setNotifySharer(Boolean notifySharer) {
+		this.notifySharer = notifySharer;
+	}
+
+	public User getSharedBy() {
+		return sharedBy;
+	}
+
+	public void setSharedBy(User sharedBy) {
+		this.sharedBy = sharedBy;
 	}
 }

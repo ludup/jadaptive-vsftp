@@ -6,7 +6,6 @@ import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.BasicCredentials;
 
 @ObjectDefinition(resourceKey = AzureFolder.RESOURCE_KEY, type = ObjectType.COLLECTION, bundle = AzureFolder.RESOURCE_KEY, defaultColumn = "name")
 public class AzureFolder extends VirtualFolder {
@@ -16,7 +15,7 @@ public class AzureFolder extends VirtualFolder {
 	public static final String RESOURCE_KEY = "azureFolder";
 	
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
-	BasicCredentials credentials; 
+	AzureCredentials credentials; 
 	
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	AzureFolderPath path;
@@ -34,11 +33,11 @@ public class AzureFolder extends VirtualFolder {
 		return RESOURCE_KEY;
 	}
 	
-	public BasicCredentials getCredentials() {
+	public AzureCredentials getCredentials() {
 		return credentials;
 	}
 	
-	public void setCredentials(BasicCredentials credentials) {
+	public void setCredentials(AzureCredentials credentials) {
 		this.credentials = credentials;
 	}
 
