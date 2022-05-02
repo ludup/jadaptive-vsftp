@@ -1,6 +1,6 @@
 [{
     "uuid": "662b21b8-6d15-4696-be36-c50cbd240c8c",
-	"resourceKey": "emailMessage",
+	"resourceKey": "emailMessages",
 	"group": "File Sharing",
 	"name": "Upload Receipt",
 	"enabled": true,
@@ -19,7 +19,7 @@
 	}]
 }, {
     "uuid": "9a1fe4b0-e0c4-4b9e-a9e2-913b25fb39df",
-	"resourceKey": "emailMessage",
+	"resourceKey": "emailMessages",
 	"group": "File Sharing",
 	"name": "New Files Received",
 	"enabled": true,
@@ -38,7 +38,7 @@
 	}]
 }, {
     "uuid": "f5c09928-d9af-480c-83a4-93021e0779cb",
-	"resourceKey": "emailMessage",
+	"resourceKey": "emailMessages",
 	"group": "File Sharing",
 	"name": "Shared File Download",
 	"enabled": true,
@@ -57,7 +57,7 @@
 	}]
 }, {
     "uuid": "a6a1fabd-895a-41ab-8944-1847501881d8",
-	"resourceKey": "emailMessage",
+	"resourceKey": "emailMessages",
 	"group": "File Sharing",
 	"name": "Shared File Created",
 	"enabled": true,
@@ -70,7 +70,7 @@
 	    "locale": "DEFAULT",
 		"subject": "A new file share was created",
 		"htmlTemplate": "16fbfa1e-d012-47b3-a987-a306120ea46a",
-	    "htmlText": "<p></p>",
+	    "htmlText": "<p>${sharedBy} created a share for the file system path ${share.virtualPath}.</p>\n<p>The URL for this share is <a href=\"${url}\">${url}</a>.</p>",
 	    "enabled": true,
 	    "system": true
 	}]
