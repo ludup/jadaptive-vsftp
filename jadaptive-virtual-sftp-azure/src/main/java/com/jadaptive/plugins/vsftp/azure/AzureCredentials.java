@@ -16,11 +16,11 @@ public class AzureCredentials extends VirtualFolderCredentials {
 	public static final String RESOURCE_KEY =  "azureCredentials";
 
 	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = AzureCredentials.RESOURCE_KEY)
+	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = AzureFolder.RESOURCE_KEY)
 	String storageAccount;
 	
 	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = AzureCredentials.RESOURCE_KEY)
+	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = AzureFolder.RESOURCE_KEY)
 	String key;
 
 	public String getStorageAccount() {

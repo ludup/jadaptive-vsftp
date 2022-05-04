@@ -71,7 +71,7 @@ public class FileUpload extends AbstractUUIDEntity {
 	}
 	
 	public String getDisplaySize() {
-		return IOUtils.toByteSize(size, 1);
+		return IOUtils.toByteSize(size, 2);
 	}
 
 	public void setSize(long size) {
