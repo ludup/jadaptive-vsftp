@@ -430,6 +430,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 
 		setupSystemContext();
 		
+		Date started = Utils.now();
 		try {
 			
 			SharedFile download = linkService.getDownloadByShortCode(shortCode);
@@ -448,8 +449,9 @@ public class VirtualFileController extends AuthenticatedController implements St
 			}
 			
 			AbstractFile fileOjbect = fileService.getFactory().getFile(download.getVirtualPath());
-			linkService.notifyShareAccess(download);
+			
 			sendFileOrZipFolder(download.getVirtualPath(), fileOjbect, response);
+			linkService.notifyShareAccess(download, started, fileOjbect);
 		} catch (Throwable e) {
 			throw new IllegalStateException(e);
 		} finally {
@@ -563,6 +565,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 
 		setupUserContext(request);
 		
+		Date started = Utils.now();
 		try {
 			
 			name = URLUTF8Encoder.decode(name);
@@ -571,21 +574,28 @@ public class VirtualFileController extends AuthenticatedController implements St
 			AbstractFile parent = fileService.getFactory().getFile(path);
 			
 			if(!parent.isDirectory()) {
-				throw new IllegalStateException("Parent path is not a folder");
+				throw new IOException("Parent path is not a folder");
 			}
 			
 			AbstractFile newFolder = parent.resolveFile(name);
 			
 			if(newFolder.exists()) {
-				return new RequestStatusImpl(false, "The folder already exists!");
+				throw new IOException("The folder already exists!");
 			}
 			
 			if(!newFolder.createFolder()) {
-				return new RequestStatusImpl(false, "The folder was not created");
+				throw new IOException("The folder was not created");
 			}
+			
+			eventService.publishEvent(new FolderCreatedEvent(
+					new FileOperation(name, 
+							path, started, Utils.now())));
 			
 			return new RequestStatusImpl(true, "Created folder " + name + " in " + path);
 		} catch (Throwable e) {
+			eventService.publishEvent(new FolderCreatedEvent(
+					new FileOperation(name, 
+							path, started, Utils.now()), e));
 			return new RequestStatusImpl(false, e.getMessage());
 		} finally {
 			clearUserContext();
@@ -600,21 +610,32 @@ public class VirtualFileController extends AuthenticatedController implements St
 
 		setupUserContext(request);
 		
+		Date started = Utils.now();
+		AbstractFile obj = null;
+		
 		try {
 			path = URLUTF8Encoder.decode(path);
 			
-			AbstractFile obj = fileService.getFactory().getFile(path);
+			obj = fileService.getFactory().getFile(path);
 			
 			if(!obj.exists()) {
-				return new RequestStatusImpl(false, "The object does not exist!");
+				throw new IOException("The object does not exist!");
 			}
 				
 			if(!obj.delete(obj.isDirectory())) {
-				return new RequestStatusImpl(false, String.format("The %s was not deleted", obj.isDirectory() ? "folder" : "file"));
+				String msg = String.format("The %s was not deleted", obj.isDirectory() ? "folder" : "file");
+				throw new IOException(msg);
 			}
+			
+			eventService.publishEvent(new FileDeletedEvent(
+					new FileOperation(FileUtils.getFilename(path), 
+							path, started, Utils.now())));
 			
 			return new RequestStatusImpl(true, "Deleted " + path);
 		} catch (Throwable e) {
+			eventService.publishEvent(new FileDeletedEvent(
+					new FileOperation(FileUtils.getFilename(path), path, started, Utils.now()), 
+					e));
 			return new RequestStatusImpl(false, e.getMessage());
 		} finally {
 			clearUserContext();

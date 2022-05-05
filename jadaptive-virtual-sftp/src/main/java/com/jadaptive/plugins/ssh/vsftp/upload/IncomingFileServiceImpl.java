@@ -15,6 +15,7 @@ import com.jadaptive.api.db.TenantAwareObjectDatabase;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.servlet.Request;
+import com.jadaptive.api.template.SortOrder;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.email.AssignmentNotificationPreference;
@@ -51,7 +52,7 @@ public class IncomingFileServiceImpl implements IncomingFileService {
 
 	@Override
 	public Collection<IncomingFile> getLatestFiles() {
-		return objectDatabase.searchTable(IncomingFile.class, 0, 5, SearchField.gt("created", Utils.thirtyDaysAgo()));
+		return objectDatabase.searchTable(IncomingFile.class, 0, 5, SortOrder.DESC, "created", SearchField.gt("created", Utils.thirtyDaysAgo()));
 	}
 
 	@Override

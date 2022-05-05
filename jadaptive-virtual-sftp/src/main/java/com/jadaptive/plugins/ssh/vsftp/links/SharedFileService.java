@@ -1,6 +1,7 @@
 package com.jadaptive.plugins.ssh.vsftp.links;
 
 import java.io.IOException;
+import java.util.Date;
 
 import com.jadaptive.api.entity.AbstractUUIDObjectService;
 import com.jadaptive.api.user.User;
@@ -19,8 +20,8 @@ public interface SharedFileService extends AbstractUUIDObjectService<SharedFile>
 
 	String getPublicLink(SharedFile share);
 
-	void notifyShareAccess(SharedFile share);
-	
 	void notifyShareCreation(SharedFile share);
+
+	void notifyShareAccess(SharedFile share, Date started, AbstractFile file);
 
 }

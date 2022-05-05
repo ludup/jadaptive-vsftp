@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.links;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.entity.AbstractUUIDObjectServceImpl;
 import com.jadaptive.api.entity.ObjectException;
+import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.stats.ResourceService;
 import com.jadaptive.api.user.User;
@@ -22,6 +24,7 @@ import com.jadaptive.plugins.email.MessageService;
 import com.jadaptive.plugins.email.RecipientHolder;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
+import com.jadaptive.plugins.ssh.vsftp.ui.TransferResult;
 import com.jadaptive.utils.StaticResolver;
 import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
@@ -42,6 +45,9 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	
 	@Autowired
 	private SingletonObjectDatabase<VFSConfiguration> configService;
+	
+	@Autowired
+	private EventService eventService; 
 	
 	@Override
 	protected Class<SharedFile> getResourceClass() {
@@ -113,8 +119,19 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		return Utils.encodeURIPath("/app/ui/download/" + share.getShortCode() + "/" + share.getFilename());
 	}
 
+	private long getFileLength(AbstractFile file) {
+		try {
+			return file.length();
+		} catch(PermissionDeniedException | IOException e) {
+			return 0L;
+		}
+	}
+	
 	@Override
-	public void notifyShareAccess(SharedFile share) {
+	public void notifyShareAccess(SharedFile share, Date started, AbstractFile file) {
+		
+		eventService.publishEvent(new ShareDownloadEvent(new TransferResult(
+				share.getFilename(), share.getVirtualPath(), getFileLength(file),started, Utils.now())));
 		
 		StaticResolver resolver = new StaticResolver();
 		resolver.addToken("serverName", Request.get().getServerName());
