@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jadaptive.api.app.ApplicationService;
+import com.jadaptive.api.db.AssignableObjectDatabase;
 import com.jadaptive.api.db.SearchField;
-import com.jadaptive.api.db.TenantAwareObjectDatabase;
+import com.jadaptive.api.permissions.AuthenticatedService;
+import com.jadaptive.api.permissions.PermissionService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.servlet.Request;
@@ -23,14 +25,15 @@ import com.jadaptive.plugins.email.MessageService;
 import com.jadaptive.plugins.email.RecipientHolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 import com.jadaptive.utils.StaticResolver;
 import com.jadaptive.utils.Utils;
 
 @Service
-public class IncomingFileServiceImpl implements IncomingFileService {
+public class IncomingFileServiceImpl extends AuthenticatedService implements IncomingFileService {
 
 	@Autowired
-	private TenantAwareObjectDatabase<IncomingFile> objectDatabase;
+	private AssignableObjectDatabase<IncomingFile> objectDatabase;
 	
 	static final String NEW_FILES_UPLOADED = "9a1fe4b0-e0c4-4b9e-a9e2-913b25fb39df";
 	static final String NEW_FILES_RECEIPT = "662b21b8-6d15-4696-be36-c50cbd240c8c";
@@ -45,23 +48,39 @@ public class IncomingFileServiceImpl implements IncomingFileService {
 	@Autowired
 	private RoleService roleService; 
 	
+	@Autowired
+	private UploadFormService uploadFormService; 
+	
+	@Autowired
+	private PermissionService permissionService; 
+	
 	@Override
 	public IncomingFile getIncomingFile(String uuid) {
-		return objectDatabase.get(uuid, IncomingFile.class);
+		return objectDatabase.getObjectByUUID(IncomingFile.class, uuid);
 	}
 
 	@Override
-	public Collection<IncomingFile> getLatestFiles() {
-		return objectDatabase.searchTable(IncomingFile.class, 0, 5, SortOrder.DESC, "created", SearchField.gt("created", Utils.thirtyDaysAgo()));
+	public Iterable<IncomingFile> getLatestFiles() {
+		
+		List<String> references = new ArrayList<>();
+		for(UploadForm form : uploadFormService.getUserForms()) {
+			references.add(form.getUuid());
+		}
+		return objectDatabase.getAssignedObjects(IncomingFile.class, getCurrentUser(), 
+				SortOrder.DESC, "created",
+				SearchField.gt("created", Utils.thirtyDaysAgo()));
 	}
 
 	@Override
 	public void delete(IncomingFile file) {
-		objectDatabase.delete(file);
+		permissionService.assertReadWrite(IncomingFile.RESOURCE_KEY);
+		objectDatabase.deleteObject(file);
 	}
 
 	@Override
 	public void save(IncomingFile file, VirtualFolder folder, UploadForm uploadForm) {
+		
+		file.setUploadReference(uploadForm.getUuid());
 		
 		objectDatabase.saveOrUpdate(file);
 		

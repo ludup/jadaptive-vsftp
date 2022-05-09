@@ -115,6 +115,10 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 			upload.setReference(currentReference.get());
 			upload.setUploadPaths(files);
 			upload.setUploadArea(virtualFolder.getName());
+			upload.setUploadReference(uploadForm.getUuid());
+			
+			upload.setUsers(virtualFolder.getUsers());
+			upload.setRoles(virtualFolder.getRoles());
 			
 			incomingService.save(upload, virtualFolder, uploadForm);
 			

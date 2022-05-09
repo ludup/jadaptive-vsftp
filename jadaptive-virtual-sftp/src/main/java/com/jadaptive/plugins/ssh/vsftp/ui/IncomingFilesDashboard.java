@@ -1,7 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.jsoup.nodes.Document;
@@ -47,7 +46,7 @@ public class IncomingFilesDashboard implements DashboardWidget {
 	public void renderWidget(Document document, Element element) {
 		
 		List<UploadForm> shares = new ArrayList<>();
-		for(UploadForm share : uploadService.allObjects()) {
+		for(UploadForm share : uploadService.getUserForms()) {
 			shares.add(share);
 		}
 		
@@ -77,21 +76,16 @@ public class IncomingFilesDashboard implements DashboardWidget {
 		
 		}
 
-		Collection<IncomingFile> files = incomingService.getLatestFiles();
-		if(files.isEmpty()) {
-			element.appendChild(new Element("h6")
-					.addClass("mt-3")
-					.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-					.attr("jad:i18n", "no.incomingFiles"));
-			return;
-		} else {
-			element.appendChild(new Element("h6")
-					.addClass("mt-3")
-					.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-					.attr("jad:i18n", "latestFiles.text"));
-		}
+		Element title;
+		element.appendChild(title = new Element("h6")
+				.addClass("mt-3")
+				.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+				.attr("jad:i18n", "no.incomingFiles"));
 		
-		for(IncomingFile file : files) {
+		int count = 0;
+		for(IncomingFile file : incomingService.getLatestFiles()) {
+			count++;
+			
 			element.appendChild(Html.div("row")
 					.appendChild(Html.div("col-5")
 							.appendChild(Html.a(String.format("/app/ui/view/incomingFiles/%s", file.getUuid())).attr("title", "View the incoming files record")
@@ -104,6 +98,10 @@ public class IncomingFilesDashboard implements DashboardWidget {
 							.appendChild(Html.i("far", "fa-download")))));
 		}
 		
+		if(count > 0) {
+			title.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+				.attr("jad:i18n", "latestFiles.text");
+		}
 	}
 
 	@Override

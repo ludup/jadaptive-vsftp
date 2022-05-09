@@ -29,7 +29,7 @@ public class SharedFilesMenu implements ApplicationMenu {
 
 	@Override
 	public Collection<String> getPermissions() {
-		return Arrays.asList("users.login");
+		return Arrays.asList("sharedFiles.read");
 	}
 
 	@Override

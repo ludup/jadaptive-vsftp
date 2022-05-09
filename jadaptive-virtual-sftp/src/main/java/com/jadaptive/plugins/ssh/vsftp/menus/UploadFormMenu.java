@@ -29,7 +29,7 @@ public class UploadFormMenu implements ApplicationMenu {
 
 	@Override
 	public Collection<String> getPermissions() {
-		return Arrays.asList("users.login");
+		return Arrays.asList("uploadForms.read");
 	}
 
 	@Override

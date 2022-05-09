@@ -1,7 +1,5 @@
 package com.jadaptive.plugins.ssh.vsftp.upload;
 
-import java.util.Collection;
-
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 
@@ -9,7 +7,7 @@ public interface IncomingFileService {
 
 	IncomingFile getIncomingFile(String uuid);
 
-	Collection<IncomingFile> getLatestFiles();
+	Iterable<IncomingFile> getLatestFiles();
 
 	void delete(IncomingFile file);
 

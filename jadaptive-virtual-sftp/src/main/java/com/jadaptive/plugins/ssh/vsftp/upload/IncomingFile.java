@@ -2,8 +2,9 @@ package com.jadaptive.plugins.ssh.vsftp.upload;
 
 import java.util.Collection;
 
+import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.repository.AbstractUUIDEntity;
+import com.jadaptive.api.repository.AssignableUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -17,11 +18,13 @@ import com.jadaptive.api.template.TableView;
 import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 
 @ObjectDefinition(
 		 bundle = VirtualFolder.RESOURCE_KEY,
 		 resourceKey = IncomingFile.RESOURCE_KEY, 
 		 type = ObjectType.COLLECTION,
+		 scope = ObjectScope.ASSIGNED,
 		 defaultColumn = "reference",
 		 creatable = false, 
 		 deletable = false,
@@ -32,7 +35,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 		@TableAction(target = Target.ROW, bundle = VirtualFolder.RESOURCE_KEY, window = Window.SELF,
 		icon = "fa-trash", resourceKey = "deleteFile", url = "/app/vfs/incoming/delete/{uuid}", confirmationRequired = true)})
 @ObjectViews(@ObjectViewDefinition(value = "files", bundle = VirtualFolder.RESOURCE_KEY))
-public class IncomingFile extends AbstractUUIDEntity {
+public class IncomingFile extends AssignableUUIDEntity {
 
 	private static final long serialVersionUID = -854502529745282888L;
 
@@ -49,6 +52,9 @@ public class IncomingFile extends AbstractUUIDEntity {
 	
 	@ObjectField(type = FieldType.TEXT, searchable = true)
 	String uploadArea;
+	
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = UploadForm.RESOURCE_KEY, hidden = true)
+	String uploadReference;
 	
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	@Validator(type = ValidationType.RESOURCE_KEY, value = "fileUpload")
@@ -98,5 +104,13 @@ public class IncomingFile extends AbstractUUIDEntity {
 
 	public void setUploadPaths(Collection<FileUpload> uploadPaths) {
 		this.uploadPaths = uploadPaths;
+	}
+
+	public String getUploadReference() {
+		return uploadReference;
+	}
+
+	public void setUploadReference(String uploadReference) {
+		this.uploadReference = uploadReference;
 	}
 }
