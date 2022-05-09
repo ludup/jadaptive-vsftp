@@ -17,12 +17,4 @@ public class CreateInterfaceSection extends InterfaceSection {
 		obj.setName("Default VSFTP Interface");
 		return obj;
 	}
-
-	@Override
-	public Integer getPosition() {
-		return SelectMount.SETUP_WIZARD_POSITION + 1;
-	}
-	
-	
-
 }

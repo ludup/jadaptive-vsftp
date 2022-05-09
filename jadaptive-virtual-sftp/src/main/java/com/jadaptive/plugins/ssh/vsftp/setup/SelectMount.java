@@ -45,11 +45,9 @@ import com.sshtools.common.ssh.components.SshKeyPair;
 @Extension
 public class SelectMount extends SetupSection {
 	
-	private static final String REQUEST_PARAM_TYPE = "type";
-
-	public static final int SETUP_WIZARD_POSITION =  SetupSection.END_OF_DEFAULT + 1;
-	
 	public static final String RESOURCE_BUNDLE = "selectMount";
+	
+	public static final String REQUEST_PARAM_TYPE = "type";
 	
 	@Autowired
 	private TemplateService templateService; 
@@ -66,11 +64,7 @@ public class SelectMount extends SetupSection {
 	private static final String HOME_UUID = "homeUUID";
 	
 	public SelectMount() {
-		this(SETUP_WIZARD_POSITION);
-	}
-	
-	public SelectMount(int position) {
-		super(RESOURCE_BUNDLE, "selectMount", "SelectMount.html", position);
+		super(RESOURCE_BUNDLE, "selectMount", "SelectMount.html");
 	}
 	
 	public String getBundle() {
@@ -88,16 +82,16 @@ public class SelectMount extends SetupSection {
 	}
 	
 	@Override
-	public void finish(WizardState state, Integer sectionIndex) {
+	public void finish(WizardState state) {
 		
 		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 		FileScheme<?> scheme = fileService.getFileScheme(folderType);
 		
-		VirtualFolderPath path = ObjectUtils.assertObject(state.getObjectAt(sectionIndex), scheme.getPathClass());
+		VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), scheme.getPathClass());
 		
 		VirtualFolderCredentials creds = null;
 		if(scheme.requiresCredentials()) {
-			creds = ObjectUtils.assertObject(state.getObjectAt(sectionIndex+1), scheme.getCredentialsClass());
+			creds = ObjectUtils.assertObject(state.getObject(CredentialsSetupSection.class), scheme.getCredentialsClass());
 		}
 		
 		String uuid = (String) state.getParameter(HOME_UUID);
@@ -186,10 +180,10 @@ public class SelectMount extends SetupSection {
 
 
 	@Override
-	public void processReview(Document document, WizardState state, Integer sectionIndex) {
+	public void processReview(Document document, WizardState state) {
 
 		Element content = document.selectFirst("#setupStep");
-		VirtualFolderPath path = ObjectUtils.assertObject(state.getObjectAt(sectionIndex), VirtualFolderPath.class);
+		VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
 		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 		FileScheme<?> scheme = fileService.getFileScheme(folderType);
 		
@@ -229,7 +223,7 @@ public class SelectMount extends SetupSection {
 		
 		if(scheme.requiresCredentials()) {
 			
-			VirtualFolderCredentials creds = (VirtualFolderCredentials) state.getObjectAt(sectionIndex+1);
+			VirtualFolderCredentials creds = (VirtualFolderCredentials) state.getObject(CredentialsSetupSection.class);
 			if(creds instanceof BasicCredentials) {
 				renderBasicCredentials(info, (UsernameAndPasswordCredentials) creds);
 			} else if(creds instanceof WindowsCredentials) { 
@@ -313,30 +307,5 @@ public class SelectMount extends SetupSection {
 						.text(Utils.maskingString(basic.getPassword(), 2, "*")))));
 	}
 	
-	class CredentialsSetupSection extends SetupSection {
-
-		FileScheme<?> scheme;
-		public CredentialsSetupSection(FileScheme<?> scheme) {
-			super("setup", 
-					"homeCredentials", 
-					"HomeCredentials.html", 
-					SelectMount.this.getPosition()+1);
-			this.scheme = scheme;
-		}
-
-		@Override
-		public void process(Document document, Element element, Page page) throws IOException {
-			super.process(document, element, page);
-			
-			ObjectTemplate template = templateService.get(VirtualFolder.RESOURCE_KEY);
-			Element content = document.selectFirst("#content");
-			content.appendChild(new Element("div")
-					.attr("jad:bundle", template.getBundle())
-					.attr("jad:id", "objectRenderer")
-					.attr("jad:handler", "setup")
-					.attr("jad:disableViews", "true")
-					.attr("jad:resourceKey", scheme.getCredentialsTemplate().getResourceKey()));
-			
-		}
-	}
+	
 }

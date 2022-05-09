@@ -52,7 +52,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	public static final String SHORTCODE = "shortcode";
 	
 	public PublicUploadStep2() {
-		super("publicUploadWizard", "publicUploadStep2", "PublicUploadStep2.html", 2000);
+		super("publicUploadWizard", "publicUploadStep2", "PublicUploadStep2.html");
 	}
 
 	@Override
@@ -64,13 +64,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 			state.insertNextPage(new CredentialsSetupSection(scheme));
 		}
 	}
-	
-	@Override
-	public void finish(WizardState state, Integer sectionIndex) {
-		
-		
-	}
-	
+
 	@Override
 	public void process(Document document, Element element, Page page) throws IOException {
 		
@@ -123,10 +117,10 @@ public class PublicUploadStep2 extends PublicUploadSection {
 
 
 	@Override
-	public void processReview(Document document, WizardState state, Integer sectionIndex) {
+	public void processReview(Document document, WizardState state) {
 
 		Element content = document.selectFirst("#setupStep");
-		VirtualFolderPath path = ObjectUtils.assertObject(state.getObjectAt(sectionIndex), VirtualFolderPath.class);
+		VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
 		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 		FileScheme<?> scheme = fileService.getFileScheme(folderType);
 		
@@ -166,7 +160,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 		
 		if(scheme.requiresCredentials()) {
 			
-			VirtualFolderCredentials creds = (VirtualFolderCredentials) state.getObjectAt(sectionIndex+1);
+			VirtualFolderCredentials creds = (VirtualFolderCredentials) state.getObject(CredentialsSetupSection.class);
 			if(creds instanceof BasicCredentials) {
 				renderBasicCredentials(info, (UsernameAndPasswordCredentials) creds);
 			} else if(creds instanceof WindowsCredentials) { 
@@ -250,30 +244,5 @@ public class PublicUploadStep2 extends PublicUploadSection {
 						.text(Utils.maskingString(basic.getPassword(), 2, "*")))));
 	}
 	
-	class CredentialsSetupSection extends PublicUploadSection {
-
-		FileScheme<?> scheme;
-		public CredentialsSetupSection(FileScheme<?> scheme) {
-			super("publicUploadWizard", 
-					"homeCredentials", 
-					"PublicUploadStep2a.html", 
-					PublicUploadStep2.this.getPosition()+1);
-			this.scheme = scheme;
-		}
-
-		@Override
-		public void process(Document document, Element element, Page page) throws IOException {
-			super.process(document, element, page);
-			
-			ObjectTemplate template = templateService.get(VirtualFolder.RESOURCE_KEY);
-			Element content = document.selectFirst("#content");
-			content.appendChild(new Element("div")
-					.attr("jad:bundle", template.getBundle())
-					.attr("jad:id", "objectRenderer")
-					.attr("jad:handler", PublicUploadWizard.RESOURCE_KEY)
-					.attr("jad:disableViews", "true")
-					.attr("jad:resourceKey", scheme.getCredentialsTemplate().getResourceKey()));
-			
-		}
-	}
+	
 }
