@@ -19,13 +19,13 @@ public class VSFTP implements Product {
 	}
 
 	@Override
-	public final boolean supportsFeature(String feature) {
-		switch(feature) {
-//		case "eventLog":
-//			return true;
-		default:
-			return false;
-		}
+	public String getLogoResource() {
+		return "/app/content/images/jadaptive-logo.png";
+	}
+
+	@Override
+	public String getFaviconResource() {
+		return "/app/content/images/favicon.png";
 	}
 
 }

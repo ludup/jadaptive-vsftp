@@ -28,7 +28,7 @@ import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 		 defaultColumn = "reference",
 		 creatable = false, 
 		 deletable = false,
-		 updatable = false, system = true)
+		 updatable = false)
 @TableView(defaultColumns = {  "reference", "uploadArea", "name", "email" }, requiresCreate = false, actions = {
 		@TableAction(target = Target.ROW, bundle = VirtualFolder.RESOURCE_KEY, window = Window.SELF,
 				icon = "fa-download", resourceKey = "downloadFiles", url = "/app/vfs/incoming/zip/{uuid}"),

@@ -9,12 +9,12 @@
 		<version>0.1.9-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>jadaptive-virtual-sftp-gcs</artifactId>
-	<name>GCS Storage</name>
+	<artifactId>jadaptive-virtual-sftp-dropbox</artifactId>
+	<name>S3 Storage</name>
 
 	<properties>
-		<plugin.id>jadaptive-virtual-sftp-gcs</plugin.id>
-		<plugin.class>com.jadaptive.plugins.vsftp.gcs.GCSStoragePlugin</plugin.class>
+		<plugin.id>jadaptive-virtual-sftp-dropbox</plugin.id>
+		<plugin.class>com.jadaptive.plugins.vsftp.dropbox.DropboxStoragePlugin</plugin.class>
 		<plugin.version>${project.version}</plugin.version>
 		<plugin.provider>JADAPTIVE Limited</plugin.provider>
 		<plugin.projectUrl>https://github.com/ludup/jadpative-vsftp</plugin.projectUrl>
@@ -42,19 +42,19 @@
 		</dependency>
 		<dependency>
 			<groupId>com.jadaptive</groupId>
-			<artifactId>jadaptive-ssh-synergy</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.jadaptive</groupId>
 			<artifactId>jadaptive-virtual-sftp</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.jadaptive</groupId>
+			<artifactId>jadaptive-ssh-synergy</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.sshtools</groupId>
-			<artifactId>vfs-gcs</artifactId>
+			<artifactId>vfs-dropbox</artifactId>
 			<version>3.2.0</version>
 			<exclusions>
 				<exclusion>

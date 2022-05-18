@@ -39,7 +39,7 @@ public class ConfigureFilesMenu implements ApplicationMenu {
 
 	@Override
 	public String getParent() {
-		return ApplicationMenuService.ADMINISTRATION_MENU_UUID;
+		return ApplicationMenuService.RESOURCE_MENU_UUID;
 	}
 
 	@Override

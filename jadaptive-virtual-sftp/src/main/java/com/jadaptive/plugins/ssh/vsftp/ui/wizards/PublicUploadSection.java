@@ -8,4 +8,9 @@ public class PublicUploadSection extends WizardSection {
 		super(bundle, name, resource);
 	}
 
+	@Override
+	public boolean isSystem() {
+		return false;
+	}
+
 }
