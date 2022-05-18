@@ -5,16 +5,15 @@ import java.util.Collection;
 
 import org.pf4j.Extension;
 
-import com.jadaptive.api.ui.menu.ApplicationMenu;
-import com.jadaptive.api.ui.menu.ApplicationMenuService;
+import com.jadaptive.api.config.ConfigurationPage;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 
 @Extension
-public class VFSConfigurationMenu implements ApplicationMenu {
+public class VFSConfigurationMenu implements ConfigurationPage {
 
 	@Override
 	public String getResourceKey() {
-		return "vfsConfiguration.name";
+		return "vfsConfiguration";
 	}
 
 	@Override
@@ -35,16 +34,6 @@ public class VFSConfigurationMenu implements ApplicationMenu {
 	@Override
 	public String getIcon() {
 		return "folder-open";
-	}
-
-	@Override
-	public String getParent() {
-		return ApplicationMenuService.SYSTEM_MENU_UUID;
-	}
-
-	@Override
-	public String getUuid() {
-		return "68a66aa7-d98b-4542-8c10-20a18d61168b";
 	}
 
 	@Override
