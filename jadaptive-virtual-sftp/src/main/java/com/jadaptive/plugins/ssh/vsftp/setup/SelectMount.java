@@ -31,16 +31,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolder;
-import com.jadaptive.plugins.ssh.vsftp.schemes.BasicCredentials;
-import com.jadaptive.plugins.ssh.vsftp.schemes.SftpCredentials;
-import com.jadaptive.plugins.ssh.vsftp.schemes.UsernameAndPasswordCredentials;
-import com.jadaptive.plugins.ssh.vsftp.schemes.WindowsCredentials;
 import com.jadaptive.utils.ObjectUtils;
-import com.jadaptive.utils.Utils;
-import com.sshtools.common.publickey.InvalidPassphraseException;
-import com.sshtools.common.publickey.SshKeyUtils;
-import com.sshtools.common.ssh.components.SshKeyPair;
 
 @Extension
 public class SelectMount extends SetupSection {
@@ -123,11 +114,22 @@ public class SelectMount extends SetupSection {
 			state.removePage(CredentialsSetupSection.class);
 		}
 		
+		ObjectTemplate template = templateService.get(VirtualFolder.RESOURCE_KEY);
+		
+		List<I18nOption> values = new ArrayList<>();
+		
+		for(String child : template.getChildTemplates()) {
+			ObjectTemplate childTemplate = templateService.get(child);
+			values.add(new I18nOption(childTemplate.getBundle(),
+					childTemplate.getResourceKey() + ".name", 
+					childTemplate.getResourceKey()));
+		}
+		
 		String folderType = Request.get().getParameter(REQUEST_PARAM_TYPE);
 		if(StringUtils.isBlank(folderType)) {
 			folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 			if(StringUtils.isBlank(folderType)) {
-				folderType = LocalFolder.RESOURCE_KEY;
+				folderType = values.iterator().next().getValue();
 			}
 		}
 		
@@ -146,18 +148,10 @@ public class SelectMount extends SetupSection {
 				state.setCurrentObject(null);
 			}
 		}
+		
 		DropdownInput input = new DropdownInput(REQUEST_PARAM_TYPE, "selectMount");
 		
-		ObjectTemplate template = templateService.get(VirtualFolder.RESOURCE_KEY);
 		
-		List<I18nOption> values = new ArrayList<>();
-		
-		for(String child : template.getChildTemplates()) {
-			ObjectTemplate childTemplate = templateService.get(child);
-			values.add(new I18nOption(childTemplate.getBundle(),
-					childTemplate.getResourceKey() + ".name", 
-					childTemplate.getResourceKey()));
-		}
 		
 		Element el = input.renderInput();
 		input.renderValues(values, folderType);
@@ -185,9 +179,7 @@ public class SelectMount extends SetupSection {
 		Element content = document.selectFirst("#setupStep");
 		VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
 		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-		FileScheme<?> scheme = fileService.getFileScheme(folderType);
 		
-		Element info;
 		content.appendChild(new Element("div")
 				.addClass("col-12 w-100 my-3")
 				.appendChild(new Element("h4")
@@ -196,7 +188,7 @@ public class SelectMount extends SetupSection {
 				.appendChild(new Element("p")
 						.attr("jad:bundle", "selectMount")
 						.attr("jad:i18n", "review.homeMount.desc"))
-				.appendChild(info = new Element("div")
+				.appendChild(new Element("div")
 					.addClass("row")
 					.appendChild(new Element("div")
 							.addClass("col-3")
@@ -221,91 +213,91 @@ public class SelectMount extends SetupSection {
 												.text(path.generatePath()))))));
 	
 		
-		if(scheme.requiresCredentials()) {
-			
-			VirtualFolderCredentials creds = (VirtualFolderCredentials) state.getObject(CredentialsSetupSection.class);
-			if(creds instanceof BasicCredentials) {
-				renderBasicCredentials(info, (UsernameAndPasswordCredentials) creds);
-			} else if(creds instanceof WindowsCredentials) { 
-				info.appendChild(new Element("div")
-						.addClass("col-3")
-						.appendChild(new Element("span")
-										.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-										.attr("jad:i18n", "domain.name")))
-				.appendChild(new Element("div")
-						.addClass("col-9")
-						.appendChild(new Element("span")
-								.appendChild(new Element("strong")
-								.text(((WindowsCredentials)creds).getDomain()))));
-				renderBasicCredentials(info, (UsernameAndPasswordCredentials) creds);
-			} else if(creds instanceof SftpCredentials) {
-				renderBasicCredentials(info, ((SftpCredentials) creds).getBasicCredentials());
-				
-				try {
-					String privateKey = ((SftpCredentials)creds).getPrivateKeyCredentials().getPrivateKey();
-					
-					if(StringUtils.isNotBlank(privateKey)) {
-
-						String passphrase = ((SftpCredentials)creds).getPrivateKeyCredentials().getPassphrase();
-						
-						SshKeyPair pair = SshKeyUtils.getPrivateKey(privateKey, passphrase);
-						
-						info.appendChild(new Element("div")
-								.addClass("col-3")
-								.appendChild(new Element("span")
-												.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-												.attr("jad:i18n", "privatekey.name")))
-						.appendChild(new Element("div")
-								.addClass("col-9")
-								.appendChild(new Element("span")
-										.appendChild(new Element("strong")
-										.text(SshKeyUtils.getFingerprint(pair.getPublicKey())))));
-						
-						info.appendChild(new Element("div")
-								.addClass("col-3")
-								.appendChild(new Element("span")
-												.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-												.attr("jad:i18n", "passhrase.name")))
-						.appendChild(new Element("div")
-								.addClass("col-9")
-								.appendChild(new Element("span")
-										.appendChild(new Element("strong")
-										.text(StringUtils.isBlank("") 
-												? "" 
-												: Utils.maskingString(passphrase, 2, "*")))));
-					}
-				} catch (IOException | InvalidPassphraseException e) {
-					throw new IllegalStateException(e.getMessage(), e);
-				}
-			} else {
-				// TODO render different types of credentials
-			}
-		}
-	}
-	
-	private void renderBasicCredentials(Element element, UsernameAndPasswordCredentials basic) {
-		element.appendChild(new Element("div")
-				.addClass("col-3")
-				.appendChild(new Element("span")
-								.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-								.attr("jad:i18n", "username.name")))
-		.appendChild(new Element("div")
-				.addClass("col-9")
-				.appendChild(new Element("span")
-						.appendChild(new Element("strong")
-						.text(basic.getUsername()))));
+//		if(scheme.requiresCredentials()) {
+//			
+//			VirtualFolderCredentials creds = (VirtualFolderCredentials) state.getObject(CredentialsSetupSection.class);
+//			if(creds instanceof BasicCredentials) {
+//				renderBasicCredentials(info, (UsernameAndPasswordCredentials) creds);
+//			} else if(creds instanceof WindowsCredentials) { 
+//				info.appendChild(new Element("div")
+//						.addClass("col-3")
+//						.appendChild(new Element("span")
+//										.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+//										.attr("jad:i18n", "domain.name")))
+//				.appendChild(new Element("div")
+//						.addClass("col-9")
+//						.appendChild(new Element("span")
+//								.appendChild(new Element("strong")
+//								.text(((WindowsCredentials)creds).getDomain()))));
+//				renderBasicCredentials(info, (UsernameAndPasswordCredentials) creds);
+//			} else if(creds instanceof SftpCredentials) {
+//				renderBasicCredentials(info, ((SftpCredentials) creds).getBasicCredentials());
+//				
+//				try {
+//					String privateKey = ((SftpCredentials)creds).getPrivateKeyCredentials().getPrivateKey();
+//					
+//					if(StringUtils.isNotBlank(privateKey)) {
+//
+//						String passphrase = ((SftpCredentials)creds).getPrivateKeyCredentials().getPassphrase();
+//						
+//						SshKeyPair pair = SshKeyUtils.getPrivateKey(privateKey, passphrase);
+//						
+//						info.appendChild(new Element("div")
+//								.addClass("col-3")
+//								.appendChild(new Element("span")
+//												.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+//												.attr("jad:i18n", "privatekey.name")))
+//						.appendChild(new Element("div")
+//								.addClass("col-9")
+//								.appendChild(new Element("span")
+//										.appendChild(new Element("strong")
+//										.text(SshKeyUtils.getFingerprint(pair.getPublicKey())))));
+//						
+//						info.appendChild(new Element("div")
+//								.addClass("col-3")
+//								.appendChild(new Element("span")
+//												.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+//												.attr("jad:i18n", "passhrase.name")))
+//						.appendChild(new Element("div")
+//								.addClass("col-9")
+//								.appendChild(new Element("span")
+//										.appendChild(new Element("strong")
+//										.text(StringUtils.isBlank("") 
+//												? "" 
+//												: Utils.maskingString(passphrase, 2, "*")))));
+//					}
+//				} catch (IOException | InvalidPassphraseException e) {
+//					throw new IllegalStateException(e.getMessage(), e);
+//				}
+//			} else {
+//				// TODO render different types of credentials
+//			}
 		
-		element.appendChild(new Element("div")
-				.addClass("col-3")
-				.appendChild(new Element("span")
-								.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-								.attr("jad:i18n", "password.name")))
-		.appendChild(new Element("div")
-				.addClass("col-9")
-				.appendChild(new Element("span")
-						.appendChild(new Element("strong")
-						.text(Utils.maskingString(basic.getPassword(), 2, "*")))));
 	}
-	
+//	
+//	private void renderBasicCredentials(Element element, UsernameAndPasswordCredentials basic) {
+//		element.appendChild(new Element("div")
+//				.addClass("col-3")
+//				.appendChild(new Element("span")
+//								.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+//								.attr("jad:i18n", "username.name")))
+//		.appendChild(new Element("div")
+//				.addClass("col-9")
+//				.appendChild(new Element("span")
+//						.appendChild(new Element("strong")
+//						.text(basic.getUsername()))));
+//		
+//		element.appendChild(new Element("div")
+//				.addClass("col-3")
+//				.appendChild(new Element("span")
+//								.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+//								.attr("jad:i18n", "password.name")))
+//		.appendChild(new Element("div")
+//				.addClass("col-9")
+//				.appendChild(new Element("span")
+//						.appendChild(new Element("strong")
+//						.text(Utils.maskingString(basic.getPassword(), 2, "*")))));
+//	}
+//	
 	
 }

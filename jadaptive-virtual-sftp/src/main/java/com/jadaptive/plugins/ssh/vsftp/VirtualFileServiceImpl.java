@@ -220,6 +220,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		
 		if(schemes.isEmpty()) {
 			for(FileScheme<?> scheme : applicationService.getBeans(FileScheme.class)) {
+				log.info("Registering file scheme " + scheme.getName());
 				schemes.add(scheme);
 			}
 		}

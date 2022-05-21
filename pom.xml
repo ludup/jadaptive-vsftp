@@ -26,10 +26,13 @@
 
 	<modules>
 		<module>jadaptive-virtual-sftp</module>
+		<module>jadaptive-virtual-sftp-local</module>
 		<module>jadaptive-virtual-sftp-gcs</module>
 		<module>jadaptive-virtual-sftp-s3</module>
 		<module>jadaptive-virtual-sftp-azure</module>
 		<module>jadaptive-virtual-sftp-dropbox</module>
+		<module>jadaptive-virtual-sftp-windows</module>
+		<module>jadaptive-virtual-sftp-sftp</module>
 	</modules>
 
 	<dependencies>
