@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp;
+package com.jadaptive.plugins.vsftp.product;
 
 import org.pf4j.Extension;
 

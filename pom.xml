@@ -26,6 +26,7 @@
 
 	<modules>
 		<module>jadaptive-virtual-sftp</module>
+		<module>jadaptive-virtual-sftp-product</module>
 		<module>jadaptive-virtual-sftp-local</module>
 		<module>jadaptive-virtual-sftp-gcs</module>
 		<module>jadaptive-virtual-sftp-s3</module>
