@@ -49,6 +49,11 @@ public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
 	}
 
 	@Override
+	public String getBundle() {
+		return SftpFolder.RESOURCE_KEY;
+	}
+	
+	@Override
 	public boolean requiresCredentials() {
 		return true;
 	}

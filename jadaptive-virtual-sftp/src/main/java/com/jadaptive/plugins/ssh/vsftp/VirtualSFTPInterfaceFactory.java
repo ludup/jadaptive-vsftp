@@ -60,7 +60,6 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServe
 		sshdService.applyConfiguration(ctx, passwordAuthenticator);
 		
 		ctx.setSoftwareVersionComments("VirtualSFTP");
-		ctx.setAuthenicationMechanismFactory(new DefaultAuthenticationMechanismFactory<SshServerContext>());
 		
 		ctx.getAuthenticationMechanismFactory().addProvider(publicKeyAuthenticator);
 		

@@ -121,7 +121,6 @@ public abstract class AbstractFileScheme<T extends FileProvider> implements File
 		throw new UnsupportedOperationException();
 	}
 	
-
 	@Override
 	public String getBundle() {
 		return VirtualFolder.RESOURCE_KEY;

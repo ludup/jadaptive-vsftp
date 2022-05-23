@@ -1,5 +1,7 @@
 package com.jadaptive.plugins.vsftp.sftp;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
@@ -54,7 +56,11 @@ public class SftpFolderPath extends VirtualFolderPath {
 
 	@Override
 	protected String getDestinationUri() {
-		return hostname + ":" + port + FileUtils.checkStartsWithSlash(remotePath);
+		if(StringUtils.isBlank(remotePath)) {
+			return hostname + ":" + port;
+		} else { 
+			return hostname + ":" + port + FileUtils.checkStartsWithSlash(remotePath);
+		}
 	}
 
 	public String getRemotePath() {
