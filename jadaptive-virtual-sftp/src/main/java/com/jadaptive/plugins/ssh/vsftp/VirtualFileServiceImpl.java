@@ -282,7 +282,13 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 
 	@Override
 	public VirtualFolder getHomeMount(User user) {
-		return repository.getAssignedObject(VirtualFolder.class, user, SearchField.eq("mountPath", "/"));
+		VirtualFolder home;
+		try {
+			home = repository.getAssignedObject(VirtualFolder.class, user, SearchField.eq("path.appendUsername", Boolean.TRUE));
+		} catch(ObjectException e) {
+			home = repository.getAssignedObject(VirtualFolder.class, user, SearchField.eq("mountPath", "/"));
+		}
+		return home;
 	}
 
 	@Override
