@@ -26,7 +26,7 @@ public class SftpFolderPath extends VirtualFolderPath {
 	
 	@ObjectField(required = true, defaultValue = "22", type = FieldType.INTEGER)
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 1)
-	@Validator(type = ValidationType.RANGE, value = "1-65535", bundle = VirtualFolder.RESOURCE_KEY, i18n = "port.invalid")
+	@Validator(type = ValidationType.RANGE, value = "1-65535", bundle = SftpFolder.RESOURCE_KEY, i18n = "port.invalid")
 	Integer port;
 	
 	@ObjectField(type = FieldType.TEXT)
