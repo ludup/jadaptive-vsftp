@@ -15,7 +15,6 @@ import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.sshd.AuthorizedKeyProvider;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.jadaptive.plugins.sshd.SSHInterfaceFactory;
-import com.sshtools.common.auth.DefaultAuthenticationMechanismFactory;
 import com.sshtools.common.auth.PasswordAuthenticationProvider;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VirtualFileFactory;
