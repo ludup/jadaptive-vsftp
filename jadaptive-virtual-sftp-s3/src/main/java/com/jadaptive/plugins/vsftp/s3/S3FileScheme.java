@@ -10,6 +10,15 @@ import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.amazonaws.ClientConfiguration;
+import com.amazonaws.ClientConfigurationFactory;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -17,17 +26,19 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
 import com.sshtools.vfs.s3.provider.s3.S3FileProvider;
+import com.sshtools.vfs.s3.provider.s3.S3FileSystemConfigBuilder;
 
 @Extension
 public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 	
 	public static final String SCHEME_TYPE = "s3";
+	public static final String RESOURCE_KEY = "s3";
 	
 	@Autowired
 	private TemplateService templateService; 
 	
 	public S3FileScheme() {
-		super("Amazon S3", new S3FileProvider(), "s3", "aws", "amazon", S3Folder.RESOURCE_KEY);
+		super(S3Folder.RESOURCE_KEY, "Amazon S3", new S3FileProvider(), "s3", "aws", "amazon");
 	}
 	
 	public FileSystemOptions buildFileSystemOptions(VirtualFolder vf) throws IOException {
@@ -36,16 +47,33 @@ public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 		FileSystemOptions opts = new FileSystemOptions();
 		
 		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof S3Credentials) {
-	        try {
-	        	
-	        	S3Credentials credentials = (S3Credentials) folder.getCredentials();
-	            DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, 
-	            		new StaticUserAuthenticator(null, credentials.getAccessKey(), 
-	            				credentials.getSecretKey()));
+	      //  try {
+	        	AmazonS3 client = AmazonS3ClientBuilder.standard()
+	        		.withCredentials(new AWSCredentialsProvider() {
 
-	        } catch (FileSystemException e) {
-	            log.error(String.format("Failed to set credentials on %s", folder.getMountPath()));
-	        }
+						@Override
+						public AWSCredentials getCredentials() {
+							return new BasicAWSCredentials("FQCWPWWW7756KHH4UXIZ", "aLRtX66nyAIBl9bWlG+mI9z0PU8ZAvJYs98AzYpVDaw");
+						}
+
+						@Override
+						public void refresh() {
+						}
+	        			
+	        		})
+	        		.withEndpointConfiguration(
+	        				new EndpointConfiguration("https://nyc3.digitaloceanspaces.com", "us-east-1")).build();
+	        	
+	        	S3FileSystemConfigBuilder.getInstance().setAmazonS3Client(opts,  (AmazonS3Client) client);
+	        	
+//	        	S3Credentials credentials = (S3Credentials) folder.getCredentials();
+//	            DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, 
+//	            		new StaticUserAuthenticator(null, credentials.getAccessKey(), 
+//	            				credentials.getSecretKey()));
+
+	    //    } catch (FileSystemException e) {
+	    //        log.error(String.format("Failed to set credentials on %s", folder.getMountPath()));
+	    //    }
 		}
 
         return opts;
@@ -94,5 +122,10 @@ public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 	@Override
 	public String getBundle() {
 		return S3Folder.RESOURCE_KEY;
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 2000;
 	}
 }

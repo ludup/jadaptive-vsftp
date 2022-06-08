@@ -27,14 +27,20 @@ public abstract class AbstractFileScheme<T extends FileProvider> implements File
 	String name;
 	String[] types;
 	T provider; 
+	String resourceKey; 
 	
 	@Autowired
 	private EncryptionService encryptionService; 
 	
-	protected AbstractFileScheme(String name, T provider, String... types) {
+	protected AbstractFileScheme(String resourceKey, String name, T provider, String... types) {
+		this.resourceKey = resourceKey;
 		this.name = name;
 		this.types = types;
 		this.provider = provider;
+	}
+	
+	public String getResourceKey() {
+		return resourceKey;
 	}
 	
 	protected String decryptCredentials(String value) {
@@ -79,6 +85,11 @@ public abstract class AbstractFileScheme<T extends FileProvider> implements File
 	@Override
 	public ObjectTemplate getOptionsTemplate() {
 		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public void configure(VirtualFolder folder) {
+		
 	}
 
 	@Override

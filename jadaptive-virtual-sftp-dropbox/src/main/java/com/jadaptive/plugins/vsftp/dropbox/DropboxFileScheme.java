@@ -26,7 +26,7 @@ public class DropboxFileScheme extends AbstractFileScheme<DropboxFileProvider> {
 	private TemplateService templateService; 
 	
 	public DropboxFileScheme() {
-		super("Dropbox", new DropboxFileProvider(), "dropbox");
+		super(DropboxFolder.RESOURCE_KEY, "Dropbox", new DropboxFileProvider(), "dropbox");
 	}
 	
 	@Override
@@ -95,5 +95,10 @@ public class DropboxFileScheme extends AbstractFileScheme<DropboxFileProvider> {
 	@Override
 	public String getBundle() {
 		return DropboxFolder.RESOURCE_KEY;
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 3000;
 	}
 }

@@ -13,6 +13,8 @@ import com.jadaptive.api.template.ObjectTemplate;
 
 public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 
+	String getResourceKey();
+	
 	FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException;
 	
 	boolean requiresCredentials();
@@ -54,4 +56,8 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 	VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path, VirtualFolderCredentials creds);
 
 	String getBundle();
+
+	Integer getWeight();
+
+	void configure(VirtualFolder folder);
 }

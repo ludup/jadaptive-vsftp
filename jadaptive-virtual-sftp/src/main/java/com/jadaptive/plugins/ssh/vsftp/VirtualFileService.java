@@ -52,8 +52,14 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 
 	AbstractFileFactory<?> getFactory(boolean reset);
 
+	AbstractFileFactory<?> getFactory(User user, boolean reset);
+	
 	void resetFactory();
 
 	default AbstractFileFactory<?> getFactory() { return getFactory(false); }
+
+	void resetFactory(User user);
+
+	AbstractFileFactory<?> getFactory(User user);
 
 }

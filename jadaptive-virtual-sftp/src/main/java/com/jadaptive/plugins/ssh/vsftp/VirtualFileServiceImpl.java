@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -108,10 +111,12 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			checkSchemes();
 			for(FileScheme<?> scheme : schemes) {
 				types.addAll(scheme.types());
+				types.add(scheme.getResourceKey());
 				for(String t : scheme.types()) {
 					log.info("Registering file scheme {}", t);
 					providers.put(t, scheme);
 				}
+				providers.put(scheme.getResourceKey(), scheme);
 			}
 		}
 		return types.contains(type.toLowerCase());
@@ -129,6 +134,9 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles) {
 		
 		assertWrite(VirtualFolder.RESOURCE_KEY);
+
+		FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
+		scheme.configure(folder);
 		
 		try {
 			resolveMount(folder);
@@ -138,13 +146,14 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		
 		folder.getRoles().clear();
 		folder.getUsers().clear();
+		
 		for(Role role : roles) {
 			folder.getRoles().add(role.getUuid());
 		}
 		for(User user : users) {
 			folder.getUsers().add(user.getUuid());
 		}
-		
+
 		repository.saveOrUpdate(folder);
 		
 		return folder;
@@ -155,12 +164,16 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		
 		assertWrite(VirtualFolder.RESOURCE_KEY);
 		
+		FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
+		scheme.configure(folder);
+		
 		try {
 			resolveMount(folder);
 		} catch(IOException e) {
 			throw new ObjectException(String.format("Cannot resolve folder %s", folder.getName()), e);
 		}
-
+		
+		
 		repository.saveOrUpdate(folder);
 		
 		return folder;
@@ -173,8 +186,9 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileScheme<?> scheme = getFileScheme(folder.getType());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager mgr = getManager(folder.getUuid(), folder.getCacheStrategy());
-			FileObject obj = mgr.resolveFile(
-							scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString(), opts);
+			
+			String uri = scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString();
+			FileObject obj = mgr.resolveFile(uri, opts);
 			
 			if(!obj.exists() && (scheme.createRoot() || folder.getPath().getCreateRoot())) {
 				obj.createFolder();
@@ -184,7 +198,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 				throw new FileNotFoundException("Destination of mount does not exist");
 			}
 			
-			return new VFSFileFactory(mgr, opts);
+			return new VFSFileFactory(mgr, opts, uri);
 		} catch (URISyntaxException e) {
 			throw new IOException(e.getMessage(), e);
 		}
@@ -249,9 +263,10 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager manager = getManager(folder.getUuid(), folder.getCacheStrategy());
 
+			String uri = scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString();
 			return new VirtualFolderMount(folder,
-					scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString(),
-					new VFSFileFactory(manager, opts), scheme.createRoot());
+					uri,
+					new VFSFileFactory(manager, opts, uri), scheme.createRoot());
 		} catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
@@ -277,7 +292,16 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Override
 	public Collection<FileScheme<?>> getSchemes() {
 		checkSchemes();
-		return Collections.<FileScheme<?>>unmodifiableCollection(schemes);
+		List<FileScheme<?>> tmp = new ArrayList<>(schemes);
+		Collections.sort(tmp, new Comparator<FileScheme<?>>() {
+
+			@Override
+			public int compare(FileScheme<?> o1, FileScheme<?> o2) {
+				return o1.getWeight().compareTo(o2.getWeight());
+			}
+			
+		});
+		return Collections.<FileScheme<?>>unmodifiableCollection(tmp);
 	}
 
 	@Override
@@ -339,24 +363,39 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 
 	@Override
 	public AbstractFileFactory<?> getFactory(boolean reset) {
+		return getFactory(getCurrentUser(), reset);
+	}
+
+	@Override
+	public AbstractFileFactory<?> getFactory(User user) {
+		return getFactory(user, false);
+	}
+	
+	@Override
+	public AbstractFileFactory<?> getFactory(User user, boolean reset) {
 
 		@SuppressWarnings("rawtypes")
 		Map<String,AbstractFileFactory> cache = 
 				cacheService.getCacheOrCreate(ABSTRACT_FILE_FACTORY, 
 						String.class, AbstractFileFactory.class);
 		
-		AbstractFileFactory<?> factory = (AbstractFileFactory<?>) cache.get(getCurrentUser().getUuid());
+		AbstractFileFactory<?> factory = (AbstractFileFactory<?>) cache.get(user.getUuid());
 		if(Objects.isNull(factory) || reset) {
-			factory = sshdService.getFileFactory(getCurrentUser());	
+			factory = sshdService.getFileFactory(user);	
 		}
 		
-		cache.put(getCurrentUser().getUuid(), factory);
+		cache.put(user.getUuid(), factory);
 		return factory;
 		
 	}
 	
 	@Override
 	public void resetFactory() {
+		resetFactory(getCurrentUser());
+	}
+	
+	@Override
+	public void resetFactory(User user) {
 		@SuppressWarnings("rawtypes")
 		Map<String,AbstractFileFactory> cache = 
 				cacheService.getCacheOrCreate(ABSTRACT_FILE_FACTORY, 

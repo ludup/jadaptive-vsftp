@@ -27,7 +27,7 @@ public class AzureFileScheme extends AbstractFileScheme<AzureFileProvider> {
 	private TemplateService templateService; 
 	
 	public AzureFileScheme() {
-		super("Azure", new AzureFileProvider(), "azure", AzureFolder.RESOURCE_KEY);
+		super(AzureFolder.RESOURCE_KEY, "Azure", new AzureFileProvider(), "azure");
 	}
 	
 	public FileSystemOptions buildFileSystemOptions(VirtualFolder vf) throws IOException {
@@ -94,5 +94,10 @@ public class AzureFileScheme extends AbstractFileScheme<AzureFileProvider> {
 	@Override
 	public String getBundle() {
 		return AzureFolder.RESOURCE_KEY;
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 2002;
 	}
 }

@@ -26,7 +26,7 @@ public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
 	private TemplateService templateService; 
 	
 	public SftpFileScheme() {
-		super("sftp", new SftpFileProvider(), "sftp", "ssh", "scp", SftpFolder.RESOURCE_KEY);
+		super(SftpFolder.RESOURCE_KEY, "sftp", new SftpFileProvider(), "sftp", "ssh", "scp");
 	}
 	
 	@Override
@@ -124,5 +124,10 @@ public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
 		folder.setCredentials(creds);
 		
 		return folder;
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 1000;
 	}
 }

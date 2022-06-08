@@ -448,7 +448,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 				}
 			}
 			
-			AbstractFile fileOjbect = fileService.getFactory().getFile(download.getVirtualPath());
+			AbstractFile fileOjbect = fileService.getFactory(download.getSharedBy()).getFile(download.getVirtualPath());
 			
 			sendFileOrZipFolder(download.getVirtualPath(), fileOjbect, response);
 			linkService.notifyShareAccess(download, started, fileOjbect);

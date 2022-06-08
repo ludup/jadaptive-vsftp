@@ -21,7 +21,7 @@ public class TarFileScheme extends AbstractFileScheme<TarFileProvider> {
 	private TemplateService templateService; 
 	
 	public TarFileScheme() {
-		super("Tar File", new TarFileProvider(), "tar");
+		super(TarFolder.RESOURCE_KEY, "Tar File", new TarFileProvider(), "tar");
 	}
 	
 	@Override
@@ -45,4 +45,8 @@ public class TarFileScheme extends AbstractFileScheme<TarFileProvider> {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public Integer getWeight() {
+		return 20002;
+	}
 }

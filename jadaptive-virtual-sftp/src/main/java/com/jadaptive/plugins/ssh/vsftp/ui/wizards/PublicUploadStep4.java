@@ -2,9 +2,12 @@ package com.jadaptive.plugins.ssh.vsftp.ui.wizards;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.wizards.WizardState;
+import com.jadaptive.plugins.ssh.vsftp.FileScheme;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.utils.ObjectUtils;
 import com.jadaptive.utils.Utils;
 
@@ -20,7 +23,7 @@ public class PublicUploadStep4 extends PublicUploadSection {
 
 		Element content = document.selectFirst("#setupStep");
 		PublicUploadOptions options = ObjectUtils.assertObject(state.getObject(getClass()), PublicUploadOptions.class);
-
+		
 		content.appendChild(new Element("div")
 				.addClass("col-12 w-100 my-3")
 				.appendChild(new Element("h4")

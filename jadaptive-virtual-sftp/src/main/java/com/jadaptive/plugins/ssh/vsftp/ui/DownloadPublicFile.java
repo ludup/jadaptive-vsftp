@@ -21,8 +21,6 @@ import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.ui.UriRedirect;
-import com.jadaptive.api.user.UserService;
-import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.sshd.SSHDService;
@@ -41,9 +39,6 @@ public class DownloadPublicFile extends HtmlPage {
 	
 	@Autowired
 	private SSHDService sshdService; 
-	
-	@Autowired
-	private UserService userDatabase;
 	
 	@Autowired
 	private PageCache pageCache;
@@ -103,7 +98,7 @@ public class DownloadPublicFile extends HtmlPage {
 		try {
 			SharedFile download = downloadService.getDownloadByShortCode(shortCode);
 
-			AbstractFileFactory<?> factory = sshdService.getFileFactory(userDatabase.getUser(AnonymousUserDatabaseImpl.ANONYMOUS_USERNAME));
+			AbstractFileFactory<?> factory = sshdService.getFileFactory(download.getSharedBy());
 			AbstractFile fileObject  = factory.getFile(download.getVirtualPath());
 			
 			document.select(".ipAddress").html(Request.get().getRemoteAddr());

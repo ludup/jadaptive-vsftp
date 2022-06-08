@@ -21,7 +21,7 @@ public class TemporaryFileScheme extends AbstractFileScheme<TemporaryFileProvide
 	private TemplateService templateService; 
 	
 	public TemporaryFileScheme() {
-		super("Temporary", new TemporaryFileProvider(), "tmp");
+		super(TemporaryFolder.RESOURCE_KEY, "Temporary", new TemporaryFileProvider(), "tmp");
 	}
 	
 	@Override
@@ -48,5 +48,10 @@ public class TemporaryFileScheme extends AbstractFileScheme<TemporaryFileProvide
 	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
 			VirtualFolderCredentials creds) {
 		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 10000;
 	}
 }

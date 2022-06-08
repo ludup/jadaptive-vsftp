@@ -31,7 +31,7 @@ public class FileSystemJobContext implements JobRunnerContext {
 		try {
 			vfs.set(new VirtualFileFactory(
 					new VirtualMountTemplate("/", "tmp:///",
-							new VFSFileFactory(), true)));
+							new VFSFileFactory("tmp:///"), true)));
 		} catch (IOException | PermissionDeniedException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		}

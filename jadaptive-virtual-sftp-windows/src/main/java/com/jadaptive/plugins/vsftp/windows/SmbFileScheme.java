@@ -29,7 +29,7 @@ public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 	TemplateService templateService; 
 
 	public SmbFileScheme() {
-		super("Windows CIFS", new SmbFileProvider(), "smb", "windows", "cifs", WindowsFolder.RESOURCE_KEY);
+		super(WindowsFolder.RESOURCE_KEY, "Windows CIFS", new SmbFileProvider(), "smb", "windows", "cifs");
 	}
 
 	@Override
@@ -54,6 +54,11 @@ public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 			}
 		}
 		return opts;
+	}
+	
+	@Override
+	public String getBundle() {
+		return WindowsFolder.RESOURCE_KEY;
 	}
 
 	@Override
@@ -121,5 +126,10 @@ public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 		folder.setCredentials(creds);
 		
 		return folder;
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 0;
 	}
 }

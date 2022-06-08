@@ -25,7 +25,7 @@ public class GCSFileScheme extends AbstractFileScheme<GoogleStorageFileProvider>
 	private TemplateService templateService; 
 	
 	public GCSFileScheme() {
-		super("Google Storage", new GoogleStorageFileProvider(), "gcs", "google", GCSFolder.RESOURCE_KEY);
+		super(GCSFolder.RESOURCE_KEY, "Google Storage", new GoogleStorageFileProvider(), "gcs", "google");
 	}
 	
 	@Override
@@ -94,5 +94,10 @@ public class GCSFileScheme extends AbstractFileScheme<GoogleStorageFileProvider>
 	@Override
 	public String getBundle() {
 		return GCSFolder.RESOURCE_KEY;
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 2001;
 	}
 }

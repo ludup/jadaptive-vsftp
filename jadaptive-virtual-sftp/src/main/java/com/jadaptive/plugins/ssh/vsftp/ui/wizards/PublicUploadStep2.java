@@ -2,7 +2,9 @@ package com.jadaptive.plugins.ssh.vsftp.ui.wizards;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
@@ -67,33 +69,45 @@ public class PublicUploadStep2 extends PublicUploadSection {
 		
 		DropdownInput input = new DropdownInput(REQUEST_PARAM_TYPE, "selectMount");
 		
-		ObjectTemplate template = templateService.get(VirtualFolder.RESOURCE_KEY);
-		
-		List<I18nOption> values = new ArrayList<>();
-		
 		String folderType = Request.get().getParameter(REQUEST_PARAM_TYPE);
 		if(StringUtils.isBlank(folderType)) {
 			folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 		}
 		
-		for(String child : template.getChildTemplates()) {
-			ObjectTemplate childTemplate = templateService.get(child);
+		List<I18nOption> values = new ArrayList<>();
+		
+		FileScheme<?> scheme = null;
+		if(Objects.nonNull(folderType)) {
+			scheme = fileService.getFileScheme(folderType);
+		}
+		Collection<FileScheme<?>> schemes = fileService.getSchemes();
+		FileScheme<?> defaultScheme = schemes.iterator().next();
+		
+		if(Objects.isNull(scheme)) {
+			scheme = defaultScheme;
+		}
+		
+		ObjectTemplate template = templateService.get(scheme.getResourceKey());
+		
+		UUIDEntity e = state.getObject(getClass());
+		if(Objects.nonNull(e) && !e.getResourceKey().equals(scheme.getResourceKey())) {
+			state.setCurrentObject(null);
+		}
+		
+		for(FileScheme<?> child : schemes) {
+			ObjectTemplate childTemplate = templateService.get(child.getResourceKey());
 			values.add(new I18nOption(childTemplate.getBundle(),
 					childTemplate.getResourceKey() + ".name", 
 					childTemplate.getResourceKey()));
 		}
 		
-		if(StringUtils.isBlank(folderType)) {
-			folderType = values.iterator().next().getValue();
-		}
-		
 		Element el = input.renderInput();
-		input.renderValues(values, folderType);
+		input.renderValues(values, scheme.getResourceKey());
 		
 		Element content = document.selectFirst("#content");
 		content.appendChild(el);
 		
-		FileScheme<?> scheme = fileService.getFileScheme(folderType);
+		
 		
 		content.appendChild(new Element("div")
 				.attr("jad:bundle", template.getBundle())
@@ -103,6 +117,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 				.attr("jad:ignores", "appendUsername")
 				.attr("jad:resourceKey", scheme.getPathTemplate().getResourceKey()));
 		
+		folderType = scheme.getResourceKey();
 		state.setParameter(REQUEST_PARAM_TYPE, folderType);
 		super.process(document, element, page);
 	}
@@ -129,7 +144,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 					.appendChild(new Element("div")
 							.addClass("col-3")
 							.appendChild(new Element("span")
-									.attr("jad:bundle", "selectMount")
+									.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
 									.attr("jad:i18n", "type.name")))
 					.appendChild(new Element("div")
 								.addClass("col-9")
@@ -140,8 +155,8 @@ public class PublicUploadStep2 extends PublicUploadSection {
 					.appendChild(new Element("div")
 							.addClass("col-3")
 							.appendChild(new Element("span")
-									.attr("jad:bundle", "selectMount")
-									.attr("jad:i18n", "path.name")))
+									.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+									.attr("jad:i18n", "destinationUri.name")))
 					.appendChild(new Element("div")
 								.addClass("col-9")
 								.appendChild(new Element("span")
@@ -149,17 +164,17 @@ public class PublicUploadStep2 extends PublicUploadSection {
 												.text(path.generatePath()))))));
 	
 		
-		if(scheme.requiresCredentials()) {
-			
-			VirtualFolderCredentials creds = (VirtualFolderCredentials) state.getObject(CredentialsSetupSection.class);
-			ObjectTemplate template = templateService.get(creds.getResourceKey());
-			content.appendChild(new Element("div")
-					.attr("jad:bundle", template.getBundle())
-					.attr("jad:id", "objectRenderer")
-					.attr("jad:handler", PublicUploadWizard.RESOURCE_KEY)
-					.attr("jad:disableViews", "true")
-					.attr("jad:resourceKey", template.getResourceKey()));
-		}
+//		if(scheme.requiresCredentials()) {
+//			
+//			VirtualFolderCredentials creds = (VirtualFolderCredentials) state.getObject(CredentialsSetupSection.class);
+//			ObjectTemplate template = templateService.get(creds.getResourceKey());
+//			content.appendChild(new Element("div")
+//					.attr("jad:bundle", template.getBundle())
+//					.attr("jad:id", "objectRenderer")
+//					.attr("jad:handler", PublicUploadWizard.RESOURCE_KEY)
+//					.attr("jad:disableViews", "true")
+//					.attr("jad:resourceKey", template.getResourceKey()));
+//		}
 //			if(creds instanceof BasicCredentials) {
 //				renderBasicCredentials(info, (UsernameAndPasswordCredentials) creds);
 //			} else if(creds instanceof WindowsCredentials) { 

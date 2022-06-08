@@ -25,7 +25,12 @@ public class LocalFileScheme extends AbstractFileScheme<DefaultLocalFileProvider
 	TemplateService templateService; 
 	
 	public LocalFileScheme() {
-		super("Local Files", new DefaultLocalFileProvider(), "file", "local", LocalFolder.RESOURCE_KEY);
+		super(LocalFolder.RESOURCE_KEY, "Local Files", new DefaultLocalFileProvider(), "file", "local");
+	}
+
+	@Override
+	public String getBundle() {
+		return LocalFolder.RESOURCE_KEY;
 	}
 
 	@Override
@@ -64,5 +69,12 @@ public class LocalFileScheme extends AbstractFileScheme<DefaultLocalFileProvider
 		
 		return folder;
 	}
+
+	@Override
+	public Integer getWeight() {
+		return Integer.MIN_VALUE;
+	}
+	
+	
 }
 

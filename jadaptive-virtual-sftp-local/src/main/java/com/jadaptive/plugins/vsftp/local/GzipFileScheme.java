@@ -21,7 +21,7 @@ public class GzipFileScheme extends AbstractFileScheme<GzipFileProvider> {
 	private TemplateService templateService;
 	
 	public GzipFileScheme() {
-		super("Gzip File", new GzipFileProvider(), "gzip");
+		super(GzipFolder.RESOURCE_KEY, "Gzip File", new GzipFileProvider(), "gzip");
 	}
 
 	@Override
@@ -43,5 +43,10 @@ public class GzipFileScheme extends AbstractFileScheme<GzipFileProvider> {
 	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
 			VirtualFolderCredentials creds) {
 		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 20001;
 	}
 }

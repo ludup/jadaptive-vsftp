@@ -14,6 +14,8 @@ import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.wizards.WizardService;
 import com.jadaptive.api.wizards.WizardState;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
+import com.jadaptive.utils.ObjectUtils;
 import com.sshtools.common.util.FileUtils;
 
 @Extension
@@ -38,7 +40,9 @@ public class PublicUploadComplete extends HtmlPage {
 		if(!state.isFinished()) {
 			throw new IllegalStateException("Incomplete public upload wizard!");
 		}
-		String shortcode = (String) state.getParameter(PublicUploadStep2.SHORTCODE);
+		
+		UploadForm form = ObjectUtils.assertObject(state.getCompletedObject(), UploadForm.class);
+		String shortcode = form.getShortCode();
 		String generatedURL = FileUtils.checkEndsWithSlash(Request.generateBaseUrl(Request.get())) + "app/ui/incoming/" + shortcode;
 		Element url = document.selectFirst("#publicURL");
 		url.attr("href", generatedURL);

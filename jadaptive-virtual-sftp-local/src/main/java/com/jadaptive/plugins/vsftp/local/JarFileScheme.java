@@ -21,7 +21,7 @@ public class JarFileScheme extends AbstractFileScheme<JarFileProvider> {
 	private TemplateService templateService; 
 	
 	public JarFileScheme() {
-		super("Jar File", new JarFileProvider(), "jar");
+		super(JarFolder.RESOURCE_KEY, "Jar File", new JarFileProvider(), "jar");
 	}
 
 	@Override
@@ -44,5 +44,10 @@ public class JarFileScheme extends AbstractFileScheme<JarFileProvider> {
 	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
 			VirtualFolderCredentials creds) {
 		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 20003;
 	}
 }

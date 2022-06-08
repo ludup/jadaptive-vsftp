@@ -150,6 +150,8 @@ public class PublicUploadWizard extends AbstractWizard {
 			share.setShortCode(options.getShortCode());
 			
 			uploadService.saveOrUpdate(share);
+			
+			state.setCompletedObject(share);
 
 		});
 		

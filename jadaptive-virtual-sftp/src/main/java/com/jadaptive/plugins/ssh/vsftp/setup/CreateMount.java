@@ -4,6 +4,7 @@ package com.jadaptive.plugins.ssh.vsftp.setup;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -110,12 +111,17 @@ public class CreateMount extends SetupSection {
 			state.removePage(CredentialsSetupSection.class);
 		}
 		
+		
 		ObjectTemplate template = templateService.get(VirtualFolder.RESOURCE_KEY);
 		
 		List<I18nOption> values = new ArrayList<>();
 		
-		for(String child : template.getChildTemplates()) {
-			ObjectTemplate childTemplate = templateService.get(child);
+		
+		Collection<FileScheme<?>> schemes = fileService.getSchemes();
+		FileScheme<?> defaultScheme = schemes.iterator().next();
+		
+		for(FileScheme<?> child : schemes) {
+			ObjectTemplate childTemplate = templateService.get(child.getResourceKey());
 			values.add(new I18nOption(childTemplate.getBundle(),
 					childTemplate.getResourceKey() + ".name", 
 					childTemplate.getResourceKey()));
@@ -163,8 +169,9 @@ public class CreateMount extends SetupSection {
 				.attr("jad:handler", "setup")
 				.attr("jad:disableViews", "true")
 				.attr("jad:ignores", "appendUsername")
-				.attr("jad:resourceKey", scheme.getPathTemplate().getResourceKey()));
+				.attr("jad:resourceKey", Objects.isNull(scheme) ? defaultScheme.getPathTemplate().getResourceKey() : scheme.getPathTemplate().getResourceKey()));
 		
+
 		state.setParameter(REQUEST_PARAM_TYPE, folderType);
 		super.process(document, element, page);
 	}
@@ -177,6 +184,8 @@ public class CreateMount extends SetupSection {
 		VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
 		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 		FileScheme<?> scheme = fileService.getFileScheme(folderType);
+		@SuppressWarnings("unused")
+		Element el;
 		
 		content.appendChild(new Element("div")
 				.addClass("col-12 w-100 my-3")
@@ -188,7 +197,7 @@ public class CreateMount extends SetupSection {
 						.attr("jad:i18n", "review.homeMount.desc"))
 				.appendChild(new Element("div")
 					.addClass("row")
-					.appendChild(new Element("div")
+					.appendChild(el = new Element("div")
 							.addClass("col-3")
 							.appendChild(new Element("span")
 									.attr("jad:bundle", "createMount")
@@ -209,6 +218,23 @@ public class CreateMount extends SetupSection {
 								.appendChild(new Element("span")
 										.appendChild(new Element("strong")
 												.text(path.generatePath()))))));
+		
+//		if(scheme.requiresCredentials()) {
+//			VirtualFolderCredentials creds = ObjectUtils.assertObject(state.getObject(CredentialsSetupSection.class), scheme.getCredentialsClass());
+//			
+//			for(FieldTemplate t : scheme.getCredentialsTemplate().getFields()) {
+//				el.appendChild(new Element("div")
+//						.addClass("col-3")
+//						.appendChild(new Element("span")
+//								.attr("jad:bundle", scheme.getCredentialsTemplate().getBundle())
+//								.attr("jad:i18n", t.getResourceKey() + ".name")))
+//						.appendChild(new Element("div")
+//								.addClass("col-9")
+//								.appendChild(new Element("span")
+//										.appendChild(new Element("strong")
+//												.text(ReflectionUtils.getFieldValue(creds, t.getResourceKey())))));
+//			}
+//		}
 		
 	}
 }

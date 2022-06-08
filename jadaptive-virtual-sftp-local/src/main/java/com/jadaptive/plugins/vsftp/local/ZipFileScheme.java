@@ -21,7 +21,7 @@ public class ZipFileScheme extends AbstractFileScheme<ZipFileProvider> {
 	private TemplateService templateService; 
 	
 	public ZipFileScheme() {
-		super("Zip File", new ZipFileProvider(), "zip");
+		super(ZipFolder.RESOURCE_KEY, "Zip File", new ZipFileProvider(), "zip");
 	}
 
 	@Override
@@ -44,5 +44,11 @@ public class ZipFileScheme extends AbstractFileScheme<ZipFileProvider> {
 	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
 			VirtualFolderCredentials creds) {
 		throw new UnsupportedOperationException();
+	}
+	
+
+	@Override
+	public Integer getWeight() {
+		return 20000;
 	}
 }

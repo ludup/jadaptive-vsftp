@@ -81,9 +81,8 @@ public class VirtualFileSystemMountProvider extends AuthenticatedService impleme
 	}
 	
 	private VirtualMountTemplate getRootMount() throws FileNotFoundException {
-		return new VirtualMountTemplate("/", 
-				String.format("ram://%s", getCurrentUser().getUsername()), 
-					new ReadOnlyFileFactoryAdapter(new VFSFileFactory()), true);
+		String uri = String.format("ram://%s", getCurrentUser().getUsername());
+		return new VirtualMountTemplate("/", uri, new ReadOnlyFileFactoryAdapter(new VFSFileFactory(uri)), true);
 	}
 
 }
