@@ -22,11 +22,11 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 
 	boolean checkSupportedMountType(String type);
 
-	FileScheme<?> getFileScheme(String type);
+	FileScheme<?> getFileScheme(String type) throws IOException;
 
 	VFSFileFactory resolveMount(VirtualFolder folder) throws IOException;
 
-	VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles);
+	VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles) throws IOException;
 
 	Iterable<VirtualFolder> allObjects();
 
@@ -42,7 +42,7 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 
 	VirtualFolder getHomeMount(User user);
 
-	VirtualFolder createOrUpdate(VirtualFolder folder);
+	VirtualFolder createOrUpdate(VirtualFolder folder) throws IOException;
 
 	VirtualFolder getVirtualFolderByShortCode(String shortCode);
 

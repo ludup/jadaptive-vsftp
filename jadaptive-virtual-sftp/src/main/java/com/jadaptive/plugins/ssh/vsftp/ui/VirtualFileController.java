@@ -125,7 +125,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			boolean home = false;
 			for(VirtualFolder m : fileService.allObjects()) {
 				home |= m.isHome();
-				FileScheme<?> scheme = fileService.getFileScheme(m.getType());
+				FileScheme<?> scheme = fileService.getFileScheme(m.getResourceKey());
 				mounts.add(new Mount(m, scheme.getIcon()));
 			}
 			if(!home) {
@@ -198,6 +198,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			List<File> folderResults = new ArrayList<>();
 			
 			AbstractFile parent = fileService.getFactory().getFile(path);
+			parent.refresh();
 			PathMatcher matcher = null;
 			if(StringUtils.isNotBlank(filter)) {
 				matcher = FileSystems.getDefault().getPathMatcher("glob:" + filter);
@@ -258,8 +259,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 					matches = false;
 				}
 			}
-			
-			
+
 			if(matches) {
 			
 				VirtualMount parentMount = ((VirtualFileObject)file).getMount();

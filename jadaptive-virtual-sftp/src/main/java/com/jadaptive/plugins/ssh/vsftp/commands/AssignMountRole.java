@@ -1,5 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.commands;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.jline.reader.Candidate;
@@ -24,7 +25,7 @@ public class AssignMountRole extends AbstractRoleAssignmentCommand<VirtualFolder
 	}
 
 	@Override
-	protected void saveObject(VirtualFolder obj) {
+	protected void saveObject(VirtualFolder obj) throws IOException {
 		fileService.createOrUpdate(obj);
 	}
 

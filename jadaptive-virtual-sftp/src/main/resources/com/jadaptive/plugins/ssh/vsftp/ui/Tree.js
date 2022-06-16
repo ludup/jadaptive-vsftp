@@ -1,4 +1,4 @@
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jue", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function renderPerms(val, obj) {
 	var perms = obj.readable ? 'r' : '-';
@@ -9,16 +9,16 @@ function renderPerms(val, obj) {
 function renderName(val, obj) {
 	var icon = (obj.directory ? '<i class="far fa-folder"></i>' : '<i class="far fa-file"></i>');
 	if (obj.directory) {
-		return '<a class="clickPath" href="' + obj.path + '">' + icon + ' ' + obj.name + '</a><br><small>' + obj.path + '</small><br><small>' + renderDate(obj.lastModified) + '</small>';
+		return '<a class="clickPath" href="' + obj.path + '">' + icon + ' ' + obj.name + '</a>';
 	} else {
-		return icon + ' ' + obj.name + '<br><small>' + obj.path + '</small><br><small>' + renderDate(obj.lastModified) + '</small>';
+		return icon + ' ' + obj.name;
 	}
 }
 
 function renderLength(val) {
 	if (val > 0) {
 		var i = Math.floor(Math.log(val) / Math.log(1024));
-		return (val / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+		return (val / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
 	}
 
 	return '';

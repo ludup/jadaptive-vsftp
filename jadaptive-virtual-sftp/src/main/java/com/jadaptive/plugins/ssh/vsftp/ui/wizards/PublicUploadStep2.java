@@ -24,7 +24,6 @@ import com.jadaptive.api.wizards.WizardState;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.utils.ObjectUtils;
 
@@ -52,9 +51,13 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	public void validateAndSave(UUIDEntity object, WizardState state) {
 		super.validateAndSave(object, state);
 		
-		FileScheme<?> scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
-		if(scheme.requiresCredentials()) {
-			state.insertNextPage(new CredentialsSetupSection(scheme));
+		try {
+			FileScheme<?> scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
+			if(scheme.requiresCredentials()) {
+				state.insertNextPage(new CredentialsSetupSection(scheme));
+			}
+		} catch (IOException e) {
+			throw new IllegalStateException(e.getMessage(), e);
 		}
 	}
 
@@ -126,44 +129,45 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	@Override
 	public void processReview(Document document, WizardState state) {
 
-		Element content = document.selectFirst("#setupStep");
-		VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
-		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-		FileScheme<?> scheme = fileService.getFileScheme(folderType);
-		
-		content.appendChild(new Element("div")
-				.addClass("col-12 w-100 my-3")
-				.appendChild(new Element("h4")
-					.attr("jad:i18n", "review.homeMount.header")
-					.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY))
-				.appendChild(new Element("p")
-						.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
-						.attr("jad:i18n", "review.homeMount.desc"))
-				.appendChild(new Element("div")
-					.addClass("row")
+		try {
+			Element content = document.selectFirst("#setupStep");
+			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
+			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
+			FileScheme<?> scheme = fileService.getFileScheme(folderType);
+			
+			content.appendChild(new Element("div")
+					.addClass("col-12 w-100 my-3")
+					.appendChild(new Element("h4")
+						.attr("jad:i18n", "review.homeMount.header")
+						.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY))
+					.appendChild(new Element("p")
+							.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
+							.attr("jad:i18n", "review.homeMount.desc"))
 					.appendChild(new Element("div")
-							.addClass("col-3")
-							.appendChild(new Element("span")
-									.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-									.attr("jad:i18n", "type.name")))
-					.appendChild(new Element("div")
-								.addClass("col-9")
+						.addClass("row")
+						.appendChild(new Element("div")
+								.addClass("col-3")
 								.appendChild(new Element("span")
-										.appendChild(new Element("strong")
-												.attr("jad:bundle", scheme.getBundle())
-												.attr("jad:i18n", folderType + ".name"))))
-					.appendChild(new Element("div")
-							.addClass("col-3")
-							.appendChild(new Element("span")
-									.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
-									.attr("jad:i18n", "destinationUri.name")))
-					.appendChild(new Element("div")
-								.addClass("col-9")
+										.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+										.attr("jad:i18n", "type.name")))
+						.appendChild(new Element("div")
+									.addClass("col-9")
+									.appendChild(new Element("span")
+											.appendChild(new Element("strong")
+													.attr("jad:bundle", scheme.getBundle())
+													.attr("jad:i18n", folderType + ".name"))))
+						.appendChild(new Element("div")
+								.addClass("col-3")
 								.appendChild(new Element("span")
-										.appendChild(new Element("strong")
-												.text(path.generatePath()))))));
-	
-		
+										.attr("jad:bundle", VirtualFolder.RESOURCE_KEY)
+										.attr("jad:i18n", "destinationUri.name")))
+						.appendChild(new Element("div")
+									.addClass("col-9")
+									.appendChild(new Element("span")
+											.appendChild(new Element("strong")
+													.text(path.generatePath()))))));
+
+			
 //		if(scheme.requiresCredentials()) {
 //			
 //			VirtualFolderCredentials creds = (VirtualFolderCredentials) state.getObject(CredentialsSetupSection.class);
@@ -231,7 +235,10 @@ public class PublicUploadStep2 extends PublicUploadSection {
 //			} else {
 //				// TODO render different types of credentials
 //			}
+		} catch (IOException e) {
+			throw new IllegalStateException(e.getMessage(), e);
 		}
+	}
 //	private void renderCredentials(Element element, ObjectTemplate objectTemplate) {
 //		
 //		element.appendChild(Html.div("col-12")

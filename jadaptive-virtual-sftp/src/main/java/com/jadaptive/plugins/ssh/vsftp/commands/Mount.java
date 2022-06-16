@@ -230,7 +230,7 @@ public class Mount extends AbstractVFSCommand {
 		
 	}
 
-	private void saveMount(VirtualFolder folder, Collection<Role> roles, Collection<User> users) {
+	private void saveMount(VirtualFolder folder, Collection<Role> roles, Collection<User> users) throws IOException {
 		fileService.createOrUpdate(folder, users, roles);
 	}
 }

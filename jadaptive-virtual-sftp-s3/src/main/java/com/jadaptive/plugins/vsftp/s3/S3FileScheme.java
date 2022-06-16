@@ -3,15 +3,10 @@ package com.jadaptive.plugins.vsftp.s3;
 import java.io.IOException;
 import java.util.Objects;
 
-import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemOptions;
-import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
-import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.ClientConfigurationFactory;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

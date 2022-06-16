@@ -70,7 +70,6 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Autowired
 	private CacheService cacheService; 
 	
-	private Set<String> types;
 	private Set<FileScheme<?>> schemes = new HashSet<>();
 	private Map<String, FileScheme<?>> providers = new HashMap<>();
 	private Map<String, FileSystemManager> managers = new HashMap<>();
@@ -106,32 +105,32 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Override
 	public boolean checkSupportedMountType(String type) {
 		
-		if(Objects.isNull(types)) {
-			types = new HashSet<>();
+		if(providers.isEmpty()) {
 			checkSchemes();
 			for(FileScheme<?> scheme : schemes) {
-				types.addAll(scheme.types());
-				types.add(scheme.getResourceKey());
-				for(String t : scheme.types()) {
-					log.info("Registering file scheme {}", t);
-					providers.put(t, scheme);
+				if(!scheme.isEnabled()) {
+					continue;
 				}
 				providers.put(scheme.getResourceKey(), scheme);
 			}
 		}
-		return types.contains(type.toLowerCase());
+		return providers.keySet().contains(type);
 	}
 
-	@Override
-	public FileScheme<?> getFileScheme(String type) {
-		if(providers.isEmpty()) {
-			checkSupportedMountType(type);
+	protected void assertSupportedMount(String type) throws IOException {
+		if(!checkSupportedMountType(type)) {
+			throw new IOException(String.format("%s is not a supported file scheme", type));
 		}
+	}
+	
+	@Override
+	public FileScheme<?> getFileScheme(String type) throws IOException {
+		checkSupportedMountType(type);
 		return providers.get(type);
 	}
 	
 	@Override
-	public VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles) {
+	public VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles) throws IOException {
 		
 		assertWrite(VirtualFolder.RESOURCE_KEY);
 
@@ -160,7 +159,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	}
 	
 	@Override
-	public VirtualFolder createOrUpdate(VirtualFolder folder) {
+	public VirtualFolder createOrUpdate(VirtualFolder folder) throws IOException {
 		
 		assertWrite(VirtualFolder.RESOURCE_KEY);
 		
@@ -183,7 +182,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public VFSFileFactory resolveMount(VirtualFolder folder) throws IOException {
 		
 		try {
-			FileScheme<?> scheme = getFileScheme(folder.getType());
+			FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager mgr = getManager(folder.getUuid(), folder.getCacheStrategy());
 			
@@ -238,7 +237,6 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 				schemes.add(scheme);
 			}
 		}
-		
 	}
 
 	@Override
@@ -259,7 +257,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public VirtualMountTemplate getVirtualMountTemplate(VirtualFolder folder) throws IOException {
 		
 		try {
-			FileScheme<?> scheme = getFileScheme(folder.getType());
+			FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager manager = getManager(folder.getUuid(), folder.getCacheStrategy());
 
@@ -327,8 +325,12 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 
 	@Override
 	public String saveOrUpdate(VirtualFolder folder) {
-		createOrUpdate(folder);
-		return folder.getUuid();
+		try {
+			createOrUpdate(folder);
+			return folder.getUuid();
+		} catch (IOException e) {
+			throw new ObjectException(e);
+		}
 	}
 
 	@Override

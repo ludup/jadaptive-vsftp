@@ -1,6 +1,7 @@
 package com.jadaptive.plugins.ssh.vsftp.ui.wizards;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -112,46 +113,50 @@ public class PublicUploadWizard extends AbstractWizard {
 		
 		transactionService.executeTransaction(()->{
 			
-			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-			FileScheme<?> scheme = fileService.getFileScheme(folderType);
-		
-			PublicUploadName name = ObjectUtils.assertObject(state.getObject(PublicUploadStep1.class), PublicUploadName.class);
-			PublicUploadAssignment assignments = ObjectUtils.assertObject(state.getObject(PublicUploadStep3.class), PublicUploadAssignment.class);
-			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(PublicUploadStep2.class), scheme.getPathClass());
-			PublicUploadOptions options = ObjectUtils.assertObject(state.getObject(PublicUploadStep4.class), PublicUploadOptions.class);
-			
-			VirtualFolderCredentials creds = null;
-			if(scheme.requiresCredentials()) {
-				creds = ObjectUtils.assertObject(state.getObject(CredentialsSetupSection.class), scheme.getCredentialsClass());
+			try {
+				String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
+				FileScheme<?> scheme = fileService.getFileScheme(folderType);
+
+				PublicUploadName name = ObjectUtils.assertObject(state.getObject(PublicUploadStep1.class), PublicUploadName.class);
+				PublicUploadAssignment assignments = ObjectUtils.assertObject(state.getObject(PublicUploadStep3.class), PublicUploadAssignment.class);
+				VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(PublicUploadStep2.class), scheme.getPathClass());
+				PublicUploadOptions options = ObjectUtils.assertObject(state.getObject(PublicUploadStep4.class), PublicUploadOptions.class);
+				
+				VirtualFolderCredentials creds = null;
+				if(scheme.requiresCredentials()) {
+					creds = ObjectUtils.assertObject(state.getObject(CredentialsSetupSection.class), scheme.getCredentialsClass());
+				}
+
+				
+				String virtualPath = FileUtils.checkEndsWithSlash(name.getVirtualPath()) + name.getName();
+				
+				VirtualFolder folder = scheme.createVirtualFolder(name.getName(), virtualPath, path, creds);
+				
+				List<User> users = new ArrayList<>();
+				users.add(userService.getUserByUUID(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID));
+				users.addAll(userService.getUsersByUUID(assignments.getUsers()));
+				
+				List<Role> roles = new ArrayList<>();
+				roles.addAll(roleService.getRolesByUUID(assignments.getRoles()));
+				
+				fileService.createOrUpdate(folder, 
+						users,
+						Arrays.asList(roleService.getEveryoneRole()));
+				
+				UploadForm share = new UploadForm();
+
+				share.setVirtualPath(virtualPath);
+				share.setName(folder.getName());
+				share.setNotifyAssignedUsers(options.getNotifyAssignedUsers());
+				share.setOtherEmails(options.getOtherEmails());
+				share.setShortCode(options.getShortCode());
+				
+				uploadService.saveOrUpdate(share);
+				
+				state.setCompletedObject(share);
+			} catch (IOException e) {
+				throw new IllegalStateException(e.getMessage(), e);
 			}
-		
-			
-			String virtualPath = FileUtils.checkEndsWithSlash(name.getVirtualPath()) + name.getName();
-			
-			VirtualFolder folder = scheme.createVirtualFolder(name.getName(), virtualPath, path, creds);
-			
-			List<User> users = new ArrayList<>();
-			users.add(userService.getUserByUUID(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID));
-			users.addAll(userService.getUsersByUUID(assignments.getUsers()));
-			
-			List<Role> roles = new ArrayList<>();
-			roles.addAll(roleService.getRolesByUUID(assignments.getRoles()));
-			
-			fileService.createOrUpdate(folder, 
-					users,
-					Arrays.asList(roleService.getEveryoneRole()));
-			
-			UploadForm share = new UploadForm();
-		
-			share.setVirtualPath(virtualPath);
-			share.setName(folder.getName());
-			share.setNotifyAssignedUsers(options.getNotifyAssignedUsers());
-			share.setOtherEmails(options.getOtherEmails());
-			share.setShortCode(options.getShortCode());
-			
-			uploadService.saveOrUpdate(share);
-			
-			state.setCompletedObject(share);
 
 		});
 		

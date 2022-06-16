@@ -60,4 +60,6 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 	Integer getWeight();
 
 	void configure(VirtualFolder folder);
+	
+	default boolean isEnabled() { return true; } 
 }

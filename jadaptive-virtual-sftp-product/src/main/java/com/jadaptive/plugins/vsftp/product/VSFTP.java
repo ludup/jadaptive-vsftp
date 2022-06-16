@@ -1,11 +1,11 @@
 package com.jadaptive.plugins.vsftp.product;
 
-import org.pf4j.Extension;
+import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.app.ApplicationVersion;
 import com.jadaptive.api.product.Product;
 
-@Extension
+@Component
 public class VSFTP implements Product {
 
 	@Override

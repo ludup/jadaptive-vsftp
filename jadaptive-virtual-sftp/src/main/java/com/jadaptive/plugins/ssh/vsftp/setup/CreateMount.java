@@ -59,41 +59,49 @@ public class CreateMount extends SetupSection {
 	public void validateAndSave(UUIDEntity object, WizardState state) {
 		super.validateAndSave(object, state);
 		
-		FileScheme<?> scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
-		if(scheme.requiresCredentials()) {
-			state.insertNextPage(new CredentialsSetupSection(scheme));
+		try {
+			FileScheme<?> scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
+			if(scheme.requiresCredentials()) {
+				state.insertNextPage(new CredentialsSetupSection(scheme));
+			}
+		} catch (IOException e) {
+			throw new IllegalStateException(e.getMessage(), e);
 		}
 	}
 	
 	@Override
 	public void finish(WizardState state) {
 		
-		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-		FileScheme<?> scheme = fileService.getFileScheme(folderType);
-		
-		VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), scheme.getPathClass());
-		VirtualFolderCredentials creds = null;
-		if(scheme.requiresCredentials()) {
-			creds = ObjectUtils.assertObject(state.getObject(CredentialsSetupSection.class), scheme.getCredentialsClass());
-		}
-		
-		ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(ChooseFilesystemSetup.class), ChooseFilesystem.class);
-		
-		VirtualFolder folder;
-		switch(obj.getFilesystemType()) {
-		case 1:
-			path.setAppendUsername(true);
-			folder  = createVirtualFolder(scheme, path, creds, "Home", "/home");
-			break;
-		default:
-			path.setAppendUsername(false);
-			folder  = createVirtualFolder(scheme, path, creds, "Home", "/");
-			break;
-		}
+		try {
+			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
+			FileScheme<?> scheme = fileService.getFileScheme(folderType);
+			
+			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), scheme.getPathClass());
+			VirtualFolderCredentials creds = null;
+			if(scheme.requiresCredentials()) {
+				creds = ObjectUtils.assertObject(state.getObject(CredentialsSetupSection.class), scheme.getCredentialsClass());
+			}
+			
+			ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(ChooseFilesystemSetup.class), ChooseFilesystem.class);
+			
+			VirtualFolder folder;
+			switch(obj.getFilesystemType()) {
+			case 1:
+				path.setAppendUsername(true);
+				folder  = createVirtualFolder(scheme, path, creds, "Home", "/home");
+				break;
+			default:
+				path.setAppendUsername(false);
+				folder  = createVirtualFolder(scheme, path, creds, "Home", "/");
+				break;
+			}
 
-		fileService.createOrUpdate(folder, 
-				Collections.<User>emptySet(),
-				Arrays.asList(roleService.getEveryoneRole()));
+			fileService.createOrUpdate(folder, 
+					Collections.<User>emptySet(),
+					Arrays.asList(roleService.getEveryoneRole()));
+		} catch (IOException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
 
 	}
 	
@@ -180,61 +188,49 @@ public class CreateMount extends SetupSection {
 	@Override
 	public void processReview(Document document, WizardState state) {
 
-		Element content = document.selectFirst("#setupStep");
-		VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
-		String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-		FileScheme<?> scheme = fileService.getFileScheme(folderType);
-		@SuppressWarnings("unused")
-		Element el;
-		
-		content.appendChild(new Element("div")
-				.addClass("col-12 w-100 my-3")
-				.appendChild(new Element("h4")
-					.attr("jad:i18n", "review.homeMount.header")
-					.attr("jad:bundle", "createMount"))
-				.appendChild(new Element("p")
-						.attr("jad:bundle", "createMount")
-						.attr("jad:i18n", "review.homeMount.desc"))
-				.appendChild(new Element("div")
-					.addClass("row")
-					.appendChild(el = new Element("div")
-							.addClass("col-3")
-							.appendChild(new Element("span")
-									.attr("jad:bundle", "createMount")
-									.attr("jad:i18n", "type.name")))
+		try {
+			Element content = document.selectFirst("#setupStep");
+			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
+			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
+			FileScheme<?> scheme = fileService.getFileScheme(folderType);
+			@SuppressWarnings("unused")
+			Element el;
+			
+			content.appendChild(new Element("div")
+					.addClass("col-12 w-100 my-3")
+					.appendChild(new Element("h4")
+						.attr("jad:i18n", "review.homeMount.header")
+						.attr("jad:bundle", "createMount"))
+					.appendChild(new Element("p")
+							.attr("jad:bundle", "createMount")
+							.attr("jad:i18n", "review.homeMount.desc"))
 					.appendChild(new Element("div")
-								.addClass("col-9")
+						.addClass("row")
+						.appendChild(el = new Element("div")
+								.addClass("col-3")
 								.appendChild(new Element("span")
-										.appendChild(new Element("strong")
-												.attr("jad:bundle", scheme.getBundle())
-												.attr("jad:i18n", folderType + ".name"))))
-					.appendChild(new Element("div")
-							.addClass("col-3")
-							.appendChild(new Element("span")
-									.attr("jad:bundle", "createMount")
-									.attr("jad:i18n", "path.name")))
-					.appendChild(new Element("div")
-								.addClass("col-9")
+										.attr("jad:bundle", "createMount")
+										.attr("jad:i18n", "type.name")))
+						.appendChild(new Element("div")
+									.addClass("col-9")
+									.appendChild(new Element("span")
+											.appendChild(new Element("strong")
+													.attr("jad:bundle", scheme.getBundle())
+													.attr("jad:i18n", folderType + ".name"))))
+						.appendChild(new Element("div")
+								.addClass("col-3")
 								.appendChild(new Element("span")
-										.appendChild(new Element("strong")
-												.text(path.generatePath()))))));
-		
-//		if(scheme.requiresCredentials()) {
-//			VirtualFolderCredentials creds = ObjectUtils.assertObject(state.getObject(CredentialsSetupSection.class), scheme.getCredentialsClass());
-//			
-//			for(FieldTemplate t : scheme.getCredentialsTemplate().getFields()) {
-//				el.appendChild(new Element("div")
-//						.addClass("col-3")
-//						.appendChild(new Element("span")
-//								.attr("jad:bundle", scheme.getCredentialsTemplate().getBundle())
-//								.attr("jad:i18n", t.getResourceKey() + ".name")))
-//						.appendChild(new Element("div")
-//								.addClass("col-9")
-//								.appendChild(new Element("span")
-//										.appendChild(new Element("strong")
-//												.text(ReflectionUtils.getFieldValue(creds, t.getResourceKey())))));
-//			}
-//		}
+										.attr("jad:bundle", "createMount")
+										.attr("jad:i18n", "path.name")))
+						.appendChild(new Element("div")
+									.addClass("col-9")
+									.appendChild(new Element("span")
+											.appendChild(new Element("strong")
+													.text(path.generatePath()))))));
+
+		} catch (IOException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
 		
 	}
 }
