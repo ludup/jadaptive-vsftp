@@ -54,15 +54,17 @@ public class ChartController implements PluginController {
 	    Date to = c.getTime();
 	    
 		in.setDirection("Ingress");
-		in.setSftp(generateValue(usageService.sum("sftp_upload", from, to)));
-		in.setScp(generateValue(usageService.sum("scp_upload", from, to)));
-		in.setHttps(generateValue(usageService.sum("https_upload", from, to)));
+		in.setSftp(generateValue(usageService.sum(StatsService.SFTP_UPLOAD, from, to)));
+		in.setScp(generateValue(usageService.sum(StatsService.SCP_DOWNLOAD, from, to)));
+		in.setHttps(generateValue(usageService.sum(StatsService.HTTPS_UPLOAD, from, to)));
+		in.setRnd(generateValue(usageService.sum(StatsService.SFTP_RND_IN, from, to)));
 		
 		MonthlyThroughputData out = new MonthlyThroughputData();
 		out.setDirection("Egress");
-		out.setSftp(generateValue(usageService.sum("sftp_download", from, to)));
-		out.setScp(generateValue(usageService.sum("scp_download", from, to)));
-		out.setHttps(generateValue(usageService.sum("https_download", from, to)));
+		out.setSftp(generateValue(usageService.sum(StatsService.SFTP_DOWNLOAD, from, to)));
+		out.setScp(generateValue(usageService.sum(StatsService.SCP_DOWNLOAD, from, to)));
+		out.setHttps(generateValue(usageService.sum(StatsService.HTTPS_DOWNLOAD, from, to)));
+		out.setRnd(generateValue(usageService.sum(StatsService.SFTP_RND_OUT, from, to)));
 		
 		return new MonthlyThroughputData[] { in, out };
 	}
@@ -88,7 +90,14 @@ public class ChartController implements PluginController {
 	    Date from = c.getTime();
 
 		for(int i=0;i<30;i++) {
-			long value = usageService.sum(from, to, "sftp_upload", "sftp_download", "scp_upload", "scp_download");
+			long value = usageService.sum(from, to, StatsService.HTTPS_DOWNLOAD,
+					StatsService.HTTPS_UPLOAD,
+					StatsService.SCP_DOWNLOAD,
+					StatsService.SCP_UPLOAD,
+					StatsService.SFTP_UPLOAD,
+					StatsService.SFTP_DOWNLOAD,
+					StatsService.SFTP_RND_OUT,
+					StatsService.SFTP_RND_IN);
 			values.add(new DateValue(to.getTime(), generateValue(value)));
 			to = from;
 			c.add(Calendar.DAY_OF_MONTH, -1);

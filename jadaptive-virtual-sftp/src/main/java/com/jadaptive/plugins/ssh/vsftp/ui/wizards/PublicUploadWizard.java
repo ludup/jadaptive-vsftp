@@ -19,10 +19,10 @@ import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.setup.WizardSection;
 import com.jadaptive.api.ui.Page;
 import com.jadaptive.api.ui.PageCache;
+import com.jadaptive.api.ui.wizards.AbstractWizard;
+import com.jadaptive.api.ui.wizards.WizardState;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
-import com.jadaptive.api.wizards.AbstractWizard;
-import com.jadaptive.api.wizards.WizardState;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
@@ -117,14 +117,14 @@ public class PublicUploadWizard extends AbstractWizard {
 				String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 				FileScheme<?> scheme = fileService.getFileScheme(folderType);
 
-				PublicUploadName name = ObjectUtils.assertObject(state.getObject(PublicUploadStep1.class), PublicUploadName.class);
-				PublicUploadAssignment assignments = ObjectUtils.assertObject(state.getObject(PublicUploadStep3.class), PublicUploadAssignment.class);
-				VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(PublicUploadStep2.class), scheme.getPathClass());
-				PublicUploadOptions options = ObjectUtils.assertObject(state.getObject(PublicUploadStep4.class), PublicUploadOptions.class);
+				PublicUploadName name = ObjectUtils.assertObject(state.getObject(PublicUploadName.class), PublicUploadName.class);
+				PublicUploadAssignment assignments = ObjectUtils.assertObject(state.getObject(PublicUploadAssignment.class), PublicUploadAssignment.class);
+				VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(scheme.getPathClass()), scheme.getPathClass());
+				PublicUploadOptions options = ObjectUtils.assertObject(state.getObject(PublicUploadOptions.class), PublicUploadOptions.class);
 				
 				VirtualFolderCredentials creds = null;
 				if(scheme.requiresCredentials()) {
-					creds = ObjectUtils.assertObject(state.getObject(CredentialsSetupSection.class), scheme.getCredentialsClass());
+					creds = ObjectUtils.assertObject(state.getObject(scheme.getCredentialsClass()), scheme.getCredentialsClass());
 				}
 
 				

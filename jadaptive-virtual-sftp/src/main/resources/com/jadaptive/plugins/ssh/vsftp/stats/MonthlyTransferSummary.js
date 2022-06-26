@@ -70,24 +70,14 @@ function makeSeries(name, fieldName, data) {
   // https://www.amcharts.com/docs/v5/concepts/animations/
   series.appear();
 
-  series.bullets.push(function () {
-    return am5.Bullet.new(root, {
-      sprite: am5.Label.new(root, {
-        text: "{valueX}",
-        fill: root.interfaceColors.get("alternativeText"),
-        centerY: am5.p50,
-        centerX: am5.p50,
-        populateText: true
-      })
-    });
-  });
+ 
 
   legend.data.push(series);
 }
 
 
 
-am5.net.load("/app/content/mydata.json").then(function(result) {
+am5.net.load("/app/vfs/stats/monthly").then(function(result) {
   // This gets executed when data finishes loading
   var data  = am5.JSONParser.parse(result.response);
   
@@ -96,6 +86,7 @@ am5.net.load("/app/content/mydata.json").then(function(result) {
   makeSeries("SCP", "scp", data);
   makeSeries("SFTP", "sftp", data);
   makeSeries("HTTPS", "https", data);
+  makeSeries("RND", "rnd", data);
 
   // Make stuff animate on load
   // https://www.amcharts.com/docs/v5/concepts/animations/

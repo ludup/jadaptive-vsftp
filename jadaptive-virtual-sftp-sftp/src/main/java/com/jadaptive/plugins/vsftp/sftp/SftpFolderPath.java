@@ -20,11 +20,12 @@ public class SftpFolderPath extends VirtualFolderPath {
 	
 	private static final long serialVersionUID = 3615197803358528585L;
 
-	@ObjectField(required = true, defaultValue = "", type = FieldType.TEXT)
+	@ObjectField(defaultValue = "", type = FieldType.TEXT)
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 0)
+	@Validator(type = ValidationType.REQUIRED)
 	String hostname;
 	
-	@ObjectField(required = true, defaultValue = "22", type = FieldType.INTEGER)
+	@ObjectField(defaultValue = "22", type = FieldType.INTEGER)
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 1)
 	@Validator(type = ValidationType.RANGE, value = "1-65535", bundle = SftpFolder.RESOURCE_KEY, i18n = "port.invalid")
 	Integer port;

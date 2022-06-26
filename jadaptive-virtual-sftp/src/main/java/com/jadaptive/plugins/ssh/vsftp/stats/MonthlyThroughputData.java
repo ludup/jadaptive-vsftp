@@ -10,6 +10,7 @@ public class MonthlyThroughputData implements Serializable {
 	Double scp;
 	Double sftp;
 	Double https;
+	Double rnd;
 	
 	public String getDirection() {
 		return direction;
@@ -35,6 +36,11 @@ public class MonthlyThroughputData implements Serializable {
 	public void setHttps(Double https) {
 		this.https = https;
 	}
-	
-	
+	public Double getRnd() {
+		return rnd;
+	}
+	public void setRnd(Double rnd) {
+		this.rnd = rnd;
+	}
+
 }

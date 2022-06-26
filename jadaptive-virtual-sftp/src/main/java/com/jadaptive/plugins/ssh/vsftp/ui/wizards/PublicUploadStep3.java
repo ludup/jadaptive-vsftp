@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.role.RoleService;
+import com.jadaptive.api.ui.wizards.WizardState;
 import com.jadaptive.api.user.UserService;
-import com.jadaptive.api.wizards.WizardState;
 import com.jadaptive.utils.ObjectUtils;
 import com.jadaptive.utils.Utils;
 
@@ -28,7 +28,7 @@ public class PublicUploadStep3 extends PublicUploadSection {
 	public void processReview(Document document, WizardState state) {
 
 		Element content = document.selectFirst("#setupStep");
-		PublicUploadAssignment assignments = ObjectUtils.assertObject(state.getObject(getClass()), PublicUploadAssignment.class);
+		PublicUploadAssignment assignments = ObjectUtils.assertObject(state.getObject(this), PublicUploadAssignment.class);
 
 		content.appendChild(new Element("div")
 				.addClass("col-12 w-100 my-3")

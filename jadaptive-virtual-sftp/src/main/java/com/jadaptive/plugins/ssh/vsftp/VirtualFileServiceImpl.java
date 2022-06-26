@@ -45,6 +45,7 @@ import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
+import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
 
@@ -403,5 +404,11 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 				cacheService.getCacheOrCreate(ABSTRACT_FILE_FACTORY, 
 						String.class, AbstractFileFactory.class);
 		cache.remove(getCurrentUser().getUuid());
+	}
+
+	@Override
+	public VirtualFolder getParentMount(AbstractFile fileObject) {
+		VirtualFile vf = (VirtualFile) fileObject;
+		return getVirtualFolder(vf.getMount().getMount());
 	}
 }

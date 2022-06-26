@@ -6,6 +6,8 @@ import com.jadaptive.api.repository.UUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ValidationType;
+import com.jadaptive.api.template.Validator;
 
 @ObjectDefinition(resourceKey = ChooseFilesystem.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT)
 public class ChooseFilesystem extends UUIDEntity {
@@ -14,7 +16,8 @@ public class ChooseFilesystem extends UUIDEntity {
 	
 	public static final String RESOURCE_KEY = "chooseFilesystem";
 	
-	@ObjectField(required = true, defaultValue = "1", type = FieldType.INTEGER)
+	@ObjectField(defaultValue = "1", type = FieldType.INTEGER)
+	@Validator(type = ValidationType.REQUIRED)
 	Integer filesystemType;
 
 	public Integer getFilesystemType() {

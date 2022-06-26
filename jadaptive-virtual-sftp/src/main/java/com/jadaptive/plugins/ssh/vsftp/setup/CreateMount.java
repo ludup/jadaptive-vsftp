@@ -23,9 +23,9 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.ui.Page;
 import com.jadaptive.api.ui.renderers.DropdownInput;
 import com.jadaptive.api.ui.renderers.I18nOption;
+import com.jadaptive.api.ui.wizards.WizardService;
+import com.jadaptive.api.ui.wizards.WizardState;
 import com.jadaptive.api.user.User;
-import com.jadaptive.api.wizards.WizardService;
-import com.jadaptive.api.wizards.WizardState;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -76,13 +76,13 @@ public class CreateMount extends SetupSection {
 			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 			FileScheme<?> scheme = fileService.getFileScheme(folderType);
 			
-			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), scheme.getPathClass());
+			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(this), scheme.getPathClass());
 			VirtualFolderCredentials creds = null;
 			if(scheme.requiresCredentials()) {
-				creds = ObjectUtils.assertObject(state.getObject(CredentialsSetupSection.class), scheme.getCredentialsClass());
+				creds = ObjectUtils.assertObject(state.getObject(scheme.getCredentialsClass()), scheme.getCredentialsClass());
 			}
 			
-			ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(ChooseFilesystemSetup.class), ChooseFilesystem.class);
+			ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(ChooseFilesystem.class), ChooseFilesystem.class);
 			
 			VirtualFolder folder;
 			switch(obj.getFilesystemType()) {
@@ -190,7 +190,7 @@ public class CreateMount extends SetupSection {
 
 		try {
 			Element content = document.selectFirst("#setupStep");
-			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
+			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(this), VirtualFolderPath.class);
 			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 			FileScheme<?> scheme = fileService.getFileScheme(folderType);
 			@SuppressWarnings("unused")

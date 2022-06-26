@@ -51,6 +51,8 @@ import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.repository.RepositoryException;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.Session;
+import com.jadaptive.api.stats.UsageService;
+import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.ErrorPage;
 import com.jadaptive.api.ui.Feedback;
 import com.jadaptive.api.ui.PageRedirect;
@@ -62,6 +64,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderMount;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
+import com.jadaptive.plugins.ssh.vsftp.stats.StatsService;
 import com.jadaptive.plugins.ssh.vsftp.upload.FileUpload;
 import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFile;
 import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFileService;
@@ -98,6 +101,12 @@ public class VirtualFileController extends AuthenticatedController implements St
 	
 	@Autowired
 	private IncomingFileService incomingService; 
+	
+	@Autowired
+	private UsageService usageService; 
+	
+	@Autowired
+	private TenantService tenantService; 
 	
 	@Override
 	public void onApplicationStartup() {
@@ -323,12 +332,15 @@ public class VirtualFileController extends AuthenticatedController implements St
 		
 		Date started = Utils.now();
 		ContentHash contentHash = configurationService.getObject(VFSConfiguration.class).getDefaultHash();
+		
 		try {
-			long size = 0L;
+			Long size;
 			MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
 			try(OutputStream digestOutput = new DigestOutputStream(response.getOutputStream(), digest)) {
 			
 				in = new ZipMultipleFilesInputStream(folder, files);
+				
+				VirtualFolder vf = fileService.getParentMount(files.iterator().next());
 				
 				response.setHeader("Content-Disposition", "attachment; filename=\"" + filename  + "\"");
 				
@@ -339,7 +351,14 @@ public class VirtualFileController extends AuthenticatedController implements St
 				response.setContentType(mimeType);
 				
 				size = IOUtils.copyWithCount(in, digestOutput);
+				
+				tenantService.executeAs(getCurrentTenant(), ()-> {
+					usageService.log(size, StatsService.HTTPS_DOWNLOAD, 
+							getCurrentUser().getUuid(),
+							vf.getUuid());
+				});
 			}
+			
 
 			byte[] output = digest.digest();
 			eventService.publishEvent(new FileDownloadEvent(
@@ -372,8 +391,9 @@ public class VirtualFileController extends AuthenticatedController implements St
 		
 		Date started = Utils.now();
 		ContentHash contentHash = configurationService.getObject(VFSConfiguration.class).getDefaultHash();
+		VirtualFolder folder = fileService.getParentMount(fileObject);
 		try {
-			long size = 0L;
+			Long size;
 			MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
 			try(OutputStream digestOutput = new DigestOutputStream(response.getOutputStream(), digest)) {
 			
@@ -393,6 +413,12 @@ public class VirtualFileController extends AuthenticatedController implements St
 				response.setContentType(mimeType);
 				
 				size = IOUtils.copyWithCount(in, digestOutput);
+				
+				tenantService.executeAs(getCurrentTenant(), ()-> {
+					usageService.log(size, StatsService.HTTPS_DOWNLOAD, 
+							getCurrentUser().getUuid(),
+							folder.getUuid());
+				});
 			}
 
 			byte[] output = digest.digest();

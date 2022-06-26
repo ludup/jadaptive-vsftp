@@ -8,7 +8,6 @@ import org.jsoup.nodes.Element;
 import org.pf4j.Extension;
 
 import com.jadaptive.api.ui.DashboardWidget;
-import com.jadaptive.api.ui.Html;
 import com.jadaptive.api.ui.PageHelper;
 
 @Extension

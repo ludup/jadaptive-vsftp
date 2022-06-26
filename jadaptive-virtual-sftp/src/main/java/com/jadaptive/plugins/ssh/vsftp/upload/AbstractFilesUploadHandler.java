@@ -20,11 +20,16 @@ import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.SessionUtils;
+import com.jadaptive.api.stats.UsageService;
+import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.ErrorPage;
 import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.api.upload.UploadHandler;
 import com.jadaptive.plugins.ssh.vsftp.ContentHash;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.stats.StatsService;
 import com.jadaptive.plugins.ssh.vsftp.ui.FileUploadEvent;
 import com.jadaptive.plugins.ssh.vsftp.ui.TransferResult;
 import com.jadaptive.plugins.sshd.SSHDService;
@@ -49,6 +54,15 @@ public abstract class AbstractFilesUploadHandler extends AuthenticatedService im
 	private SingletonObjectDatabase<VFSConfiguration> configurationService; 
 	
 	@Autowired
+	private TenantService tenantService; 
+	
+	@Autowired
+	private UsageService usageService;
+	
+	@Autowired
+	private VirtualFileService fileService; 
+	
+	@Autowired
 	private EventService eventService; 
 	
 	protected AbstractFile doUpload(String path, String filename, InputStream in) throws  SessionTimeoutException {
@@ -62,7 +76,7 @@ public abstract class AbstractFilesUploadHandler extends AuthenticatedService im
 			}
 			
 			AbstractFile file = sshdService.getFileFactory(getCurrentUser()).getFile(path);
-
+		
 			if(!file.exists()) {
 				throw new FileNotFoundException(String.format("No upload area at %s", path));
 			}
@@ -76,9 +90,11 @@ public abstract class AbstractFilesUploadHandler extends AuthenticatedService im
 				file.createNewFile();
 			}
 			
+			VirtualFolder folder = fileService.getParentMount(file);
+			
 			ContentHash contentHash = configurationService.getObject(VFSConfiguration.class).getDefaultHash();
 			MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
-			long size = 0L;
+			Long size;
 			
 			OutputStream out = file.getOutputStream();
 			try(DigestOutputStream digestOutput = new DigestOutputStream(out, digest)) {
@@ -87,6 +103,12 @@ public abstract class AbstractFilesUploadHandler extends AuthenticatedService im
 				IOUtils.closeStream(in);
 				IOUtils.closeStream(out);
 			}
+			
+			tenantService.executeAs(getCurrentTenant(), ()-> {
+				usageService.log(size, StatsService.HTTPS_UPLOAD, 
+						getCurrentUser().getUuid(),
+						folder.getUuid());
+			});
 
 			byte[] output = digest.digest();
 			eventService.publishEvent(new FileUploadEvent(new TransferResult(filename, 

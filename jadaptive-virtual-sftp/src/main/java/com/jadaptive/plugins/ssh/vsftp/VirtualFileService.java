@@ -62,4 +62,6 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 
 	AbstractFileFactory<?> getFactory(User user);
 
+	VirtualFolder getParentMount(AbstractFile fileObject);
+
 }

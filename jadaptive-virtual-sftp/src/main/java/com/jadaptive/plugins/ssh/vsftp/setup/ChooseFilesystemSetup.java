@@ -10,8 +10,8 @@ import com.jadaptive.api.repository.UUIDEntity;
 import com.jadaptive.api.setup.SetupSection;
 import com.jadaptive.api.template.ValidationException;
 import com.jadaptive.api.ui.Page;
-import com.jadaptive.api.wizards.WizardState;
-import com.jadaptive.plugins.web.ui.Wizard;
+import com.jadaptive.api.ui.wizards.Wizard;
+import com.jadaptive.api.ui.wizards.WizardState;
 import com.jadaptive.utils.ObjectUtils;
 
 @Extension
@@ -30,7 +30,7 @@ public class ChooseFilesystemSetup extends SetupSection {
 		
 		try {
 			WizardState state = Wizard.getCurrentState();
-			ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(getClass()), ChooseFilesystem.class);
+			ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(this), ChooseFilesystem.class);
 			
 			document.selectFirst("#filesystemType").val(obj.getFilesystemType().toString());
 		} catch(ValidationException t) {
@@ -60,7 +60,7 @@ public class ChooseFilesystemSetup extends SetupSection {
 	public void processReview(Document document, WizardState state) {
 		
 		Element content = document.selectFirst("#setupStep");
-		ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(getClass()), ChooseFilesystem.class);
+		ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(this), ChooseFilesystem.class);
 		
 		content	.appendChild(new Element("div")
 						.addClass("col-12 w-100 my-3")

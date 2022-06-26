@@ -56,7 +56,7 @@ var series1 = chart1.series.push(am5xy.ColumnSeries.new(transferChart, {
   })
 }));
 
-am5.net.load("/app/content/data.json").then(function(result) {
+am5.net.load("/app/vfs/stats/throughput").then(function(result) {
   // This gets executed when data finishes loading
   var data  = am5.JSONParser.parse(result.response);
   

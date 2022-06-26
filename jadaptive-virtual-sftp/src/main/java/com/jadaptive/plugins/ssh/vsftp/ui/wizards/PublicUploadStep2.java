@@ -19,8 +19,8 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.ui.Page;
 import com.jadaptive.api.ui.renderers.DropdownInput;
 import com.jadaptive.api.ui.renderers.I18nOption;
-import com.jadaptive.api.wizards.WizardService;
-import com.jadaptive.api.wizards.WizardState;
+import com.jadaptive.api.ui.wizards.WizardService;
+import com.jadaptive.api.ui.wizards.WizardState;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -92,7 +92,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 		
 		ObjectTemplate template = templateService.get(scheme.getResourceKey());
 		
-		UUIDEntity e = state.getObject(getClass());
+		UUIDEntity e = state.getObject(this);
 		if(Objects.nonNull(e) && !e.getResourceKey().equals(scheme.getResourceKey())) {
 			state.setCurrentObject(null);
 		}
@@ -131,7 +131,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 
 		try {
 			Element content = document.selectFirst("#setupStep");
-			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(getClass()), VirtualFolderPath.class);
+			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(this), VirtualFolderPath.class);
 			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 			FileScheme<?> scheme = fileService.getFileScheme(folderType);
 			

@@ -4,7 +4,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
 
-import com.jadaptive.api.wizards.WizardState;
+import com.jadaptive.api.ui.wizards.WizardState;
 import com.jadaptive.utils.ObjectUtils;
 import com.sshtools.common.util.FileUtils;
 
@@ -19,7 +19,7 @@ public class PublicUploadStep1 extends PublicUploadSection {
 	public void processReview(Document document, WizardState state) {
 
 		Element content = document.selectFirst("#setupStep");
-		PublicUploadName name =  ObjectUtils.assertObject(state.getObject(getClass()), PublicUploadName.class);
+		PublicUploadName name =  ObjectUtils.assertObject(state.getObject(this), PublicUploadName.class);
 
 		content.appendChild(new Element("div")
 				.addClass("col-12 w-100 my-3")
