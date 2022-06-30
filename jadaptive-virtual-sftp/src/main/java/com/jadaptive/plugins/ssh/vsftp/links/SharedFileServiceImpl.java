@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jadaptive.api.app.ApplicationService;
+import com.jadaptive.api.app.StartupAware;
 import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.entity.AbstractUUIDObjectServceImpl;
@@ -22,6 +23,8 @@ import com.jadaptive.api.stats.ResourceService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.email.MessageService;
 import com.jadaptive.plugins.email.RecipientHolder;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
+import com.jadaptive.plugins.licensing.FeatureGroup;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.ui.TransferResult;
@@ -32,7 +35,7 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 
 @Service
-public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFile> implements SharedFileService, ResourceService {
+public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFile> implements SharedFileService, ResourceService, StartupAware {
 
 	public static final String SHARED_FILE_DOWNLOAD = "f5c09928-d9af-480c-83a4-93021e0779cb";
 	public static final String SHARED_FILE_CREATED = "a6a1fabd-895a-41ab-8944-1847501881d8";
@@ -200,7 +203,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return applicationService.getBean(FeatureEnablementService.class).isEnabled(SHARING);
 	}
 
 	@Override
@@ -211,5 +214,10 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	@Override
 	public long getTotalResources() {
 		return objectDatabase.count(SharedFile.class);
+	}
+
+	@Override
+	public void onApplicationStartup() {	
+		applicationService.getBean(FeatureEnablementService.class).registerFeature(SHARING, FeatureGroup.PROFESSIONAL);
 	}
 }

@@ -11,6 +11,7 @@ import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.db.TransactionService;
 import com.jadaptive.api.permissions.AccessDeniedException;
 import com.jadaptive.api.permissions.PermissionService;
@@ -23,12 +24,14 @@ import com.jadaptive.api.ui.wizards.AbstractWizard;
 import com.jadaptive.api.ui.wizards.WizardState;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 import com.jadaptive.utils.ObjectUtils;
@@ -63,6 +66,8 @@ public class PublicUploadWizard extends AbstractWizard {
 	@Autowired
 	private TransactionService transactionService; 
 	
+	@Autowired
+	private ApplicationService applicationService; 
 	
 	public static final String STATE_ATTR = "publicUploadWizardState";
 	
@@ -106,6 +111,9 @@ public class PublicUploadWizard extends AbstractWizard {
 		if(!permissionService.hasUserContext()) {
 			throw new AccessDeniedException("No user context available for public upload wizard!");
 		}
+		
+		applicationService.getBean(FeatureEnablementService.class).assertFeature(SharedFileService.SHARING);
+		
 	}
 
 	@Override

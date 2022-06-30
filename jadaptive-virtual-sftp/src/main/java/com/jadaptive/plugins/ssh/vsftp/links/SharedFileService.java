@@ -10,6 +10,8 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 
 public interface SharedFileService extends AbstractUUIDObjectService<SharedFile> {
 
+	String SHARING = "Sharing";
+
 	SharedFile getDownloadByPath(String path, User user);
 
 	SharedFile createDownloadLink(AbstractFile file, User user) throws IOException, PermissionDeniedException;

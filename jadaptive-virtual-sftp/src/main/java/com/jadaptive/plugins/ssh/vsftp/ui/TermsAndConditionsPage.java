@@ -10,12 +10,14 @@ import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.ui.HtmlPage;
 import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.ui.UriRedirect;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 
@@ -27,6 +29,9 @@ public class TermsAndConditionsPage extends HtmlPage {
 	
 	@Autowired
 	private SharedFileService shareService; 
+	
+	@Autowired
+	private ApplicationService applicationService;
 	
 	String shortCode;
 	
@@ -40,6 +45,8 @@ public class TermsAndConditionsPage extends HtmlPage {
 	@Override
 	protected void beforeProcess(String uri, HttpServletRequest request, HttpServletResponse response)
 			throws FileNotFoundException {
+		
+		applicationService.getBean(FeatureEnablementService.class).assertFeature(SharedFileService.SHARING);
 		
 		try {
 			SharedFile file = shareService.getDownloadByShortCode(shortCode);

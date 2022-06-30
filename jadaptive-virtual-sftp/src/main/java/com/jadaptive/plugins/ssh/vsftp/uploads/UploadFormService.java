@@ -4,6 +4,8 @@ import java.util.Collection;
 
 public interface UploadFormService {
 
+	String UPLOAD_FORMS = "Upload Forms";
+
 	void saveOrUpdate(UploadForm share);
 
 	UploadForm getFormByShortCode(String shortCode);

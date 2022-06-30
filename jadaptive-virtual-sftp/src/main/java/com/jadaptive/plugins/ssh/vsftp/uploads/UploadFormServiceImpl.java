@@ -8,21 +8,34 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jadaptive.api.app.ApplicationService;
+import com.jadaptive.api.app.StartupAware;
 import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.db.TenantAwareObjectDatabase;
 import com.jadaptive.api.stats.ResourceService;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
+import com.jadaptive.plugins.licensing.FeatureGroup;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.Utils;
 
 @Service
-public class UploadFormServiceImpl implements UploadFormService, ResourceService {
+public class UploadFormServiceImpl implements UploadFormService, ResourceService, StartupAware {
 
 	@Autowired
 	private TenantAwareObjectDatabase<UploadForm> uploadDatabase;
 	
 	@Autowired
 	private VirtualFileService fileService; 
+	
+	@Autowired
+	private ApplicationService applicationService;
+
+	@Override
+	public void onApplicationStartup() {
+		
+		applicationService.getBean(FeatureEnablementService.class).registerFeature(UPLOAD_FORMS, FeatureGroup.PROFESSIONAL);
+	}
 	
 	@Override
 	public void saveOrUpdate(UploadForm object) {
@@ -46,7 +59,7 @@ public class UploadFormServiceImpl implements UploadFormService, ResourceService
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return applicationService.getBean(FeatureEnablementService.class).isEnabled(UPLOAD_FORMS);
 	}
 
 	@Override

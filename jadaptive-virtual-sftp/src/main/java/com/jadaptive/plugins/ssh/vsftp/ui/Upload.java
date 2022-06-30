@@ -9,11 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.ui.ModalPage;
 import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 
@@ -29,6 +31,9 @@ public class Upload extends AnonymousPage {
 	@Autowired
 	private UploadFormService uploadService;
 	
+	@Autowired
+	private ApplicationService applicationService;
+	
 	String shortCode;
 	
 	public String getShortCode() {
@@ -38,6 +43,8 @@ public class Upload extends AnonymousPage {
 	
     public void generateAnonymousContent(Document contents) throws IOException {
     	
+    	applicationService.getBean(FeatureEnablementService.class).assertFeature(UploadFormService.UPLOAD_FORMS);
+		
     	try {
     		UploadForm folder = uploadService.getFormByShortCode(shortCode);
     		contents.selectFirst("#uploadArea").text(folder.getName());

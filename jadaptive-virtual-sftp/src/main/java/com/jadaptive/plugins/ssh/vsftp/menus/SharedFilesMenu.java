@@ -1,17 +1,30 @@
+
 package com.jadaptive.plugins.ssh.vsftp.menus;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.pf4j.Extension;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.ui.menu.ApplicationMenu;
 import com.jadaptive.api.ui.menu.ApplicationMenuService;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 
 @Extension
 public class SharedFilesMenu implements ApplicationMenu {
 
+	@Autowired
+	private ApplicationService applicationService; 
+	
+	@Override
+	public boolean isEnabled() {
+		return applicationService.getBean(FeatureEnablementService.class).isEnabled(SharedFileService.SHARING);
+	}
+	
 	@Override
 	public String getResourceKey() {
 		return "sharedFiles.names";

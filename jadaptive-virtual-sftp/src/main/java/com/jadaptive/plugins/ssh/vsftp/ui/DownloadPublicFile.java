@@ -11,6 +11,7 @@ import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.servlet.Request;
@@ -21,6 +22,7 @@ import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.ui.UriRedirect;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.sshd.SSHDService;
@@ -43,6 +45,9 @@ public class DownloadPublicFile extends HtmlPage {
 	@Autowired
 	private PageCache pageCache;
 
+	@Autowired
+	private ApplicationService applicationService; 
+	
 	String shortCode;
 	String filename;
 
@@ -52,6 +57,9 @@ public class DownloadPublicFile extends HtmlPage {
 			throws FileNotFoundException {
 		
 		try {
+			
+			applicationService.getBean(FeatureEnablementService.class).assertFeature(SharedFileService.SHARING);
+			
 			SharedFile file = downloadService.getDownloadByShortCode(shortCode);
 			
 			if(!hasPassword(request, file)) {
