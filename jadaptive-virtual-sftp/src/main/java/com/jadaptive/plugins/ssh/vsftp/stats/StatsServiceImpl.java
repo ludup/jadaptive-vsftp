@@ -139,7 +139,7 @@ public class StatsServiceImpl implements StatsService, StartupAware {
 						});
 						
 						tenantService.executeAs(tenant, ()-> {
-							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_WRITTEN), 
+							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED), 
 									SFTP_DIR_LISTING, 
 									user.getUuid(),
 									getVirtualFolder(evt).getUuid());
