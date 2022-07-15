@@ -1,10 +1,14 @@
 package com.jadaptive.plugins.ssh.vsftp.stats;
 
+import com.sshtools.common.util.IOUtils;
+
 public interface StatsService {
 
-	static final String SFTP_RND_OUT = "sftp_rnd_out";
+	static final long GIGABYTE = IOUtils.fromByteSize("1GB");
+	
+	static final String SFTP_FS_OUT = "sftp_rnd_out";
 
-	static final String SFTP_RND_IN = "sftp_rnd_in";
+	static final String SFTP_FS_IN = "sftp_rnd_in";
 
 	static final String SFTP_UPLOAD = "sftp_upload";
 

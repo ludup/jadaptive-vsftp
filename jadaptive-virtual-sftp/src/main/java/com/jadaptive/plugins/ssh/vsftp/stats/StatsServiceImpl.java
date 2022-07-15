@@ -190,11 +190,11 @@ public class StatsServiceImpl implements StatsService, StartupAware {
 					{
 						tenantService.executeAs(tenant, ()-> {
 							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_READ), 
-									SFTP_RND_IN, 
+									SFTP_FS_IN, 
 									user.getUuid(),
 									getVirtualFolder(evt).getUuid());
 							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_WRITTEN), 
-									SFTP_RND_OUT, 
+									SFTP_FS_OUT, 
 									user.getUuid(),
 									getVirtualFolder(evt).getUuid());
 						});

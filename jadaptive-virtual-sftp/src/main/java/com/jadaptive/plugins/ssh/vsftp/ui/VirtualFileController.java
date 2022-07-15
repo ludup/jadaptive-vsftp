@@ -51,11 +51,16 @@ import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.repository.RepositoryException;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.Session;
+import com.jadaptive.api.session.SessionStickyInputStream;
+import com.jadaptive.api.session.SessionTimeoutException;
+import com.jadaptive.api.session.SessionUtils;
+import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.stats.UsageService;
 import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.ErrorPage;
 import com.jadaptive.api.ui.Feedback;
 import com.jadaptive.api.ui.PageRedirect;
+import com.jadaptive.app.session.CountingOutputStream;
 import com.jadaptive.plugins.ssh.vsftp.ContentHash;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
@@ -107,6 +112,9 @@ public class VirtualFileController extends AuthenticatedController implements St
 	
 	@Autowired
 	private TenantService tenantService; 
+	
+	@Autowired
+	private SessionUtils sessionUtils;
 	
 	@Override
 	public void onApplicationStartup() {
@@ -332,15 +340,16 @@ public class VirtualFileController extends AuthenticatedController implements St
 		
 		Date started = Utils.now();
 		ContentHash contentHash = configurationService.getObject(VFSConfiguration.class).getDefaultHash();
+		Long size = 0L;
 		
 		try {
-			Long size;
+			
+			VirtualFolder vf = fileService.getParentMount(files.iterator().next());
 			MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
-			try(OutputStream digestOutput = new DigestOutputStream(response.getOutputStream(), digest)) {
+			CountingOutputStream digestOutput = new CountingOutputStream(new DigestOutputStream(response.getOutputStream(), digest));
+			try {
 			
 				in = new ZipMultipleFilesInputStream(folder, files);
-				
-				VirtualFolder vf = fileService.getParentMount(files.iterator().next());
 				
 				response.setHeader("Content-Disposition", "attachment; filename=\"" + filename  + "\"");
 				
@@ -350,10 +359,13 @@ public class VirtualFileController extends AuthenticatedController implements St
 				}
 				response.setContentType(mimeType);
 				
-				size = IOUtils.copyWithCount(in, digestOutput);
+				IOUtils.copy(in, digestOutput);
+
+			} finally {
+				size = digestOutput.getCount();
 				
 				tenantService.executeAs(getCurrentTenant(), ()-> {
-					usageService.log(size, StatsService.HTTPS_DOWNLOAD, 
+					usageService.log(digestOutput.getCount(), StatsService.HTTPS_DOWNLOAD, 
 							getCurrentUser().getUuid(),
 							vf.getUuid());
 				});
@@ -392,10 +404,12 @@ public class VirtualFileController extends AuthenticatedController implements St
 		Date started = Utils.now();
 		ContentHash contentHash = configurationService.getObject(VFSConfiguration.class).getDefaultHash();
 		VirtualFolder folder = fileService.getParentMount(fileObject);
+		Long size = 0L;
 		try {
-			Long size;
+			
 			MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
-			try(OutputStream digestOutput = new DigestOutputStream(response.getOutputStream(), digest)) {
+			CountingOutputStream digestOutput = new CountingOutputStream(new DigestOutputStream(response.getOutputStream(), digest));
+			try {
 			
 				if(fileObject.isDirectory()) {
 					in = new ZipFolderInputStream(fileObject);
@@ -412,10 +426,23 @@ public class VirtualFileController extends AuthenticatedController implements St
 				}
 				response.setContentType(mimeType);
 				
-				size = IOUtils.copyWithCount(in, digestOutput);
-				
+				IOUtils.copy(new SessionStickyInputStream(in, getCurrentSession()) {
+					
+					@Override
+					protected void touchSession(Session session) throws IOException {
+						try {
+							sessionUtils.touchSession(session);
+						} catch (SessionTimeoutException e) {
+							throw new IOException(e.getMessage(), e);
+						}
+					}
+				} , digestOutput);
+			
+			} finally {
+				IOUtils.closeStream(digestOutput);
+				size = digestOutput.getCount();
 				tenantService.executeAs(getCurrentTenant(), ()-> {
-					usageService.log(size, StatsService.HTTPS_DOWNLOAD, 
+					usageService.log(digestOutput.getCount(), StatsService.HTTPS_DOWNLOAD, 
 							getCurrentUser().getUuid(),
 							folder.getUuid());
 				});
@@ -424,15 +451,15 @@ public class VirtualFileController extends AuthenticatedController implements St
 			byte[] output = digest.digest();
 			eventService.publishEvent(new FileDownloadEvent(
 					new TransferResult(filename, FileUtils.getParentPath(path), 
-							size, started, Utils.now(), formatDigest(digest.getAlgorithm(), output), 
+							digestOutput.getCount(), started, Utils.now(), formatDigest(digest.getAlgorithm(), output), 
 								new HumanHashGenerator(output)
 									.words(contentHash.getWords())
 									.build())));
 			
-		} catch (NoSuchAlgorithmException | IOException e) { 
+		} catch (NoSuchAlgorithmException | IOException | SessionTimeoutException | UnauthorizedException e) { 
 			eventService.publishEvent(new FileDownloadEvent(
 					new TransferResult(filename, FileUtils.getParentPath(path), 
-							0L, started, Utils.now()), e));
+							size, started, Utils.now()), e));
 			throw new PageRedirect(new ErrorPage(e, Request.get().getHeader("Referer")));
 		} finally {
 			IOUtils.closeStream(in);
