@@ -24,6 +24,7 @@ import javax.lang.model.UnknownEntityException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -60,7 +61,6 @@ import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.ErrorPage;
 import com.jadaptive.api.ui.Feedback;
 import com.jadaptive.api.ui.PageRedirect;
-import com.jadaptive.app.session.CountingOutputStream;
 import com.jadaptive.plugins.ssh.vsftp.ContentHash;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
@@ -359,13 +359,23 @@ public class VirtualFileController extends AuthenticatedController implements St
 				}
 				response.setContentType(mimeType);
 				
-				IOUtils.copy(in, digestOutput);
+				IOUtils.copy(new SessionStickyInputStream(in, getCurrentSession()) {
+					
+					@Override
+					protected void touchSession(Session session) throws IOException {
+						try {
+							sessionUtils.touchSession(session);
+						} catch (SessionTimeoutException e) {
+							throw new IOException(e.getMessage(), e);
+						}
+					}
+				} , digestOutput);
 
 			} finally {
-				size = digestOutput.getCount();
+				size = digestOutput.getByteCount();
 				
 				tenantService.executeAs(getCurrentTenant(), ()-> {
-					usageService.log(digestOutput.getCount(), StatsService.HTTPS_DOWNLOAD, 
+					usageService.log(digestOutput.getByteCount(), StatsService.HTTPS_DOWNLOAD, 
 							getCurrentUser().getUuid(),
 							vf.getUuid());
 				});
@@ -380,7 +390,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 									.words(contentHash.getWords())
 									.build())));
 			
-		} catch (NoSuchAlgorithmException | IOException | PermissionDeniedException e) { 
+		} catch (NoSuchAlgorithmException | IOException | PermissionDeniedException | SessionTimeoutException | UnauthorizedException e) { 
 			log.error(e.getMessage(), e);
 			eventService.publishEvent(new FileDownloadEvent(
 					new TransferResult(filename, "", 
@@ -440,9 +450,9 @@ public class VirtualFileController extends AuthenticatedController implements St
 			
 			} finally {
 				IOUtils.closeStream(digestOutput);
-				size = digestOutput.getCount();
+				size = digestOutput.getByteCount();
 				tenantService.executeAs(getCurrentTenant(), ()-> {
-					usageService.log(digestOutput.getCount(), StatsService.HTTPS_DOWNLOAD, 
+					usageService.log(digestOutput.getByteCount(), StatsService.HTTPS_DOWNLOAD, 
 							getCurrentUser().getUuid(),
 							folder.getUuid());
 				});
@@ -451,7 +461,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			byte[] output = digest.digest();
 			eventService.publishEvent(new FileDownloadEvent(
 					new TransferResult(filename, FileUtils.getParentPath(path), 
-							digestOutput.getCount(), started, Utils.now(), formatDigest(digest.getAlgorithm(), output), 
+							digestOutput.getByteCount(), started, Utils.now(), formatDigest(digest.getAlgorithm(), output), 
 								new HumanHashGenerator(output)
 									.words(contentHash.getWords())
 									.build())));
