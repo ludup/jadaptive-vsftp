@@ -136,8 +136,11 @@ public class PublicUploadWizard extends AbstractWizard {
 				}
 
 				
-				String virtualPath = FileUtils.checkEndsWithSlash(name.getVirtualPath()) + name.getName();
-				
+				String virtualPath = name.getVirtualPath();
+				if(virtualPath.equalsIgnoreCase("/public")) {
+					virtualPath = FileUtils.checkEndsWithSlash(name.getVirtualPath()) + name.getName();
+				}
+								
 				VirtualFolder folder = scheme.createVirtualFolder(name.getName(), virtualPath, path, creds);
 				
 				List<User> users = new ArrayList<>();
