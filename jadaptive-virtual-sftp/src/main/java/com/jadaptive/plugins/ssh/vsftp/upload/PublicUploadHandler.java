@@ -7,6 +7,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.io.DigestInputStream;
 import org.pf4j.Extension;
@@ -41,9 +42,7 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 	private IncomingFileService incomingService;
 	
 	ThreadLocal<Collection<FileUpload>> uploadPaths = new ThreadLocal<>();
-	ThreadLocal<String> currentEmail = new ThreadLocal<>();
-	ThreadLocal<String> currentName = new ThreadLocal<>();
-	ThreadLocal<String> currentReference = new ThreadLocal<>();
+
 	ThreadLocal<VirtualFolder> currentVirtualFolder = new ThreadLocal<>();
 	ThreadLocal<UploadForm> currentSharedFile = new ThreadLocal<>();
 
@@ -53,18 +52,6 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 		setupUserContext(anonymousDatabase.getAnonymousUser());
 		
 		try { 
-			
-			if(currentName.get() == null) {
-				currentName.set(parameters.get("name"));
-			}
-			
-			if(currentEmail.get() == null) {
-				currentEmail.set(parameters.get("email"));
-			}
-			
-			if(currentReference.get() == null) {
-				currentReference.set(parameters.get("reference"));
-			}
 
 			if(currentVirtualFolder.get() == null) {
 				currentSharedFile.set(uploadService.getFormByShortCode(uri));
@@ -98,7 +85,7 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 	}
 
 	@Override
-	public void onUploadsComplete() {
+	public void onUploadsComplete(Map<String,String> parameters) {
 		
 		setupSystemContext();
 		
@@ -109,10 +96,10 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 			
 			VirtualFolder virtualFolder = currentVirtualFolder.get();
 			UploadForm uploadForm = currentSharedFile.get();
-			
-			upload.setEmail(currentEmail.get());
-			upload.setName(currentName.get());
-			upload.setReference(currentReference.get());
+
+			upload.setEmail(parameters.get("name"));
+			upload.setName(parameters.get("email"));
+			upload.setReference(StringUtils.defaultString(parameters.get("reference"), "Unknown"));
 			upload.setUploadPaths(files);
 			upload.setUploadArea(virtualFolder.getName());
 			upload.setUploadReference(uploadForm.getUuid());
@@ -130,15 +117,12 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 	}
 
 	@Override
-	public void onUploadsFailure(Throwable e) {
+	public void onUploadsFailure(Map<String,String> params, Throwable e) {
 		clean();
 	}
 
 	private void clean() {
 		uploadPaths.remove();
-		currentEmail.remove();
-		currentName.remove();
-		currentReference.remove();
 		currentVirtualFolder.remove();
 	}
 	
