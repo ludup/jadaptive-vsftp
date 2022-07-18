@@ -97,8 +97,8 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 			VirtualFolder virtualFolder = currentVirtualFolder.get();
 			UploadForm uploadForm = currentSharedFile.get();
 
-			upload.setEmail(parameters.get("name"));
-			upload.setName(parameters.get("email"));
+			upload.setEmail(parameters.get("email"));
+			upload.setName(parameters.get("name"));
 			upload.setReference(StringUtils.defaultString(parameters.get("reference"), "Unknown"));
 			upload.setUploadPaths(files);
 			upload.setUploadArea(virtualFolder.getName());
