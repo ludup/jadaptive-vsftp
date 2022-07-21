@@ -90,17 +90,24 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServe
 			public AbstractFileFactory<?> getFileFactory(SshConnection con)
 					throws IOException, PermissionDeniedException {
 				
-				User user = userService.getUser(tenantService.resolveUserName(con.getUsername()));
-				permissionService.setupUserContext(user);
-				
+				tenantService.setCurrentTenant(
+						tenantService.getTenantByDomain(
+								tenantService.resolveTenantName(con.getUsername()).getDomain()));
 				try {
-					return new VirtualFileFactory(mountProvider.getHomeMount(user), 
-							mountProvider.getAdditionalMounts().toArray(new VirtualMountTemplate[0]));
+					User user = userService.getUser(tenantService.resolveUserName(con.getUsername()));
+					permissionService.setupUserContext(user);
 					
-				} catch (IOException | PermissionDeniedException e) {
-					throw new IllegalStateException(e.getMessage(), e);
+					try {
+						return new VirtualFileFactory(mountProvider.getHomeMount(user), 
+								mountProvider.getAdditionalMounts().toArray(new VirtualMountTemplate[0]));
+						
+					} catch (IOException | PermissionDeniedException e) {
+						throw new IllegalStateException(e.getMessage(), e);
+					} finally {
+						permissionService.clearUserContext();
+					}
 				} finally {
-					permissionService.clearUserContext();
+					tenantService.clearCurrentTenant();
 				}
 			}
 			
