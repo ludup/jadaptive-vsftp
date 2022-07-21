@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.jadaptive.api.app.ApplicationProperties;
 import com.jadaptive.api.permissions.PermissionService;
+import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.sshd.AuthorizedKeyProvider;
@@ -51,6 +52,9 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServe
 	@Autowired
 	private SSHDService sshdService; 
 	
+	@Autowired
+	private TenantService tenantService; 
+	
 	@Override
 	public SshServerContext createContext(SshEngineContext daemonContext, SocketChannel sc, VirtualSFTPInterface intf)
 			throws IOException, SshException {
@@ -86,7 +90,7 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServe
 			public AbstractFileFactory<?> getFileFactory(SshConnection con)
 					throws IOException, PermissionDeniedException {
 				
-				User user = userService.getUser(con.getUsername());
+				User user = userService.getUser(tenantService.resolveUserName(con.getUsername()));
 				permissionService.setupUserContext(user);
 				
 				try {
