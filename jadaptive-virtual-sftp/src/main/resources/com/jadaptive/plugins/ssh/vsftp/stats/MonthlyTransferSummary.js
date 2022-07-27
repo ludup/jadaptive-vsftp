@@ -86,7 +86,6 @@ am5.net.load("/app/vfs/stats/monthly").then(function(result) {
   makeSeries("SCP", "scp", data);
   makeSeries("SFTP", "sftp", data);
   makeSeries("HTTPS", "https", data);
-  makeSeries("SFTP-FS", "rnd", data);
 
   // Make stuff animate on load
   // https://www.amcharts.com/docs/v5/concepts/animations/

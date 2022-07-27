@@ -57,14 +57,14 @@ public class ChartController implements PluginController {
 		in.setSftp(generateValue(usageService.sum(StatsService.SFTP_UPLOAD, from, to)));
 		in.setScp(generateValue(usageService.sum(StatsService.SCP_DOWNLOAD, from, to)));
 		in.setHttps(generateValue(usageService.sum(StatsService.HTTPS_UPLOAD, from, to)));
-		in.setRnd(generateValue(usageService.sum(StatsService.SFTP_FS_IN, from, to)));
+		
 		
 		MonthlyThroughputData out = new MonthlyThroughputData();
 		out.setDirection("Egress");
 		out.setSftp(generateValue(usageService.sum(StatsService.SFTP_DOWNLOAD, from, to)));
 		out.setScp(generateValue(usageService.sum(StatsService.SCP_DOWNLOAD, from, to)));
 		out.setHttps(generateValue(usageService.sum(StatsService.HTTPS_DOWNLOAD, from, to)));
-		out.setRnd(generateValue(usageService.sum(StatsService.SFTP_FS_OUT, from, to)));
+	
 		
 		return new MonthlyThroughputData[] { in, out };
 	}
@@ -95,9 +95,7 @@ public class ChartController implements PluginController {
 					StatsService.SCP_DOWNLOAD,
 					StatsService.SCP_UPLOAD,
 					StatsService.SFTP_UPLOAD,
-					StatsService.SFTP_DOWNLOAD,
-					StatsService.SFTP_FS_OUT,
-					StatsService.SFTP_FS_IN);
+					StatsService.SFTP_DOWNLOAD);
 			values.add(new DateValue(to.getTime(), generateValue(value)));
 			to = from;
 			c.add(Calendar.DAY_OF_MONTH, -1);
