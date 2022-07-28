@@ -17,15 +17,4 @@ public class VSFTP implements Product {
 	public String getVersion() {
 		return ApplicationVersion.getVersion();
 	}
-
-	@Override
-	public String getLogoResource() {
-		return "/app/content/images/jadaptive-logo.png";
-	}
-
-	@Override
-	public String getFaviconResource() {
-		return "/app/content/images/favicon.png";
-	}
-
 }

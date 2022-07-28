@@ -64,7 +64,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	}
 	
 	@Override
-	public String saveOrUpdate(SharedFile object) {
+	protected void validateSave(SharedFile object) {
 		if(StringUtils.isBlank(object.getShortCode())) {
 			object.setShortCode(Utils.generateRandomAlphaNumericString(8));
 		}
@@ -85,8 +85,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		}
 		
 		object.setVirtualPath(FileUtils.checkEndsWithNoSlash(object.getVirtualPath()));
-		objectDatabase.saveOrUpdate(object);
-		return object.getUuid();
+
 	}
 
 	@Override
