@@ -21,6 +21,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
+import com.jadaptive.utils.FileUtils;
 import com.sshtools.common.files.AbstractFile;
 
 @Extension
@@ -59,7 +60,7 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 			}
 			
 			try(DigestInputStream din = new DigestInputStream(in, new SHA256Digest())) {
-				AbstractFile file = doUpload(currentVirtualFolder.get().getMountPath(), filename, din);
+				long length = doUpload(currentVirtualFolder.get().getMountPath(), filename, din);
 				
 				if(uploadPaths.get()==null) {
 					uploadPaths.set(new ArrayList<>());
@@ -68,9 +69,9 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 				byte[] hash = new byte[din.getDigest().getDigestSize()];
 				din.getDigest().doFinal(hash, 0);
 				
-				uploadPaths.get().add(new FileUpload(file.getName(),
-						file.getAbsolutePath(),
-						file.length(),
+				uploadPaths.get().add(new FileUpload(filename,
+						FileUtils.checkEndsWithSlash(currentVirtualFolder.get().getMountPath()) + filename,
+						length,
 						String.format("SHA256:%s", Base64.getEncoder().encodeToString(hash))));
 			}
 			
