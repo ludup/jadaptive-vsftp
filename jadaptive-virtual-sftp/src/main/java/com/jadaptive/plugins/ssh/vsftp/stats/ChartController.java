@@ -96,7 +96,7 @@ public class ChartController implements PluginController {
 					StatsService.SCP_UPLOAD,
 					StatsService.SFTP_UPLOAD,
 					StatsService.SFTP_DOWNLOAD);
-			values.add(new DateValue(to.getTime(), generateValue(value)));
+			values.add(new DateValue(from.getTime(), generateValue(value)));
 			to = from;
 			c.add(Calendar.DAY_OF_MONTH, -1);
 		    from = c.getTime();
