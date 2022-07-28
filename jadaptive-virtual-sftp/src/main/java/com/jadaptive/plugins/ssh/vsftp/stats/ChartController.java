@@ -82,7 +82,7 @@ public class ChartController implements PluginController {
 		out.setDirection("Downloads");
 		in.setSftp(generateValue(allUsers ? 
 				usageService.sum(StatsService.SFTP_DOWNLOAD, from, to) :
-				usageService.sumAnd(from,to, currentUser.getUuid(), StatsService.HTTPS_UPLOAD).longValue()));
+				usageService.sumAnd(from,to, currentUser.getUuid(), StatsService.SFTP_DOWNLOAD).longValue()));
 		in.setScp(generateValue(allUsers ? 
 				usageService.sum(StatsService.SCP_DOWNLOAD, from, to) :
 				usageService.sumAnd(from,to, currentUser.getUuid(), StatsService.SCP_DOWNLOAD).longValue()));
