@@ -17,4 +17,10 @@ public class VSFTP implements Product {
 	public String getVersion() {
 		return ApplicationVersion.getVersion();
 	}
+
+	@Override
+	public String getPoweredBy() {
+		return "Powered by <a href=\"https://jadaptive.com\">Virtual SFTP</a> the Self-Hosted SFTP\n"
+				+ "   and File Sharing Server from <a href=\"https://jadaptive.com\">Jadaptive Limited</a>.";
+	}
 }
