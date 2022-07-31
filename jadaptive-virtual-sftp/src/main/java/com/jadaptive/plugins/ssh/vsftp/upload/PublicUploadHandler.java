@@ -22,7 +22,6 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 import com.jadaptive.utils.FileUtils;
-import com.sshtools.common.files.AbstractFile;
 
 @Extension
 public class PublicUploadHandler extends AbstractFilesUploadHandler {
