@@ -33,7 +33,7 @@ import com.sshtools.common.util.IOUtils;
 
 @Controller
 @Extension
-public class ChartController implements PluginController {
+public class VSFTPChartController implements PluginController {
 
 	@Autowired
 	private UsageService usageService;
