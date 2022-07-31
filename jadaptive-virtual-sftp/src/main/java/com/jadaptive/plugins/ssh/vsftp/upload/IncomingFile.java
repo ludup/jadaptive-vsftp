@@ -26,6 +26,7 @@ import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 		 type = ObjectType.COLLECTION,
 		 scope = ObjectScope.ASSIGNED,
 		 defaultColumn = "reference",
+		 requiresPermission = false,
 		 creatable = false, 
 		 deletable = false,
 		 updatable = false)
