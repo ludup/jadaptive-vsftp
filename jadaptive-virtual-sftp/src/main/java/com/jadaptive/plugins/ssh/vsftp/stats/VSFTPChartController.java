@@ -11,6 +11,7 @@ import java.util.List;
 import javax.lang.model.UnknownEntityException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ import com.jadaptive.api.session.SessionUtils;
 import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.stats.UsageService;
 import com.jadaptive.api.user.User;
+import com.jadaptive.utils.Utils;
 import com.sshtools.common.util.IOUtils;
 
 @Controller
@@ -54,17 +56,15 @@ public class VSFTPChartController implements PluginController {
 		User currentUser = sessionUtils.getCurrentUser(request);
 		boolean allUsers = permissionService.isAdministrator(currentUser);
 		
+	    Date to = Utils.tomorrow();
+
 		Calendar c = Calendar.getInstance();   // this takes current date
-	    c.set(Calendar.DAY_OF_MONTH, 1);
 	    c.set(Calendar.HOUR_OF_DAY, 0);
 	    c.set(Calendar.MINUTE, 0);
 	    c.set(Calendar.SECOND, 0);
 	    c.set(Calendar.MILLISECOND, 0);
-	    
+	    c.add(Calendar.DAY_OF_MONTH, -30);
 	    Date from = c.getTime();
-	    
-	    c.add(Calendar.MONTH, 1);
-	    Date to = c.getTime();
 	    
 		in.setDirection("Uploads");
 		in.setSftp(generateValue(allUsers ? 
@@ -103,18 +103,9 @@ public class VSFTPChartController implements PluginController {
 		List<DateValue> values = new ArrayList<>();
 		User currentUser = sessionUtils.getCurrentUser(request);
 		boolean allUsers = permissionService.isAdministrator(currentUser);
-		
-		Calendar c = Calendar.getInstance();   // this takes current date
-	    c.set(Calendar.HOUR_OF_DAY, 0);
-	    c.set(Calendar.MINUTE, 0);
-	    c.set(Calendar.SECOND, 0);
-	    c.set(Calendar.MILLISECOND, 0);
-	    c.add(Calendar.DAY_OF_MONTH, 1);
 	    
-	    Date to = c.getTime();
-	    
-	    c.add(Calendar.DAY_OF_MONTH, -1);
-	    Date from = c.getTime();
+	    Date to = Utils.tomorrow();
+	    Date from = Utils.today();
 
 	    long value;
 		for(int i=0;i<30;i++) {
@@ -131,8 +122,7 @@ public class VSFTPChartController implements PluginController {
 			
 			values.add(new DateValue(from.getTime(), generateValue(value)));
 			to = from;
-			c.add(Calendar.DAY_OF_MONTH, -1);
-		    from = c.getTime();
+			from = DateUtils.addDays(from, -1);
 		}
 		
 		return values;
