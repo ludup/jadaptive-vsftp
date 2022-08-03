@@ -73,7 +73,7 @@ public class IncomingFileServiceImpl extends AuthenticatedService implements Inc
 
 	@Override
 	public void delete(IncomingFile file) {
-		permissionService.assertReadWrite(IncomingFile.RESOURCE_KEY);
+		permissionService.assertAssignment(file);
 		objectDatabase.deleteObject(file);
 	}
 
