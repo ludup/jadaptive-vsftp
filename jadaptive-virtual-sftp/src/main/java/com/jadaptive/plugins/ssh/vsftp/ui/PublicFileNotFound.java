@@ -20,7 +20,7 @@ public class PublicFileNotFound extends HtmlPage {
 	@Override
 	protected void generateContent(Document document) throws IOException {
 		super.generateContent(document);
-		document.select(".ipAddress").html(Request.get().getRemoteAddr());	
+		document.select(".ipAddress").html(Request.getRemoteAddress());	
 	}
 
 	String shortCode;

@@ -139,7 +139,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		resolver.addToken("serverName", Request.get().getServerName());
 		resolver.addToken("filename", share.getFilename());
 		resolver.addToken("share", share);
-		resolver.addToken("ipAddress", Request.get().getRemoteAddr());
+		resolver.addToken("ipAddress", Request.getRemoteAddress());
 		resolver.addToken("sharedBy", StringUtils.defaultString(
 				share.getSharedBy().getName(),
 				share.getSharedBy().getUsername()));

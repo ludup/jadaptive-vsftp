@@ -109,7 +109,7 @@ public class DownloadPublicFile extends HtmlPage {
 			AbstractFileFactory<?> factory = sshdService.getFileFactory(download.getSharedBy());
 			AbstractFile fileObject  = factory.getFile(download.getVirtualPath());
 			
-			document.select(".ipAddress").html(Request.get().getRemoteAddr());
+			document.select(".ipAddress").html(Request.getRemoteAddress());
 			
 			if(!fileObject.exists()) {
 				throw new PageRedirect(pageCache.resolvePage(PublicFileNotFound.class));
