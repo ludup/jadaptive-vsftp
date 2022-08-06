@@ -12,10 +12,12 @@ public class File {
 
 	VirtualFile file;
 	VirtualFolder parent;
+	VirtualFolder mount;
 	
-	public File(VirtualFile file, VirtualFolder parent) {
+	public File(VirtualFile file, VirtualFolder parent, VirtualFolder mount) {
 		this.file = file;
 		this.parent = parent;
+		this.mount = mount;
 	}
 	
 	public String getId() {
@@ -28,6 +30,10 @@ public class File {
 	
 	public String getName() {
 		return file.getName();
+	}
+	
+	public boolean getEncrypted() {
+		return mount!=null ? mount.getEncrypt() : parent.getEncrypt();
 	}
 	
 	public long getLength() {

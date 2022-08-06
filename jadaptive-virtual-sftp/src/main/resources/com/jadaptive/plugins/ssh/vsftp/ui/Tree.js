@@ -8,7 +8,8 @@ function renderPerms(val, obj) {
 }
 
 function renderName(val, obj) {
-	var icon = (obj.directory ? '<i class="far fa-folder"></i>' : '<i class="far fa-file"></i>');
+	var icon = (obj.directory ? (obj.encrypted ? '<i class="far fa-folder"></i>' : '<i class="far fa-folder"></i>')
+		 :  (obj.encrypted ? '<i class="far fa-file-lock"></i>' : '<i class="far fa-file"></i>'));
 	if (obj.directory) {
 		return '<a class="clickPath" href="' + obj.path + '">' + icon + ' ' + obj.name + '</a>';
 	} else {

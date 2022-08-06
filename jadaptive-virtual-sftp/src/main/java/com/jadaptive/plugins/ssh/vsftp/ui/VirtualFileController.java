@@ -179,7 +179,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 				folder = fileService.getVirtualFolder(parentMount.getMount());
 			} catch(ObjectNotFoundException e) { }
 			
-			return new ResourceStatus<File>(new File((VirtualFile)parent, folder));
+			return new ResourceStatus<File>(new File((VirtualFile)parent, folder, null));
 			
 		} catch (Throwable e) {
 			log.error("Stat failed", e);
@@ -288,8 +288,14 @@ public class VirtualFileController extends AuthenticatedController implements St
 				if(file.isDirectory() && folders) {
 					if((file.isHidden() && hidden) || !file.isHidden()) {
 
-						folderResults.add(new File((VirtualFile)file, virtualFolder));
-						--maximumFiles;
+						VirtualFolder mount = null;
+						if(((VirtualFileObject)file).isMount()) {
+
+							try {
+								mount = fileService.getVirtualFolder(file.getAbsolutePath());
+							} catch(ObjectNotFoundException e) { } 
+						}
+						folderResults.add(new File((VirtualFile)file, virtualFolder, mount));
 						
 						if(maximumFiles > 0) {
 							if(file.isDirectory() && currentDepth < maximumDepth) {
@@ -302,7 +308,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 					
 				} else if(file.isFile() && files) {
 					if((file.isHidden() && hidden) || !file.isHidden()) {
-						fileResults.add(new File((VirtualFile)file, virtualFolder));
+						fileResults.add(new File((VirtualFile)file, virtualFolder, null));
 						--maximumFiles;
 					}
 				} 

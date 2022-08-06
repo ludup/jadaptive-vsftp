@@ -21,15 +21,19 @@ import com.jadaptive.api.template.TableView;
 @ObjectViews({ 
 	@ObjectViewDefinition(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -50),
 	@ObjectViewDefinition(value = VirtualFolder.FOLDER_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -100),
+	@ObjectViewDefinition(value = VirtualFolder.ENCRYPTION_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -75),
+	@ObjectViewDefinition(value = VirtualFolder.KEYS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -70),
 	@ObjectViewDefinition(value = VirtualFolder.PERMISSIONS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -25),
 	@ObjectViewDefinition(value = VirtualFolder.ADVANCED_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -00)})
-@TableView(defaultColumns = { "name", "mountPath"})
+@TableView(defaultColumns = { "name", "mountPath", "encrypt", "shareFiles", "shareFolders"})
 @AuditedObject
 public abstract class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String FOLDER_VIEW = "folderView";
 	public static final String CREDS_VIEW = "credsView";
 	public static final String PERMISSIONS_VIEW = "permissionsView";
+	public static final String ENCRYPTION_VIEW = "encryptionView";
+	public static final String KEYS_VIEW = "keysView";
 	public static final String ADVANCED_VIEW = "advancedView";
 	
 	private static final long serialVersionUID = -3428053970013170410L;
@@ -55,6 +59,34 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = PERMISSIONS_VIEW)
 	Boolean readOnly;
+
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = ENCRYPTION_VIEW)
+	Boolean encrypt;
+	
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = ENCRYPTION_VIEW)
+	Boolean armour;
+	
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = ENCRYPTION_VIEW)
+	Boolean compress;
+	
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = ENCRYPTION_VIEW)
+	Boolean integrityCheck;
+	
+	@ObjectField(type = FieldType.TEXT_AREA)
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
+	String privateKey;
+	
+	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
+	String passphrase;
+	
+	@ObjectField(type = FieldType.TEXT_AREA)
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
+	String publicKey;
 	
 	@ObjectField(type = FieldType.ENUM, defaultValue = "ON_RESOLVE")
 	@ExcludeView(values = FieldView.TABLE)
@@ -121,6 +153,62 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 
 	public void setShareFolders(Boolean shareFolders) {
 		this.shareFolders = shareFolders;
+	}
+
+	public Boolean getEncrypt() {
+		return encrypt;
+	}
+
+	public void setEncrypt(Boolean encrypt) {
+		this.encrypt = encrypt;
+	}
+
+	public String getPrivateKey() {
+		return privateKey;
+	}
+
+	public void setPrivateKey(String privateKey) {
+		this.privateKey = privateKey;
+	}
+
+	public String getPassphrase() {
+		return passphrase;
+	}
+
+	public void setPassphrase(String passphrase) {
+		this.passphrase = passphrase;
+	}
+
+	public String getPublicKey() {
+		return publicKey;
+	}
+
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
+	}
+
+	public Boolean getArmour() {
+		return armour;
+	}
+
+	public void setArmour(Boolean armour) {
+		this.armour = armour;
+	}
+
+	public Boolean getCompress() {
+		return compress;
+	}
+
+	public void setCompress(Boolean compress) {
+		this.compress = compress;
+	}
+
+	public Boolean getIntegrityCheck() {
+		return integrityCheck;
+	}
+
+	public void setIntegrityCheck(Boolean integrityCheck) {
+		this.integrityCheck = integrityCheck;
 	}
 
 	public String getEventGroup() {

@@ -40,6 +40,7 @@ import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.ui.PageCache;
 import com.jadaptive.api.user.User;
+import com.jadaptive.plugins.ssh.vsftp.pgp.EncryptingFileFactory;
 import com.jadaptive.plugins.ssh.vsftp.ui.Tree;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
@@ -263,9 +264,19 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileSystemManager manager = getManager(folder.getUuid(), folder.getCacheStrategy());
 
 			String uri = scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString();
-			return new VirtualFolderMount(folder,
-					uri,
-					new VFSFileFactory(manager, opts, uri), scheme.createRoot());
+			
+			if(folder.getEncrypt()) {
+				return new VirtualFolderMount(folder,
+						uri,
+						new EncryptingFileFactory(
+								new VFSFileFactory(manager, opts, uri), folder), scheme.createRoot());
+			} else {
+				return new VirtualFolderMount(folder,
+						uri,
+						new VFSFileFactory(manager, opts, uri), scheme.createRoot());				
+			}
+			
+
 		} catch (URISyntaxException e) {
 			throw new IOException(e);
 		}
