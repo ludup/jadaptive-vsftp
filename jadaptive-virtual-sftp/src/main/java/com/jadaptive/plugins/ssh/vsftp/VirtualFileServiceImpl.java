@@ -269,11 +269,14 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 				return new VirtualFolderMount(folder,
 						uri,
 						new EncryptingFileFactory(
-								new VFSFileFactory(manager, opts, uri), folder), scheme.createRoot());
+								scheme.configureFactory(
+								new VFSFileFactory(manager, opts, uri)), folder), 
+								scheme.createRoot());
 			} else {
 				return new VirtualFolderMount(folder,
 						uri,
-						new VFSFileFactory(manager, opts, uri), scheme.createRoot());				
+						scheme.configureFactory(new VFSFileFactory(manager, opts, uri)), 
+						scheme.createRoot());				
 			}
 			
 
@@ -296,7 +299,15 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Override
 	public void deleteVirtualFolder(VirtualFolder virtualFolder) {
 		assertWrite(VirtualFolder.RESOURCE_KEY);
-		repository.deleteObject(virtualFolder);
+		
+		try {
+			FileScheme<?> scheme = getFileScheme(virtualFolder.getType());
+			scheme.delete(virtualFolder);
+			repository.deleteObject(virtualFolder);
+			
+		} catch(IOException e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
 	}
 
 	@Override

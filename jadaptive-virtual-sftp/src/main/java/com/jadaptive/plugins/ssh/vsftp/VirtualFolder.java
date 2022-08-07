@@ -1,11 +1,13 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.vfs2.CacheStrategy;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.events.AuditedObject;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
 import com.jadaptive.api.template.ExcludeView;
+import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.FieldView;
 import com.jadaptive.api.template.ObjectDefinition;
@@ -25,7 +27,7 @@ import com.jadaptive.api.template.TableView;
 	@ObjectViewDefinition(value = VirtualFolder.KEYS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -70),
 	@ObjectViewDefinition(value = VirtualFolder.PERMISSIONS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -25),
 	@ObjectViewDefinition(value = VirtualFolder.ADVANCED_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -00)})
-@TableView(defaultColumns = { "name", "mountPath", "encrypt", "shareFiles", "shareFolders"})
+@TableView(defaultColumns = { "name", "mountPath", "scheme", "encrypt", "shareFiles", "shareFolders"})
 @AuditedObject
 public abstract class VirtualFolder extends AssignableUUIDEntity {
 
@@ -43,6 +45,10 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	@ObjectField(type = FieldType.TEXT, nameField = true, searchable = true, unique = true)
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "")
 	String name;
+
+	@ObjectField(type = FieldType.TEXT, hidden = true)
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "", renderer = FieldRenderer.I18N)
+	String scheme = getType() + ".name";
 	
 	@ObjectField(type = FieldType.TEXT, searchable = true, unique = true)
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "")
@@ -92,7 +98,7 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	@ExcludeView(values = FieldView.TABLE)
 	@ObjectView(value = VirtualFolder.ADVANCED_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = 9999)
 	CacheStrategy cacheStrategy;
-
+	
 	public abstract VirtualFolderPath getPath();
 	
 	public abstract void setPath(VirtualFolderPath path);
@@ -209,6 +215,14 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 
 	public void setIntegrityCheck(Boolean integrityCheck) {
 		this.integrityCheck = integrityCheck;
+	}
+
+	public String getScheme() {
+		return StringUtils.defaultString(scheme, getType() + ".name");
+	}
+
+	public void setScheme(String scheme) {
+		this.scheme = getType() + ".name";
 	}
 
 	public String getEventGroup() {

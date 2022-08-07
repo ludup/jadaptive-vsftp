@@ -10,6 +10,8 @@ import org.apache.commons.vfs2.provider.FileProvider;
 import org.pf4j.ExtensionPoint;
 
 import com.jadaptive.api.template.ObjectTemplate;
+import com.sshtools.common.files.AbstractFileFactory;
+import com.sshtools.common.files.vfs.VFSFileFactory;
 
 public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 
@@ -61,5 +63,9 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 
 	void configure(VirtualFolder folder);
 	
-	default boolean isEnabled() { return true; } 
+	default boolean isEnabled() { return true; }
+
+	void delete(VirtualFolder virtualFolder);
+
+	AbstractFileFactory<?> configureFactory(AbstractFileFactory<?> factory); 
 }

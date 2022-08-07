@@ -19,6 +19,7 @@ import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
+import com.sshtools.common.files.AbstractFileFactory;
 
 public abstract class AbstractFileScheme<T extends FileProvider> implements FileScheme<T> {
 
@@ -135,6 +136,16 @@ public abstract class AbstractFileScheme<T extends FileProvider> implements File
 	@Override
 	public String getBundle() {
 		return VirtualFolder.RESOURCE_KEY;
+	}
+	
+	@Override
+	public void delete(VirtualFolder folder) {
+		
+	}
+	
+	@Override
+	public AbstractFileFactory<?> configureFactory(AbstractFileFactory<?> factory) {
+		return factory;
 	}
 	
 }
