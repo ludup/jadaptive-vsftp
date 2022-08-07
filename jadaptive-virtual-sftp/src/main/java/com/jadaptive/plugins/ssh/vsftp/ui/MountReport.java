@@ -11,11 +11,6 @@ import com.jadaptive.api.stats.UsageService;
 import com.jadaptive.api.ui.AuthenticatedPage;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.stats.StatsService;
-import com.jadaptive.utils.Utils;
-import com.sshtools.common.files.AbstractFile;
-import com.sshtools.common.permissions.PermissionDeniedException;
 
 @Extension
 @RequestPage(path = "mount-report/{uuid}")
@@ -66,19 +61,19 @@ public class MountReport extends AuthenticatedPage {
 		
 	}
 
-	private long iterateDirectory(AbstractFile file) throws IOException, PermissionDeniedException {
-		
-		long count = 0L;
-		for(AbstractFile child : file.getChildren()) {
-			if(child.isDirectory()) {
-				return iterateDirectory(child);
-			} else {
-				count += child.length();		
-			}
-		}
-		
-		return count;
-	}
+//	private long iterateDirectory(AbstractFile file) throws IOException, PermissionDeniedException {
+//		
+//		long count = 0L;
+//		for(AbstractFile child : file.getChildren()) {
+//			if(child.isDirectory()) {
+//				return iterateDirectory(child);
+//			} else {
+//				count += child.length();		
+//			}
+//		}
+//		
+//		return count;
+//	}
 	
 
 	@Override

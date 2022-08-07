@@ -55,7 +55,6 @@ import com.jadaptive.api.session.Session;
 import com.jadaptive.api.session.SessionStickyInputStream;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.SessionUtils;
-import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.stats.UsageService;
 import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.ErrorPage;
@@ -365,7 +364,8 @@ public class VirtualFileController extends AuthenticatedController implements St
 				}
 				response.setContentType(mimeType);
 				
-				IOUtils.copy(new SessionStickyInputStream(in, getCurrentSession()) {
+				Session session = sessionUtils.getActiveSession(Request.get());
+				IOUtils.copy(new SessionStickyInputStream(in, session) {
 					
 					@Override
 					protected void touchSession(Session session) throws IOException {
@@ -396,7 +396,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 									.words(contentHash.getWords())
 									.build())));
 			
-		} catch (NoSuchAlgorithmException | IOException | PermissionDeniedException | SessionTimeoutException | UnauthorizedException e) { 
+		} catch (NoSuchAlgorithmException | IOException | PermissionDeniedException e) { 
 			log.error(e.getMessage(), e);
 			eventService.publishEvent(new FileDownloadEvent(
 					new TransferResult(filename, "", 
@@ -442,7 +442,8 @@ public class VirtualFileController extends AuthenticatedController implements St
 				}
 				response.setContentType(mimeType);
 				
-				IOUtils.copy(new SessionStickyInputStream(in, getCurrentSession()) {
+				Session session = sessionUtils.getActiveSession(Request.get());
+				IOUtils.copy(new SessionStickyInputStream(in, session) {
 					
 					@Override
 					protected void touchSession(Session session) throws IOException {
@@ -472,7 +473,8 @@ public class VirtualFileController extends AuthenticatedController implements St
 									.words(contentHash.getWords())
 									.build())));
 			
-		} catch (NoSuchAlgorithmException | IOException | SessionTimeoutException | UnauthorizedException e) { 
+		} catch (NoSuchAlgorithmException | IOException e) { 
+			log.error("Failed to send file", e);
 			eventService.publishEvent(new FileDownloadEvent(
 					new TransferResult(filename, FileUtils.getParentPath(path), 
 							size, started, Utils.now()), e));

@@ -11,7 +11,6 @@ import org.pf4j.ExtensionPoint;
 
 import com.jadaptive.api.template.ObjectTemplate;
 import com.sshtools.common.files.AbstractFileFactory;
-import com.sshtools.common.files.vfs.VFSFileFactory;
 
 public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 

@@ -65,6 +65,7 @@ public class PGPUtils {
 				"Can't find encryption key in key ring.");
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void encrypt(String filename, OutputStream encodedOutput,
 			InputStream inputFile, InputStream keyFile, boolean armor,
 			boolean withIntegrityCheck) throws IOException,
@@ -78,6 +79,7 @@ public class PGPUtils {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void encrypt(String filename, OutputStream encodedOutput,
 				InputStream inputFile, PGPPublicKey pubKey, boolean armor,
 				boolean withIntegrityCheck) throws IOException,
@@ -108,6 +110,7 @@ public class PGPUtils {
 		
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void compress(String inputFileName, InputStream clearInput,
 			int algorithm, OutputStream encodedOutput) throws IOException {
 		
