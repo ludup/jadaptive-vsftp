@@ -25,6 +25,8 @@ import com.sshtools.common.policy.FileFactory;
 import com.sshtools.common.policy.FileSystemPolicy;
 import com.sshtools.common.publickey.InvalidPassphraseException;
 import com.sshtools.common.publickey.SshKeyPairGenerator;
+import com.sshtools.common.sftp.extensions.DefaultSftpExtensionFactory;
+import com.sshtools.common.sftp.extensions.SupportedSftpExtensions;
 import com.sshtools.common.ssh.SshConnection;
 import com.sshtools.common.ssh.SshException;
 import com.sshtools.server.SshServerContext;
@@ -81,6 +83,16 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServe
 		} catch (InvalidPassphraseException e) {
 			throw new IOException(e.getMessage(), e);
 		}
+		
+		
+		ctx.getPolicy(FileSystemPolicy.class).getSFTPExtensionFactories().add(
+			    new DefaultSftpExtensionFactory(SupportedSftpExtensions.POSIX_RENAME,
+			      SupportedSftpExtensions.MD5_FILE_HASH,
+			      SupportedSftpExtensions.COPY_FILE,
+			      SupportedSftpExtensions.COPY_DATA,
+			      SupportedSftpExtensions.CHECK_FILE_HANDLE,
+			      SupportedSftpExtensions.CHECK_FILE_NAME,
+			      SupportedSftpExtensions.OPEN_DIRECTORY_WITH_FILTER));
 		
 		ctx.getPolicy(FileSystemPolicy.class).setFileFactory(new FileFactory() {
 
