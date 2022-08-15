@@ -19,8 +19,8 @@ function renderName(val, obj) {
 
 function renderLength(val) {
 	if (val > 0) {
-		var i = Math.floor(Math.log(val) / Math.log(1024));
-		return (val / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
+		var i = Math.floor(Math.log(val) / Math.log(1000));
+		return (val / Math.pow(1000, i)).toFixed(2) * 1 + ' ' + ['B', 'KB', 'MB', 'GB', 'TB'][i];
 	}
 
 	return '';
@@ -62,18 +62,30 @@ function renderShare(obj) {
 }
 function renderActions(val, obj) {
 	var html = '';
-
+	
+	if(obj.mount) {
+		html += '<a class="me-2" href="/app/ui/mount-report/' + obj.mountUuid + '"><i class="far fa-chart-pie fa-fw"></i></a>';
+	} else {
+		html += '<i class="far fa-fw"></i>';
+	}
 	if(!obj.mount && !obj.readOnly) {
 		html += '<a class="deleteFile me-2" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash fa-fw"></i></a>';
+	} else {
+		html += '<i class="far fa-fw"></i>';
 	}
+	
 	if (!obj.directory) {
 		html += '<a class="downloadFile me-2" href="/app/vfs/downloadFile' + obj.path + '"><i class="far fa-download fa-fw"></i></a>';
+	} else {
+		html += '<i class="far fa-fw"></i>';	
 	}
 	
 	if(obj.shareFiles && !obj.directory) {
 		html += renderShare(obj);
 	} else if(obj.shareFolders && obj.directory) {
 		renderShare(obj);
+	} else {
+		html += '<i class="far fa-fw"></i>';
 	}
 
 	return html;

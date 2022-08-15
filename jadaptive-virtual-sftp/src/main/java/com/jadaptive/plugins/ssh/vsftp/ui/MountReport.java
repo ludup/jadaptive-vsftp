@@ -9,11 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.stats.UsageService;
 import com.jadaptive.api.ui.AuthenticatedPage;
+import com.jadaptive.api.ui.PageDependencies;
+import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.stats.StatsService;
+import com.jadaptive.utils.Utils;
+import com.sshtools.common.files.AbstractFile;
+import com.sshtools.common.permissions.PermissionDeniedException;
 
 @Extension
 @RequestPage(path = "mount-report/{uuid}")
+@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "jadaptive-utils"} )
+@PageProcessors(extensions = { "i18n"} )
 public class MountReport extends AuthenticatedPage {
 
 	@Autowired
@@ -26,56 +35,14 @@ public class MountReport extends AuthenticatedPage {
 	
 	public MountReport() {
 	}
-
 	
 	@Override
 	protected void generateAuthenticatedContent(Document document) throws FileNotFoundException, IOException {
 		super.generateAuthenticatedContent(document);
-		
-		
-//		try {
-//			VirtualFolder folder = fileService.getObjectByUUID(uuid);
-//			
-//			AbstractFile mount = fileService.getFile(folder.getMountPath());
-//			
-//			long totalSize = iterateDirectory(mount);
-//			
-//			long httpDownloads = usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.HTTPS_DOWNLOAD, folder.getUuid());
-//			long httpUploads = usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.HTTPS_UPLOAD, folder.getUuid());
-//			
-//			long scpDownload = usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.SCP_DOWNLOAD, folder.getUuid());
-//			long scpUpload = usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.SCP_UPLOAD, folder.getUuid());
-//			
-//			long sftpDownload = usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.SFTP_DOWNLOAD, folder.getUuid());
-//			long sftpUpload = usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.SFTP_UPLOAD, folder.getUuid());
-//			
-//			long sftpDir = usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.SFTP_DIR_LISTING, folder.getUuid());
-//			
-//			
-//		} catch (PermissionDeniedException | IOException e) {
-//			
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		
+		document.selectFirst("#uuid").val(uuid);
 	}
-
-//	private long iterateDirectory(AbstractFile file) throws IOException, PermissionDeniedException {
-//		
-//		long count = 0L;
-//		for(AbstractFile child : file.getChildren()) {
-//			if(child.isDirectory()) {
-//				return iterateDirectory(child);
-//			} else {
-//				count += child.length();		
-//			}
-//		}
-//		
-//		return count;
-//	}
 	
-
+	
 	@Override
 	public String getUri() {
 		return "mount-report";

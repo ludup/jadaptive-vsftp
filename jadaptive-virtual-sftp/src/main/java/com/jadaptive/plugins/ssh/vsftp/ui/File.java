@@ -2,6 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp.ui;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.mongodb.internal.HexUtils;
@@ -110,5 +111,9 @@ public class File {
 	
 	public boolean isReadOnly() {
 		return parent == null ? true : parent.getReadOnly();
+	}
+	
+	public String getMountUuid() {
+		return Objects.nonNull(mount) ? mount.getUuid() : "";
 	}
 }

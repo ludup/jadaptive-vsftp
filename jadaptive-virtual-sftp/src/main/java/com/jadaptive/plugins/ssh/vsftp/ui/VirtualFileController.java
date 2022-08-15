@@ -44,6 +44,7 @@ import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.events.EventService;
+import com.jadaptive.api.json.EntityStatus;
 import com.jadaptive.api.json.RequestStatus;
 import com.jadaptive.api.json.RequestStatusImpl;
 import com.jadaptive.api.json.ResourceList;
@@ -713,6 +714,51 @@ public class VirtualFileController extends AuthenticatedController implements St
 		}
 	}
 	
+	@RequestMapping(value="/app/vfs/report/{uuid}", method = { RequestMethod.GET }, produces = {"application/json"})
+	@ResponseStatus(value=HttpStatus.OK)
+	@ResponseBody
+	public EntityStatus<MountReportData> generateMountReport(HttpServletRequest request, HttpServletResponse response, 
+			@PathVariable String uuid) throws RepositoryException, UnknownEntityException, ObjectException {
+
+	try {
+		VirtualFolder folder = fileService.getObjectByUUID(uuid);
+		
+		AbstractFile mount = fileService.getFile(folder.getMountPath());
+		
+		MountReportData data = new MountReportData();
+		data.setName(folder.getName());
+		data.setType(folder.getScheme());
+		data.setTotalSize(iterateDirectory(mount));
+		
+		data.setHttpDownloads(usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.HTTPS_DOWNLOAD, folder.getUuid()));
+		data.setHttpUploads(usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.HTTPS_UPLOAD, folder.getUuid()));
+		
+		data.setScpDownload(usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.SCP_DOWNLOAD, folder.getUuid()));
+		data.setScpUpload(usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.SCP_UPLOAD, folder.getUuid()));
+		
+		data.setSftpDownload(usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.SFTP_DOWNLOAD, folder.getUuid()));
+		data.setSftpUpload(usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.SFTP_UPLOAD, folder.getUuid()));
+		
+		return new EntityStatus<MountReportData>(data);
+		
+	} catch (PermissionDeniedException | IOException e) {
+		return new EntityStatus<MountReportData>(false, e.getMessage());
+	}
+}
+
+private long iterateDirectory(AbstractFile file) throws IOException, PermissionDeniedException {
+	
+	long count = 0L;
+	for(AbstractFile child : file.getChildren()) {
+		if(child.isDirectory()) {
+			return iterateDirectory(child);
+		} else {
+			count += child.length();		
+		}
+	}
+	
+	return count;
+}
 	@Override
 	public Integer getStartupPosition() {
 		return 0;
