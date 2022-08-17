@@ -83,7 +83,7 @@ function renderActions(val, obj) {
 	if(obj.shareFiles && !obj.directory) {
 		html += renderShare(obj);
 	} else if(obj.shareFolders && obj.directory) {
-		renderShare(obj);
+		html += renderShare(obj);
 	} else {
 		html += '<i class="far fa-fw"></i>';
 	}

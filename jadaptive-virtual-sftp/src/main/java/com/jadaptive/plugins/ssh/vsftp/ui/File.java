@@ -34,7 +34,7 @@ public class File {
 	}
 	
 	public boolean getEncrypted() {
-		return mount!=null ? mount.getEncrypt() : parent.getEncrypt();
+		return mount!=null ? mount.getEncrypt() : parent != null ? parent.getEncrypt() : false;
 	}
 	
 	public long getLength() {

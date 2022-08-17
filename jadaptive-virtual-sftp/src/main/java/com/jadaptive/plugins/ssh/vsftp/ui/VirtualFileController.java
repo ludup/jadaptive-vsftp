@@ -751,7 +751,7 @@ private long iterateDirectory(AbstractFile file) throws IOException, PermissionD
 	long count = 0L;
 	for(AbstractFile child : file.getChildren()) {
 		if(child.isDirectory()) {
-			return iterateDirectory(child);
+			count += iterateDirectory(child);
 		} else {
 			count += child.length();		
 		}
