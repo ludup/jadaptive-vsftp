@@ -56,6 +56,7 @@ import com.jadaptive.api.session.Session;
 import com.jadaptive.api.session.SessionStickyInputStream;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.SessionUtils;
+import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.stats.UsageService;
 import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.ErrorPage;
@@ -719,7 +720,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 	@ResponseStatus(value=HttpStatus.OK)
 	@ResponseBody
 	public EntityStatus<MountReportData> generateMountReport(HttpServletRequest request, HttpServletResponse response, 
-			@PathVariable String uuid) throws RepositoryException, UnknownEntityException, ObjectException {
+			@PathVariable String uuid) {
 
 	try {
 		VirtualFolder folder = fileService.getObjectByUUID(uuid);
@@ -729,7 +730,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 		MountReportData data = new MountReportData();
 		data.setName(folder.getName());
 		data.setType(folder.getScheme());
-		data.setTotalSize(iterateDirectory(mount));
+		data.setTotalSize(iterateDirectory(mount, getCurrentSession()));
 		
 		data.setHttpDownloads(usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.HTTPS_DOWNLOAD, folder.getUuid()));
 		data.setHttpUploads(usageService.sumOr(Utils.yesterday(), Utils.today(), StatsService.HTTPS_UPLOAD, folder.getUuid()));
@@ -742,22 +743,21 @@ public class VirtualFileController extends AuthenticatedController implements St
 		
 		return new EntityStatus<MountReportData>(data);
 		
-	} catch (PermissionDeniedException | IOException e) {
+	} catch (Throwable e) {
 		return new EntityStatus<MountReportData>(false, e.getMessage());
 	}
 }
 
-private long iterateDirectory(AbstractFile file) throws IOException, PermissionDeniedException {
-	
+private long iterateDirectory(AbstractFile file, Session session) throws IOException, PermissionDeniedException, SessionTimeoutException {
 	long count = 0L;
 	for(AbstractFile child : file.getChildren()) {
 		if(child.isDirectory()) {
-			count += iterateDirectory(child);
+			count += iterateDirectory(child, session);
 		} else {
 			count += child.length();		
 		}
+		sessionUtils.touch(session);
 	}
-	
 	return count;
 }
 	@Override
