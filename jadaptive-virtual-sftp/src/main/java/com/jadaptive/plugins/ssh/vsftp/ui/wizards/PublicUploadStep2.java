@@ -130,7 +130,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	public void processReview(Document document, WizardState state) {
 
 		try {
-			Element content = document.selectFirst("#setupStep");
+			Element content = document.selectFirst("#wizardContent");
 			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(this), VirtualFolderPath.class);
 			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 			FileScheme<?> scheme = fileService.getFileScheme(folderType);

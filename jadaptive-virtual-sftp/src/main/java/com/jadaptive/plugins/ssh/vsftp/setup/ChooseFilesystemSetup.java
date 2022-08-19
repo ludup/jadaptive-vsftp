@@ -59,7 +59,7 @@ public class ChooseFilesystemSetup extends SetupSection {
 	@Override
 	public void processReview(Document document, WizardState state) {
 		
-		Element content = document.selectFirst("#setupStep");
+		Element content = document.selectFirst("#wizardContent");
 		ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(this), ChooseFilesystem.class);
 		
 		content	.appendChild(new Element("div")

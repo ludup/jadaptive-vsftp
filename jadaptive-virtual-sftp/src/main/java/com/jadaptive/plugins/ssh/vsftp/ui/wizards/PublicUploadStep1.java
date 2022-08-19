@@ -18,7 +18,7 @@ public class PublicUploadStep1 extends PublicUploadSection {
 	@Override
 	public void processReview(Document document, WizardState state) {
 
-		Element content = document.selectFirst("#setupStep");
+		Element content = document.selectFirst("#wizardContent");
 		PublicUploadName name =  ObjectUtils.assertObject(state.getObject(this), PublicUploadName.class);
 
 		content.appendChild(new Element("div")

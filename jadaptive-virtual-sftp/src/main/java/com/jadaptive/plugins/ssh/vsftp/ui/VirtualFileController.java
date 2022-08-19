@@ -268,6 +268,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 				boolean folders, boolean files, boolean hidden, int maximumFiles, 
 					int maximumDepth, int currentDepth, boolean publicFiles) throws IOException, PermissionDeniedException {
 		
+		
 		for(AbstractFile file : parent.getChildren()) {
 			
 			boolean matches = true;
