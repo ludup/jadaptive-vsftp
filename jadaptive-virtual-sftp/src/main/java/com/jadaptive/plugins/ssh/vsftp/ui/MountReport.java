@@ -13,11 +13,6 @@ import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.stats.StatsService;
-import com.jadaptive.utils.Utils;
-import com.sshtools.common.files.AbstractFile;
-import com.sshtools.common.permissions.PermissionDeniedException;
 
 @Extension
 @RequestPage(path = "mount-report/{uuid}")

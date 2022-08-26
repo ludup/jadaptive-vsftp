@@ -46,6 +46,11 @@ public class IncomingFilesDashboard implements DashboardWidget {
 	public String getName() {
 		return "publicUpload";
 	}
+	
+	@Override
+	public boolean hasHelp() {
+		return false;
+	}
 
 	@Override
 	public void renderWidget(Document document, Element element) {

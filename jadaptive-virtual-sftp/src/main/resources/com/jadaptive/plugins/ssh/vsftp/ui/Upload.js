@@ -5,7 +5,7 @@ const validateEmail = (email) => {
 };
 	
 $(function() {
-	UploadWidget.init('/upload/public/${page.shortCode}', '/app/ui/upload-complete/${page.shortCode}', "#feedback", function(fd) {
+	UploadWidget.init('/upload/public/' + $('#uploadHolder').attr("jad:shortCode"), '/app/ui/upload-complete/' + $('#uploadHolder').attr("jad:shortCode"), "#feedback", function(fd) {
 		
 		var name = $('#name').val().trim();
 		var email = $('#email').val().trim();

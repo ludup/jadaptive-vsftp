@@ -39,7 +39,6 @@ public class Upload extends AnonymousPage {
 	public String getShortCode() {
 		return shortCode;
 	}
-
 	
     public void generateAnonymousContent(Document contents) throws IOException {
     	
@@ -48,6 +47,7 @@ public class Upload extends AnonymousPage {
     	try {
     		UploadForm folder = uploadService.getFormByShortCode(shortCode);
     		contents.selectFirst("#uploadArea").text(folder.getName());
+    		contents.selectFirst("#uploadHolder").attr("jad:shortCode", shortCode);
     	} catch(ObjectException e) {
     		log.error("Failed to lookup shortcode", e);
     		throw new FileNotFoundException(String.format("%s is not a valid folder code", shortCode));
