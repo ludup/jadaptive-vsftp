@@ -1,6 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.ui.wizards;
 
-import com.jadaptive.api.setup.WizardSection;
+import com.jadaptive.api.ui.wizards.WizardSection;
 
 public class PublicUploadSection extends WizardSection {
 

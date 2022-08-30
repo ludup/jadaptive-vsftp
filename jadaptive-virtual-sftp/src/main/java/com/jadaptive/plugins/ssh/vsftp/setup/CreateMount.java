@@ -111,7 +111,7 @@ public class CreateMount extends SetupSection {
 	}
 
 	@Override
-	public void process(Document document, Element element, Page page) throws IOException {
+	protected void processSection(Document document, Element element, Page page) throws IOException {
 		
 		WizardState state = wizardService.getWizard("setup").getState(Request.get());
 		
@@ -181,7 +181,7 @@ public class CreateMount extends SetupSection {
 		
 
 		state.setParameter(REQUEST_PARAM_TYPE, folderType);
-		super.process(document, element, page);
+
 	}
 
 

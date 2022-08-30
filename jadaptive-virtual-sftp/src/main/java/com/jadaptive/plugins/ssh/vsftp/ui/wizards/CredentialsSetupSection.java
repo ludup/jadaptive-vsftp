@@ -23,8 +23,7 @@ public class CredentialsSetupSection extends PublicUploadSection {
 		}
 
 		@Override
-		public void process(Document document, Element element, Page page) throws IOException {
-			super.process(document, element, page);
+		protected void processSection(Document document, Element element, Page page) throws IOException {
 			
 			ObjectTemplate template = ApplicationServiceImpl.getInstance().getBean(TemplateService.class).get(VirtualFolder.RESOURCE_KEY);
 			Element content = document.selectFirst("#content");

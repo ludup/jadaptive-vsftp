@@ -26,7 +26,7 @@ public class ChooseFilesystemSetup extends SetupSection {
 	}
 
 	@Override
-	public void process(Document document, Element element, Page page) throws IOException {
+	protected void processSection(Document document, Element element, Page page) throws IOException {
 		
 		try {
 			WizardState state = Wizard.getCurrentState();
@@ -35,7 +35,7 @@ public class ChooseFilesystemSetup extends SetupSection {
 			document.selectFirst("#filesystemType").val(obj.getFilesystemType().toString());
 		} catch(ValidationException t) {
 		}
-		super.process(document, element, page);
+
 	}
 
 	

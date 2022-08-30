@@ -62,7 +62,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	}
 
 	@Override
-	public void process(Document document, Element element, Page page) throws IOException {
+	protected void processSection(Document document, Element element, Page page) throws IOException {
 		
 		WizardState state = wizardService.getWizard("publicUploadWizard").getState(Request.get());
 		
@@ -122,7 +122,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 		
 		folderType = scheme.getResourceKey();
 		state.setParameter(REQUEST_PARAM_TYPE, folderType);
-		super.process(document, element, page);
+
 	}
 
 
