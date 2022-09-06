@@ -1,4 +1,4 @@
-$(function() {
+window.onload = function() {
 	
 	 $('.choose').change(function(e) {
 		 debugger;
@@ -13,4 +13,4 @@ $(function() {
 		 }
 	 });
 		 
- });
+ };
