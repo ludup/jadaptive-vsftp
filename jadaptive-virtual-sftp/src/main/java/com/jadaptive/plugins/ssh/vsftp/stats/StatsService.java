@@ -41,4 +41,8 @@ public interface StatsService {
 	static final String SFTP_DIR_CLOSED = "sftp_dir_closed";
 	
 	static final String SFTP_DIR_LISTING = "sftp_dir";
+
+	void registerDataTransfer(Throughput throughput, long count, String... keys);
+
+	double getMonthlyThroughput(Throughput throughput);
 }

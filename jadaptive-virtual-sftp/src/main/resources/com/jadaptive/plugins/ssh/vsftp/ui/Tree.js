@@ -63,11 +63,6 @@ function renderShare(obj) {
 function renderActions(val, obj) {
 	var html = '';
 	
-	if(obj.mount) {
-		html += '<a class="me-2" href="/app/ui/mount-report/' + obj.mountUuid + '"><i class="far fa-chart-pie fa-fw"></i></a>';
-	} else {
-		html += '<i class="far fa-fw"></i>';
-	}
 	if(!obj.mount && !obj.readOnly) {
 		html += '<a class="deleteFile me-2" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="far fa-trash fa-fw"></i></a>';
 	} else {
