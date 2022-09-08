@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.SessionUtils;
+import com.jadaptive.api.ui.DashboardType;
 import com.jadaptive.api.ui.DashboardWidget;
 import com.jadaptive.api.ui.PageHelper;
 
@@ -21,7 +22,7 @@ public class MonthlyTransferSummary implements DashboardWidget {
 	
 	@Override
 	public String getIcon() {
-		return "chart-column";
+		return "fa-chart-column";
 	}
 
 	@Override
@@ -32,6 +33,11 @@ public class MonthlyTransferSummary implements DashboardWidget {
 	@Override
 	public String getName() {
 		return "dataTransfer2";
+	}
+	
+	@Override
+	public DashboardType getType() {
+		return DashboardType.INSIGHTS;
 	}
 
 	@Override

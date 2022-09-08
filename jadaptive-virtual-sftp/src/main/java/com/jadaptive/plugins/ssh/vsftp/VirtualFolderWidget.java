@@ -20,7 +20,7 @@ public class VirtualFolderWidget implements DashboardWidget {
 	
 	@Override
 	public String getIcon() {
-		return "folder";
+		return "fa-folder";
 	}
 
 	@Override

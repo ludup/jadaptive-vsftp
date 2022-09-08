@@ -24,6 +24,8 @@ public interface SharedFileService extends AbstractUUIDObjectService<SharedFile>
 
 	void notifyShareCreation(SharedFile share);
 
-	void notifyShareAccess(SharedFile share, Date started, AbstractFile file);
+	void notifyShareAccess(SharedFile share, Date started, String... paths);
+
+	String getDirectLink(SharedFile download, String virtualPath);
 
 }

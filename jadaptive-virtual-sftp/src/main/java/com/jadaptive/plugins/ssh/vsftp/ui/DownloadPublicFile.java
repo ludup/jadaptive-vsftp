@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +16,7 @@ import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.servlet.Request;
+import com.jadaptive.api.ui.Html;
 import com.jadaptive.api.ui.HtmlPage;
 import com.jadaptive.api.ui.PageCache;
 import com.jadaptive.api.ui.PageDependencies;
@@ -23,12 +25,15 @@ import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.plugins.licensing.FeatureEnablementService;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 import com.jadaptive.plugins.sshd.SSHDService;
+import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.permissions.PermissionDeniedException;
+import com.sshtools.common.util.FileUtils;
 
 @Extension
 @RequestPage(path = "download/{shortCode}/{filename}")
@@ -106,24 +111,15 @@ public class DownloadPublicFile extends HtmlPage {
 		try {
 			SharedFile download = downloadService.getDownloadByShortCode(shortCode);
 
+			document.selectFirst("#message").attr("jad:arg0", Request.getRemoteAddress());
+			
 			AbstractFileFactory<?> factory = sshdService.getFileFactory(download.getSharedBy());
-			AbstractFile fileObject  = factory.getFile(download.getVirtualPath());
 			
-			document.select(".ipAddress").html(Request.getRemoteAddress());
-			
-			if(!fileObject.exists()) {
-				throw new PageRedirect(pageCache.resolvePage(PublicFileNotFound.class));
-			}
-			
-			if(fileObject.isDirectory()) {
-				String zipFile = fileObject.getName() + ".zip";
-				document.select(".filename").html(zipFile);	
-				
+			if(download.getVirtualPaths().size()==1) {
+				renderSingleFile(document, factory, download);
 			} else {
-				document.select(".filename").html(fileObject.getName());
+				renderMultipleFiles(document, factory, download);
 			}
-			
-			document.selectFirst("#downloadLink").attr("href", downloadService.getDirectLink(download));
 			
 		} catch (ObjectNotFoundException | PermissionDeniedException e) {
 			throw new PageRedirect(pageCache.resolvePage(PublicFileNotFound.class));
@@ -132,6 +128,65 @@ public class DownloadPublicFile extends HtmlPage {
 
 	
 	
+	private void renderMultipleFiles(Document document, AbstractFileFactory<?> factory, SharedFile download) {
+
+		document.select(".filename").html(download.getFilename());
+		document.selectFirst("#information").appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "multipleFiles.text"));
+		
+		Element e = document.selectFirst("#downloadLinks");
+		
+		e.appendChild(new Element("p")
+				).appendChild(Html.a(downloadService.getDirectLink(download))
+						.addClass("btn btn-primary")
+						.appendChild(Html.i("fa-regular", "fa-download", "me-1"))
+						.appendChild(Html.i18n("default", "download.name"))
+						.attr("id", "downloadLink"));
+		
+		Element div;
+		e.appendChild(div = Html.div("mt-3").appendChild(
+				Html.p(VirtualFolder.RESOURCE_KEY, "sharedContents.text")));
+		
+		for(String virtualPath : download.getVirtualPaths()) {
+			div.appendChild(Html.a(downloadService.getDirectLink(download, virtualPath))
+					.appendChild(Html.i("fa-regular", "fa-file-arrow-down", "me-1"))
+					.appendChild(Html.span(FileUtils.getFilename(virtualPath), "me-3"))
+					.appendChild(new Element("br")));
+		}
+
+	}
+
+	private void renderSingleFile(Document document, AbstractFileFactory<?> factory, SharedFile download) throws PermissionDeniedException, IOException {
+		
+		AbstractFile fileObject  = factory.getFile(download.getVirtualPaths().iterator().next());
+		
+		if(!fileObject.exists()) {
+			throw new PageRedirect(pageCache.resolvePage(PublicFileNotFound.class));
+		}
+		
+		if(fileObject.isDirectory()) {
+			String zipFile = fileObject.getName() + ".zip";
+			document.select(".filename").html(zipFile);	
+			document.selectFirst("#information").appendChild(Html.span(VirtualFolder.RESOURCE_KEY, "multipleFiles.text"));
+		} else {
+			document.select(".filename").html(fileObject.getName());
+		}
+		
+		document.selectFirst("#downloadLinks").appendChild(new Element("p")
+				).appendChild(Html.a(downloadService.getDirectLink(download))
+						.addClass("btn btn-primary")
+						.appendChild(Html.i("fa-regular", "fa-download", "me-1"))
+						.appendChild(Html.i18n("default", "download.name"))
+						.attr("id", "downloadLink"));
+	
+		document.selectFirst("#downloadLinks").appendChild(new Element("p")
+				).appendChild(Html.a(
+						Utils.getBaseURL(Request.get().getRequestURL().toString()) + downloadService.getDirectLink(download))
+						.addClass("copyURL")
+						.appendChild(Html.i("fa-regular", "fa-copy", "me-1"))
+						.appendChild(Html.i18n("default", "copyURL.name")));
+		
+	}
+
 	@Override
 	public String getUri() {
 		return "download";

@@ -1,6 +1,7 @@
 package com.jadaptive.plugins.ssh.vsftp.links;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.app.StartupAware;
@@ -20,6 +22,8 @@ import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.stats.ResourceService;
+import com.jadaptive.api.tenant.Tenant;
+import com.jadaptive.api.tenant.TenantAware;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.email.MessageService;
 import com.jadaptive.plugins.email.RecipientHolder;
@@ -35,7 +39,7 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 
 @Service
-public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFile> implements SharedFileService, ResourceService, StartupAware {
+public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFile> implements SharedFileService, ResourceService, StartupAware, TenantAware {
 
 	public static final String SHARED_FILE_DOWNLOAD = "f5c09928-d9af-480c-83a4-93021e0779cb";
 	public static final String SHARED_FILE_CREATED = "a6a1fabd-895a-41ab-8944-1847501881d8";
@@ -52,11 +56,37 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	@Autowired
 	private EventService eventService; 
 	
+	private boolean inStartup = false;
 	@Override
 	protected Class<SharedFile> getResourceClass() {
 		return SharedFile.class;
 	}
 
+	@Override
+	public void initializeSystem(boolean newSchema) {
+		initializeTenant(getCurrentTenant(), newSchema);
+	}
+
+	@Override
+	public void initializeTenant(Tenant tenant, boolean newSchema) {
+		if(!newSchema) {
+			inStartup = true;
+			try {
+				for(SharedFile file : allObjects()) {
+					if(file.getVirtualPaths().isEmpty()) {
+						Collection<String> tmp = new ArrayList<>();
+						tmp.add(file.getVirtualPath());
+						file.setVirtualPaths(tmp);
+						saveOrUpdate(file);
+					}
+				}
+			} finally {
+				inStartup = false;
+			}
+		}
+	}
+
+	
 	public SharedFile getDownloadByPath(String path, User user) {
 		return objectDatabase.get(getResourceClass(), 
 				SearchField.eq("virtualPath", FileUtils.checkEndsWithNoSlash(path)),
@@ -68,13 +98,17 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		if(StringUtils.isBlank(object.getShortCode())) {
 			object.setShortCode(Utils.generateRandomAlphaNumericString(8));
 		}
+		
+		if(inStartup) {
+			return;
+		}
+		
 		try {
-			AbstractFile file = fileService.getFile(object.getVirtualPath());
-					
-			if(file.isDirectory()) {
-				object.setFilename(file.getName() + ".zip");
+			
+			if(object.getVirtualPaths().size()==1) {
+				validateSingleFile(object);
 			} else {
-				object.setFilename(file.getName());
+				validateMultipleFiles(object);
 			}
 			
 			if(Objects.isNull(object.getSharedBy())) {
@@ -83,22 +117,42 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		} catch (IOException | PermissionDeniedException e) {
 			throw new ObjectException(e.getMessage(), e);
 		}
-		
-		object.setVirtualPath(FileUtils.checkEndsWithNoSlash(object.getVirtualPath()));
 
+	}
+
+	private void validateMultipleFiles(SharedFile object) throws PermissionDeniedException, IOException {
+		
+		for(String virtualPath : object.getVirtualPaths()) {
+			fileService.getFile(virtualPath);
+		}
+
+		if(StringUtils.isBlank(object.getFilename())) {
+			object.setFilename("shared.zip");
+		}
+	}
+
+	private void validateSingleFile(SharedFile object) throws PermissionDeniedException, IOException {
+
+		AbstractFile file = fileService.getFile(object.getVirtualPaths().iterator().next());
+
+		if(StringUtils.isBlank(object.getFilename())) {
+			if(file.isDirectory()) {
+				object.setFilename(file.getName() + ".zip");
+			} else {
+				object.setFilename(file.getName());
+			}
+		}
 	}
 
 	@Override
 	public SharedFile createDownloadLink(AbstractFile file, User user) throws IOException, PermissionDeniedException {
 		SharedFile link = new SharedFile();
 
-		link.setVirtualPath(file.getAbsolutePath());
+		List<String> tmp = new ArrayList<>();
+		tmp.add(file.getAbsolutePath());
+		link.setVirtualPaths(tmp);
 		link.setSharedBy(user);
-		if(file.isDirectory()) {
-			link.setFilename(file.getName() + ".zip");
-		} else {
-			link.setFilename(file.getName());
-		}
+		
 		saveOrUpdate(link);
 		
 		notifyShareCreation(link);
@@ -115,26 +169,25 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	public String getDirectLink(SharedFile share) {
 		return Utils.encodeURIPath("/app/vfs/downloadLink/" + share.getShortCode() + "/" + share.getFilename());
 	}
+	
+	@Override
+	public String getDirectLink(SharedFile share, String virtualPath) {
+		return Utils.encodeURIPath("/app/vfs/downloadPart/" + share.getShortCode()
+				+ "/" + DigestUtils.md5DigestAsHex(Utils.getUTF8Bytes(virtualPath)).substring(0, 8)
+				+ "/" + Utils.urlEncode(FileUtils.getFilename(virtualPath)));
+	}
 
 	@Override
 	public String getPublicLink(SharedFile share) {
 		return Utils.encodeURIPath("/app/ui/download/" + share.getShortCode() + "/" + share.getFilename());
 	}
 
-	private long getFileLength(AbstractFile file) {
-		try {
-			return file.length();
-		} catch(PermissionDeniedException | IOException e) {
-			return 0L;
-		}
-	}
-	
 	@Override
-	public void notifyShareAccess(SharedFile share, Date started, AbstractFile file) {
+	public void notifyShareAccess(SharedFile share, Date started, String... paths) {
 		
-		eventService.publishEvent(new ShareDownloadEvent(new TransferResult(
-				share.getFilename(), share.getVirtualPath(), getFileLength(file),started, Utils.now())));
-		
+//		eventService.publishEvent(new ShareDownloadEvent(new TransferResult(
+//				share.getFilename(), share.getVirtualPath(), getFileLength(file),started, Utils.now())));
+//		
 		StaticResolver resolver = new StaticResolver();
 		resolver.addToken("serverName", Request.get().getServerName());
 		resolver.addToken("filename", share.getFilename());
@@ -143,6 +196,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		resolver.addToken("sharedBy", StringUtils.defaultString(
 				share.getSharedBy().getName(),
 				share.getSharedBy().getUsername()));
+		resolver.addToken("virtualPaths", paths);
 		
 		List<RecipientHolder> emailAddresses =  new ArrayList<>();
 		emailAddresses.add(new RecipientHolder(share.getSharedBy()));

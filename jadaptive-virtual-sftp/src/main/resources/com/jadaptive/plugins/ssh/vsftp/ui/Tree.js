@@ -121,14 +121,22 @@ function ajaxRequest(params) {
 
 	$.get('/app/vfs/stat' + path).then(function(res) {
 		if (res.success) {
+			
+			$(document).data('currentFolder', res.resource);
+			
 			$('#uploadFiles').attr('href', '/app/ui/upload-files' + path);
 			if(!res.resource.readOnly && res.resource.writable) {
 				$('.writeActions').show();
 			} else {
 				$('.writeActions').hide();
 			}
+			if(!res.resource.shareFiles && !res.resource.shareFolders) {
+				$('#shareButton').hide();
+			} else {
+				$('#shareButton').show();
+			}
 			var url = '/app/vfs/listDirectory' + path;
-		
+
 			params.data.filter = $('#filter').val();
 			params.data.files = $('#files').is(":checked");
 			params.data.folders = $('#folders').is(":checked");
@@ -211,7 +219,16 @@ $(function() {
 		showRefresh: true,
 		mobileResponsive: true,
 		ajax: 'ajaxRequest',
-		loadingTemplate: '<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>'
+		loadingTemplate: '<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>',
+		onPostHeader: function() {
+			if($('#deleteButton').length == 0) {
+				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="deleteButton"><i class="fa-regular fa-trash"></i></button>');
+			}
+			
+			if($('#shareButton').length == 0) {
+				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="shareButton"><i class="fa-regular fa-link"></i></button>');
+			}
+		}
 	});
 
 	$('#spinner').hide();
@@ -234,9 +251,7 @@ $(function() {
 			dataType: 'json',
 			success: function(data) {
 				if (data.success) {
-					var link = window.location.origin + '/app/ui/share/' + data.resource.shortCode;
-					navigator.clipboard.writeText(link);
-					JadaptiveUtils.success($('#feedback'), "The public link has been copied to the clipboard.");
+					window.location = window.location.origin + '/app/ui/share/' + data.resource.shortCode;
 				} else {
 					JadaptiveUtils.error($('#feedback'), data.message);
 				}
@@ -244,11 +259,62 @@ $(function() {
 		});
 	});
 	
+	$(document).on('click', '#shareButton', function(e) {
+		e.preventDefault();
+		var files = [];
+		var errors = [];
+		
+		var resource = $(document).data('currentFolder');
+		
+		$.each($('#table').bootstrapTable('getSelections'), function(idx, row) {
+			if(!row.mount) {
+				if(resource.shareFolders && row.directory) {
+					files.push(row.path);	
+				} else if(resource.shareFiles && !row.directory) {
+					files.push(row.path);
+				} else {
+					errors.push(row.name);
+				}
+			} else {
+				errors.push(row.name);
+			}
+		});
+		
+		if(errors.length > 0) {
+			var message = 'You cannot share the following files.<br>';
+			$.each(errors, function(idx, obj) {
+				message += '<br>' + obj;
+			});
+			bootbox.alert(message);
+		} else {
+			var form = '';
+			$.each(files, function(idx, file) {
+				if(idx > 0) {
+					form += '&';
+				}
+				form += 'paths=' + encodeURIComponent(file);
+			});
+			$.post({
+				url: '/app/vfs/share/create',
+				data: form,
+				dataType: 'json',
+				success: function(data) {
+					if (data.success) {
+						window.location = '/app/ui/create/sharedFiles';
+					} else {
+						JadaptiveUtils.error($('#feedback'), data.message);
+					}
+				}
+			});
+		}
+	});	
+	
 	$(document).on('click', '.createShare', function(e) {
 		e.preventDefault();
 
-		$.get({
-			url: '/app/vfs/share/create' + $(this).data('path'),
+		$.post({
+			url: '/app/vfs/share/create',
+			data: $.params({ paths: $(this).data('path') }),
 			dataType: 'json',
 			success: function(data) {
 				if (data.success) {
@@ -260,6 +326,103 @@ $(function() {
 		});
 	});
 	
+
+	$(document).on('click', '#deleteButton', function(e) {
+		e.preventDefault();
+		var files = [];
+		var names = [];
+		var errors = [];
+		
+		$.each($('#table').bootstrapTable('getSelections'), function(idx, row) {
+			debugger;
+			if(!row.mount && !row.readOnly) {
+				files.push(row.path);
+				names.push(row.name);
+			} else {
+				errors.push(row.name);
+			}
+		});
+		
+		if(errors.length > 0) {
+			var message = 'You cannot delete the following files.<br>';
+			$.each(errors, function(idx, obj) {
+				message += '<br>' + obj;
+			});
+			bootbox.alert(message);
+		} else {
+			var message = 'Are you sure you want to delete the following files?<br>';
+			$.each(names, function(idx, obj) {
+				message += '<br>' + obj;
+			});	
+			bootbox.confirm({
+			message: message,
+			closeButton: false,
+			buttons: {
+				confirm: {
+					label: 'Yes',
+					className: 'btn-success'
+				},
+				cancel: {
+					label: 'No',
+					className: 'btn-danger'
+				}
+			},
+			callback: function(result) {
+
+				if (result) {
+					var deleteFunc = function(path) {
+						var params = {
+						path: path
+						};
+						$.post({
+							url: '/app/vfs/delete',
+							data: params,
+							dataType: 'json',
+							success: function(data) {
+								if(data.success) {
+									if(files.length > 0) {
+										deleteFunc(files.shift());
+									} else {
+										bootbox.alert('All files have been deleted');
+										$('#table').bootstrapTable('refresh');
+									}
+								} else {
+									bootbox.confirm({
+										message: message,
+										closeButton: false,
+										buttons: {
+											confirm: {
+												label: 'Continue',
+												className: 'btn-success'
+											},
+											cancel: {
+												label: 'Stop',
+												className: 'btn-danger'
+											}
+										},
+										callback: function(result) {
+											if(result) {
+												if(files.length > 0) {
+													deleteFunc(files.shift());
+												} else {
+													bootbox.alert('All files have been deleted');
+													$('#table').bootstrapTable('refresh');
+												}
+											}
+										}
+									});
+								}
+							}
+						});	
+					}
+					
+					deleteFunc(files.shift());
+				}
+			}
+		});
+		}
+	});	
+
 	$(document).on('click', '.deleteFile', function(e) {
 		e.preventDefault();
 

@@ -34,7 +34,7 @@ public class IncomingFilesDashboard implements DashboardWidget {
 	
 	@Override
 	public String getIcon() {
-		return "inboxes";
+		return "fa-inboxes";
 	}
 	
 	@Override

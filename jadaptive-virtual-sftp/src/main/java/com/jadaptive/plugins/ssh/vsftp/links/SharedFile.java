@@ -1,6 +1,10 @@
 package com.jadaptive.plugins.ssh.vsftp.links;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
@@ -29,7 +33,7 @@ import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.FILE_VIEW, weight = 0),
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.OPTIONS_VIEW, weight = 100),
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.NOTIFICATIONS_VIEW, weight = 200) })
-@TableView(defaultColumns = { "filename", "passwordProtected", "acceptTerms", "virtualPath", "sharedBy" },
+@TableView(defaultColumns = {"filename", "virtualPaths", "sharedBy", "passwordProtected", "acceptTerms" },
              actions = { @TableAction(bundle = SharedFile.RESOURCE_KEY, icon = "fa-link", 
              resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/share/{shortCode}") })
 public class SharedFile extends AbstractUUIDEntity {
@@ -42,7 +46,7 @@ public class SharedFile extends AbstractUUIDEntity {
 	static final String OPTIONS_VIEW = "options";
 	static final String NOTIFICATIONS_VIEW = "notifications";
 	
-	@ObjectField(type = FieldType.TEXT, searchable = true)
+	@ObjectField(type = FieldType.TEXT, hidden = true, searchable = true)
 	@ObjectView(value = FILE_VIEW)
 	String virtualPath;
 	
@@ -50,8 +54,9 @@ public class SharedFile extends AbstractUUIDEntity {
 	@ObjectView(value = FILE_VIEW)
 	String shortCode;
 	
-	@ObjectField(type = FieldType.TEXT, hidden = true, nameField = true)
+	@ObjectField(type = FieldType.TEXT, nameField = true)
 	@ObjectView(value = FILE_VIEW)
+	@ExcludeView(values = FieldView.CREATE)
 	String filename;
 
 	@ObjectField(type = FieldType.BOOL)
@@ -83,6 +88,10 @@ public class SharedFile extends AbstractUUIDEntity {
 	@Validators({@Validator(type = ValidationType.RESOURCE_KEY, value = User.RESOURCE_KEY)})
 	@ExcludeView(values = FieldView.CREATE)
 	User sharedBy;
+
+	@ObjectField(type = FieldType.TEXT, searchable = true)
+	@ObjectView(value = FILE_VIEW)
+	Collection<String> virtualPaths = new ArrayList<>();
 	
 	@Override
 	public String getResourceKey() {
@@ -95,6 +104,14 @@ public class SharedFile extends AbstractUUIDEntity {
 	
 	public void setVirtualPath(String virtualPath) {
 		this.virtualPath = virtualPath;
+	}
+
+	public Collection<String> getVirtualPaths() {
+		return virtualPaths;
+	}
+	
+	public void setVirtualPaths(Collection<String> virtualPaths) {
+		this.virtualPaths = virtualPaths;
 	}
 
 	public String getShortCode() {
