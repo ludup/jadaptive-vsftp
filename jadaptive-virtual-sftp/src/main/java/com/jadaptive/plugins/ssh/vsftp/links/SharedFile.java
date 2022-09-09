@@ -27,13 +27,14 @@ import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
 
 @ObjectDefinition(resourceKey = SharedFile.RESOURCE_KEY, bundle = SharedFile.RESOURCE_KEY, 
-	type = ObjectType.COLLECTION, creatable = true, defaultColumn = "filename")
+	requiresPermission = false,	type = ObjectType.COLLECTION, 
+	creatable = true, defaultColumn = "filename")
 @ObjectServiceBean( bean = SharedFileService.class)
 @ObjectViews({ 
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.FILE_VIEW, weight = 0),
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.OPTIONS_VIEW, weight = 100),
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.NOTIFICATIONS_VIEW, weight = 200) })
-@TableView(defaultColumns = {"filename", "virtualPaths", "sharedBy", "passwordProtected", "acceptTerms" },
+@TableView(defaultColumns = {"name", "filename", "sharedBy", "passwordProtected", "acceptTerms" },
              actions = { @TableAction(bundle = SharedFile.RESOURCE_KEY, icon = "fa-link", 
              resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/share/{shortCode}") })
 public class SharedFile extends AbstractUUIDEntity {
@@ -45,7 +46,11 @@ public class SharedFile extends AbstractUUIDEntity {
 	static final String FILE_VIEW = "file";
 	static final String OPTIONS_VIEW = "options";
 	static final String NOTIFICATIONS_VIEW = "notifications";
-	
+
+	@ObjectField(searchable = true, type = FieldType.TEXT, nameField = true)
+	@ObjectView(value = FILE_VIEW)
+	String name;
+
 	@ObjectField(type = FieldType.TEXT, hidden = true, searchable = true)
 	@ObjectView(value = FILE_VIEW)
 	String virtualPath;
@@ -96,6 +101,14 @@ public class SharedFile extends AbstractUUIDEntity {
 	@Override
 	public String getResourceKey() {
 		return RESOURCE_KEY;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getVirtualPath() {

@@ -1,8 +1,8 @@
 
 package com.jadaptive.plugins.ssh.vsftp.menus;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class SharedFilesMenu implements ApplicationMenu {
 
 	@Override
 	public Collection<String> getPermissions() {
-		return Arrays.asList("sharedFiles.read");
+		return Collections.emptyList();
 	}
 
 	@Override

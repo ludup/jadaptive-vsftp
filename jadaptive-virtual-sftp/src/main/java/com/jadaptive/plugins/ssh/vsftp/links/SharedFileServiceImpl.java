@@ -79,6 +79,10 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 						file.setVirtualPaths(tmp);
 						saveOrUpdate(file);
 					}
+					if(StringUtils.isBlank(file.getName())) {
+						file.setName(file.getFilename());
+						saveOrUpdate(file);
+					}
 				}
 			} finally {
 				inStartup = false;
@@ -127,7 +131,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		}
 
 		if(StringUtils.isBlank(object.getFilename())) {
-			object.setFilename("shared.zip");
+			object.setFilename(object.getName() + ".zip");
 		}
 	}
 
@@ -152,6 +156,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 		tmp.add(file.getAbsolutePath());
 		link.setVirtualPaths(tmp);
 		link.setSharedBy(user);
+		link.setName(file.getName());
 		
 		saveOrUpdate(link);
 		
