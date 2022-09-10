@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.permissions.Permissions;
 import com.jadaptive.api.repository.PersonalUUIDEntity;
 import com.jadaptive.api.template.ExcludeView;
 import com.jadaptive.api.template.FieldType;
