@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.nio.file.FileSystems;
@@ -684,6 +683,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			List<String> tmp = new ArrayList<>();
 			tmp.addAll(Arrays.asList(paths));
 			link.setVirtualPaths(tmp);
+			link.setSharedBy(getCurrentUser());
 			
 			request.getSession().setAttribute(SharedFile.RESOURCE_KEY, link);
 			return new ResourceStatus<>(link);

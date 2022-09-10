@@ -28,4 +28,6 @@ public interface SharedFileService extends AbstractUUIDObjectService<SharedFile>
 
 	String getDirectLink(SharedFile download, String virtualPath);
 
+	Iterable<SharedFile> getUserShares();
+
 }

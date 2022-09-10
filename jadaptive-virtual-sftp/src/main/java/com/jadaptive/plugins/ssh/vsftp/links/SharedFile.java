@@ -2,12 +2,11 @@ package com.jadaptive.plugins.ssh.vsftp.links;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
-
+import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.repository.AbstractUUIDEntity;
+import com.jadaptive.api.permissions.Permissions;
+import com.jadaptive.api.repository.PersonalUUIDEntity;
 import com.jadaptive.api.template.ExcludeView;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.FieldView;
@@ -27,7 +26,7 @@ import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
 
 @ObjectDefinition(resourceKey = SharedFile.RESOURCE_KEY, bundle = SharedFile.RESOURCE_KEY, 
-	requiresPermission = false,	type = ObjectType.COLLECTION, 
+	type = ObjectType.COLLECTION, scope = ObjectScope.PERSONAL,
 	creatable = true, defaultColumn = "name")
 @ObjectServiceBean( bean = SharedFileService.class)
 @ObjectViews({ 
@@ -37,7 +36,7 @@ import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
 @TableView(defaultColumns = {"name", "filename", "sharedBy", "passwordProtected", "acceptTerms" },
              actions = { @TableAction(bundle = SharedFile.RESOURCE_KEY, icon = "fa-link", 
              resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/share/{shortCode}") })
-public class SharedFile extends AbstractUUIDEntity {
+public class SharedFile extends PersonalUUIDEntity {
 
 	private static final long serialVersionUID = 6440151078128444905L;
 
@@ -198,4 +197,10 @@ public class SharedFile extends AbstractUUIDEntity {
 	public void setSharedBy(User sharedBy) {
 		this.sharedBy = sharedBy;
 	}
+
+	@Override
+	public String getOwnerUUID() {
+		return getSharedBy().getUuid();
+	}
+
 }

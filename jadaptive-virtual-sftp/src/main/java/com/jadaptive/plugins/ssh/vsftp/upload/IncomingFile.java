@@ -33,7 +33,7 @@ import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 @TableView(defaultColumns = {  "reference", "uploadArea", "name", "email" }, requiresCreate = false, actions = {
 		@TableAction(target = Target.ROW, bundle = VirtualFolder.RESOURCE_KEY, window = Window.SELF,
 				icon = "fa-download", resourceKey = "downloadFiles", url = "/app/vfs/incoming/zip/{uuid}"),
-		@TableAction(target = Target.ROW, bundle = VirtualFolder.RESOURCE_KEY, window = Window.SELF,
+		@TableAction(target = Target.ROW, bundle = VirtualFolder.RESOURCE_KEY, window = Window.SELF, writeAction = true,
 		icon = "fa-trash", resourceKey = "deleteFile", url = "/app/vfs/incoming/delete/{uuid}", confirmationRequired = true)})
 @ObjectViews(@ObjectViewDefinition(value = "files", bundle = VirtualFolder.RESOURCE_KEY))
 public class IncomingFile extends AssignableUUIDEntity {

@@ -1,7 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.links;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -19,7 +18,6 @@ import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.entity.AbstractUUIDObjectServceImpl;
 import com.jadaptive.api.entity.ObjectException;
-import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.stats.ResourceService;
 import com.jadaptive.api.tenant.Tenant;
@@ -31,10 +29,11 @@ import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.licensing.FeatureGroup;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
-import com.jadaptive.plugins.ssh.vsftp.ui.TransferResult;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.StaticResolver;
 import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
+import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 
@@ -52,11 +51,10 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	
 	@Autowired
 	private SingletonObjectDatabase<VFSConfiguration> configService;
-	
-	@Autowired
-	private EventService eventService; 
+
 	
 	private boolean inStartup = false;
+
 	@Override
 	protected Class<SharedFile> getResourceClass() {
 		return SharedFile.class;
@@ -77,12 +75,12 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 						Collection<String> tmp = new ArrayList<>();
 						tmp.add(file.getVirtualPath());
 						file.setVirtualPaths(tmp);
-						saveOrUpdate(file);
 					}
 					if(StringUtils.isBlank(file.getName())) {
-						file.setName(file.getFilename());
-						saveOrUpdate(file);
+						file.setName(file.getFilename());	
 					}
+					file.setOwnerUUID(file.getSharedBy().getUuid());
+					saveOrUpdate(file);
 				}
 			} finally {
 				inStartup = false;
@@ -124,10 +122,25 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 
 	}
 
+	private VirtualFile validateFile(String virtualPath) throws PermissionDeniedException, IOException {
+		VirtualFile file = (VirtualFile) fileService.getFile(virtualPath);
+		if(!file.exists()) {
+			throw new IOException(virtualPath + " does not exist!");
+		}
+		VirtualFolder mount = fileService.getVirtualFolder(file.getMount().getMount());
+		if(file.isFile() && !mount.getShareFiles()) {
+			throw new PermissionDeniedException("You do not have the right to share this file");
+		}
+		if(file.isDirectory() && !mount.getShareFolders()) {
+			throw new PermissionDeniedException("You do not have the right to share this folder");	
+		}
+		return file;
+	}
+	
 	private void validateMultipleFiles(SharedFile object) throws PermissionDeniedException, IOException {
 		
 		for(String virtualPath : object.getVirtualPaths()) {
-			fileService.getFile(virtualPath);
+			validateFile(virtualPath);
 		}
 
 		if(StringUtils.isBlank(object.getFilename())) {
@@ -137,8 +150,9 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 
 	private void validateSingleFile(SharedFile object) throws PermissionDeniedException, IOException {
 
-		AbstractFile file = fileService.getFile(object.getVirtualPaths().iterator().next());
-
+		String virtualPath = object.getVirtualPaths().iterator().next();
+		AbstractFile file = validateFile(virtualPath);
+		
 		if(StringUtils.isBlank(object.getFilename())) {
 			if(file.isDirectory()) {
 				object.setFilename(file.getName() + ".zip");
@@ -277,5 +291,10 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	@Override
 	public void onApplicationStartup() {	
 		applicationService.getBean(FeatureEnablementService.class).registerFeature(SHARING, FeatureGroup.PROFESSIONAL);
+	}
+
+	@Override
+	public Iterable<SharedFile> getUserShares() {
+		return objectDatabase.list(getResourceClass(), SearchField.eq("sharedBy", getCurrentUser().getUuid()));
 	}
 }
