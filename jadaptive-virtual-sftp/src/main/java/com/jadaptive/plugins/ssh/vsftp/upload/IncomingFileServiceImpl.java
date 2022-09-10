@@ -91,6 +91,7 @@ public class IncomingFileServiceImpl extends AuthenticatedService implements Inc
 		resolver.addToken("uploaderName", file.getName());
 		resolver.addToken("uploaderRef", file.getReference());
 		resolver.addToken("shareName", file.getUploadArea());
+		resolver.addToken("uuid", file.getUuid());
 		
 		List<RecipientHolder> emailAddresses =  new ArrayList<>();
 		emailAddresses.add(new RecipientHolder(file.getName(), file.getEmail()));
