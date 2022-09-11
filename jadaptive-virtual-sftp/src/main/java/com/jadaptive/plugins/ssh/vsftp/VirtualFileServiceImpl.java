@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.CacheStrategy;
 import org.apache.commons.vfs2.FileObject;
@@ -31,17 +29,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jadaptive.api.app.ApplicationService;
+import com.jadaptive.api.app.StartupAware;
 import com.jadaptive.api.cache.CacheService;
 import com.jadaptive.api.db.AssignableObjectDatabase;
 import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
+import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.role.Role;
-import com.jadaptive.api.ui.PageCache;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.ssh.vsftp.pgp.EncryptingFileFactory;
-import com.jadaptive.plugins.ssh.vsftp.ui.Tree;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
@@ -51,7 +49,7 @@ import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
 
 @Service
-public class VirtualFileServiceImpl extends AuthenticatedService implements VirtualFileService {
+public class VirtualFileServiceImpl extends AuthenticatedService implements VirtualFileService, StartupAware {
 
 	static Logger log = LoggerFactory.getLogger(VirtualFileServiceImpl.class);
 	
@@ -62,9 +60,6 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	
 	@Autowired
 	private ApplicationService applicationService; 
-
-	@Autowired
-	private PageCache pageCache; 
 	
 	@Autowired
 	private SSHDService sshdService;
@@ -72,14 +67,13 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Autowired
 	private CacheService cacheService; 
 	
+	@Autowired
+	private EventService eventService; 
+	
 	private Set<FileScheme<?>> schemes = new HashSet<>();
 	private Map<String, FileScheme<?>> providers = new HashMap<>();
 	private Map<String, FileSystemManager> managers = new HashMap<>();
 	
-	@PostConstruct
-	private void postConstruct() {
-		pageCache.setHomePage(Tree.class);
-	}
 	
 	@Override
 	public Iterable<VirtualFolder> allObjects() {
@@ -432,5 +426,17 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public VirtualFolder getParentMount(AbstractFile fileObject) {
 		VirtualFile vf = (VirtualFile) fileObject;
 		return getVirtualFolder(vf.getMount().getMount());
+	}
+
+	@Override
+	public void onApplicationStartup() {
+		
+		eventService.any(VirtualFolder.class, (e)->{
+			@SuppressWarnings("rawtypes")
+			Map<String,AbstractFileFactory> cache = 
+					cacheService.getCacheOrCreate(ABSTRACT_FILE_FACTORY, 
+							String.class, AbstractFileFactory.class);
+			cache.clear();
+		});
 	}
 }
