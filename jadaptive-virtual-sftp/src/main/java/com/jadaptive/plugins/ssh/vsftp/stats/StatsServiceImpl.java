@@ -155,7 +155,7 @@ public class StatsServiceImpl extends AuthenticatedService implements StatsServi
 								usageService.incrementDailyValue(SFTP_DIR_CLOSED);
 							});
 							
-							registerDataTransfer(Throughput.EGRESS, (Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED), 
+							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED), 
 										SFTP_DIR_LISTING, 
 										user.getUuid(),
 										getVirtualFolder(evt).getUuid());
@@ -163,7 +163,7 @@ public class StatsServiceImpl extends AuthenticatedService implements StatsServi
 						}
 						case EventCodes.EVENT_SCP_DOWNLOAD_COMPLETE:
 						{
-							registerDataTransfer(Throughput.EGRESS, (Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED),
+							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED),
 										SCP_DOWNLOAD, 
 										user.getUuid(),
 										getVirtualFolder(evt).getUuid());
@@ -171,7 +171,7 @@ public class StatsServiceImpl extends AuthenticatedService implements StatsServi
 						}
 						case EventCodes.EVENT_SFTP_FILE_DOWNLOAD_COMPLETE:
 						{
-							registerDataTransfer(Throughput.EGRESS, (Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED),
+							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED),
 										SFTP_DOWNLOAD,
 										user.getUuid(),
 										getVirtualFolder(evt).getUuid());
@@ -179,7 +179,7 @@ public class StatsServiceImpl extends AuthenticatedService implements StatsServi
 						}
 						case EventCodes.EVENT_SCP_UPLOAD_COMPLETE:
 						{
-							registerDataTransfer(Throughput.INGRESS,(Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED), 
+							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED), 
 										SCP_UPLOAD, 
 										user.getUuid(),
 										getVirtualFolder(evt).getUuid());
@@ -187,7 +187,7 @@ public class StatsServiceImpl extends AuthenticatedService implements StatsServi
 						}
 						case EventCodes.EVENT_SFTP_FILE_UPLOAD_COMPLETE:
 						{
-							registerDataTransfer(Throughput.INGRESS, (Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED), 
+							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_TRANSFERED), 
 										SFTP_UPLOAD, 
 										user.getUuid(),
 										getVirtualFolder(evt).getUuid());
@@ -195,11 +195,11 @@ public class StatsServiceImpl extends AuthenticatedService implements StatsServi
 						}
 						case EventCodes.EVENT_SFTP_FILE_ACCESS:
 						{
-							registerDataTransfer(Throughput.EGRESS, (Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_READ), 
+							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_READ), 
 										SFTP_DOWNLOAD, 
 										user.getUuid(),
 										getVirtualFolder(evt).getUuid());
-							registerDataTransfer(Throughput.INGRESS, (Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_WRITTEN), 
+							usageService.log((Long) evt.getAttribute(EventCodes.ATTRIBUTE_BYTES_WRITTEN), 
 										SFTP_UPLOAD, 
 										user.getUuid(),
 										getVirtualFolder(evt).getUuid());
