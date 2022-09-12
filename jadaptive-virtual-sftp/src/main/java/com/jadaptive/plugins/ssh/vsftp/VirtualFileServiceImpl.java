@@ -47,6 +47,7 @@ import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
+import com.sshtools.common.util.FileUtils;
 
 @Service
 public class VirtualFileServiceImpl extends AuthenticatedService implements VirtualFileService, StartupAware {
@@ -130,6 +131,8 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		
 		assertWrite(VirtualFolder.RESOURCE_KEY);
 
+		folder.setMountPath(FileUtils.checkStartsWithSlash(folder.getMountPath()));
+		
 		FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
 		scheme.configure(folder);
 		
@@ -158,6 +161,8 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	public VirtualFolder createOrUpdate(VirtualFolder folder) throws IOException {
 		
 		assertWrite(VirtualFolder.RESOURCE_KEY);
+		
+		folder.setMountPath(FileUtils.checkStartsWithSlash(folder.getMountPath()));
 		
 		FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
 		scheme.configure(folder);
