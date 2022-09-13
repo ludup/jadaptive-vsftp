@@ -46,7 +46,7 @@ public class IncomingFilesMenu implements ApplicationMenu {
 
 	@Override
 	public String getIcon() {
-		return "inboxes";
+		return "fa-inboxes";
 	}
 
 	@Override

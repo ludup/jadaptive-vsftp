@@ -34,7 +34,7 @@ public class BrowserFilesMenu implements ApplicationMenu {
 
 	@Override
 	public String getIcon() {
-		return "folder-open";
+		return "fa-folder-open";
 	}
 
 	@Override

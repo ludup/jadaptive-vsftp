@@ -34,7 +34,7 @@ public class ConfigureFilesMenu implements ApplicationMenu {
 
 	@Override
 	public String getIcon() {
-		return "cabinet-filing";
+		return "fa-cabinet-filing";
 	}
 
 	@Override

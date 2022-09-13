@@ -33,7 +33,7 @@ public class VFSConfigurationMenu implements ConfigurationPageItem {
 
 	@Override
 	public String getIcon() {
-		return "folder-open";
+		return "fa-folder-open";
 	}
 
 	@Override

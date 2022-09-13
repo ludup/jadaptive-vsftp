@@ -46,7 +46,7 @@ public class UploadFormMenu implements ApplicationMenu {
 
 	@Override
 	public String getIcon() {
-		return "upload";
+		return "fa-upload";
 	}
 
 	@Override

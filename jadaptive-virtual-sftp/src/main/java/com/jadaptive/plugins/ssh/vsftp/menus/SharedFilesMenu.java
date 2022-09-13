@@ -47,7 +47,7 @@ public class SharedFilesMenu implements ApplicationMenu {
 
 	@Override
 	public String getIcon() {
-		return "share-nodes";
+		return "fa-share-nodes";
 	}
 
 	@Override
