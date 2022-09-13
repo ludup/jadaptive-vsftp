@@ -11,7 +11,7 @@ public class VirtualSFTPContext extends SshServerContext {
 
 	SSHInterface intf;
 	public VirtualSFTPContext(SshEngine engine, SSHInterface intf) throws IOException, SshException {
-		super(engine);
+		super(engine, intf.getSecurityLevel());
 		this.intf = intf;
 	}
 	
