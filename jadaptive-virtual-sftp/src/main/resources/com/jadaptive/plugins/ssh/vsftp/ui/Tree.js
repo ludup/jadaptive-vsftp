@@ -41,7 +41,7 @@ function renderDate(val) {
 function renderShare(obj) {
 
 		var html = '<span class="dropdown"><a class="createLink me-2 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="far fa-link fa-fw"></i></a>';
-		html += '<ul class="dropdown-menu" aria-labelledby="' + obj.id + '" style="z-index: 999999;">';	
+		html += '<ul class="dropdown-menu top" aria-labelledby="' + obj.id + '">';	
 	
 		if(obj.shareFiles && !obj.directory) {
 			html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="far fa-copy fa-fw me-1"></i> Share Link</a></li>';
@@ -146,8 +146,8 @@ function ajaxRequest(params) {
 		
 			$.get(url + '?' + $.param(params.data)).then(function(res) {
 		
-				$('table').show();
-		
+				$('table').removeClass('d-none');
+			
 				if (res.success) {
 					params.success(res);
 					$('#path').val(path);

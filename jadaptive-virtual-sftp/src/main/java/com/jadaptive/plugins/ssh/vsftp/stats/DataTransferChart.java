@@ -49,7 +49,7 @@ public class DataTransferChart implements DashboardWidget {
 		
 		sessionUtils.addContentSecurityPolicy(Request.response(), "script-src", SessionUtils.UNSAFE_INLINE);
 		
-		element.appendChild(new Element("div").attr("id", "chart1").addClass("w-100").attr("style", "height: 500px;"));
+		element.appendChild(new Element("div").attr("id", "chart1").addClass("w-100 chart-height"));
 
 		URL url = getClass().getResource(String.format("%s.js", getClass().getSimpleName()));
 		if(Objects.nonNull(url)) {
