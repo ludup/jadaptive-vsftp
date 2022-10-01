@@ -46,9 +46,7 @@ public class ChooseFilesystemSetup extends SetupSection {
 		switch(obj.getFilesystemType()) {
 		case 1:
 		case 2:
-			if(!state.containsPage(CreateMount.class)) {
-				state.insertNextPage(new CreateMount());
-			}
+			state.insertNextPage(new CreateMount());
 			break;
 		default:
 			state.removePage(CreateMount.class);

@@ -63,6 +63,8 @@ public class CreateMount extends SetupSection {
 			FileScheme<?> scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
 			if(scheme.requiresCredentials()) {
 				state.insertNextPage(new CredentialsSetupSection(scheme));
+			} else {
+				state.removePage(CredentialsSetupSection.class);
 			}
 		} catch (IOException e) {
 			throw new IllegalStateException(e.getMessage(), e);
