@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>com.sshtools</groupId>
 			<artifactId>vfs-azure</artifactId>
-			<version>3.3.0-SNAPSHOT</version>
+			<version>3.3.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.commons</groupId>
