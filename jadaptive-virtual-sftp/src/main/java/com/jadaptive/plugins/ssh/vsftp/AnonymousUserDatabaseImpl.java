@@ -104,5 +104,10 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	@Override
 	public void createUser(User user, char[] password, boolean forceChange) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean hasEncryptedPassword(User u) {
+		return true;
 	};
 }
