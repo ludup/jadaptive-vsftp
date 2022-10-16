@@ -32,7 +32,7 @@ public class ChooseFilesystemSetup extends SetupSection {
 			WizardState state = Wizard.getCurrentState();
 			ChooseFilesystem obj = ObjectUtils.assertObject(state.getObject(this), ChooseFilesystem.class);
 			
-			document.selectFirst("#filesystemType").val(obj.getFilesystemType().toString());
+			document.selectFirst(".choose[name=filesystemType][value='" + obj.getFilesystemType().toString()+ "']").attr("checked", "checked");
 		} catch(ValidationException t) {
 		}
 
