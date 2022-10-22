@@ -26,7 +26,7 @@ import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
 
 @ObjectDefinition(resourceKey = SharedFile.RESOURCE_KEY, bundle = SharedFile.RESOURCE_KEY, 
 	type = ObjectType.COLLECTION, scope = ObjectScope.PERSONAL,
-	creatable = true, defaultColumn = "name")
+	creatable = false, updatable = true, defaultColumn = "name")
 @ObjectServiceBean( bean = SharedFileService.class)
 @ObjectViews({ 
 	@ObjectViewDefinition(bundle = SharedFile.RESOURCE_KEY, value = SharedFile.FILE_VIEW, weight = 0),

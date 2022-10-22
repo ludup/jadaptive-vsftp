@@ -14,8 +14,8 @@ import com.jadaptive.plugins.email.AssignmentNotificationPreference;
 import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
 import com.jadaptive.utils.Utils;
 
-@ObjectDefinition(resourceKey = PublicUploadOptions.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT, bundle = PublicUploadWizard.RESOURCE_KEY)
-public class PublicUploadOptions extends UUIDEntity {
+@ObjectDefinition(resourceKey = UploadFormOptions.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT, bundle = UploadFormWizard.RESOURCE_KEY)
+public class UploadFormOptions extends UUIDEntity {
 
 	private static final long serialVersionUID = -8390130225179258343L;
 

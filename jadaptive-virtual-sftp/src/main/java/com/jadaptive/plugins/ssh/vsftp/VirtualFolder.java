@@ -1,15 +1,12 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.vfs2.CacheStrategy;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.events.AuditedObject;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
-import com.jadaptive.api.template.ExcludeView;
 import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
-import com.jadaptive.api.template.FieldView;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectServiceBean;
@@ -26,7 +23,7 @@ import com.jadaptive.api.template.TableView;
 	@ObjectViewDefinition(value = VirtualFolder.ENCRYPTION_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -75),
 	@ObjectViewDefinition(value = VirtualFolder.KEYS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -70),
 	@ObjectViewDefinition(value = VirtualFolder.PERMISSIONS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -25),
-	@ObjectViewDefinition(value = VirtualFolder.ADVANCED_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -00)})
+	@ObjectViewDefinition(value = VirtualFolder.SHARING_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -00)})
 @TableView(defaultColumns = { "name", "mountPath", "scheme", "encrypt", "shareFiles", "shareFolders"})
 @AuditedObject
 public abstract class VirtualFolder extends AssignableUUIDEntity {
@@ -34,9 +31,9 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	public static final String FOLDER_VIEW = "folderView";
 	public static final String CREDS_VIEW = "credsView";
 	public static final String PERMISSIONS_VIEW = "permissionsView";
+	public static final String SHARING_VIEW = "sharingView";
 	public static final String ENCRYPTION_VIEW = "encryptionView";
 	public static final String KEYS_VIEW = "keysView";
-	public static final String ADVANCED_VIEW = "advancedView";
 	
 	private static final long serialVersionUID = -3428053970013170410L;
 
@@ -55,11 +52,11 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	String mountPath;
 	
 	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = PERMISSIONS_VIEW)
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = SHARING_VIEW)
 	Boolean shareFiles;
 	
 	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = PERMISSIONS_VIEW)
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = SHARING_VIEW)
 	Boolean shareFolders;
 	
 	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
@@ -94,10 +91,10 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
 	String publicKey;
 	
-	@ObjectField(type = FieldType.ENUM, defaultValue = "ON_RESOLVE")
-	@ExcludeView(values = FieldView.TABLE)
-	@ObjectView(value = VirtualFolder.ADVANCED_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = 9999)
-	CacheStrategy cacheStrategy;
+//	@ObjectField(type = FieldType.ENUM, defaultValue = "ON_RESOLVE")
+//	@ExcludeView(values = FieldView.TABLE)
+//	@ObjectView(value = VirtualFolder.ADVANCED_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = 9999)
+//	CacheStrategy cacheStrategy;
 	
 	public abstract VirtualFolderPath getPath();
 	
@@ -137,13 +134,13 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 		this.readOnly = readOnly;
 	}
 
-	public CacheStrategy getCacheStrategy() {
-		return cacheStrategy;
-	}
-
-	public void setCacheStrategy(CacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
+//	public CacheStrategy getCacheStrategy() {
+//		return cacheStrategy;
+//	}
+//
+//	public void setCacheStrategy(CacheStrategy cacheStrategy) {
+//		this.cacheStrategy = cacheStrategy;
+//	}
 	
 	public Boolean getShareFiles() {
 		return shareFiles;

@@ -10,8 +10,8 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 
-@ObjectDefinition(resourceKey = PublicUploadAssignment.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT, bundle = PublicUploadWizard.RESOURCE_KEY)
-public class PublicUploadAssignment extends UUIDEntity {
+@ObjectDefinition(resourceKey = UploadFormAssignment.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT, bundle = UploadFormWizard.RESOURCE_KEY)
+public class UploadFormAssignment extends UUIDEntity {
 
 	private static final long serialVersionUID = -8207554236785132336L;
 

@@ -23,7 +23,7 @@ import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
 
 @Extension
 @RequestPage(path = "download-terms/{shortCode}/{filename}")
-@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "freemarker", "jadaptive-utils", "i18n"} )
+@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "freemarker", "jadaptive-utils" } )
 @PageProcessors(extensions = { "i18n"} )
 public class TermsAndConditionsPage extends HtmlPage {
 	

@@ -9,32 +9,32 @@ import com.jadaptive.utils.ObjectUtils;
 import com.sshtools.common.util.FileUtils;
 
 @Component
-public class PublicUploadStep1 extends PublicUploadSection {
+public class UploadFormStep1 extends UploadFormSection {
 
-	public PublicUploadStep1() {
-		super("publicUploadWizard", "publicUploadStep1", "PublicUploadStep1.html");
+	public UploadFormStep1() {
+		super(UploadFormWizard.RESOURCE_KEY, "publicUploadStep1", "PublicUploadStep1.html");
 	}
 	
 	@Override
 	public void processReview(Document document, WizardState state) {
 
 		Element content = document.selectFirst("#wizardContent");
-		PublicUploadName name =  ObjectUtils.assertObject(state.getObject(this), PublicUploadName.class);
+		UploadFormName name =  ObjectUtils.assertObject(state.getObject(this), UploadFormName.class);
 
 		content.appendChild(new Element("div")
 				.addClass("col-12 w-100 my-3")
 				.appendChild(new Element("h4")
 					.attr("jad:i18n", "review.name.header")
-					.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY))
+					.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY))
 				.appendChild(new Element("p")
-						.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
+						.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY)
 						.attr("jad:i18n", "review.name.desc"))
 				.appendChild(new Element("div")
 					.addClass("row")
 					.appendChild(new Element("div")
 							.addClass("col-3")
 							.appendChild(new Element("span")
-									.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
+									.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY)
 									.attr("jad:i18n", "name.name")))
 					.appendChild(new Element("div")
 								.addClass("col-9")
@@ -45,7 +45,7 @@ public class PublicUploadStep1 extends PublicUploadSection {
 					.appendChild(new Element("div")
 							.addClass("col-3")
 							.appendChild(new Element("span")
-									.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
+									.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY)
 									.attr("jad:i18n", "virtualPath.name")))
 					.appendChild(new Element("div")
 								.addClass("col-9")

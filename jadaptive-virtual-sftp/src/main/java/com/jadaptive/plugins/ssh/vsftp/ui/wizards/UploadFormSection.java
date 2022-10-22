@@ -2,9 +2,9 @@ package com.jadaptive.plugins.ssh.vsftp.ui.wizards;
 
 import com.jadaptive.api.ui.wizards.WizardSection;
 
-public class PublicUploadSection extends WizardSection {
+public class UploadFormSection extends WizardSection {
 
-	public PublicUploadSection(String bundle, String name, String resource) {
+	public UploadFormSection(String bundle, String name, String resource) {
 		super(bundle, name, resource);
 	}
 

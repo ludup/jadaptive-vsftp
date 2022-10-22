@@ -25,10 +25,11 @@ import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 import com.jadaptive.utils.ObjectUtils;
 
 @Component
-public class PublicUploadStep2 extends PublicUploadSection {
+public class UploadFormStep2 extends UploadFormSection {
 
 	private static final String REQUEST_PARAM_TYPE = "type";
 
@@ -43,8 +44,8 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	
 	public static final String SHORTCODE = "shortcode";
 	
-	public PublicUploadStep2() {
-		super("publicUploadWizard", "publicUploadStep2", "PublicUploadStep2.html");
+	public UploadFormStep2() {
+		super(UploadForm.RESOURCE_KEY, "publicUploadStep2", "PublicUploadStep2.html");
 	}
 
 	@Override
@@ -54,9 +55,9 @@ public class PublicUploadStep2 extends PublicUploadSection {
 		try {
 			FileScheme<?> scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
 			if(scheme.requiresCredentials()) {
-				state.insertNextPage(new CredentialsSetupSection(scheme));
+				state.insertNextPage(new UploadFormCredentialsSection(scheme));
 			} else {
-				state.removePage(CredentialsSetupSection.class);
+				state.removePage(UploadFormCredentialsSection.class);
 			}
 		} catch (IOException e) {
 			throw new IllegalStateException(e.getMessage(), e);
@@ -66,10 +67,10 @@ public class PublicUploadStep2 extends PublicUploadSection {
 	@Override
 	protected void processSection(Document document, Element element, Page page) throws IOException {
 		
-		WizardState state = wizardService.getWizard("publicUploadWizard").getState(Request.get());
+		WizardState state = wizardService.getWizard(UploadFormWizard.RESOURCE_KEY).getState(Request.get());
 		
-		if(state.containsPage(CredentialsSetupSection.class)) {
-			state.removePage(CredentialsSetupSection.class);
+		if(state.containsPage(UploadFormCredentialsSection.class)) {
+			state.removePage(UploadFormCredentialsSection.class);
 		}
 		
 		DropdownInput input = new DropdownInput(REQUEST_PARAM_TYPE, "selectMount");
@@ -117,7 +118,7 @@ public class PublicUploadStep2 extends PublicUploadSection {
 		content.appendChild(new Element("div")
 				.attr("jad:bundle", template.getBundle())
 				.attr("jad:id", "objectRenderer")
-				.attr("jad:handler", PublicUploadWizard.RESOURCE_KEY)
+				.attr("jad:handler", UploadFormWizard.RESOURCE_KEY)
 				.attr("jad:disableViews", "true")
 				.attr("jad:ignores", "appendUsername")
 				.attr("jad:resourceKey", scheme.getPathTemplate().getResourceKey()));
@@ -141,9 +142,9 @@ public class PublicUploadStep2 extends PublicUploadSection {
 					.addClass("col-12 w-100 my-3")
 					.appendChild(new Element("h4")
 						.attr("jad:i18n", "review.homeMount.header")
-						.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY))
+						.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY))
 					.appendChild(new Element("p")
-							.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
+							.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY)
 							.attr("jad:i18n", "review.homeMount.desc"))
 					.appendChild(new Element("div")
 						.addClass("row")

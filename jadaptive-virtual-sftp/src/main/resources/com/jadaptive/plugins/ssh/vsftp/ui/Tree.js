@@ -314,7 +314,7 @@ $(function() {
 
 		$.post({
 			url: '/app/vfs/share/create',
-			data: $.params({ paths: $(this).data('path') }),
+			data: $.param({ paths: $(this).data('path') }),
 			dataType: 'json',
 			success: function(data) {
 				if (data.success) {

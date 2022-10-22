@@ -12,7 +12,7 @@ import com.jadaptive.utils.ObjectUtils;
 import com.jadaptive.utils.Utils;
 
 @Component
-public class PublicUploadStep3 extends PublicUploadSection {
+public class UploadFormStep3 extends UploadFormSection {
 
 	@Autowired
 	private RoleService roleService; 
@@ -20,30 +20,30 @@ public class PublicUploadStep3 extends PublicUploadSection {
 	@Autowired
 	private UserService userService; 
 	
-	public PublicUploadStep3() {
-		super("publicUploadWizard", "publicUploadStep3", "PublicUploadStep3.html");
+	public UploadFormStep3() {
+		super(UploadFormWizard.RESOURCE_KEY, "publicUploadStep3", "PublicUploadStep3.html");
 	}
 	
 	@Override
 	public void processReview(Document document, WizardState state) {
 
 		Element content = document.selectFirst("#wizardContent");
-		PublicUploadAssignment assignments = ObjectUtils.assertObject(state.getObject(this), PublicUploadAssignment.class);
+		UploadFormAssignment assignments = ObjectUtils.assertObject(state.getObject(this), UploadFormAssignment.class);
 
 		content.appendChild(new Element("div")
 				.addClass("col-12 w-100 my-3")
 				.appendChild(new Element("h4")
 					.attr("jad:i18n", "review.assignment.header")
-					.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY))
+					.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY))
 				.appendChild(new Element("p")
-						.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
+						.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY)
 						.attr("jad:i18n", "review.assignment.desc"))
 				.appendChild(new Element("div")
 					.addClass("row")
 					.appendChild(new Element("div")
 							.addClass("col-3")
 							.appendChild(new Element("span")
-									.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
+									.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY)
 									.attr("jad:i18n", "users.name")))
 					.appendChild(new Element("div")
 								.addClass("col-9")
@@ -54,7 +54,7 @@ public class PublicUploadStep3 extends PublicUploadSection {
 					.appendChild(new Element("div")
 							.addClass("col-3")
 							.appendChild(new Element("span")
-									.attr("jad:bundle", PublicUploadWizard.RESOURCE_KEY)
+									.attr("jad:bundle", UploadFormWizard.RESOURCE_KEY)
 									.attr("jad:i18n", "roles.name")))
 					.appendChild(new Element("div")
 								.addClass("col-9")

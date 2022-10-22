@@ -7,11 +7,11 @@ import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.ui.QuickSetupItem;
 import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.ui.wizards.PublicUploadWizard;
+import com.jadaptive.plugins.ssh.vsftp.ui.wizards.UploadFormWizard;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 
 @Extension
-public class PublicUploadQuickSetupItem implements QuickSetupItem {
+public class UploadFormQuickSetupItem implements QuickSetupItem {
 
 	@Autowired
 	private ApplicationService applicationService; 
@@ -28,7 +28,7 @@ public class PublicUploadQuickSetupItem implements QuickSetupItem {
 
 	@Override
 	public String getLink() {
-		return "/app/ui/wizards/" + PublicUploadWizard.RESOURCE_KEY;
+		return "/app/ui/wizards/" + UploadFormWizard.RESOURCE_KEY;
 	}
 
 	@Override

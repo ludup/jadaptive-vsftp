@@ -9,8 +9,8 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 
-@ObjectDefinition(resourceKey = PublicUploadName.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT, bundle = PublicUploadWizard.RESOURCE_KEY)
-public class PublicUploadName extends UUIDEntity {
+@ObjectDefinition(resourceKey = UploadFormName.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT, bundle = UploadFormWizard.RESOURCE_KEY)
+public class UploadFormName extends UUIDEntity {
 
 	private static final long serialVersionUID = -3801741503005746668L;
 	
@@ -22,11 +22,11 @@ public class PublicUploadName extends UUIDEntity {
 	}
 	
 	@ObjectField(type = FieldType.TEXT)
-	@Validator(type = ValidationType.REGEX, value = "^[a-zA-Z0-9_\\- ]{4,64}$", bundle = PublicUploadWizard.RESOURCE_KEY, i18n = "name.invalid")
+	@Validator(type = ValidationType.REGEX, value = "^[a-zA-Z0-9_\\- ]{4,64}$", bundle = UploadFormWizard.RESOURCE_KEY, i18n = "name.invalid")
 	String name;
 	
 	@ObjectField(type = FieldType.TEXT, defaultValue = "/public")
-	@Validator(type = ValidationType.REGEX, value = "^\\/[a-zA-Z0-9_\\- \\/]*$", bundle = PublicUploadWizard.RESOURCE_KEY, i18n = "virtualPath.invalid")
+	@Validator(type = ValidationType.REGEX, value = "^\\/[a-zA-Z0-9_\\- \\/]*$", bundle = UploadFormWizard.RESOURCE_KEY, i18n = "virtualPath.invalid")
 	String virtualPath;
 
 	public String getName() {

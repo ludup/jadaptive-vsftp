@@ -17,16 +17,19 @@ import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.email.AssignmentNotificationPreference;
 import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
+import com.jadaptive.plugins.ssh.vsftp.ui.wizards.UploadFormWizard;
 
 @ObjectDefinition(resourceKey = UploadForm.RESOURCE_KEY, bundle = UploadForm.RESOURCE_KEY, 
-	type = ObjectType.COLLECTION, creatable = true, defaultColumn = "name")
+	type = ObjectType.COLLECTION, creatable = false, defaultColumn = "name")
 @ObjectViews({ 
 	@ObjectViewDefinition(bundle = UploadForm.RESOURCE_KEY, value = UploadForm.FILE_VIEW, weight = 0),
 	@ObjectViewDefinition(bundle = UploadForm.RESOURCE_KEY, value = UploadForm.OPTIONS_VIEW, weight = 100),
 	@ObjectViewDefinition(bundle = UploadForm.RESOURCE_KEY, value = UploadForm.NOTIFICATIONS_VIEW, weight = 200) })
 @TableView(defaultColumns = { "name", "virtualPath" },
-             actions = { @TableAction(bundle = UploadForm.RESOURCE_KEY, icon = "fa-link", 
-             resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/incoming/{shortCode}") })
+             actions = {
+      @TableAction(bundle = UploadForm.RESOURCE_KEY, icon = "fa-link", resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/incoming/{shortCode}"),
+      @TableAction(resourceKey = "createUpload", bundle = UploadFormWizard.RESOURCE_KEY, url = "wizards/uploadForm", icon = "fa-wand-magic-sparkles", writeAction = true)
+})
 public class UploadForm extends NamedUUIDEntity {
 
 	private static final long serialVersionUID = 6440151078128444905L;

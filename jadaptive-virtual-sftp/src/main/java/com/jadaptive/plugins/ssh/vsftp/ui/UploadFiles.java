@@ -12,7 +12,7 @@ import com.jadaptive.api.ui.RequestPage;
 
 @Extension
 @RequestPage(path = "upload-files/")
-@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "jadaptive-utils", "i18n"} )
+@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "jadaptive-utils" } )
 @PageProcessors(extensions = { "i18n"} )
 public class UploadFiles extends AuthenticatedPage {
 	

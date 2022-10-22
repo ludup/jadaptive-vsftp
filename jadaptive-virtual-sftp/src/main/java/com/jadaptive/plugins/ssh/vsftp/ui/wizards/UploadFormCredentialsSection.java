@@ -11,12 +11,13 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.ui.Page;
 import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 
-public class CredentialsSetupSection extends PublicUploadSection {
+public class UploadFormCredentialsSection extends UploadFormSection {
 
 		FileScheme<?> scheme;
-		public CredentialsSetupSection(FileScheme<?> scheme) {
-			super("publicUploadWizard", 
+		public UploadFormCredentialsSection(FileScheme<?> scheme) {
+			super(UploadForm.RESOURCE_KEY, 
 					"homeCredentials", 
 					"PublicUploadStep2a.html");
 			this.scheme = scheme;
@@ -30,7 +31,7 @@ public class CredentialsSetupSection extends PublicUploadSection {
 			content.appendChild(new Element("div")
 					.attr("jad:bundle", template.getBundle())
 					.attr("jad:id", "objectRenderer")
-					.attr("jad:handler", PublicUploadWizard.RESOURCE_KEY)
+					.attr("jad:handler", UploadFormWizard.RESOURCE_KEY)
 					.attr("jad:disableViews", "true")
 					.attr("jad:resourceKey", scheme.getCredentialsTemplate().getResourceKey()));
 			

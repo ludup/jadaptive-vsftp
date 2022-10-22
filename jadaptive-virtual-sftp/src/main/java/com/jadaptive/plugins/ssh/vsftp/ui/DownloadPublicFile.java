@@ -37,7 +37,7 @@ import com.sshtools.common.util.FileUtils;
 
 @Extension
 @RequestPage(path = "download/{shortCode}/{filename}")
-@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrapTable", "jadaptive-utils", "i18n"} )
+@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrapTable", "jadaptive-utils"} )
 @PageProcessors(extensions = { "i18n"} )
 public class DownloadPublicFile extends HtmlPage {
 
@@ -166,7 +166,7 @@ public class DownloadPublicFile extends HtmlPage {
 		if(fileObject.isDirectory()) {
 			String zipFile = fileObject.getName() + ".zip";
 			document.select(".filename").html(zipFile);	
-			document.selectFirst("#information").appendChild(Html.span(VirtualFolder.RESOURCE_KEY, "multipleFiles.text"));
+			document.selectFirst("#information").appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "multipleFiles.text"));
 		} else {
 			document.select(".filename").html(fileObject.getName());
 		}
@@ -178,12 +178,24 @@ public class DownloadPublicFile extends HtmlPage {
 						.appendChild(Html.i18n("default", "download.name"))
 						.attr("id", "downloadLink"));
 	
-		document.selectFirst("#downloadLinks").appendChild(new Element("p")
-				).appendChild(Html.a(
+		document.selectFirst("#downloadLinks").appendChild(Html.div("mt-3")
+				.appendChild(Html.a(
+						Request.get().getRequestURL().toString())
+						.addClass("copyURL")
+						.appendChild(Html.i("fa-regular", "fa-copy", "me-1"))
+						.appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "copyURL.name")))
+				.appendChild(Html.div("text-muted", "small")
+						.appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "copyURL.desc"))));
+		
+		document.selectFirst("#downloadLinks").appendChild(Html.div("mt-3")
+				.appendChild(Html.a(
 						Utils.getBaseURL(Request.get().getRequestURL().toString()) + downloadService.getDirectLink(download))
 						.addClass("copyURL")
 						.appendChild(Html.i("fa-regular", "fa-copy", "me-1"))
-						.appendChild(Html.i18n("default", "copyURL.name")));
+						.appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "copyDirect.name")))
+				.appendChild(Html.div("text-muted", "small")
+						.appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "copyDirect.desc"))));
+
 		
 	}
 

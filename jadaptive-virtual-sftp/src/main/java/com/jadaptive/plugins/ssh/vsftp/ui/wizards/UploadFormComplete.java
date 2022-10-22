@@ -22,7 +22,7 @@ import com.sshtools.common.util.FileUtils;
 @RequestPage(path = "public-upload-wizard-complete")
 @PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "jadaptive-utils"})
 @PageProcessors(extensions = { "i18n"} )
-public class PublicUploadComplete extends HtmlPage {
+public class UploadFormComplete extends HtmlPage {
 
 	@Autowired
 	private WizardService wizardService; 
@@ -35,7 +35,7 @@ public class PublicUploadComplete extends HtmlPage {
 	@Override
 	protected void generateContent(Document document) throws IOException {
 		
-		WizardState state = wizardService.getWizard(PublicUploadWizard.RESOURCE_KEY).getState(Request.get());
+		WizardState state = wizardService.getWizard(UploadFormWizard.RESOURCE_KEY).getState(Request.get());
 		
 		if(!state.isFinished()) {
 			throw new IllegalStateException("Incomplete public upload wizard!");
@@ -48,7 +48,7 @@ public class PublicUploadComplete extends HtmlPage {
 		url.attr("href", generatedURL);
 		url.text(generatedURL);
 		
-		wizardService.getWizard(PublicUploadWizard.RESOURCE_KEY).clearState(Request.get());
+		wizardService.getWizard(UploadFormWizard.RESOURCE_KEY).clearState(Request.get());
 		
 		super.generateContent(document);
 	}

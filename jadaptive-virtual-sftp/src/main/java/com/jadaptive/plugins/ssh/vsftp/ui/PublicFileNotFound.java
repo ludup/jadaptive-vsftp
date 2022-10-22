@@ -13,7 +13,7 @@ import com.jadaptive.api.ui.RequestPage;
 
 @Extension
 @RequestPage(path = "file-not-found")
-@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrapTable", "jadaptive-utils", "i18n"} )
+@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "bootstrapTable", "jadaptive-utils"} )
 @PageProcessors(extensions = { "i18n"} )
 public class PublicFileNotFound extends HtmlPage {
 	

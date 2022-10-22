@@ -39,9 +39,9 @@ import com.sshtools.common.util.FileUtils;
 
 @Extension
 @Component
-public class PublicUploadWizard extends AbstractWizard {
+public class UploadFormWizard extends AbstractWizard {
 
-	public static final String RESOURCE_KEY = "publicUploadWizard";
+	public static final String RESOURCE_KEY = "uploadForm";
 
 	public static final String REQUEST_PARAM_TYPE = "type";
 	
@@ -69,7 +69,7 @@ public class PublicUploadWizard extends AbstractWizard {
 	@Autowired
 	private ApplicationService applicationService; 
 	
-	public static final String STATE_ATTR = "publicUploadWizardState";
+	public static final String STATE_ATTR = "uploadFormWizardState";
 	
 	@Override
 	public String getResourceKey() {
@@ -78,12 +78,12 @@ public class PublicUploadWizard extends AbstractWizard {
 
 	@Override
 	public Page getCompletePage() throws FileNotFoundException {
-		return pageCache.resolvePage(PublicUploadComplete.class);
+		return pageCache.resolvePage(UploadFormComplete.class);
 	}
 
 	@Override
-	protected Class<? extends PublicUploadSection> getSectionClass() {
-		return PublicUploadSection.class;
+	protected Class<? extends UploadFormSection> getSectionClass() {
+		return UploadFormSection.class;
 	}
 
 	@Override
@@ -93,12 +93,12 @@ public class PublicUploadWizard extends AbstractWizard {
 
 	@Override
 	protected WizardSection getFinishSection() {
-		return new PublicUploadSection(getResourceKey(), "publicUploadFinish", "PublicUploadFinish.html");
+		return new UploadFormSection(getResourceKey(), "publicUploadFinish", "PublicUploadFinish.html");
 	}
 
 	@Override
 	protected WizardSection getStartSection() {
-		return new PublicUploadSection(getResourceKey(), "publicUploadStart", "PublicUploadStart.html");
+		return new UploadFormSection(getResourceKey(), "publicUploadStart", "PublicUploadStart.html");
 	}
 
 	@Override
@@ -125,10 +125,10 @@ public class PublicUploadWizard extends AbstractWizard {
 				String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
 				FileScheme<?> scheme = fileService.getFileScheme(folderType);
 
-				PublicUploadName name = ObjectUtils.assertObject(state.getObject(PublicUploadName.class), PublicUploadName.class);
-				PublicUploadAssignment assignments = ObjectUtils.assertObject(state.getObject(PublicUploadAssignment.class), PublicUploadAssignment.class);
+				UploadFormName name = ObjectUtils.assertObject(state.getObject(UploadFormName.class), UploadFormName.class);
+				UploadFormAssignment assignments = ObjectUtils.assertObject(state.getObject(UploadFormAssignment.class), UploadFormAssignment.class);
 				VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(scheme.getPathClass()), scheme.getPathClass());
-				PublicUploadOptions options = ObjectUtils.assertObject(state.getObject(PublicUploadOptions.class), PublicUploadOptions.class);
+				UploadFormOptions options = ObjectUtils.assertObject(state.getObject(UploadFormOptions.class), UploadFormOptions.class);
 				
 				VirtualFolderCredentials creds = null;
 				if(scheme.requiresCredentials()) {
