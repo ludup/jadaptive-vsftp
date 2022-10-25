@@ -3,7 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp;
 import org.apache.commons.lang3.StringUtils;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.events.AuditedObject;
+import com.jadaptive.api.events.GenerateEventTemplates;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
 import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
@@ -25,7 +25,6 @@ import com.jadaptive.api.template.TableView;
 	@ObjectViewDefinition(value = VirtualFolder.PERMISSIONS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -25),
 	@ObjectViewDefinition(value = VirtualFolder.SHARING_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -00)})
 @TableView(defaultColumns = { "name", "mountPath", "scheme", "encrypt", "shareFiles", "shareFolders"})
-@AuditedObject
 public abstract class VirtualFolder extends AssignableUUIDEntity {
 
 	public static final String FOLDER_VIEW = "folderView";
@@ -48,7 +47,7 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	String scheme = getType() + ".name";
 	
 	@ObjectField(type = FieldType.TEXT, searchable = true, unique = true)
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "")
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = FOLDER_VIEW)
 	String mountPath;
 	
 	@ObjectField(type = FieldType.BOOL, defaultValue = "false")

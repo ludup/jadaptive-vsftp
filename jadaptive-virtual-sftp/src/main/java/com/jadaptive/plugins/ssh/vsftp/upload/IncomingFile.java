@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
+import com.jadaptive.api.events.GenerateEventTemplates;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
@@ -21,7 +22,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 
 @ObjectDefinition(
-		 bundle = VirtualFolder.RESOURCE_KEY,
+		 bundle = IncomingFile.RESOURCE_KEY,
 		 resourceKey = IncomingFile.RESOURCE_KEY, 
 		 type = ObjectType.COLLECTION,
 		 scope = ObjectScope.ASSIGNED,
@@ -31,11 +32,13 @@ import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 		 deletable = false,
 		 updatable = false)
 @TableView(defaultColumns = {  "reference", "uploadArea", "name", "email" }, requiresCreate = false, actions = {
-		@TableAction(target = Target.ROW, bundle = VirtualFolder.RESOURCE_KEY, window = Window.SELF,
+		@TableAction(target = Target.ROW, bundle = IncomingFile.RESOURCE_KEY, window = Window.SELF,
 				icon = "fa-download", resourceKey = "downloadFiles", url = "/app/vfs/incoming/zip/{uuid}"),
 		@TableAction(target = Target.ROW, bundle = VirtualFolder.RESOURCE_KEY, window = Window.SELF, writeAction = true,
 		icon = "fa-trash", resourceKey = "deleteFile", url = "/app/vfs/incoming/delete/{uuid}", confirmationRequired = true)})
-@ObjectViews(@ObjectViewDefinition(value = "files", bundle = VirtualFolder.RESOURCE_KEY))
+@ObjectViews({ @ObjectViewDefinition(value = "info", bundle = IncomingFile.RESOURCE_KEY),
+		@ObjectViewDefinition(value = "files", bundle = IncomingFile.RESOURCE_KEY)})
+@GenerateEventTemplates(IncomingFile.RESOURCE_KEY)
 public class IncomingFile extends AssignableUUIDEntity {
 
 	private static final long serialVersionUID = -854502529745282888L;
@@ -43,15 +46,18 @@ public class IncomingFile extends AssignableUUIDEntity {
 	public static final String RESOURCE_KEY = "incomingFiles";
 	
 	@ObjectField(type = FieldType.TEXT, searchable = true)
+	@ObjectView("info")
 	String name;
 	
 	@ObjectField(type = FieldType.TEXT, searchable = true)
+	@ObjectView("info")
 	String email;
 	
 	@ObjectField(type = FieldType.TEXT, searchable = true)
 	String reference;
 	
 	@ObjectField(type = FieldType.TEXT, searchable = true)
+	@ObjectView("info")
 	String uploadArea;
 	
 	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = UploadForm.RESOURCE_KEY, hidden = true)

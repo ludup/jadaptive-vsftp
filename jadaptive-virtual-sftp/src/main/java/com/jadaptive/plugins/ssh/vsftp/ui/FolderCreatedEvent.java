@@ -15,7 +15,9 @@ import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 @AuditedObject
-@ObjectDefinition(resourceKey = FolderCreatedEvent.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT, bundle = VirtualFolder.RESOURCE_KEY)
+@ObjectDefinition(resourceKey = FolderCreatedEvent.RESOURCE_KEY, scope = ObjectScope.GLOBAL, 
+		type = ObjectType.OBJECT, bundle = VirtualFolder.RESOURCE_KEY,
+		creatable = false, updatable = false, deletable = false)
 @ObjectViews({@ObjectViewDefinition(bundle = VirtualFolder.RESOURCE_KEY, value = ObjectEvent.OBJECT_VIEW)})
 public class FolderCreatedEvent extends ObjectEvent<FileOperation> {
 

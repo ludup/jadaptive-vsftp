@@ -13,7 +13,9 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
-@ObjectDefinition(resourceKey = TransferResult.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.COLLECTION, bundle = VirtualFolder.RESOURCE_KEY)
+@ObjectDefinition(resourceKey = TransferResult.RESOURCE_KEY, scope = ObjectScope.GLOBAL, 
+			type = ObjectType.OBJECT, bundle = VirtualFolder.RESOURCE_KEY,
+			creatable = false, updatable = false, deletable = false)
 public class TransferResult extends UUIDEntity {
 
 	private static final long serialVersionUID = 7395109201689299682L;

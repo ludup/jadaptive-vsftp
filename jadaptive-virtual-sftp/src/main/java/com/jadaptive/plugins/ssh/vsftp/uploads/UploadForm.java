@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.uploads;
 import java.util.Collection;
 
 import com.jadaptive.api.entity.ObjectType;
+import com.jadaptive.api.events.GenerateEventTemplates;
 import com.jadaptive.api.repository.NamedUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
@@ -17,6 +18,7 @@ import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.email.AssignmentNotificationPreference;
 import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
+import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.ui.wizards.UploadFormWizard;
 
 @ObjectDefinition(resourceKey = UploadForm.RESOURCE_KEY, bundle = UploadForm.RESOURCE_KEY, 
@@ -30,6 +32,7 @@ import com.jadaptive.plugins.ssh.vsftp.ui.wizards.UploadFormWizard;
       @TableAction(bundle = UploadForm.RESOURCE_KEY, icon = "fa-link", resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/incoming/{shortCode}"),
       @TableAction(resourceKey = "createUpload", bundle = UploadFormWizard.RESOURCE_KEY, url = "wizards/uploadForm", icon = "fa-wand-magic-sparkles", writeAction = true)
 })
+@GenerateEventTemplates(UploadForm.RESOURCE_KEY)
 public class UploadForm extends NamedUUIDEntity {
 
 	private static final long serialVersionUID = 6440151078128444905L;
