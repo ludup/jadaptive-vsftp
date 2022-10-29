@@ -17,7 +17,7 @@ public class WindowsCredentials extends VirtualFolderCredentials implements User
 	public static final String RESOURCE_KEY =  "windowsCredentials";
 
 	@ObjectField(type = FieldType.TEXT, automaticEncryption = true)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW)
+	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = WindowsFolder.RESOURCE_KEY)
 	String domain;
 	
 	@ObjectField(type = FieldType.TEXT, automaticEncryption = true)

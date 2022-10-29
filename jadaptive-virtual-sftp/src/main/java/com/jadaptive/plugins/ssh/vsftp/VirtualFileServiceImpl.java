@@ -39,6 +39,7 @@ import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
+import com.jadaptive.plugins.ssh.vsftp.behaviours.PGPBehaviour;
 import com.jadaptive.plugins.ssh.vsftp.pgp.EncryptingFileFactory;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
@@ -190,7 +191,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			String uri = scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString();
 			FileObject obj = mgr.resolveFile(uri, opts);
 			
-			if(!obj.exists() && (scheme.createRoot() || folder.getPath().getCreateRoot())) {
+			if(!obj.exists() && scheme.createRoot()) {
 				obj.createFolder();
 			}
 			
@@ -264,10 +265,12 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 
 			String uri = scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString();
 			
-			if(folder.getEncrypt()) {
+			PGPBehaviour pgp = VirtualFolderHelper.getSingleBehaviour(folder, PGPBehaviour.class);
+			if(Objects.nonNull(pgp) && pgp.getEncrypt()) {
 				return new VirtualFolderMount(folder,
 						uri,
 						new EncryptingFileFactory(
+								pgp,
 								scheme.configureFactory(
 								new VFSFileFactory(manager, opts, uri)), folder), 
 								scheme.createRoot());

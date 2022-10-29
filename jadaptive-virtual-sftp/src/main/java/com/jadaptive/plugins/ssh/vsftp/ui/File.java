@@ -5,6 +5,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderBehaviour;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderHelper;
+import com.jadaptive.plugins.ssh.vsftp.behaviours.SharingBehaviour;
 import com.mongodb.internal.HexUtils;
 import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
@@ -34,7 +37,7 @@ public class File {
 	}
 	
 	public boolean getEncrypted() {
-		return mount!=null ? mount.getEncrypt() : parent != null ? parent.getEncrypt() : false;
+		return mount!=null ? mount.getEncrypted() : parent != null ? parent.getEncrypted() : false;
 	}
 	
 	public long getLength() {
@@ -102,11 +105,27 @@ public class File {
 	}
 	
 	public boolean isShareFiles() {
-		return parent == null ? false : parent.getShareFiles();
+		if(parent == null) {
+			return false;
+		}
+
+		SharingBehaviour b = VirtualFolderHelper.getSingleBehaviour(parent, SharingBehaviour.class);
+		if(Objects.nonNull(b)) {
+			return b.getShareFiles();
+		}
+		return false;
 	}
 	
 	public boolean isShareFolders() {
-		return parent == null ? false : parent.getShareFolders();
+		if(parent == null) {
+			return false;
+		}
+
+		SharingBehaviour b = VirtualFolderHelper.getSingleBehaviour(parent, SharingBehaviour.class);
+		if(Objects.nonNull(b)) {
+			return b.getShareFolders();
+		}
+		return false;
 	}
 	
 	public boolean isReadOnly() {

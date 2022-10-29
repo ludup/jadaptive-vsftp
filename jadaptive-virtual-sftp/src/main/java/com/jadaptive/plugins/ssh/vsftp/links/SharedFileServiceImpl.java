@@ -30,6 +30,8 @@ import com.jadaptive.plugins.licensing.FeatureGroup;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderHelper;
+import com.jadaptive.plugins.ssh.vsftp.behaviours.SharingBehaviour;
 import com.jadaptive.utils.StaticResolver;
 import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
@@ -128,10 +130,15 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 			throw new IOException(virtualPath + " does not exist!");
 		}
 		VirtualFolder mount = fileService.getVirtualFolder(file.getMount().getMount());
-		if(file.isFile() && !mount.getShareFiles()) {
+
+		SharingBehaviour b = VirtualFolderHelper.getSingleBehaviour(mount, SharingBehaviour.class);
+		if(Objects.isNull(b)) {
 			throw new PermissionDeniedException("You do not have the right to share this file");
 		}
-		if(file.isDirectory() && !mount.getShareFolders()) {
+		if(file.isFile() && !b.getShareFiles()) {
+			throw new PermissionDeniedException("You do not have the right to share this file");
+		}
+		if(file.isDirectory() && !b.getShareFolders()) {
 			throw new PermissionDeniedException("You do not have the right to share this folder");	
 		}
 		return file;

@@ -20,10 +20,10 @@ public abstract class VirtualFolderPath extends AbstractUUIDEntity {
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = 9999)
 	Boolean appendUsername = Boolean.FALSE;
 	
-	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "", weight = 9998)
-	@ExcludeView(values = { FieldView.READ, FieldView.TABLE, FieldView.UPDATE })
-	Boolean createRoot;
+//	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
+//	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "", weight = 9998)
+//	@ExcludeView(values = { FieldView.READ, FieldView.TABLE, FieldView.UPDATE })
+//	Boolean createRoot;
 	
 	protected abstract String getDestinationUri();
 
@@ -42,13 +42,13 @@ public abstract class VirtualFolderPath extends AbstractUUIDEntity {
 		return getDestinationUri();
 	}
 
-	public Boolean getCreateRoot() {
-		return createRoot;
-	}
-
-	public void setCreateRoot(Boolean createRoot) {
-		this.createRoot = createRoot;
-	}
+//	public Boolean getCreateRoot() {
+//		return createRoot;
+//	}
+//
+//	public void setCreateRoot(Boolean createRoot) {
+//		this.createRoot = createRoot;
+//	}
 	
 	
 }
