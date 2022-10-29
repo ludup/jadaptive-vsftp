@@ -92,11 +92,6 @@ public class UploadFormWizard extends AbstractWizard {
 	}
 
 	@Override
-	protected WizardSection getFinishSection() {
-		return new UploadFormSection(getResourceKey(), "publicUploadFinish", "PublicUploadFinish.html");
-	}
-
-	@Override
 	protected WizardSection getStartSection() {
 		return new UploadFormSection(getResourceKey(), "publicUploadStart", "PublicUploadStart.html");
 	}
