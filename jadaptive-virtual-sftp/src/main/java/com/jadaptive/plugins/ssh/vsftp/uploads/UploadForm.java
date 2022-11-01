@@ -18,7 +18,6 @@ import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.email.AssignmentNotificationPreference;
 import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
 import com.jadaptive.plugins.ssh.vsftp.ui.wizards.UploadFormWizard;
 
 @ObjectDefinition(resourceKey = UploadForm.RESOURCE_KEY, bundle = UploadForm.RESOURCE_KEY, 

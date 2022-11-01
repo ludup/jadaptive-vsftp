@@ -3,7 +3,6 @@ package com.jadaptive.plugins.ssh.vsftp;
 import org.apache.commons.lang3.StringUtils;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.events.GenerateEventTemplates;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
 import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
