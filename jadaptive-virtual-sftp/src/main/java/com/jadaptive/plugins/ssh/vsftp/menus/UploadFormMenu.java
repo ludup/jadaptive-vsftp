@@ -51,7 +51,7 @@ public class UploadFormMenu implements ApplicationMenu {
 
 	@Override
 	public String getParent() {
-		return ApplicationMenuService.RESOURCE_MENU_UUID;
+		return ApplicationMenuService.CONFIGURATION_MENU;
 	}
 
 	@Override
