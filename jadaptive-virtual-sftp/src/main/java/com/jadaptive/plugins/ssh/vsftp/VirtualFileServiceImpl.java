@@ -102,17 +102,16 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Override
 	public boolean checkSupportedMountType(String type) {
 		
-		if(providers.isEmpty()) {
-			checkSchemes();
-			for(FileScheme<?> scheme : schemes) {
-				if(!scheme.isEnabled()) {
-					continue;
-				}
-				providers.put(scheme.getResourceKey(), scheme);
+		checkSchemes();
+		for(FileScheme<?> scheme : schemes) {
+			if(!scheme.isEnabled()) {
+				return false;
 			}
 		}
-		return providers.keySet().contains(type);
+		return true;
 	}
+	
+	
 
 	protected void assertSupportedMount(String type) throws IOException {
 		if(!checkSupportedMountType(type)) {
@@ -122,7 +121,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	
 	@Override
 	public FileScheme<?> getFileScheme(String type) throws IOException {
-		checkSupportedMountType(type);
+		assertSupportedMount(type);
 		return providers.get(type);
 	}
 	
@@ -236,6 +235,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			for(FileScheme<?> scheme : applicationService.getBeans(FileScheme.class)) {
 				log.info("Registering file scheme " + scheme.getName());
 				schemes.add(scheme);
+				providers.put(scheme.getName(), scheme);
 			}
 		}
 	}
