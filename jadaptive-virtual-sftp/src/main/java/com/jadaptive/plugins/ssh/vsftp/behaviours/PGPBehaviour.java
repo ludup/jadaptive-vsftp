@@ -9,13 +9,13 @@ import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolderBehaviour;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderExtension;
 
 @ObjectDefinition(resourceKey = PGPBehaviour.RESOURCE_KEY, bundle = VirtualFolder.RESOURCE_KEY, type = ObjectType.OBJECT, scope = ObjectScope.GLOBAL, defaultColumn = "name")
 @ObjectViews({ 
 	@ObjectViewDefinition(value = PGPBehaviour.ENCRYPTION_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -75),
 	@ObjectViewDefinition(value = PGPBehaviour.KEYS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -70)})
-public class PGPBehaviour extends VirtualFolderBehaviour {
+public class PGPBehaviour extends VirtualFolderExtension {
 
 	private static final long serialVersionUID = 3900310246508116815L;
 

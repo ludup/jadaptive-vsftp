@@ -304,7 +304,9 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		
 		try {
 			FileScheme<?> scheme = getFileScheme(virtualFolder.getType());
-			scheme.delete(virtualFolder);
+			if(Objects.nonNull(scheme)) {
+				scheme.delete(virtualFolder);
+			}
 			repository.deleteObject(virtualFolder);
 			
 		} catch(IOException e) {

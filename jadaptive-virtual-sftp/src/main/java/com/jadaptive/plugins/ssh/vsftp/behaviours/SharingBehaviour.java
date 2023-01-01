@@ -9,12 +9,12 @@ import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolderBehaviour;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderExtension;
 
 @ObjectDefinition(resourceKey = SharingBehaviour.RESOURCE_KEY, bundle = VirtualFolder.RESOURCE_KEY, type = ObjectType.OBJECT, scope = ObjectScope.GLOBAL, defaultColumn = "name")
 @ObjectViews({ 
 	@ObjectViewDefinition(value = SharingBehaviour.SHARING_VIEW, bundle = VirtualFolder.RESOURCE_KEY)})
-public class SharingBehaviour extends VirtualFolderBehaviour {
+public class SharingBehaviour extends VirtualFolderExtension {
 
 	private static final long serialVersionUID = 3900310246508116815L;
 

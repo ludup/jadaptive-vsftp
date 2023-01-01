@@ -19,7 +19,7 @@ import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.behaviours.PGPBehaviour;
 
-@ObjectDefinition(resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION, defaultColumn = "name")
+@ObjectDefinition(resourceKey = VirtualFolder.RESOURCE_KEY, bundle = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION, defaultColumn = "name")
 @ObjectServiceBean(bean = VirtualFileService.class)
 @ObjectViews({ 
 	@ObjectViewDefinition(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = -50),
@@ -101,8 +101,8 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	@ObjectView(VirtualFolder.BEHAVIOURS_VIEW)
-	@Validator(type = ValidationType.RESOURCE_KEY, value = VirtualFolderBehaviour.RESOURCE_KEY)
-	Collection<VirtualFolderBehaviour> behaviours;
+	@Validator(type = ValidationType.RESOURCE_KEY, value = VirtualFolderExtension.RESOURCE_KEY)
+	Collection<VirtualFolderExtension> extensions;
 	
 	public String getName() {
 		return name;
@@ -137,14 +137,8 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	public void setReadOnly(Boolean readOnly) {
 		this.readOnly = readOnly;
 	}
-	
-	public Collection<VirtualFolderBehaviour> getBehaviours() {
-		return behaviours;
-	}
 
-	public void setBehaviours(Collection<VirtualFolderBehaviour> behaviours) {
-		this.behaviours = behaviours;
-	}
+	
 
 //	public Boolean getShareFiles() {
 //		return shareFiles;
@@ -162,6 +156,14 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 //		this.shareFolders = shareFolders;
 //	}
 
+	public Collection<VirtualFolderExtension> getExtensions() {
+		return extensions;
+	}
+
+	public void setExtensions(Collection<VirtualFolderExtension> extensions) {
+		this.extensions = extensions;
+	}
+
 	public String getScheme() {
 		return StringUtils.defaultString(scheme, getType() + ".name");
 	}
@@ -175,7 +177,7 @@ public abstract class VirtualFolder extends AssignableUUIDEntity {
 	}
 
 	public boolean getEncrypted() {
-		for(VirtualFolderBehaviour b : behaviours) {
+		for(VirtualFolderExtension b : extensions) {
 			if(b instanceof PGPBehaviour) {
 				return ((PGPBehaviour)b).getEncrypt().booleanValue();
 			}

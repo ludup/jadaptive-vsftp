@@ -11,12 +11,12 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.TableView;
 
-@ObjectDefinition(resourceKey = VirtualFolderBehaviour.RESOURCE_KEY, type = ObjectType.COLLECTION, defaultColumn = "name")
+@ObjectDefinition(resourceKey = VirtualFolderExtension.RESOURCE_KEY, aliases = { "extensions" }, type = ObjectType.COLLECTION, defaultColumn = "name")
 @TableView(defaultColumns = { "name"})
-public abstract class VirtualFolderBehaviour extends AbstractUUIDEntity {
+public abstract class VirtualFolderExtension extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = -6989867944664137412L;
-	public static final String RESOURCE_KEY = "virtualFolderBehaviour";
+	public static final String RESOURCE_KEY = "virtualFolderExtension";
 
 	@ObjectField(type = FieldType.TEXT)
 	@ExcludeView(values = { FieldView.CREATE, FieldView.UPDATE })
@@ -31,5 +31,6 @@ public abstract class VirtualFolderBehaviour extends AbstractUUIDEntity {
 	}
 	
 	public void setName(String name) {
+		
 	}
 }

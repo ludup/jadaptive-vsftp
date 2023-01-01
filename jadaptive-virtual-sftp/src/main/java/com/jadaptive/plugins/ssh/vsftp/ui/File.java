@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolderBehaviour;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolderExtension;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderHelper;
 import com.jadaptive.plugins.ssh.vsftp.behaviours.SharingBehaviour;
 import com.mongodb.internal.HexUtils;
