@@ -90,9 +90,7 @@ public class Mount extends AbstractVFSCommand {
 				FileUtils.checkEndsWithNoSlash(args[args.length - 2]));
 		String path = args[args.length - 1];
 		
-		if(!fileService.checkSupportedMountType(type)) {
-			throw new UsageException(String.format("%s is not a supported file type", type));
-		}
+		fileService.assertSupportedMountType(type);
 		
 		Set<Role> roles = new HashSet<>();
 		String tmp = CliHelper.getValue(args, 'r', "roles", "");
