@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.ui;
+package com.jadaptive.plugins.ssh.vsftp.events;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
@@ -15,34 +15,25 @@ import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 @AuditedObject
-@ObjectDefinition(resourceKey = FileDeletedEvent.RESOURCE_KEY, scope = ObjectScope.GLOBAL, 
-	type = ObjectType.OBJECT, bundle = VirtualFolder.RESOURCE_KEY,
-	creatable = false, updatable = false, deletable = false)
+@ObjectDefinition(resourceKey = FileUploadEvent.RESOURCE_KEY, scope = ObjectScope.GLOBAL, 
+		type = ObjectType.OBJECT, bundle = VirtualFolder.RESOURCE_KEY,
+		creatable = false, updatable = false, deletable = false)
 @ObjectViews({@ObjectViewDefinition(bundle = VirtualFolder.RESOURCE_KEY, value = ObjectEvent.OBJECT_VIEW)})
-public class FileDeletedEvent extends ObjectEvent<FileOperation> {
+public class FileUploadEvent extends TransferResultEvent {
 
 	private static final long serialVersionUID = -2044630063808224880L;
 
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	@Validator(type = ValidationType.RESOURCE_KEY, value = TransferResult.RESOURCE_KEY)
-	FileOperation object;
+	TransferResult object;
 	
-	public static final String RESOURCE_KEY = "fileDeletedEvent";
-	
-	public FileDeletedEvent(FileOperation result) {
-		super(RESOURCE_KEY, "files");
-		this.object = result;
+	public static final String RESOURCE_KEY = "fileUploadEvent";
+	public FileUploadEvent(TransferResult result) {
+		super(result, RESOURCE_KEY);
 	}
 	
-	public FileDeletedEvent(FileOperation result, Throwable e) {
-		super(RESOURCE_KEY, "files", e);
-		this.object = result;
+	public FileUploadEvent(TransferResult result, Throwable e) {
+		super(result, RESOURCE_KEY, e);
 	}
-
-	@Override
-	public FileOperation getObject() {
-		return object;
-	}
-
 }

@@ -13,12 +13,13 @@ import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.ui.TransferResult;
+import com.jadaptive.plugins.ssh.vsftp.events.TransferResult;
+import com.jadaptive.plugins.ssh.vsftp.events.TransferResultEvent;
 
 @AuditedObject
 @ObjectDefinition(resourceKey = ShareDownloadEvent.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.OBJECT, bundle = VirtualFolder.RESOURCE_KEY)
 @ObjectViews({@ObjectViewDefinition(bundle = VirtualFolder.RESOURCE_KEY, value = ObjectEvent.OBJECT_VIEW)})
-public class ShareDownloadEvent extends ObjectEvent<TransferResult> {
+public class ShareDownloadEvent extends TransferResultEvent {
 
 	private static final long serialVersionUID = -2044630063808224880L;
 
@@ -29,18 +30,11 @@ public class ShareDownloadEvent extends ObjectEvent<TransferResult> {
 	
 	public static final String RESOURCE_KEY = "shareDownloadEvent";
 	public ShareDownloadEvent(TransferResult result) {
-		super(RESOURCE_KEY, "files");
-		this.object = result;
+		super(result, RESOURCE_KEY);
 	}
 	
 	public ShareDownloadEvent(TransferResult result, Throwable e) {
-		super(RESOURCE_KEY, "sharing", e);
-		this.object = result;
-	}
-
-	@Override
-	public TransferResult getObject() {
-		return object;
+		super(result, RESOURCE_KEY, e);
 	}
 
 }
