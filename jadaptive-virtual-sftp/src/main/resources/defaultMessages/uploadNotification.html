@@ -1,0 +1,45 @@
+<p>You have received new files in ${shareName} on ${serverName}.</p>
+
+<table>
+	<tbody>
+		<tr>
+			<td><strong>From Name:</strong></td>
+			<td>${uploaderName}</td>
+		</tr>
+		<tr>
+			<td><strong>From Email:</strong></td>
+			<td>${uploaderEmail}</td>
+		</tr>
+		<tr>
+			<td><strong>From Reference:</strong></td>
+			<td><a href="${serverURL}/app/ui/view/incomingFiles/${uuid}">${uploaderRef}</a></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>You have received the following file(s):</p>
+
+<table style="width:100%">
+	
+	<thead>
+		<tr>
+			<td style="padding-right: 10px;"><strong>Filename</strong></td>
+			<td style="padding-right: 10px;"><strong>Size</strong></td>
+			<td><strong>Content Hash</strong></td>
+		</tr>
+		
+	</thead>
+	
+	<tbody>
+		[#list files as file]
+		<tr>
+			<td>${file.filename}</td>
+			<td>${file.displaySize}</td>
+			<td>${file.contentHash}</td>
+		</tr>
+		[/#list]
+	</tbody>
+	
+</table>
+
+<p>Login to ${serverName} to access these files.</p>
