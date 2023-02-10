@@ -22,7 +22,7 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 
 	Set<String> types();
 
-	URI generateUri(String path) throws URISyntaxException;
+	URI generateUri(String path, FileSystemOptions opts) throws URISyntaxException;
 
 	T getFileProvider();
 	

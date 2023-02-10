@@ -13,7 +13,7 @@
 	    "locale": "DEFAULT",
 		"subject": "Your files have been received",
 		"htmlTemplate": "16fbfa1e-d012-47b3-a987-a306120ea46a",
-	    "htmlText" : "resource://uploadReceipt.html",
+	    "htmlText" : "resource://uploadReciept.html",
 	    "enabled": true,
 	    "system": true
 	}]
@@ -70,7 +70,7 @@
 	    "locale": "DEFAULT",
 		"subject": "A new file share was created",
 		"htmlTemplate": "16fbfa1e-d012-47b3-a987-a306120ea46a",
-	    "htmlText": "resource://sharedCreated.html",
+	    "htmlText": "resource://shareCreated.html",
 	    "enabled": true,
 	    "system": true
 	}]

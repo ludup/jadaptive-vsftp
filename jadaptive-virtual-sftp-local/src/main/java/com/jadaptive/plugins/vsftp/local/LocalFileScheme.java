@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.local.DefaultLocalFileProvider;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class LocalFileScheme extends AbstractFileScheme<DefaultLocalFileProvider
 	}
 
 	@Override
-	public URI generateUri(String path) throws URISyntaxException {
+	public URI generateUri(String path, FileSystemOptions opts) throws URISyntaxException {
 		return new File(path.replace('\\', '/')).toURI();
 	}
 	

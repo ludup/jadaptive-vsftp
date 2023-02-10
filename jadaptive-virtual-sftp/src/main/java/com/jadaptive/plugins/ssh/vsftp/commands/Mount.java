@@ -151,8 +151,6 @@ public class Mount extends AbstractVFSCommand {
 		}
 		
 		try {
-			URI uri = provider.generateUri(path);
-			
 			VirtualFolder folder = provider.createFolder();
 			folder.setMountPath(mount);
 			
@@ -168,6 +166,8 @@ public class Mount extends AbstractVFSCommand {
 			VFSFileFactory factory = fileService.resolveMount(folder);
 			
 			VirtualFileFactory ff = (VirtualFileFactory) console.getFileFactory();
+			
+			URI uri = provider.generateUri(path, provider.buildFileSystemOptions(folder));
 			
 			VirtualMountManager mm = ff.getMountManager();
 			VirtualMountTemplate template = new VirtualMountTemplate(mount, 

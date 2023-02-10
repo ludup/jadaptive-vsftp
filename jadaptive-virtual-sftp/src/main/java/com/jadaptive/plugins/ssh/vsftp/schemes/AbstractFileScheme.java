@@ -9,8 +9,6 @@ import java.util.Set;
 
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.FileProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.encrypt.EncryptionService;
@@ -23,7 +21,7 @@ import com.sshtools.common.files.AbstractFileFactory;
 
 public abstract class AbstractFileScheme<T extends FileProvider> implements FileScheme<T> {
 
-	protected Logger log = LoggerFactory.getLogger(AbstractFileScheme.class);
+	//protected Logger log = LoggerFactory.getLogger(AbstractFileScheme.class);
 	
 	String name;
 	String[] types;
@@ -74,7 +72,7 @@ public abstract class AbstractFileScheme<T extends FileProvider> implements File
 	}
 
 	@Override
-	public URI generateUri(String path) throws URISyntaxException {
+	public URI generateUri(String path, FileSystemOptions opts) throws URISyntaxException {
 		return new URI(getScheme() + "://" + path);
 	}
 

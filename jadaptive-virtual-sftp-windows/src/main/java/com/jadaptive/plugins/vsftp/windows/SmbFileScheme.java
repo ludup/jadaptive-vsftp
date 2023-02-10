@@ -11,6 +11,8 @@ import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.smb.SmbFileProvider;
 import org.pf4j.Extension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.ObjectTemplate;
@@ -23,6 +25,8 @@ import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
 @Extension
 public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 
+	static Logger log = LoggerFactory.getLogger(SmbFileScheme.class);
+	
 	public static final String SCHEME_TYPE = "windows";
 	
 	@Autowired
@@ -68,7 +72,7 @@ public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 
 
 	@Override
-	public URI generateUri(String path) throws URISyntaxException {
+	public URI generateUri(String path, FileSystemOptions opts) throws URISyntaxException {
 		return new URI("smb://" + convertWindowsUNCPath(path));
 	}
 

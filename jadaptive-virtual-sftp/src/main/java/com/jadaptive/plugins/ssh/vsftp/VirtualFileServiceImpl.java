@@ -177,7 +177,10 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager mgr = getManager(folder.getUuid(), CacheStrategy.ON_RESOLVE);
 			
-			String uri = scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString();
+			String uri = scheme.generateUri(
+					replaceVariables(folder.getPath().generatePath()),
+					opts).toASCIIString();
+			
 			FileObject obj = mgr.resolveFile(uri, opts);
 			
 			if(!obj.exists() && (scheme.createRoot() || folder.getPath().getCreateRoot())) {
@@ -256,7 +259,9 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager manager = getManager(folder.getUuid(), CacheStrategy.ON_RESOLVE);
 
-			String uri = scheme.generateUri(replaceVariables(folder.getPath().generatePath())).toASCIIString();
+			String uri = scheme.generateUri(
+					replaceVariables(folder.getPath().generatePath()),
+					opts).toASCIIString();
 			
 			if(folder.getEncrypt()) {
 				return new VirtualFolderMount(folder,
@@ -430,7 +435,7 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Override
 	public void onApplicationStartup() {
 		
-		eventService.any(VirtualFolder.class, (e)->{
+		eventService.changed(VirtualFolder.class, (e)->{
 			@SuppressWarnings("rawtypes")
 			Map<String,AbstractFileFactory> cache = 
 					cacheService.getCacheOrCreate(ABSTRACT_FILE_FACTORY, 

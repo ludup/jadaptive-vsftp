@@ -8,6 +8,8 @@ import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.pf4j.Extension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.ObjectTemplate;
@@ -20,6 +22,8 @@ import com.sshtools.vfs.azure.AzureFileProvider;
 
 @Extension
 public class AzureFileScheme extends AbstractFileScheme<AzureFileProvider> {
+	
+	static Logger log = LoggerFactory.getLogger(AzureFileScheme.class);
 	
 	public static final String SCHEME_TYPE = "azure";
 	
