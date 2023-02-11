@@ -15,6 +15,7 @@ import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.api.template.TableView;
+import com.jadaptive.api.user.User;
 
 @ObjectDefinition(resourceKey = VirtualFolder.RESOURCE_KEY, type = ObjectType.COLLECTION, defaultColumn = "name")
 @ObjectServiceBean(bean = VirtualFileService.class)
@@ -91,12 +92,7 @@ public abstract class VirtualFolder extends AssignableUUIDEntity implements Name
 	@ObjectField(type = FieldType.TEXT_AREA)
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
 	String publicKey;
-	
-//	@ObjectField(type = FieldType.ENUM, defaultValue = "ON_RESOLVE")
-//	@ExcludeView(values = FieldView.TABLE)
-//	@ObjectView(value = VirtualFolder.ADVANCED_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = 9999)
-//	CacheStrategy cacheStrategy;
-	
+
 	public abstract VirtualFolderPath getPath();
 	
 	public abstract void setPath(VirtualFolderPath path);
@@ -124,7 +120,12 @@ public abstract class VirtualFolder extends AssignableUUIDEntity implements Name
 	public abstract String getType();
 
 	public boolean isPublicFolder() {
-		return getUsers().contains(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID);
+		for(User user : getUsers()) {
+			if(user.getUuid().equals(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public Boolean getReadOnly() {
@@ -134,14 +135,6 @@ public abstract class VirtualFolder extends AssignableUUIDEntity implements Name
 	public void setReadOnly(Boolean readOnly) {
 		this.readOnly = readOnly;
 	}
-
-//	public CacheStrategy getCacheStrategy() {
-//		return cacheStrategy;
-//	}
-//
-//	public void setCacheStrategy(CacheStrategy cacheStrategy) {
-//		this.cacheStrategy = cacheStrategy;
-//	}
 	
 	public Boolean getShareFiles() {
 		return shareFiles;

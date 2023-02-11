@@ -2,24 +2,15 @@ package com.jadaptive.plugins.ssh.vsftp.ui.wizards;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.ui.wizards.WizardState;
-import com.jadaptive.api.user.UserService;
 import com.jadaptive.utils.ObjectUtils;
 import com.jadaptive.utils.Utils;
 
 @Component
 public class UploadFormStep3 extends UploadFormSection {
 
-	@Autowired
-	private RoleService roleService; 
-	
-	@Autowired
-	private UserService userService; 
-	
 	public UploadFormStep3() {
 		super(UploadFormWizard.RESOURCE_KEY, "publicUploadStep3", "PublicUploadStep3.html");
 	}
@@ -49,7 +40,7 @@ public class UploadFormStep3 extends UploadFormSection {
 								.addClass("col-9")
 								.appendChild(new Element("span")
 										.appendChild(new Element("strong")
-												.text(Utils.getCommaSeparatedNames(userService.getUsersByUUID(assignments.getUsers()))))))
+												.text(Utils.getCommaSeparatedNames(assignments.getUsers())))))
 					.addClass("row")
 					.appendChild(new Element("div")
 							.addClass("col-3")
@@ -60,7 +51,7 @@ public class UploadFormStep3 extends UploadFormSection {
 								.addClass("col-9")
 								.appendChild(new Element("span")
 										.appendChild(new Element("strong")
-												.text(Utils.getCommaSeparatedNames(roleService.getRolesByUUID(assignments.getRoles()))))))));
+												.text(Utils.getCommaSeparatedNames(assignments.getRoles())))))));
 		
 	
 	}

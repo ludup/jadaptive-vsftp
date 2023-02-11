@@ -16,7 +16,6 @@ import com.jadaptive.api.db.TransactionService;
 import com.jadaptive.api.permissions.AccessDeniedException;
 import com.jadaptive.api.permissions.PermissionService;
 import com.jadaptive.api.role.Role;
-import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.ui.Page;
 import com.jadaptive.api.ui.PageCache;
 import com.jadaptive.api.ui.wizards.AbstractWizard;
@@ -56,9 +55,6 @@ public class UploadFormWizard extends AbstractWizard {
 	
 	@Autowired
 	private UserService userService; 
-	
-	@Autowired
-	private RoleService roleService; 
 	
 	@Autowired
 	private UploadFormService uploadService; 
@@ -140,14 +136,13 @@ public class UploadFormWizard extends AbstractWizard {
 				
 				List<User> users = new ArrayList<>();
 				users.add(userService.getUserByUUID(AnonymousUserDatabaseImpl.ANONYMOUS_USER_UUID));
-				users.addAll(userService.getUsersByUUID(assignments.getUsers()));
+				users.addAll(assignments.getUsers());
 				
-				List<Role> roles = new ArrayList<>();
-				roles.addAll(roleService.getRolesByUUID(assignments.getRoles()));
+				List<Role> roles = new ArrayList<>(assignments.getRoles());
 				
 				fileService.createOrUpdate(folder, 
 						users,
-						Arrays.asList(roleService.getEveryoneRole()));
+						roles);
 				
 				UploadForm share = new UploadForm();
 

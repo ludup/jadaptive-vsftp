@@ -15,7 +15,6 @@ import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.permissions.PermissionService;
 import com.jadaptive.api.role.Role;
-import com.jadaptive.api.role.RoleService;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.template.SortOrder;
 import com.jadaptive.api.user.User;
@@ -44,9 +43,6 @@ public class IncomingFileServiceImpl extends AuthenticatedService implements Inc
 	
 	@Autowired
 	private UserService userService; 
-	
-	@Autowired
-	private RoleService roleService; 
 	
 	@Autowired
 	private UploadFormService uploadFormService; 
@@ -80,7 +76,7 @@ public class IncomingFileServiceImpl extends AuthenticatedService implements Inc
 	@Override
 	public void save(IncomingFile file, VirtualFolder folder, UploadForm uploadForm) {
 		
-		file.setUploadReference(uploadForm.getUuid());
+		file.setUploadReference(uploadForm);
 		
 		objectDatabase.saveOrUpdate(file);
 		
@@ -107,19 +103,17 @@ public class IncomingFileServiceImpl extends AuthenticatedService implements Inc
 		 */
 		
 		AssignmentNotificationPreference preference = uploadForm.getNotifyAssignedUsers();
-		var uuids = new HashSet<String>();
+		var uuids = new HashSet<User>();
 		
 		if(preference != AssignmentNotificationPreference.DO_NOT_NOTIFY) {
 			uuids.addAll(folder.getUsers());
 			
 			if(preference != AssignmentNotificationPreference.IGNORE_ROLES) {
-				for(String uuid : folder.getRoles()) {
-					Role role = roleService.getRoleByUUID(uuid);
-					
+				for(Role role : folder.getRoles()) {
 					if(role.isAllUsers()) {
 						if(preference != AssignmentNotificationPreference.IGNORE_EVERYONE_ROLE) {
 							for(User user : userService.allObjects()) {
-								uuids.add(user.getUuid());
+								uuids.add(user);
 							}
 						}
 					} else {
@@ -129,8 +123,8 @@ public class IncomingFileServiceImpl extends AuthenticatedService implements Inc
 			}
 		}
 
-		uuids.forEach((String uuid) -> {
-			emailAddresses.add(new RecipientHolder(userService.getObjectByUUID(uuid)));
+		uuids.forEach((User uuid) -> {
+			emailAddresses.add(new RecipientHolder(uuid));
         });
 		
 		Collection<String> other = uploadForm.getOtherEmails();

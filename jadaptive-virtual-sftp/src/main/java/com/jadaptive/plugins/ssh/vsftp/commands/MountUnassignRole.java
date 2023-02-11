@@ -53,7 +53,7 @@ public class MountUnassignRole extends AbstractVFSCommand {
 			
 			VirtualFolder folder = fileService.getVirtualFolder(mount);
 			for(int i=2;i<args.length;i++) {
-				folder.getRoles().remove(roleService.getRoleByName(args[i]).getUuid());
+				folder.getRoles().remove(roleService.getRoleByName(args[i]));
 			}
 			fileService.createOrUpdate(folder);
 			

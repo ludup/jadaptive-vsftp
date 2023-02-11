@@ -61,7 +61,7 @@ public class IncomingFile extends AssignableUUIDEntity {
 	String uploadArea;
 	
 	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = UploadForm.RESOURCE_KEY, hidden = true)
-	String uploadReference;
+	UploadForm uploadForm;
 	
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	@Validator(type = ValidationType.RESOURCE_KEY, value = "fileUpload")
@@ -113,11 +113,11 @@ public class IncomingFile extends AssignableUUIDEntity {
 		this.uploadPaths = uploadPaths;
 	}
 
-	public String getUploadReference() {
-		return uploadReference;
+	public UploadForm getUploadReference() {
+		return uploadForm;
 	}
 
-	public void setUploadReference(String uploadReference) {
-		this.uploadReference = uploadReference;
+	public void setUploadReference(UploadForm uploadForm) {
+		this.uploadForm = uploadForm;
 	}
 }

@@ -136,12 +136,12 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 		folder.getUsers().clear();
 		
 		for(Role role : roles) {
-			folder.getRoles().add(role.getUuid());
+			folder.getRoles().add(role);
 		}
 		for(User user : users) {
-			folder.getUsers().add(user.getUuid());
+			folder.getUsers().add(user);
 		}
-
+		
 		repository.saveOrUpdate(folder);
 		
 		return folder;

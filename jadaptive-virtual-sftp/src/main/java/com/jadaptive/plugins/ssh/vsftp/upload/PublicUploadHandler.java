@@ -102,7 +102,7 @@ public class PublicUploadHandler extends AbstractFilesUploadHandler {
 			upload.setReference(StringUtils.defaultString(parameters.get("reference"), "Unknown"));
 			upload.setUploadPaths(files);
 			upload.setUploadArea(virtualFolder.getName());
-			upload.setUploadReference(uploadForm.getUuid());
+			upload.setUploadReference(uploadForm);
 			
 			upload.setUsers(virtualFolder.getUsers());
 			upload.setRoles(virtualFolder.getRoles());
