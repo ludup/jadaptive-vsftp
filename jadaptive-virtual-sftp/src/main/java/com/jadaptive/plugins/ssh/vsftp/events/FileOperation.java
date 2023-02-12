@@ -5,7 +5,7 @@ import java.util.Date;
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.events.ObjectEvent;
-import com.jadaptive.api.repository.UUIDEntity;
+import com.jadaptive.api.repository.AbstractUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -13,7 +13,7 @@ import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 @ObjectDefinition(resourceKey = FileOperation.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.COLLECTION, bundle = VirtualFolder.RESOURCE_KEY)
-public class FileOperation extends UUIDEntity {
+public class FileOperation extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = 7395109201689299682L;
 
