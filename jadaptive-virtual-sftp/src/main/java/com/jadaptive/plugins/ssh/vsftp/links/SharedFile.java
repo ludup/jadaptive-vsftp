@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.events.GenerateEventTemplates;
+import com.jadaptive.api.repository.NamedDocument;
 import com.jadaptive.api.repository.PersonalUUIDEntity;
 import com.jadaptive.api.template.ExcludeView;
 import com.jadaptive.api.template.FieldType;
@@ -37,7 +38,7 @@ import com.jadaptive.plugins.email.EmailNotificationServiceImpl;
              actions = { @TableAction(bundle = SharedFile.RESOURCE_KEY, icon = "fa-link", 
              resourceKey = "copyLink", target = Target.ROW, url = "/app/ui/share/{shortCode}") })
 @GenerateEventTemplates(SharedFile.RESOURCE_KEY)
-public class SharedFile extends PersonalUUIDEntity {
+public class SharedFile extends PersonalUUIDEntity implements NamedDocument {
 
 	private static final long serialVersionUID = 6440151078128444905L;
 

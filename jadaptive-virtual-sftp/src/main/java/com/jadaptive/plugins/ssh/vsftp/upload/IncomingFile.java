@@ -6,6 +6,7 @@ import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.events.GenerateEventTemplates;
 import com.jadaptive.api.repository.AssignableUUIDEntity;
+import com.jadaptive.api.repository.NamedDocument;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -39,7 +40,7 @@ import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 @ObjectViews({ @ObjectViewDefinition(value = "info", bundle = IncomingFile.RESOURCE_KEY),
 		@ObjectViewDefinition(value = "files", bundle = IncomingFile.RESOURCE_KEY)})
 @GenerateEventTemplates(IncomingFile.RESOURCE_KEY)
-public class IncomingFile extends AssignableUUIDEntity {
+public class IncomingFile extends AssignableUUIDEntity implements NamedDocument {
 
 	private static final long serialVersionUID = -854502529745282888L;
 
