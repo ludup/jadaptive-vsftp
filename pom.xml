@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jadaptive</groupId>
 	<artifactId>jadaptive-vsftp</artifactId>
-	<version>0.2.2-SNAPSHOT</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<url>https://jadaptive.com</url>
 	<packaging>pom</packaging>
 	<name>VSFTP Plugins</name>
