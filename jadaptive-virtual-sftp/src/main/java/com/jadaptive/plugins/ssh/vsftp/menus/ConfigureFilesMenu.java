@@ -13,7 +13,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 public class ConfigureFilesMenu implements ApplicationMenu {
 
 	@Override
-	public String getResourceKey() {
+	public String getI18n() {
 		return "configureFiles.name";
 	}
 

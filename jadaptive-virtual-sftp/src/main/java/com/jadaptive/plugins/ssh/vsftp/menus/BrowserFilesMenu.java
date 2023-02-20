@@ -13,7 +13,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 public class BrowserFilesMenu implements ApplicationMenu {
 
 	@Override
-	public String getResourceKey() {
+	public String getI18n() {
 		return "browseFiles.name";
 	}
 

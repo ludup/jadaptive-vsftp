@@ -26,7 +26,7 @@ public class SharedFilesMenu implements ApplicationMenu {
 	}
 	
 	@Override
-	public String getResourceKey() {
+	public String getI18n() {
 		return "sharedFiles.names";
 	}
 
