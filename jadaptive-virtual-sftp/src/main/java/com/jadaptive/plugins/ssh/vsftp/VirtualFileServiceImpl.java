@@ -33,10 +33,10 @@ import com.jadaptive.api.app.StartupAware;
 import com.jadaptive.api.cache.CacheService;
 import com.jadaptive.api.db.AssignableObjectDatabase;
 import com.jadaptive.api.db.SearchField;
+import com.jadaptive.api.entity.AbstractUUIDObjectServceImpl;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.events.EventService;
-import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.ssh.vsftp.pgp.EncryptingFileFactory;
@@ -50,7 +50,7 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 
 @Service
-public class VirtualFileServiceImpl extends AuthenticatedService implements VirtualFileService, StartupAware {
+public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<VirtualFolder> implements VirtualFileService, StartupAware {
 
 	static Logger log = LoggerFactory.getLogger(VirtualFileServiceImpl.class);
 	
@@ -74,13 +74,6 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	private Set<FileScheme<?>> schemes = new HashSet<>();
 	private Map<String, FileScheme<?>> providers = new HashMap<>();
 	private Map<String, FileSystemManager> managers = new HashMap<>();
-	
-	
-	@Override
-	public Iterable<VirtualFolder> allObjects() {
-		return repository.getObjects(
-				VirtualFolder.class);
-	}
 	
 	@Override
 	public Iterable<VirtualFolder> getPersonalFolders() {
@@ -355,11 +348,6 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	}
 
 	@Override
-	public void deleteObject(VirtualFolder object) {
-		deleteVirtualFolder(object);
-	}
-
-	@Override
 	public long getTotalResources() {
 		return repository.countObjects(VirtualFolder.class);
 	}
@@ -367,11 +355,6 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 	@Override
 	public String getResourceKey() {
 		return VirtualFolder.RESOURCE_KEY;
-	}
-
-	@Override
-	public void deleteObjectByUUID(String uuid) {
-		deleteObject(getObjectByUUID(uuid));
 	}
 
 	@Override
@@ -442,5 +425,10 @@ public class VirtualFileServiceImpl extends AuthenticatedService implements Virt
 							String.class, AbstractFileFactory.class);
 			cache.clear();
 		});
+	}
+
+	@Override
+	protected Class<VirtualFolder> getResourceClass() {
+		return VirtualFolder.class;
 	}
 }

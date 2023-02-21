@@ -97,7 +97,7 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 	}
 	
 	@Override
-	protected void validateSave(SharedFile object) {
+	protected void beforeSave(SharedFile object) {
 		if(StringUtils.isBlank(object.getShortCode())) {
 			object.setShortCode(Utils.generateRandomAlphaNumericString(8));
 		}
