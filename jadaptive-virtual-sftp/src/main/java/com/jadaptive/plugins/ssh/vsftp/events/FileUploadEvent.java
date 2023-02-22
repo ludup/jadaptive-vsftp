@@ -29,6 +29,9 @@ public class FileUploadEvent extends TransferResultEvent {
 	TransferResult object;
 	
 	public static final String RESOURCE_KEY = "fileUploadEvent";
+	
+	public FileUploadEvent() { }
+	
 	public FileUploadEvent(TransferResult result) {
 		super(result, RESOURCE_KEY);
 	}

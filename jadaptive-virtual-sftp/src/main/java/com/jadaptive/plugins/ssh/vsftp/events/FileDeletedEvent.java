@@ -20,6 +20,8 @@ public class FileDeletedEvent extends FileOperationEvent {
 
 	public static final String RESOURCE_KEY = "fileDeletedEvent";
 	
+	public FileDeletedEvent() { }
+	
 	public FileDeletedEvent(FileOperation result) {
 		super(result, RESOURCE_KEY);
 	}

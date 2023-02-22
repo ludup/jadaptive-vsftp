@@ -29,6 +29,9 @@ public class ShareDownloadEvent extends TransferResultEvent {
 	TransferResult object;
 	
 	public static final String RESOURCE_KEY = "shareDownloadEvent";
+	
+	public ShareDownloadEvent() { }
+	
 	public ShareDownloadEvent(TransferResult result) {
 		super(result, RESOURCE_KEY);
 	}

@@ -17,6 +17,8 @@ public class FileOperationEvent  extends ObjectEvent<FileOperation> {
 	@Validator(type = ValidationType.RESOURCE_KEY, value = FileOperation.RESOURCE_KEY)
 	FileOperation object;
 
+	public FileOperationEvent() { } 
+	
 	public FileOperationEvent(FileOperation result, String resourceKey) {
 		super(resourceKey, "files");
 		this.object = result;

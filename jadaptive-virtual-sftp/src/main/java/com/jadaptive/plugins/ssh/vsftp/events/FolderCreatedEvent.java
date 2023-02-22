@@ -20,6 +20,8 @@ public class FolderCreatedEvent extends FileOperationEvent {
 
 	public static final String RESOURCE_KEY = "folderCreatedEvent";
 	
+	public FolderCreatedEvent() { }
+	
 	public FolderCreatedEvent(FileOperation result) {
 		super(result, RESOURCE_KEY);
 	}

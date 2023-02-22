@@ -28,6 +28,8 @@ public class FileDownloadEvent extends TransferResultEvent {
 	@Validator(type = ValidationType.RESOURCE_KEY, value = TransferResult.RESOURCE_KEY)
 	TransferResult object;
 	
+	public FileDownloadEvent() { }
+	
 	public static final String RESOURCE_KEY = "fileDownloadEvent";
 	public FileDownloadEvent(TransferResult result) {
 		super(result, RESOURCE_KEY);
