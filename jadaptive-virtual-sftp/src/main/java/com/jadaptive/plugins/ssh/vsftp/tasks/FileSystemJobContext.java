@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 
-import com.jadaptive.api.jobs.JobRunnerContext;
+import com.jadaptive.api.jobs.TaskRunnerContext;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.direct.DirectFileFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
@@ -14,7 +14,7 @@ import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
 
 @Component
-public class FileSystemJobContext implements JobRunnerContext {
+public class FileSystemJobContext implements TaskRunnerContext {
 
 	ThreadLocal<AbstractFileFactory<?>> vfs = new ThreadLocal<>();
 	ThreadLocal<AbstractFileFactory<?>> system = new ThreadLocal<>();
@@ -31,7 +31,7 @@ public class FileSystemJobContext implements JobRunnerContext {
 		try {
 			vfs.set(new VirtualFileFactory(
 					new VirtualMountTemplate("/", "tmp:///",
-							new VFSFileFactory(), true)));
+							new VFSFileFactory("tmp:///"), true)));
 		} catch (IOException | PermissionDeniedException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		}

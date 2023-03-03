@@ -8,6 +8,8 @@ import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.pf4j.Extension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.ObjectTemplate;
@@ -21,13 +23,16 @@ import com.sshtools.vfs.s3.provider.s3.S3FileProvider;
 @Extension
 public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 	
+	static Logger log = LoggerFactory.getLogger(S3FileScheme.class);
+	
 	public static final String SCHEME_TYPE = "s3";
+	public static final String RESOURCE_KEY = "s3";
 	
 	@Autowired
 	private TemplateService templateService; 
 	
 	public S3FileScheme() {
-		super("Amazon S3", new S3FileProvider(), "s3", "aws", "amazon", S3Folder.RESOURCE_KEY);
+		super(S3Folder.RESOURCE_KEY, "Amazon S3", new S3FileProvider(), "s3", "aws", "amazon");
 	}
 	
 	public FileSystemOptions buildFileSystemOptions(VirtualFolder vf) throws IOException {
@@ -41,7 +46,7 @@ public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 	        	S3Credentials credentials = (S3Credentials) folder.getCredentials();
 	            DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, 
 	            		new StaticUserAuthenticator(null, credentials.getAccessKey(), 
-	            				decryptCredentials(credentials.getSecretKey())));
+	            				credentials.getSecretKey()));
 
 	        } catch (FileSystemException e) {
 	            log.error(String.format("Failed to set credentials on %s", folder.getMountPath()));
@@ -89,5 +94,15 @@ public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
 		folder.setCredentials((S3Credentials) creds);
 		
 		return folder;
+	}
+
+	@Override
+	public String getBundle() {
+		return S3Folder.RESOURCE_KEY;
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 2000;
 	}
 }

@@ -19,12 +19,12 @@ public class VirtualSFTPInterface extends SSHInterface {
 		return VirtualSFTPInterface.RESOURCE_KEY;
 	}
 	
-	public Class<? extends SSHInterfaceFactory> getContextFactory() {
+	public Class<? extends SSHInterfaceFactory<?,?>> getContextFactory() {
 		return VirtualSFTPInterfaceFactory.class;
 	}
 
 	@Override
-	public Class<? extends SSHInterfaceFactory> getInterfaceFactory() {
+	public Class<? extends SSHInterfaceFactory<?,?>> getInterfaceFactory() {
 		return VirtualSFTPInterfaceFactory.class;
 	}
 }

@@ -1,13 +1,17 @@
 package com.jadaptive.plugins.vsftp.s3;
 
 import com.jadaptive.api.entity.ObjectType;
+import com.jadaptive.api.events.GenerateEventTemplates;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 
-@ObjectDefinition(resourceKey = S3Folder.RESOURCE_KEY, type = ObjectType.COLLECTION, bundle = S3Folder.RESOURCE_KEY)
+@ObjectDefinition(resourceKey = S3Folder.RESOURCE_KEY, type = ObjectType.COLLECTION, bundle = S3Folder.RESOURCE_KEY, defaultColumn = "name")
+@ObjectViews(value = {})
+@GenerateEventTemplates(S3Folder.RESOURCE_KEY)
 public class S3Folder extends VirtualFolder {
 
 	private static final long serialVersionUID = 8482791046455758923L;

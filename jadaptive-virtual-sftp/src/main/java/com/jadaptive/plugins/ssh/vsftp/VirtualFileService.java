@@ -10,20 +10,21 @@ import com.jadaptive.api.repository.UUIDObjectService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.stats.ResourceService;
 import com.jadaptive.api.user.User;
+import com.sshtools.common.files.AbstractFile;
+import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
+import com.sshtools.common.permissions.PermissionDeniedException;
 
 public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, ResourceService {
 
 	boolean checkMountExists(String mount, User user);
 
-	boolean checkSupportedMountType(String type);
-
-	FileScheme<?> getFileScheme(String type);
+	FileScheme<?> getFileScheme(String type) throws IOException;
 
 	VFSFileFactory resolveMount(VirtualFolder folder) throws IOException;
 
-	VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles);
+	VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles) throws IOException;
 
 	Iterable<VirtualFolder> allObjects();
 
@@ -39,10 +40,28 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 
 	VirtualFolder getHomeMount(User user);
 
-	VirtualFolder createOrUpdate(VirtualFolder folder);
+	VirtualFolder createOrUpdate(VirtualFolder folder) throws IOException;
 
 	VirtualFolder getVirtualFolderByShortCode(String shortCode);
 
 	Iterable<VirtualFolder> getPersonalFolders();
+
+	AbstractFile getFile(String virtualPath) throws PermissionDeniedException, IOException;
+
+	AbstractFileFactory<?> getFactory(boolean reset);
+
+	AbstractFileFactory<?> getFactory(User user, boolean reset);
+	
+	void resetFactory();
+
+	default AbstractFileFactory<?> getFactory() { return getFactory(false); }
+
+	void resetFactory(User user);
+
+	AbstractFileFactory<?> getFactory(User user);
+
+	VirtualFolder getParentMount(AbstractFile fileObject);
+
+	void assertSupportedMountType(String type) throws IOException;
 
 }

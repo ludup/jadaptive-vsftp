@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.jadaptive.api.app.ApplicationProperties;
 import com.jadaptive.api.permissions.PermissionService;
+import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.sshd.AuthorizedKeyProvider;
 import com.jadaptive.plugins.sshd.SSHDService;
-import com.jadaptive.plugins.sshd.SSHInterface;
 import com.jadaptive.plugins.sshd.SSHInterfaceFactory;
-import com.sshtools.common.auth.DefaultAuthenticationMechanismFactory;
 import com.sshtools.common.auth.PasswordAuthenticationProvider;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VirtualFileFactory;
@@ -26,13 +25,15 @@ import com.sshtools.common.policy.FileFactory;
 import com.sshtools.common.policy.FileSystemPolicy;
 import com.sshtools.common.publickey.InvalidPassphraseException;
 import com.sshtools.common.publickey.SshKeyPairGenerator;
+import com.sshtools.common.sftp.extensions.DefaultSftpExtensionFactory;
+import com.sshtools.common.sftp.extensions.SupportedSftpExtensions;
 import com.sshtools.common.ssh.SshConnection;
 import com.sshtools.common.ssh.SshException;
 import com.sshtools.server.SshServerContext;
 import com.sshtools.synergy.nio.SshEngineContext;
 
 @Extension
-public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory {
+public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServerContext,VirtualSFTPInterface> {
 
 	@Autowired
 	private UserService userService; 
@@ -53,15 +54,16 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory {
 	@Autowired
 	private SSHDService sshdService; 
 	
+	@Autowired
+	private TenantService tenantService; 
+	
 	@Override
-	public SshServerContext createContext(SshEngineContext daemonContext, SocketChannel sc, SSHInterface intf)
+	public SshServerContext createContext(SshEngineContext daemonContext, SocketChannel sc, VirtualSFTPInterface intf)
 			throws IOException, SshException {
 		SshServerContext ctx = new VirtualSFTPContext(daemonContext.getEngine(), intf);
 		
-		sshdService.applyConfiguration(ctx);
+		sshdService.applyConfiguration(ctx, passwordAuthenticator);
 		
-		ctx.setAuthenicationMechanismFactory(new DefaultAuthenticationMechanismFactory<SshServerContext>());
-		ctx.getAuthenticationMechanismFactory().addProvider(passwordAuthenticator);
 		ctx.getAuthenticationMechanismFactory().addProvider(publicKeyAuthenticator);
 		
 		/**
@@ -82,23 +84,40 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory {
 			throw new IOException(e.getMessage(), e);
 		}
 		
+		
+		ctx.getPolicy(FileSystemPolicy.class).getSFTPExtensionFactories().add(
+			    new DefaultSftpExtensionFactory(SupportedSftpExtensions.POSIX_RENAME,
+			      SupportedSftpExtensions.MD5_FILE_HASH,
+			      SupportedSftpExtensions.COPY_FILE,
+			      SupportedSftpExtensions.COPY_DATA,
+			      SupportedSftpExtensions.CHECK_FILE_HANDLE,
+			      SupportedSftpExtensions.CHECK_FILE_NAME,
+			      SupportedSftpExtensions.OPEN_DIRECTORY_WITH_FILTER));
+		
 		ctx.getPolicy(FileSystemPolicy.class).setFileFactory(new FileFactory() {
 
 			@Override
 			public AbstractFileFactory<?> getFileFactory(SshConnection con)
 					throws IOException, PermissionDeniedException {
 				
-				User user = userService.getUser(con.getUsername());
-				permissionService.setupUserContext(user);
-				
+				tenantService.setCurrentTenant(
+						tenantService.getTenantByDomain(
+								tenantService.resolveTenantName(con.getUsername()).getDomain()));
 				try {
-					return new VirtualFileFactory(mountProvider.getHomeMount(user), 
-							mountProvider.getAdditionalMounts().toArray(new VirtualMountTemplate[0]));
+					User user = userService.getUser(tenantService.resolveUserName(con.getUsername()));
+					permissionService.setupUserContext(user);
 					
-				} catch (IOException | PermissionDeniedException e) {
-					throw new IllegalStateException(e.getMessage(), e);
+					try {
+						return new VirtualFileFactory(mountProvider.getHomeMount(user), 
+								mountProvider.getAdditionalMounts().toArray(new VirtualMountTemplate[0]));
+						
+					} catch (IOException | PermissionDeniedException e) {
+						throw new IllegalStateException(e.getMessage(), e);
+					} finally {
+						permissionService.clearUserContext();
+					}
 				} finally {
-					permissionService.clearUserContext();
+					tenantService.clearCurrentTenant();
 				}
 			}
 			

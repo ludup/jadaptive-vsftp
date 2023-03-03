@@ -1,13 +1,12 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.tasks.TaskResult;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 
 @ObjectDefinition(recurse = false, resourceKey = "deleteFileTaskResult", type = ObjectType.OBJECT)
-public class DeleteFileTaskResult extends TaskResult {
+public class DeleteFileTaskResult extends FileTaskResult {
 
 	private static final long serialVersionUID = 96293955438850683L;
 	

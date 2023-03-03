@@ -10,16 +10,19 @@ import org.apache.commons.vfs2.provider.FileProvider;
 import org.pf4j.ExtensionPoint;
 
 import com.jadaptive.api.template.ObjectTemplate;
+import com.sshtools.common.files.AbstractFileFactory;
 
 public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 
+	String getResourceKey();
+	
 	FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException;
 	
 	boolean requiresCredentials();
 
 	Set<String> types();
 
-	URI generateUri(String path) throws URISyntaxException;
+	URI generateUri(String path, FileSystemOptions opts) throws URISyntaxException;
 
 	T getFileProvider();
 	
@@ -52,4 +55,16 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 	String getIcon();
 
 	VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path, VirtualFolderCredentials creds);
+
+	String getBundle();
+
+	Integer getWeight();
+
+	void configure(VirtualFolder folder);
+	
+	default boolean isEnabled() { return true; }
+
+	void delete(VirtualFolder virtualFolder);
+
+	AbstractFileFactory<?> configureFactory(AbstractFileFactory<?> factory); 
 }

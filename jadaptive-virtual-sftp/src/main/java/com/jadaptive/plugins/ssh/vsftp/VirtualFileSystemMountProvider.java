@@ -1,5 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.entity.ObjectNotFoundException;
+import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.sshd.PluginFileSystemMount;
 import com.sshtools.common.files.ReadOnlyFileFactoryAdapter;
@@ -18,7 +20,7 @@ import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 
 @Extension
-public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
+public class VirtualFileSystemMountProvider extends AuthenticatedService implements PluginFileSystemMount {
 
 	static Logger log = LoggerFactory.getLogger(VirtualFileSystemMountProvider.class);
 	
@@ -31,18 +33,29 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 		List<VirtualMountTemplate> templates = new ArrayList<>();
 		
 		try {
-			for(VirtualFolder folder : fileService.allObjects()) {
-				if(folder.getMountPath().equals("/")) {
+			VirtualMountTemplate home = getHomeMount(getCurrentUser());
+			VirtualMountTemplate root = getRootMount();
+			boolean ownRoot = false;
+			for(VirtualFolder folder : fileService.getPersonalFolders()) {
+				if(home.getMount().equals(folder.getMountPath())) {
 					/**
 					 * Skip the home mount
 					 */
 					continue;
 				}
 				try {
-					templates.add(fileService.getVirtualMountTemplate(folder));
+					VirtualMountTemplate t = fileService.getVirtualMountTemplate(folder);
+					if(t.getMount().equals("/")) {
+						ownRoot = true;
+					}
+					templates.add(t);
 				} catch (IOException e) {
 					log.error("Failed to process mount", e);
 				}
+			}
+			
+			if(!ownRoot && !home.getMount().equals("/")) {
+				templates.add(root);
 			}
 		} catch(Throwable e) {
 			log.error("An error occurred loading users file mounts", e);
@@ -64,9 +77,12 @@ public class VirtualFileSystemMountProvider implements PluginFileSystemMount {
 		} catch(Throwable e) {
 			log.error("Home mount could not be resolved due to an error", e);
 		}
-		return new VirtualMountTemplate("/", 
-				String.format("ram://%s", user.getUsername()), 
-					new ReadOnlyFileFactoryAdapter(new VFSFileFactory()), true);
+		return getRootMount();
+	}
+	
+	private VirtualMountTemplate getRootMount() throws FileNotFoundException {
+		String uri = String.format("ram://%s", getCurrentUser().getUsername());
+		return new VirtualMountTemplate("/", uri, new ReadOnlyFileFactoryAdapter(new VFSFileFactory(uri)), true);
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
-import org.apache.commons.vfs2.CacheStrategy;
-
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
 import com.jadaptive.api.template.ExcludeView;
@@ -22,20 +20,12 @@ public abstract class VirtualFolderPath extends AbstractUUIDEntity {
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = 9999)
 	Boolean appendUsername = Boolean.FALSE;
 	
-	@ObjectField(type = FieldType.ENUM, defaultValue = "ON_RESOLVE")
-	@ExcludeView(values = FieldView.TABLE)
-	@ObjectView(value = VirtualFolder.FOLDER_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = 9999)
-	CacheStrategy cacheStrategy;
-
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
+	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "", weight = 9998)
+	@ExcludeView(values = { FieldView.READ, FieldView.TABLE, FieldView.UPDATE })
+	Boolean createRoot;
+	
 	protected abstract String getDestinationUri();
-
-	public CacheStrategy getCacheStrategy() {
-		return cacheStrategy;
-	}
-
-	public void setCacheStrategy(CacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
 
 	public Boolean getAppendUsername() {
 		return appendUsername;
@@ -51,5 +41,14 @@ public abstract class VirtualFolderPath extends AbstractUUIDEntity {
 		}
 		return getDestinationUri();
 	}
+
+	public Boolean getCreateRoot() {
+		return createRoot;
+	}
+
+	public void setCreateRoot(Boolean createRoot) {
+		this.createRoot = createRoot;
+	}
+	
 	
 }

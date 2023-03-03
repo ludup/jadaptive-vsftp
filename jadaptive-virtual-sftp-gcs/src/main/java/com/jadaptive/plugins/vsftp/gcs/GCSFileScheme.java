@@ -12,7 +12,6 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
 import com.sshtools.vfs.gcs.GoogleStorageFileProvider;
 import com.sshtools.vfs.gcs.GoogleStorageFileSystemConfigBuilder;
@@ -26,7 +25,7 @@ public class GCSFileScheme extends AbstractFileScheme<GoogleStorageFileProvider>
 	private TemplateService templateService; 
 	
 	public GCSFileScheme() {
-		super("Google Storage", new GoogleStorageFileProvider(), "gcs", "google", GCSFolder.RESOURCE_KEY);
+		super(GCSFolder.RESOURCE_KEY, "Google Storage", new GoogleStorageFileProvider(), "gcs", "google");
 	}
 	
 	@Override
@@ -90,5 +89,15 @@ public class GCSFileScheme extends AbstractFileScheme<GoogleStorageFileProvider>
 		folder.setCredentials((GCSCredentials) creds);
 		
 		return folder;
+	}
+
+	@Override
+	public String getBundle() {
+		return GCSFolder.RESOURCE_KEY;
+	}
+	
+	@Override
+	public Integer getWeight() {
+		return 2001;
 	}
 }

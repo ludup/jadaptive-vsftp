@@ -1,7 +1,5 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,28 +32,6 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	
 	@Autowired
 	private TemplateService templateService; 
-
-	@Override
-	public AnonymousUser getUser(String username) {
-		if(username.equals(ANONYMOUS_USERNAME)) {
-			return anonymousDatabase.get(ANONYMOUS_USER_UUID, AnonymousUser.class);
-		}
-		return null;
-	}
-
-	@Override
-	public AnonymousUser getUserByUUID(String uuid) {
-		if(uuid.equals(ANONYMOUS_USER_UUID)) {
-			return anonymousDatabase.get(uuid, AnonymousUser.class);
-		}
-		return null;
-	}
-
-	@Override
-	public Iterable<User> allObjects() {
-		return new ArrayList<User>(Arrays.asList(
-				anonymousDatabase.get(ANONYMOUS_USER_UUID, AnonymousUser.class)));
-	}
 
 	@Override
 	public ObjectTemplate getUserTemplate() {
@@ -92,7 +68,7 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 
 	@Override
 	public AnonymousUser getAnonymousUser() {
-		return getUserByUUID(ANONYMOUS_USER_UUID);
+		return anonymousDatabase.get(ANONYMOUS_USER_UUID, AnonymousUser.class);
 	}
 
 	@Override
@@ -128,5 +104,10 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	@Override
 	public void createUser(User user, char[] password, boolean forceChange) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean hasEncryptedPassword(User u) {
+		return true;
 	};
 }

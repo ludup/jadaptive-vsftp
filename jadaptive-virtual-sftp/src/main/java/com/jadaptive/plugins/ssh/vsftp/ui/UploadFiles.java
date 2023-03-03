@@ -1,6 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
@@ -12,7 +12,7 @@ import com.jadaptive.api.ui.RequestPage;
 
 @Extension
 @RequestPage(path = "upload-files/")
-@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "jadaptive-utils", "i18n"} )
+@PageDependencies(extensions = { "jquery", "bootstrap", "fontawesome", "jadaptive-utils" } )
 @PageProcessors(extensions = { "i18n"} )
 public class UploadFiles extends AuthenticatedPage {
 	
@@ -22,7 +22,7 @@ public class UploadFiles extends AuthenticatedPage {
 	}
 
 	@Override
-	protected void generateAuthenticatedContent(Document document) throws FileNotFoundException {
+	protected void generateAuthenticatedContent(Document document) throws IOException {
 		super.generateAuthenticatedContent(document);
 	}
 	

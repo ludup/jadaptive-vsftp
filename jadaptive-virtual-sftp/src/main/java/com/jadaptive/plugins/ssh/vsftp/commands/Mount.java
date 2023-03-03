@@ -83,15 +83,14 @@ public class Mount extends AbstractVFSCommand {
 		}
 		
 		type = type.toLowerCase();
+		@SuppressWarnings("unused")
 		CacheStrategy cacheStrategy = CacheStrategy.ON_RESOLVE;
 		
 		String mount = FileUtils.checkStartsWithSlash(
 				FileUtils.checkEndsWithNoSlash(args[args.length - 2]));
 		String path = args[args.length - 1];
 		
-		if(!fileService.checkSupportedMountType(type)) {
-			throw new UsageException(String.format("%s is not a supported file type", type));
-		}
+		fileService.assertSupportedMountType(type);
 		
 		Set<Role> roles = new HashSet<>();
 		String tmp = CliHelper.getValue(args, 'r', "roles", "");
@@ -152,8 +151,6 @@ public class Mount extends AbstractVFSCommand {
 		}
 		
 		try {
-			URI uri = provider.generateUri(path);
-			
 			VirtualFolder folder = provider.createFolder();
 			folder.setMountPath(mount);
 			
@@ -169,6 +166,8 @@ public class Mount extends AbstractVFSCommand {
 			VFSFileFactory factory = fileService.resolveMount(folder);
 			
 			VirtualFileFactory ff = (VirtualFileFactory) console.getFileFactory();
+			
+			URI uri = provider.generateUri(path, provider.buildFileSystemOptions(folder));
 			
 			VirtualMountManager mm = ff.getMountManager();
 			VirtualMountTemplate template = new VirtualMountTemplate(mount, 
@@ -191,6 +190,7 @@ public class Mount extends AbstractVFSCommand {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private VirtualFolderPath generatePath(FileScheme<?> provider) throws ParseException, IOException, PermissionDeniedException {
 		
 		Map<String, Object> doc = new HashMap<>();
@@ -228,7 +228,7 @@ public class Mount extends AbstractVFSCommand {
 		
 	}
 
-	private void saveMount(VirtualFolder folder, Collection<Role> roles, Collection<User> users) {
+	private void saveMount(VirtualFolder folder, Collection<Role> roles, Collection<User> users) throws IOException {
 		fileService.createOrUpdate(folder, users, roles);
 	}
 }

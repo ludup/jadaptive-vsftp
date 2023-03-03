@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jadaptive</groupId>
 	<artifactId>jadaptive-vsftp</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.3.0</version>
 	<url>https://jadaptive.com</url>
 	<packaging>pom</packaging>
 	<name>VSFTP Plugins</name>
@@ -26,8 +26,14 @@
 
 	<modules>
 		<module>jadaptive-virtual-sftp</module>
+		<module>jadaptive-virtual-sftp-product</module>
+		<module>jadaptive-virtual-sftp-local</module>
 		<module>jadaptive-virtual-sftp-gcs</module>
 		<module>jadaptive-virtual-sftp-s3</module>
+		<module>jadaptive-virtual-sftp-azure</module>
+		<module>jadaptive-virtual-sftp-dropbox</module>
+		<module>jadaptive-virtual-sftp-windows</module>
+		<module>jadaptive-virtual-sftp-sftp</module>
 	</modules>
 
 	<dependencies>
@@ -44,8 +50,8 @@
 		<javadoc.disabled>true</javadoc.disabled>
 		<deploy.disabled>true</deploy.disabled>
 		<source.disabled>true</source.disabled>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

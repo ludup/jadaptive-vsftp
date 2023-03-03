@@ -1,3 +1,16 @@
 /target/
 /.project
 /.settings/
+/jadaptive-virtual-sftp-windows/.classpath
+/jadaptive-virtual-sftp-windows/.project
+/jadaptive-virtual-sftp-windows/plugin.properties
+/jadaptive-virtual-sftp-sftp/.project
+/jadaptive-virtual-sftp-sftp/plugin.properties
+/jadaptive-virtual-sftp-sftp/.classpath
+/jadaptive-virtual-sftp-local/.classpath
+/jadaptive-virtual-sftp-local/.project
+/jadaptive-virtual-sftp-local/plugin.properties
+/jadaptive-virtual-sftp-product/.settings/
+/jadaptive-virtual-sftp-product/.classpath
+/jadaptive-virtual-sftp-product/.project
+/jadaptive-virtual-sftp-product/plugin.properties
