@@ -176,7 +176,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 			
 			FileObject obj = mgr.resolveFile(uri, opts);
 			
-			if(!obj.exists() && (scheme.createRoot() || folder.getPath().getCreateRoot())) {
+			if(!obj.exists() && scheme.createRoot()) {
 				obj.createFolder();
 			}
 			
