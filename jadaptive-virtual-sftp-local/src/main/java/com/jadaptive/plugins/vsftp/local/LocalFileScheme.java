@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
+import com.jadaptive.plugins.licensing.FeatureGroup;
+import com.jadaptive.plugins.licensing.LicensedFeature;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
@@ -18,12 +21,23 @@ import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
 
 @Extension
+@LicensedFeature(value = LocalFileScheme.LOCAL_FILES, group = FeatureGroup.FOUNDATION)
 public class LocalFileScheme extends AbstractFileScheme<DefaultLocalFileProvider> {
 
 	public static final String SCHEME_TYPE = "local";
 	
+	public static final String LOCAL_FILES = "Local Files";
+	
 	@Autowired
-	TemplateService templateService; 
+	private TemplateService templateService; 
+	
+	@Autowired
+	private FeatureEnablementService featureService; 
+	
+	@Override
+	public boolean isEnabled() {
+		return featureService.isEnabled(LOCAL_FILES);
+	}
 	
 	public LocalFileScheme() {
 		super(LocalFolder.RESOURCE_KEY, "Local Files", new DefaultLocalFileProvider(), "file", "local");
@@ -75,7 +89,5 @@ public class LocalFileScheme extends AbstractFileScheme<DefaultLocalFileProvider
 	public Integer getWeight() {
 		return Integer.MIN_VALUE;
 	}
-	
-	
 }
 

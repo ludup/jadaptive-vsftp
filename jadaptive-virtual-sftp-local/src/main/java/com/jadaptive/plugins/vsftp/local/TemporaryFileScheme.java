@@ -4,8 +4,10 @@ import org.apache.commons.vfs2.provider.temp.TemporaryFileProvider;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
@@ -19,6 +21,14 @@ public class TemporaryFileScheme extends AbstractFileScheme<TemporaryFileProvide
 	
 	@Autowired
 	private TemplateService templateService; 
+	
+	@Autowired
+	private FeatureEnablementService featureService; 
+	
+	@Override
+	public boolean isEnabled() {
+		return featureService.isEnabled(LocalFileScheme.LOCAL_FILES);
+	}
 	
 	public TemporaryFileScheme() {
 		super(TemporaryFolder.RESOURCE_KEY, "Temporary", new TemporaryFileProvider(), "tmp");

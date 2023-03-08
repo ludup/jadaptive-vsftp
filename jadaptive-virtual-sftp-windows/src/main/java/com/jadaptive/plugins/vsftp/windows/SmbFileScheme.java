@@ -15,23 +15,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
+import com.jadaptive.plugins.licensing.FeatureEnablementService;
+import com.jadaptive.plugins.licensing.FeatureGroup;
+import com.jadaptive.plugins.licensing.LicensedFeature;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
 
 @Extension
+@LicensedFeature(value = SmbFileScheme.WINDOWS_FILES, group = FeatureGroup.PROFESSIONAL)
 public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
 
 	static Logger log = LoggerFactory.getLogger(SmbFileScheme.class);
 	
 	public static final String SCHEME_TYPE = "windows";
 	
+	public static final String WINDOWS_FILES = "Windows Files";
+	
 	@Autowired
-	TemplateService templateService; 
+	private TemplateService templateService; 
 
+	@Autowired
+	private ApplicationService applicationService; 
+	
+	@Override
+	public boolean isEnabled() {
+		return applicationService.getBean(FeatureEnablementService.class).isEnabled(SmbFileScheme.WINDOWS_FILES);
+	}
+	
 	public SmbFileScheme() {
 		super(WindowsFolder.RESOURCE_KEY, "Windows CIFS", new SmbFileProvider(), "smb", "windows", "cifs");
 	}
