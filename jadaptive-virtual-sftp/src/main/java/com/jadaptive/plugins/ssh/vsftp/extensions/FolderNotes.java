@@ -6,14 +6,15 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectExtension;
 import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 @ObjectDefinition(resourceKey = FolderNotes.RESOURCE_KEY, type = ObjectType.OBJECT)
-@ObjectExtension(extend = VirtualFolder.RESOURCE_KEY)
+@ObjectExtension(resourceKey = FolderNotes.RESOURCE_KEY, bundle = FolderNotes.RESOURCE_KEY, extend = VirtualFolder.RESOURCE_KEY)
 @ObjectViews({ 
-	@ObjectViewDefinition(value = FolderNotes.NOTES_VIEW, bundle = VirtualFolder.RESOURCE_KEY, weight = Integer.MAX_VALUE)})
+	@ObjectViewDefinition(value = FolderNotes.NOTES_VIEW, bundle = FolderNotes.RESOURCE_KEY, weight = Integer.MAX_VALUE-2)})
 public class FolderNotes extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = -8526380113453685004L;
@@ -23,6 +24,7 @@ public class FolderNotes extends AbstractUUIDEntity {
 	public static final String NOTES_VIEW = "notesView";
 	
 	@ObjectField(type = FieldType.TEXT_AREA)
+	@ObjectView(value = FolderNotes.NOTES_VIEW)
 	private String notes;
 	
 	@Override

@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.links;
+package com.jadaptive.plugins.ssh.vsftp.sharing;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ import com.jadaptive.plugins.licensing.LicensedFeature;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.extensions.sharing.SharingExtension;
 import com.jadaptive.utils.StaticResolver;
 import com.jadaptive.utils.Utils;
 import com.sshtools.common.files.AbstractFile;
@@ -129,11 +130,16 @@ public class SharedFileServiceImpl extends AbstractUUIDObjectServceImpl<SharedFi
 			throw new IOException(virtualPath + " does not exist!");
 		}
 		VirtualFolder mount = fileService.getVirtualFolder(file.getMount().getMount());
-		if(file.isFile() && !mount.getShareFiles()) {
-			throw new PermissionDeniedException("You do not have the right to share this file");
-		}
-		if(file.isDirectory() && !mount.getShareFolders()) {
-			throw new PermissionDeniedException("You do not have the right to share this folder");	
+		
+		if(mount instanceof SharingExtension) {
+		
+			SharingExtension sharing = (SharingExtension) mount;
+			if(file.isFile() && !sharing.getSharing().getShareFiles()) {
+				throw new PermissionDeniedException("You do not have the right to share this file");
+			}
+			if(file.isDirectory() && !sharing.getSharing().getShareFolders()) {
+				throw new PermissionDeniedException("You do not have the right to share this folder");	
+			}
 		}
 		return file;
 	}

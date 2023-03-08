@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.links;
+package com.jadaptive.plugins.ssh.vsftp.sharing;
 
 import java.io.IOException;
 import java.util.Date;

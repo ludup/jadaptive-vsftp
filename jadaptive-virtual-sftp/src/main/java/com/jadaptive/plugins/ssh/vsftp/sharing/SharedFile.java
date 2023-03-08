@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.links;
+package com.jadaptive.plugins.ssh.vsftp.sharing;
 
 import java.util.ArrayList;
 import java.util.Collection;

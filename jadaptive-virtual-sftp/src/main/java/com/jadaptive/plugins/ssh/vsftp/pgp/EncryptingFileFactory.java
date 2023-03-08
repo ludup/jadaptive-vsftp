@@ -13,17 +13,17 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 public class EncryptingFileFactory implements AbstractFileFactory<EncryptingFile> {
 
 	AbstractFileFactory<?> sourceFactory;
-	VirtualFolder folder;
+	PGPEncryption enc;
 	
-	public EncryptingFileFactory(AbstractFileFactory<?> sourceFactory, VirtualFolder folder) {
+	public EncryptingFileFactory(AbstractFileFactory<?> sourceFactory, PGPEncryption enc) {
 		this.sourceFactory = sourceFactory;
-		this.folder = folder;
+		this.enc = enc;
 	}
 
 	@Override
 	public EncryptingFile getFile(String path) throws PermissionDeniedException, IOException {
 		try {
-			return new EncryptingFile(sourceFactory.getFile(path), folder);
+			return new EncryptingFile(sourceFactory.getFile(path), enc);
 		} catch (NoSuchProviderException | IOException | PGPException | PermissionDeniedException e) {
 			throw new IOException(e.getMessage(), e);
 		}
@@ -37,7 +37,7 @@ public class EncryptingFileFactory implements AbstractFileFactory<EncryptingFile
 	@Override
 	public EncryptingFile getDefaultPath() throws PermissionDeniedException, IOException {
 		try {
-			return new EncryptingFile(sourceFactory.getDefaultPath(), folder);
+			return new EncryptingFile(sourceFactory.getDefaultPath(), enc);
 		} catch (NoSuchProviderException | IOException | PGPException | PermissionDeniedException e) {
 			throw new IOException(e.getMessage(), e);
 		}

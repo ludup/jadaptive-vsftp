@@ -40,6 +40,7 @@ import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.ssh.vsftp.pgp.EncryptingFileFactory;
+import com.jadaptive.plugins.ssh.vsftp.pgp.PGPEncryptionExtension;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
@@ -116,7 +117,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 
 		folder.setMountPath(FileUtils.checkStartsWithSlash(folder.getMountPath()));
 		
-		FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
+		FileScheme<?> scheme = getFileScheme(folder.getType());
 		scheme.configure(folder);
 		
 		try {
@@ -147,7 +148,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 		
 		folder.setMountPath(FileUtils.checkStartsWithSlash(folder.getMountPath()));
 		
-		FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
+		FileScheme<?> scheme = getFileScheme(folder.getType());
 		scheme.configure(folder);
 		
 		try {
@@ -166,7 +167,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	public VFSFileFactory resolveMount(VirtualFolder folder) throws IOException {
 		
 		try {
-			FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
+			FileScheme<?> scheme = getFileScheme(folder.getType());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager mgr = getManager(folder.getUuid(), CacheStrategy.ON_RESOLVE);
 			
@@ -248,7 +249,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	public VirtualMountTemplate getVirtualMountTemplate(VirtualFolder folder) throws IOException {
 		
 		try {
-			FileScheme<?> scheme = getFileScheme(folder.getResourceKey());
+			FileScheme<?> scheme = getFileScheme(folder.getType());
 			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
 			FileSystemManager manager = getManager(folder.getUuid(), CacheStrategy.ON_RESOLVE);
 
@@ -256,13 +257,14 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 					replaceVariables(folder.getPath().generatePath()),
 					opts).toASCIIString();
 			
-			if(folder.getEncrypt()) {
+			if(isEncrypting(folder)) {
 				return new VirtualFolderMount(folder,
 						uri,
 						new EncryptingFileFactory(
 								scheme.configureFactory(
-								new VFSFileFactory(manager, opts, uri)), folder), 
-								scheme.createRoot());
+										new VFSFileFactory(manager, opts, uri)), 
+								((PGPEncryptionExtension)folder).getPGPEncryption()), 
+						scheme.createRoot());
 			} else {
 				return new VirtualFolderMount(folder,
 						uri,
@@ -275,6 +277,10 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 			throw new IOException(e);
 		}
 	
+	}
+
+	private boolean isEncrypting(VirtualFolder folder) {
+		return folder instanceof PGPEncryptionExtension && ((PGPEncryptionExtension)folder).getPGPEncryption().getEncrypt();
 	}
 
 	private String replaceVariables(String destinationUri) {

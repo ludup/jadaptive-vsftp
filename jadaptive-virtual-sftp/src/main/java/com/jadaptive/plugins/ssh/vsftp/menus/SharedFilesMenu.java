@@ -11,8 +11,8 @@ import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.ui.menu.ApplicationMenu;
 import com.jadaptive.api.ui.menu.ApplicationMenuService;
 import com.jadaptive.plugins.licensing.FeatureEnablementService;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
+import com.jadaptive.plugins.ssh.vsftp.sharing.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.sharing.SharedFileService;
 
 @Extension
 public class SharedFilesMenu implements ApplicationMenu {

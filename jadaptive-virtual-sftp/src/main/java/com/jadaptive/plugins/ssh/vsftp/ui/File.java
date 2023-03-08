@@ -5,6 +5,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.jadaptive.plugins.ssh.vsftp.extensions.sharing.SharingExtension;
+import com.jadaptive.plugins.ssh.vsftp.pgp.PGPEncryption;
+import com.jadaptive.plugins.ssh.vsftp.pgp.PGPEncryptionExtension;
 import com.mongodb.internal.HexUtils;
 import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
@@ -34,7 +37,11 @@ public class File {
 	}
 	
 	public boolean getEncrypted() {
-		return mount!=null ? mount.getEncrypt() : parent != null ? parent.getEncrypt() : false;
+		
+		if(mount instanceof PGPEncryptionExtension) {
+			return ((PGPEncryptionExtension)mount).getPGPEncryption().getEncrypt();
+		}
+		return false;
 	}
 	
 	public long getLength() {
@@ -102,15 +109,27 @@ public class File {
 	}
 	
 	public boolean isShareFiles() {
-		return parent == null ? false : parent.getShareFiles();
+		if(parent==null) {
+			return false;
+		}
+		if(parent instanceof SharingExtension) {
+			return ((SharingExtension)parent).getSharing().getShareFiles();
+		}
+		return false;
 	}
 	
 	public boolean isShareFolders() {
-		return parent == null ? false : parent.getShareFolders();
+		if(parent==null) {
+			return false;
+		}
+		if(parent instanceof SharingExtension) {
+			return ((SharingExtension)parent).getSharing().getShareFolders();
+		}
+		return false;
 	}
 	
 	public boolean isReadOnly() {
-		return parent == null ? true : parent.getReadOnly();
+		return parent == null ? true : parent.getPath().getReadOnly();
 	}
 	
 	public String getMountUuid() {

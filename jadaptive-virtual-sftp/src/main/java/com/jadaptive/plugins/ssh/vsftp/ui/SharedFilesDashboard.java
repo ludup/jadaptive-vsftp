@@ -12,8 +12,8 @@ import com.jadaptive.api.ui.DashboardWidget;
 import com.jadaptive.api.ui.Html;
 import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
+import com.jadaptive.plugins.ssh.vsftp.sharing.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.sharing.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 
 @Extension

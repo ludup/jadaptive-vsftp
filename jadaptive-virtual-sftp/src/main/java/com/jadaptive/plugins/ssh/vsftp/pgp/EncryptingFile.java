@@ -23,11 +23,11 @@ import com.sshtools.common.util.IOUtils;
 
 public class EncryptingFile extends AbstractFileAdapter {
 
-	VirtualFolder virtualFolder;
+	PGPEncryption virtualFolder;
 	PGPPublicKey publicKey;
 	PGPPrivateKey secretKey;
 	
-	public EncryptingFile(AbstractFile file, VirtualFolder virtualFolder) throws IOException, PGPException, NoSuchProviderException {
+	public EncryptingFile(AbstractFile file, PGPEncryption virtualFolder) throws IOException, PGPException, NoSuchProviderException {
 		super(file);
 		if(!virtualFolder.getEncrypt()) {
 			throw new IllegalStateException("EncryptingFile can only work with VirtualFolder with encryption turned on!");

@@ -30,7 +30,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
+import com.jadaptive.plugins.ssh.vsftp.sharing.SharedFileService;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadFormService;
 import com.jadaptive.utils.ObjectUtils;

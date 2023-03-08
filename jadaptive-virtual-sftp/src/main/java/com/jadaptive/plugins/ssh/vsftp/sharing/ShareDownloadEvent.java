@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.links;
+package com.jadaptive.plugins.ssh.vsftp.sharing;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;

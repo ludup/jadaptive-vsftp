@@ -18,8 +18,8 @@ import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.plugins.licensing.FeatureEnablementService;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFile;
-import com.jadaptive.plugins.ssh.vsftp.links.SharedFileService;
+import com.jadaptive.plugins.ssh.vsftp.sharing.SharedFile;
+import com.jadaptive.plugins.ssh.vsftp.sharing.SharedFileService;
 
 @Extension
 @RequestPage(path = "download-terms/{shortCode}/{filename}")
