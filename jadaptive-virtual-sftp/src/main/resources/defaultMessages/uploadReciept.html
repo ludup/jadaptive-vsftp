@@ -1,17 +1,17 @@
-<p>Thank you for uploading to ${shareName} on ${serverName}.</p>
+<p>Thank you for uploading to $[shareName] on $[serverName].</p>
 <table>
 	<tbody>	
 		<tr>
 			<td><strong>Your Name:</strong></td>
-			<td>${uploaderName}</td>
+			<td>$[uploaderName]</td>
 		</tr>
 		<tr>
 			<td><strong>Your Email:</strong></td>
-			<td>${uploaderEmail}</td>
+			<td>$[uploaderEmail]</td>
 		</tr>
 		<tr>
 			<td><strong>Your Reference:</strong></td>
-			<td>${uploaderRef}</td>
+			<td>$[uploaderRef]</td>
 		</tr>
 	</tbody>
 </table>
@@ -30,9 +30,9 @@
 	<tbody>
 		[#list files as file]
 		<tr>
-			<td>${file.filename}</td>
-			<td>${file.displaySize}</td>
-			<td>${file.contentHash}</td>
+			<td>$[file.filename]</td>
+			<td>$[file.displaySize]</td>
+			<td>$[file.contentHash]</td>
 		</tr>
 		[/#list]
 	</tbody>

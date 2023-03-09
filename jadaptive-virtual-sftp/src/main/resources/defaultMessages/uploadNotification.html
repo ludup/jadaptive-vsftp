@@ -1,18 +1,18 @@
-<p>You have received new files in ${shareName} on ${serverName}.</p>
+<p>You have received new files in $[shareName] on $[serverName].</p>
 
 <table>
 	<tbody>
 		<tr>
 			<td><strong>From Name:</strong></td>
-			<td>${uploaderName}</td>
+			<td>$[uploaderName]</td>
 		</tr>
 		<tr>
 			<td><strong>From Email:</strong></td>
-			<td>${uploaderEmail}</td>
+			<td>$[uploaderEmail]</td>
 		</tr>
 		<tr>
 			<td><strong>From Reference:</strong></td>
-			<td><a href="${serverURL}/app/ui/view/incomingFiles/${uuid}">${uploaderRef}</a></td>
+			<td><a href="$[serverURL}/app/ui/view/incomingFiles/${uuid}">${uploaderRef]</a></td>
 		</tr>
 	</tbody>
 </table>
@@ -33,13 +33,13 @@
 	<tbody>
 		[#list files as file]
 		<tr>
-			<td>${file.filename}</td>
-			<td>${file.displaySize}</td>
-			<td>${file.contentHash}</td>
+			<td>$[file.filename]</td>
+			<td>$[file.displaySize]</td>
+			<td>$[file.contentHash]</td>
 		</tr>
 		[/#list]
 	</tbody>
 	
 </table>
 
-<p>Login to ${serverName} to access these files.</p>
+<p>Login to $[serverName] to access these files.</p>
