@@ -15,7 +15,6 @@ import org.bouncycastle.openpgp.operator.jcajce.JcaKeyFingerprintCalculator;
 
 import com.jadaptive.api.app.ApplicationServiceImpl;
 import com.jadaptive.api.encrypt.EncryptionService;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileAdapter;
 import com.sshtools.common.permissions.PermissionDeniedException;

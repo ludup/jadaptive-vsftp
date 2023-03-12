@@ -4,7 +4,6 @@ import org.apache.commons.vfs2.provider.tar.TarFileProvider;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.licensing.FeatureEnablementService;

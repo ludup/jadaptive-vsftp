@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.extensions.sharing.SharingExtension;
-import com.jadaptive.plugins.ssh.vsftp.pgp.PGPEncryption;
 import com.jadaptive.plugins.ssh.vsftp.pgp.PGPEncryptionExtension;
 import com.mongodb.internal.HexUtils;
 import com.sshtools.common.files.vfs.VirtualFile;
