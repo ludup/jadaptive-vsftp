@@ -11,6 +11,7 @@ transferChart.setThemes([
   am5themes_Animated.new(transferChart)
 ]);
 
+am5.addLicense("AM5C387765625");
 
 // Create chart
 // https://www.amcharts.com/docs/v5/charts/xy-chart/
