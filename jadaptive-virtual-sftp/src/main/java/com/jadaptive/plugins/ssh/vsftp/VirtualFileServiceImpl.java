@@ -97,10 +97,14 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	public void assertSupportedMountType(String type) throws IOException {
 		
 		checkSchemes();
-		for(FileScheme<?> scheme : schemes) {
-			if(!scheme.isEnabled()) {
-				throw new FileNotFoundException(String.format("%s is not enabled", scheme.getName()));
-			}
+		FileScheme<?> scheme = getFileScheme(type);
+		
+		if(Objects.isNull(scheme)) {
+			throw new FileNotFoundException(String.format("%s is not a supported file type", type));
+		}
+		
+		if(!scheme.isEnabled()) {
+			throw new FileNotFoundException(String.format("%s is not enabled", scheme.getName()));
 		}
 	}
 	
