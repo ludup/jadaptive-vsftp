@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.FileProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
 import com.sshtools.common.files.AbstractFileFactory;
+import com.sshtools.common.files.vfs.VFSFileFactory;
 
 public abstract class AbstractFileScheme<T extends FileProvider> implements FileScheme<T> {
 
@@ -142,8 +144,8 @@ public abstract class AbstractFileScheme<T extends FileProvider> implements File
 	}
 	
 	@Override
-	public AbstractFileFactory<?> configureFactory(AbstractFileFactory<?> factory) {
-		return factory;
+	public AbstractFileFactory<?> configureFactory(FileSystemManager manager, FileSystemOptions opts, String uri) throws IOException {
+		return new VFSFileFactory(manager, opts, uri);
 	}
 	
 }

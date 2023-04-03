@@ -265,14 +265,13 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 				return new VirtualFolderMount(folder,
 						uri,
 						new EncryptingFileFactory(
-								scheme.configureFactory(
-										new VFSFileFactory(manager, opts, uri)), 
+								scheme.configureFactory(manager, opts, uri), 
 								((PGPEncryptionExtension)folder).getPGPEncryption()), 
 						scheme.createRoot());
 			} else {
 				return new VirtualFolderMount(folder,
 						uri,
-						scheme.configureFactory(new VFSFileFactory(manager, opts, uri)), 
+						scheme.configureFactory(manager, opts, uri), 
 						scheme.createRoot());				
 			}
 			

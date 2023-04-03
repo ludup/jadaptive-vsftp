@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 
+import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.FileProvider;
 import org.pf4j.ExtensionPoint;
@@ -66,5 +67,5 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 
 	void delete(VirtualFolder virtualFolder);
 
-	AbstractFileFactory<?> configureFactory(AbstractFileFactory<?> factory); 
+	AbstractFileFactory<?> configureFactory(FileSystemManager manager, FileSystemOptions opts, String uri) throws IOException; 
 }
