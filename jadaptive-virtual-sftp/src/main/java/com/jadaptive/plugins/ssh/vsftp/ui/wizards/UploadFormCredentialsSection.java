@@ -15,8 +15,8 @@ import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
 
 public class UploadFormCredentialsSection extends UploadFormSection {
 
-		FileScheme<?> scheme;
-		public UploadFormCredentialsSection(FileScheme<?> scheme) {
+		FileScheme scheme;
+		public UploadFormCredentialsSection(FileScheme scheme) {
 			super(UploadForm.RESOURCE_KEY, 
 					"homeCredentials", 
 					"PublicUploadStep2a.html");

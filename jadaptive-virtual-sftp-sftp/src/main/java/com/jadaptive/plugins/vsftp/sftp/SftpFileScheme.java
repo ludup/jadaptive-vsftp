@@ -13,12 +13,12 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
+import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
 import com.sshtools.vfs.sftp.SftpFileProvider;
 import com.sshtools.vfs.sftp.SftpFileSystemConfigBuilder;
 
 @Extension
-public class SftpFileScheme extends AbstractFileScheme<SftpFileProvider> {
+public class SftpFileScheme extends VFSFileScheme<SftpFileProvider> {
 
 	public static final String SCHEME_TYPE = "sftp";
 	

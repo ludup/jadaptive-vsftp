@@ -1,32 +1,21 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Set;
 
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.FileSystemOptions;
-import org.apache.commons.vfs2.provider.FileProvider;
 import org.pf4j.ExtensionPoint;
 
 import com.jadaptive.api.template.ObjectTemplate;
 import com.sshtools.common.files.AbstractFileFactory;
 
-public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
+public interface FileScheme extends ExtensionPoint {
 
 	String getResourceKey();
-	
-	FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException;
 	
 	boolean requiresCredentials();
 
 	Set<String> types();
 
-	URI generateUri(String path, FileSystemOptions opts) throws URISyntaxException;
-
-	T getFileProvider();
-	
 	ObjectTemplate getPathTemplate();
 	
 	Class<? extends VirtualFolderPath> getPathClass();
@@ -67,5 +56,6 @@ public interface FileScheme<T extends FileProvider> extends ExtensionPoint {
 
 	void delete(VirtualFolder virtualFolder);
 
-	AbstractFileFactory<?> configureFactory(FileSystemManager manager, FileSystemOptions opts, String uri) throws IOException; 
+	AbstractFileFactory<?> configureFactory(VirtualFolder folder) throws IOException;
+
 }

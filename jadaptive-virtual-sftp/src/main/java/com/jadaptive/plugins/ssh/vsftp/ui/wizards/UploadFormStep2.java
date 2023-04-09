@@ -53,7 +53,7 @@ public class UploadFormStep2 extends UploadFormSection {
 		super.validateAndSave(object, state);
 		
 		try {
-			FileScheme<?> scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
+			FileScheme scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
 			if(scheme.requiresCredentials()) {
 				state.insertNextPage(new UploadFormCredentialsSection(scheme));
 			} else {
@@ -82,12 +82,12 @@ public class UploadFormStep2 extends UploadFormSection {
 		
 		List<I18nOption> values = new ArrayList<>();
 		
-		FileScheme<?> scheme = null;
+		FileScheme scheme = null;
 		if(Objects.nonNull(folderType)) {
 			scheme = fileService.getFileScheme(folderType);
 		}
-		Collection<FileScheme<?>> schemes = fileService.getSchemes();
-		FileScheme<?> defaultScheme = schemes.iterator().next();
+		Collection<FileScheme> schemes = fileService.getSchemes();
+		FileScheme defaultScheme = schemes.iterator().next();
 		
 		if(Objects.isNull(scheme)) {
 			scheme = defaultScheme;
@@ -100,7 +100,7 @@ public class UploadFormStep2 extends UploadFormSection {
 			state.setCurrentObject(null);
 		}
 		
-		for(FileScheme<?> child : schemes) {
+		for(FileScheme child : schemes) {
 			ObjectTemplate childTemplate = templateService.get(child.getResourceKey());
 			values.add(new I18nOption(childTemplate.getBundle(),
 					childTemplate.getResourceKey() + ".name", 
@@ -136,7 +136,7 @@ public class UploadFormStep2 extends UploadFormSection {
 			Element content = document.selectFirst("#wizardContent");
 			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(this), VirtualFolderPath.class);
 			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-			FileScheme<?> scheme = fileService.getFileScheme(folderType);
+			FileScheme scheme = fileService.getFileScheme(folderType);
 			
 			content.appendChild(new Element("div")
 					.addClass("col-12 w-100 my-3")

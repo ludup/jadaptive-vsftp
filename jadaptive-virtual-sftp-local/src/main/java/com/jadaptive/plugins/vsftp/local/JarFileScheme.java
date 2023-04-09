@@ -11,10 +11,10 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
+import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
 
 @Extension
-public class JarFileScheme extends AbstractFileScheme<JarFileProvider> {
+public class JarFileScheme extends VFSFileScheme<JarFileProvider> {
 
 	public static final String SCHEME_TYPE = "jar";
 	

@@ -24,11 +24,11 @@ import com.jadaptive.plugins.licensing.LicensedFeature;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
+import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
 
 @Extension
 @LicensedFeature(value = SmbFileScheme.WINDOWS_FILES, group = FeatureGroup.PROFESSIONAL)
-public class SmbFileScheme extends AbstractFileScheme<SmbFileProvider> {
+public class SmbFileScheme extends VFSFileScheme<SmbFileProvider> {
 
 	static Logger log = LoggerFactory.getLogger(SmbFileScheme.class);
 	

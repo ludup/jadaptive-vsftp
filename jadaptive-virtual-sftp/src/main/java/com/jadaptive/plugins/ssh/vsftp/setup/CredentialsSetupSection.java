@@ -15,8 +15,8 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 public class CredentialsSetupSection extends SetupSection {
 
-		FileScheme<?> scheme;
-		public CredentialsSetupSection(FileScheme<?> scheme) {
+		FileScheme scheme;
+		public CredentialsSetupSection(FileScheme scheme) {
 			super("setup", 
 					"homeCredentials", 
 					"HomeCredentials.html");

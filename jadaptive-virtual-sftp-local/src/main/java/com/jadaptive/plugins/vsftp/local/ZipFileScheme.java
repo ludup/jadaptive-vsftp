@@ -11,10 +11,10 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
+import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
 
 @Extension
-public class ZipFileScheme extends AbstractFileScheme<ZipFileProvider> {
+public class ZipFileScheme extends VFSFileScheme<ZipFileProvider> {
 
 	public static final String SCHEME_TYPE = "zip";
 	

@@ -144,7 +144,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 			boolean home = false;
 			for(VirtualFolder m : fileService.allObjects()) {
 				home |= m.isHome();
-				FileScheme<?> scheme = fileService.getFileScheme(m.getResourceKey());
+				FileScheme scheme = fileService.getFileScheme(m.getResourceKey());
 				mounts.add(new Mount(m, scheme.getIcon()));
 			}
 			if(!home) {

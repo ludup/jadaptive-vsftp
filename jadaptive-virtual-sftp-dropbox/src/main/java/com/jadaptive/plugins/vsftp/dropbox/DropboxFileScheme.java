@@ -14,11 +14,11 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
+import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
 import com.sshtools.vfs.dropbox.DropboxFileProvider;
 
 @Extension
-public class DropboxFileScheme extends AbstractFileScheme<DropboxFileProvider> {
+public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 
 	public static final String SCHEME_TYPE = "dropbox";
 	

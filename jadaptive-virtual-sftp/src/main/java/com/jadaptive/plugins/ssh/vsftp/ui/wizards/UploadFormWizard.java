@@ -114,7 +114,7 @@ public class UploadFormWizard extends AbstractWizard {
 			
 			try {
 				String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-				FileScheme<?> scheme = fileService.getFileScheme(folderType);
+				FileScheme scheme = fileService.getFileScheme(folderType);
 
 				UploadFormName name = ObjectUtils.assertObject(state.getObject(UploadFormName.class), UploadFormName.class);
 				UploadFormAssignment assignments = ObjectUtils.assertObject(state.getObject(UploadFormAssignment.class), UploadFormAssignment.class);

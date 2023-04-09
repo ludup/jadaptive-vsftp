@@ -17,11 +17,11 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
+import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
 import com.sshtools.vfs.azure.AzureFileProvider;
 
 @Extension
-public class AzureFileScheme extends AbstractFileScheme<AzureFileProvider> {
+public class AzureFileScheme extends VFSFileScheme<AzureFileProvider> {
 	
 	static Logger log = LoggerFactory.getLogger(AzureFileScheme.class);
 	

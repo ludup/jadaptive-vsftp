@@ -17,11 +17,11 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
+import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
 import com.sshtools.vfs.s3.provider.s3.S3FileProvider;
 
 @Extension
-public class S3FileScheme extends AbstractFileScheme<S3FileProvider> {
+public class S3FileScheme extends VFSFileScheme<S3FileProvider> {
 	
 	static Logger log = LoggerFactory.getLogger(S3FileScheme.class);
 	

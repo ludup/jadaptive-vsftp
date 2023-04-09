@@ -92,7 +92,9 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServe
 			      SupportedSftpExtensions.COPY_DATA,
 			      SupportedSftpExtensions.CHECK_FILE_HANDLE,
 			      SupportedSftpExtensions.CHECK_FILE_NAME,
-			      SupportedSftpExtensions.OPEN_DIRECTORY_WITH_FILTER));
+			      SupportedSftpExtensions.OPEN_DIRECTORY_WITH_FILTER,
+			      SupportedSftpExtensions.CREATE_MULTIPART_FILE,
+			      SupportedSftpExtensions.OPEN_PART_FILE));
 		
 		ctx.getPolicy(FileSystemPolicy.class).setFileFactory(new FileFactory() {
 

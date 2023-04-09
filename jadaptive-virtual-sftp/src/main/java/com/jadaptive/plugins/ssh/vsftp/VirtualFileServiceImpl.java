@@ -3,7 +3,6 @@ package com.jadaptive.plugins.ssh.vsftp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,10 +16,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.CacheStrategy;
-import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.apache.commons.vfs2.provider.FileProvider;
 import org.slf4j.Logger;
@@ -41,10 +38,10 @@ import com.jadaptive.api.role.Role;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.ssh.vsftp.pgp.EncryptingFileFactory;
 import com.jadaptive.plugins.ssh.vsftp.pgp.PGPEncryptionExtension;
+import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
 import com.jadaptive.plugins.sshd.SSHDService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
-import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
@@ -72,8 +69,8 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	@Autowired
 	private EventService eventService; 
 	
-	private Set<FileScheme<?>> schemes = new HashSet<>();
-	private Map<String, FileScheme<?>> providers = new HashMap<>();
+	private Set<FileScheme> schemes = new HashSet<>();
+	private Map<String, FileScheme> providers = new HashMap<>();
 	private Map<String, FileSystemManager> managers = new HashMap<>();
 	
 	@Override
@@ -97,7 +94,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	public void assertSupportedMountType(String type) throws IOException {
 		
 		checkSchemes();
-		FileScheme<?> scheme = providers.get(type);
+		FileScheme scheme = providers.get(type);
 		
 		if(Objects.isNull(scheme)) {
 			throw new FileNotFoundException(String.format("%s is not a supported file type", type));
@@ -109,7 +106,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	}
 	
 	@Override
-	public FileScheme<?> getFileScheme(String type) throws IOException {
+	public FileScheme getFileScheme(String type) throws IOException {
 		assertSupportedMountType(type);
 		return providers.get(type);
 	}
@@ -121,7 +118,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 
 		folder.setMountPath(FileUtils.checkStartsWithSlash(folder.getMountPath()));
 		
-		FileScheme<?> scheme = getFileScheme(folder.getType());
+		FileScheme scheme = getFileScheme(folder.getType());
 		scheme.configure(folder);
 		
 		try {
@@ -152,7 +149,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 		
 		folder.setMountPath(FileUtils.checkStartsWithSlash(folder.getMountPath()));
 		
-		FileScheme<?> scheme = getFileScheme(folder.getType());
+		FileScheme scheme = getFileScheme(folder.getType());
 		scheme.configure(folder);
 		
 		try {
@@ -168,31 +165,10 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	}
 	
 	@Override
-	public VFSFileFactory resolveMount(VirtualFolder folder) throws IOException {
+	public AbstractFileFactory<?> resolveMount(VirtualFolder folder) throws IOException {
 		
-		try {
-			FileScheme<?> scheme = getFileScheme(folder.getType());
-			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
-			FileSystemManager mgr = getManager(folder.getUuid(), CacheStrategy.ON_RESOLVE);
-			
-			String uri = scheme.generateUri(
-					replaceVariables(folder.getPath().generatePath()),
-					opts).toASCIIString();
-			
-			FileObject obj = mgr.resolveFile(uri, opts);
-			
-			if(!obj.exists() && scheme.createRoot()) {
-				obj.createFolder();
-			}
-			
-			if(!obj.exists()) {
-				throw new FileNotFoundException("Destination of mount does not exist");
-			}
-			
-			return new VFSFileFactory(mgr, opts, uri);
-		} catch (URISyntaxException e) {
-			throw new IOException(e.getMessage(), e);
-		}
+		FileScheme scheme = getFileScheme(folder.getType());			
+		return scheme.configureFactory(folder);
 	}
 	
 	public FileSystemManager getManager(String id, CacheStrategy cacheStrategy)
@@ -207,10 +183,12 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 				DefaultFileSystemManager vfsMgr = new DefaultFileSystemManager();
 				vfsMgr.setLogger(LogFactory.getLog(key));
 				vfsMgr.setCacheStrategy(cacheStrategy);
-				for(FileScheme<?> scheme : schemes) {
-					if(!vfsMgr.hasProvider(scheme.getScheme())) {
-						log.info("Registering {} file scheme", scheme.getScheme());
-						vfsMgr.addProvider(scheme.getScheme(), scheme.getFileProvider());
+				for(FileScheme scheme : schemes) {
+					if(scheme instanceof VFSFileScheme<?>) {
+						if(!vfsMgr.hasProvider(scheme.getScheme())) {
+							log.info("Registering {} file scheme", scheme.getScheme());
+							vfsMgr.addProvider(scheme.getScheme(), ((VFSFileScheme<?>)scheme).getFileProvider());
+						}
 					}
 				}
 				vfsMgr.init();
@@ -224,7 +202,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	private void checkSchemes() {
 		
 		if(schemes.isEmpty()) {
-			for(FileScheme<?> scheme : applicationService.getBeans(FileScheme.class)) {
+			for(FileScheme scheme : applicationService.getBeans(FileScheme.class)) {
 				log.info("Registering file scheme " + scheme.getName());
 				schemes.add(scheme);
 				providers.put(scheme.getResourceKey(), scheme);
@@ -252,41 +230,31 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	@Override
 	public VirtualMountTemplate getVirtualMountTemplate(VirtualFolder folder) throws IOException {
 		
-		try {
-			FileScheme<?> scheme = getFileScheme(folder.getType());
-			FileSystemOptions opts = scheme.buildFileSystemOptions(folder);
-			FileSystemManager manager = getManager(folder.getUuid(), CacheStrategy.ON_RESOLVE);
+		
+		FileScheme scheme = getFileScheme(folder.getType());
 
-			String uri = scheme.generateUri(
-					replaceVariables(folder.getPath().generatePath()),
-					opts).toASCIIString();
-			
-			if(isEncrypting(folder)) {
-				return new VirtualFolderMount(folder,
-						uri,
-						new EncryptingFileFactory(
-								scheme.configureFactory(manager, opts, uri), 
-								((PGPEncryptionExtension)folder).getPGPEncryption()), 
-						scheme.createRoot());
-			} else {
-				return new VirtualFolderMount(folder,
-						uri,
-						scheme.configureFactory(manager, opts, uri), 
-						scheme.createRoot());				
-			}
-			
-
-		} catch (URISyntaxException e) {
-			throw new IOException(e);
-		}
-	
+		String uri = replaceVariables(folder.getPath().generatePath());
+		
+		if(isEncrypting(folder)) {
+			return new VirtualFolderMount(folder,
+					uri,
+					new EncryptingFileFactory(
+							scheme.configureFactory(folder), 
+							((PGPEncryptionExtension)folder).getPGPEncryption()), 
+					scheme.createRoot());
+		} else {
+			return new VirtualFolderMount(folder,
+					uri,
+					scheme.configureFactory(folder), 
+					scheme.createRoot());				
+		}			
 	}
 
 	private boolean isEncrypting(VirtualFolder folder) {
 		return folder instanceof PGPEncryptionExtension && ((PGPEncryptionExtension)folder).getPGPEncryption().getEncrypt();
 	}
 
-	private String replaceVariables(String destinationUri) {
+	public String replaceVariables(String destinationUri) {
 		return destinationUri.replace("%USERNAME%", getCurrentUser().getUsername())
 				.replace("%INSTALLPATH%", new File(".").getAbsolutePath());
 	}
@@ -301,7 +269,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 		assertWrite(VirtualFolder.RESOURCE_KEY);
 		
 		try {
-			FileScheme<?> scheme = getFileScheme(virtualFolder.getType());
+			FileScheme scheme = getFileScheme(virtualFolder.getType());
 			scheme.delete(virtualFolder);
 			repository.deleteObject(virtualFolder);
 			
@@ -311,18 +279,18 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	}
 
 	@Override
-	public Collection<FileScheme<?>> getSchemes() {
+	public Collection<FileScheme> getSchemes() {
 		checkSchemes();
-		List<FileScheme<?>> tmp = new ArrayList<>(schemes);
-		Collections.sort(tmp, new Comparator<FileScheme<?>>() {
+		List<FileScheme> tmp = new ArrayList<>(schemes);
+		Collections.sort(tmp, new Comparator<FileScheme>() {
 
 			@Override
-			public int compare(FileScheme<?> o1, FileScheme<?> o2) {
+			public int compare(FileScheme o1, FileScheme o2) {
 				return o1.getWeight().compareTo(o2.getWeight());
 			}
 			
 		});
-		return Collections.<FileScheme<?>>unmodifiableCollection(tmp);
+		return Collections.<FileScheme>unmodifiableCollection(tmp);
 	}
 
 	@Override

@@ -1,15 +1,9 @@
 package com.jadaptive.plugins.ssh.vsftp.schemes;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.FileSystemOptions;
-import org.apache.commons.vfs2.provider.FileProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.encrypt.EncryptionService;
@@ -18,26 +12,23 @@ import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
-import com.sshtools.common.files.AbstractFileFactory;
-import com.sshtools.common.files.vfs.VFSFileFactory;
 
-public abstract class AbstractFileScheme<T extends FileProvider> implements FileScheme<T> {
+public abstract class AbstractFileScheme implements FileScheme {
 
 	//protected Logger log = LoggerFactory.getLogger(AbstractFileScheme.class);
 	
 	String name;
 	String[] types;
-	T provider; 
 	String resourceKey; 
 	
 	@Autowired
 	private EncryptionService encryptionService; 
+	 
 	
-	protected AbstractFileScheme(String resourceKey, String name, T provider, String... types) {
+	protected AbstractFileScheme(String resourceKey, String name, String... types) {
 		this.resourceKey = resourceKey;
 		this.name = name;
 		this.types = types;
-		this.provider = provider;
 	}
 	
 	public String getResourceKey() {
@@ -51,11 +42,6 @@ public abstract class AbstractFileScheme<T extends FileProvider> implements File
 	@Override
 	public boolean createRoot() {
 		return false;
-	}
-	
-	@Override
-	public FileSystemOptions buildFileSystemOptions(VirtualFolder folder) throws IOException {
-		return new FileSystemOptions();
 	}
 
 	@Override
@@ -71,16 +57,6 @@ public abstract class AbstractFileScheme<T extends FileProvider> implements File
 	@Override
 	public Set<String> types() {
 		return new HashSet<>(Arrays.asList(types));
-	}
-
-	@Override
-	public URI generateUri(String path, FileSystemOptions opts) throws URISyntaxException {
-		return new URI(getScheme() + "://" + path);
-	}
-
-	@Override
-	public T getFileProvider() {
-		return provider;
 	}
 
 	@Override
@@ -142,10 +118,4 @@ public abstract class AbstractFileScheme<T extends FileProvider> implements File
 	public void delete(VirtualFolder folder) {
 		
 	}
-	
-	@Override
-	public AbstractFileFactory<?> configureFactory(FileSystemManager manager, FileSystemOptions opts, String uri) throws IOException {
-		return new VFSFileFactory(manager, opts, uri);
-	}
-	
 }

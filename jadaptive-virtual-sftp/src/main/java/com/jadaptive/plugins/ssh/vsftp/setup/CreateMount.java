@@ -60,7 +60,7 @@ public class CreateMount extends SetupSection {
 		super.validateAndSave(object, state);
 		
 		try {
-			FileScheme<?> scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
+			FileScheme scheme = fileService.getFileScheme((String) state.getParameter(REQUEST_PARAM_TYPE));
 			if(scheme.requiresCredentials()) {
 				state.insertNextPage(new CredentialsSetupSection(scheme));
 			} else {
@@ -76,7 +76,7 @@ public class CreateMount extends SetupSection {
 		
 		try {
 			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-			FileScheme<?> scheme = fileService.getFileScheme(folderType);
+			FileScheme scheme = fileService.getFileScheme(folderType);
 			
 			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(this), scheme.getPathClass());
 			VirtualFolderCredentials creds = null;
@@ -107,7 +107,7 @@ public class CreateMount extends SetupSection {
 
 	}
 	
-	private VirtualFolder createVirtualFolder(FileScheme<?> scheme, VirtualFolderPath path, VirtualFolderCredentials creds, String name, String mount) {
+	private VirtualFolder createVirtualFolder(FileScheme scheme, VirtualFolderPath path, VirtualFolderCredentials creds, String name, String mount) {
 		VirtualFolder folder = scheme.createVirtualFolder(name, mount, path, creds);
 		return folder;
 	}
@@ -127,10 +127,10 @@ public class CreateMount extends SetupSection {
 		List<I18nOption> values = new ArrayList<>();
 		
 		
-		Collection<FileScheme<?>> schemes = fileService.getSchemes();
-		FileScheme<?> defaultScheme = schemes.iterator().next();
+		Collection<FileScheme> schemes = fileService.getSchemes();
+		FileScheme defaultScheme = schemes.iterator().next();
 		
-		for(FileScheme<?> child : schemes) {
+		for(FileScheme child : schemes) {
 			ObjectTemplate childTemplate = templateService.get(child.getResourceKey());
 			values.add(new I18nOption(childTemplate.getBundle(),
 					childTemplate.getResourceKey() + ".name", 
@@ -145,7 +145,7 @@ public class CreateMount extends SetupSection {
 			}
 		}
 		
-		FileScheme<?> scheme = fileService.getFileScheme(folderType);
+		FileScheme scheme = fileService.getFileScheme(folderType);
 		
 		UUIDEntity obj = state.getCurrentObject();
 		
@@ -194,7 +194,7 @@ public class CreateMount extends SetupSection {
 			Element content = document.selectFirst("#wizardContent");
 			VirtualFolderPath path = ObjectUtils.assertObject(state.getObject(this), VirtualFolderPath.class);
 			String folderType = (String) state.getParameter(REQUEST_PARAM_TYPE);
-			FileScheme<?> scheme = fileService.getFileScheme(folderType);
+			FileScheme scheme = fileService.getFileScheme(folderType);
 			@SuppressWarnings("unused")
 			Element el;
 			

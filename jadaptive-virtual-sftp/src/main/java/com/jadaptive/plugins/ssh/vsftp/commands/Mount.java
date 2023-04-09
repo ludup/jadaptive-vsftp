@@ -1,8 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.commands;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,7 +26,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.sshd.ConsoleHelper;
 import com.jadaptive.utils.FileUtils;
-import com.sshtools.common.files.vfs.VFSFileFactory;
+import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VirtualFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountManager;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
@@ -128,7 +126,7 @@ public class Mount extends AbstractVFSCommand {
 		}
 		
 
-		FileScheme<?> provider = fileService.getFileScheme(type);
+		FileScheme provider = fileService.getFileScheme(type);
 		Map<String,String> mountOptions = new HashMap<>();
 		
 		if(provider.hasExtendedOptions() && CliHelper.hasOption(args, 'o', "options")) {
@@ -163,15 +161,15 @@ public class Mount extends AbstractVFSCommand {
 				provider.setOptions(folder, generateMountOptions(mountOptions, provider));
 			}
 			
-			VFSFileFactory factory = fileService.resolveMount(folder);
+			AbstractFileFactory<?> factory = fileService.resolveMount(folder);
 			
 			VirtualFileFactory ff = (VirtualFileFactory) console.getFileFactory();
 			
-			URI uri = provider.generateUri(path, provider.buildFileSystemOptions(folder));
+			String uri = folder.getPath().generatePath();
 			
 			VirtualMountManager mm = ff.getMountManager();
 			VirtualMountTemplate template = new VirtualMountTemplate(mount, 
-					uri.toASCIIString(), 
+					uri, 
 					factory, 
 					provider.createRoot());
 					
@@ -185,13 +183,13 @@ public class Mount extends AbstractVFSCommand {
 				saveMount(folder, roles, users);
 			}
 			
-		} catch (ParseException | URISyntaxException e) {
+		} catch (ParseException e) {
 			throw new IOException(e.getMessage(), e);
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private VirtualFolderPath generatePath(FileScheme<?> provider) throws ParseException, IOException, PermissionDeniedException {
+	private VirtualFolderPath generatePath(FileScheme provider) throws ParseException, IOException, PermissionDeniedException {
 		
 		Map<String, Object> doc = new HashMap<>();
 		
@@ -203,7 +201,7 @@ public class Mount extends AbstractVFSCommand {
 		return templateService.createObject(doc, provider.getPathClass());
 	}
 	
-	private VirtualFolderOptions generateMountOptions(Map<String, String> mountOptions, FileScheme<?> provider) throws ParseException, IOException, PermissionDeniedException {
+	private VirtualFolderOptions generateMountOptions(Map<String, String> mountOptions, FileScheme provider) throws ParseException, IOException, PermissionDeniedException {
 		
 		Map<String, Object> doc = new HashMap<>();
 		
@@ -216,7 +214,7 @@ public class Mount extends AbstractVFSCommand {
 
 	}
 
-	private VirtualFolderCredentials promptForCredentials(FileScheme<?> provider) throws ParseException, PermissionDeniedException, IOException {
+	private VirtualFolderCredentials promptForCredentials(FileScheme provider) throws ParseException, PermissionDeniedException, IOException {
 		
 		Map<String,Object> doc =  new HashMap<>();	
 		consoleHelper.promptTemplate(console, doc, 

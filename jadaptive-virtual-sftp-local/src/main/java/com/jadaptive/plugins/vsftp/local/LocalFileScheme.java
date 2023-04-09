@@ -18,11 +18,11 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.folders.LocalFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
+import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
 
 @Extension
 @LicensedFeature(value = LocalFileScheme.LOCAL_FILES, group = FeatureGroup.FOUNDATION)
-public class LocalFileScheme extends AbstractFileScheme<DefaultLocalFileProvider> {
+public class LocalFileScheme extends VFSFileScheme<DefaultLocalFileProvider> {
 
 	public static final String SCHEME_TYPE = "local";
 	

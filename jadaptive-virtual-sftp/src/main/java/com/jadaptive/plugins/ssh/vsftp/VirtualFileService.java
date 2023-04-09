@@ -3,7 +3,9 @@ package com.jadaptive.plugins.ssh.vsftp;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.apache.commons.vfs2.CacheStrategy;
 import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.provider.FileProvider;
 
 import com.jadaptive.api.repository.UUIDObjectService;
@@ -12,7 +14,6 @@ import com.jadaptive.api.stats.ResourceService;
 import com.jadaptive.api.user.User;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
-import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
 
@@ -20,9 +21,9 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 
 	boolean checkMountExists(String mount, User user);
 
-	FileScheme<?> getFileScheme(String type) throws IOException;
+	FileScheme getFileScheme(String type) throws IOException;
 
-	VFSFileFactory resolveMount(VirtualFolder folder) throws IOException;
+	AbstractFileFactory<?> resolveMount(VirtualFolder folder) throws IOException;
 
 	VirtualFolder createOrUpdate(VirtualFolder folder, Collection<User> users, Collection<Role> roles) throws IOException;
 
@@ -36,7 +37,7 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 
 	void addProvider(String scheme, FileProvider provider) throws FileSystemException;
 
-	Collection<FileScheme<?>> getSchemes();
+	Collection<FileScheme> getSchemes();
 
 	VirtualFolder getHomeMount(User user);
 
@@ -63,5 +64,9 @@ public interface VirtualFileService extends UUIDObjectService<VirtualFolder>, Re
 	VirtualFolder getParentMount(AbstractFile fileObject);
 
 	void assertSupportedMountType(String type) throws IOException;
+
+	FileSystemManager getManager(String uuid, CacheStrategy onResolve) throws FileSystemException;
+
+	String replaceVariables(String path);
 
 }
