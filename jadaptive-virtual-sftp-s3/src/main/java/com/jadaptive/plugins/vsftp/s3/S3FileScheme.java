@@ -1,12 +1,8 @@
 package com.jadaptive.plugins.vsftp.s3;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.net.URISyntaxException;
 
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemOptions;
-import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
-import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +13,12 @@ import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
-import com.sshtools.vfs.s3.provider.s3.S3FileProvider;
+import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
+import com.sshtools.common.files.AbstractFileFactory;
+import com.sshtools.synergy.s3.S3AbstractFileFactory;
 
 @Extension
-public class S3FileScheme extends VFSFileScheme<S3FileProvider> {
+public class S3FileScheme extends AbstractFileScheme {
 	
 	static Logger log = LoggerFactory.getLogger(S3FileScheme.class);
 	
@@ -32,28 +29,7 @@ public class S3FileScheme extends VFSFileScheme<S3FileProvider> {
 	private TemplateService templateService; 
 	
 	public S3FileScheme() {
-		super(S3Folder.RESOURCE_KEY, "Amazon S3", new S3FileProvider(), "s3", "aws", "amazon");
-	}
-	
-	public FileSystemOptions buildFileSystemOptions(VirtualFolder vf) throws IOException {
-		
-		S3Folder folder = (S3Folder)vf;
-		FileSystemOptions opts = new FileSystemOptions();
-		
-		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof S3Credentials) {
-	        try {
-	        	
-	        	S3Credentials credentials = (S3Credentials) folder.getCredentials();
-	            DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, 
-	            		new StaticUserAuthenticator(null, credentials.getAccessKey(), 
-	            				credentials.getSecretKey()));
-
-	        } catch (FileSystemException e) {
-	            log.error(String.format("Failed to set credentials on %s", folder.getMountPath()));
-	        }
-		}
-
-        return opts;
+		super(RESOURCE_KEY, "Plan Storage", SCHEME_TYPE);
 	}
 
 	public boolean requiresCredentials() {
@@ -104,5 +80,20 @@ public class S3FileScheme extends VFSFileScheme<S3FileProvider> {
 	@Override
 	public Integer getWeight() {
 		return 2000;
+	}
+
+	@Override
+	public AbstractFileFactory<?> configureFactory(VirtualFolder folder) throws IOException {
+		
+		S3Folder s3 = (S3Folder) folder;
+		S3FolderPath sfxPath = (S3FolderPath) folder.getPath();
+		try {
+			return new S3AbstractFileFactory(sfxPath.getRegion(),
+					s3.getCredentials().getAccessKey(),
+					s3.getCredentials().getSecretKey(),
+					sfxPath.getBucket());
+		} catch (URISyntaxException e) {
+			throw new IOException(e.getMessage(), e);
+		}
 	}
 }

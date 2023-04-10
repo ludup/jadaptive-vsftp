@@ -9,12 +9,18 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.sshtools.common.util.FileUtils;
 
+import software.amazon.awssdk.regions.Region;
+
 @ObjectDefinition(resourceKey = S3FolderPath.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class S3FolderPath extends VirtualFolderPath {
 
 	private static final long serialVersionUID = 1918731617426526984L;
 
 	public static final String RESOURCE_KEY = "s3FolderPath";
+	
+	@ObjectField(type = FieldType.ENUM)
+	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 0, bundle = S3Folder.RESOURCE_KEY)
+	Region region;
 	
 	@ObjectField(type = FieldType.TEXT)
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 100, bundle = S3Folder.RESOURCE_KEY)
@@ -48,7 +54,12 @@ public class S3FolderPath extends VirtualFolderPath {
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
-	
-	
 
+	public Region getRegion() {
+		return region;
+	}
+	
+	public void setRegion(Region region) {
+		this.region = region;
+	}
 }
