@@ -17,7 +17,9 @@ public class TransferResultEvent  extends ObjectEvent<TransferResult> {
 	@Validator(type = ValidationType.RESOURCE_KEY, value = TransferResult.RESOURCE_KEY)
 	TransferResult object;
 
-	public TransferResultEvent() { } 
+	public TransferResultEvent() {
+
+	} 
 	
 	public TransferResultEvent(TransferResult result, String resourceKey) {
 		super(resourceKey, "files");
