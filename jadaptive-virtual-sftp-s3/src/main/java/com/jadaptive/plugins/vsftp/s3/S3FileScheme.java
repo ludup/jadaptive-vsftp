@@ -17,13 +17,15 @@ import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.synergy.s3.S3AbstractFileFactory;
 
+import software.amazon.awssdk.regions.Region;
+
 @Extension
 public class S3FileScheme extends AbstractFileScheme {
 	
 	static Logger log = LoggerFactory.getLogger(S3FileScheme.class);
 	
 	public static final String SCHEME_TYPE = "s3";
-	public static final String RESOURCE_KEY = "s3";
+	public static final String RESOURCE_KEY = "s3Folder";
 	
 	@Autowired
 	private TemplateService templateService; 
@@ -88,7 +90,7 @@ public class S3FileScheme extends AbstractFileScheme {
 		S3Folder s3 = (S3Folder) folder;
 		S3FolderPath sfxPath = (S3FolderPath) folder.getPath();
 		try {
-			return new S3AbstractFileFactory(sfxPath.getRegion(),
+			return new S3AbstractFileFactory(sfxPath.getRegion().getSDKRegion(),
 					s3.getCredentials().getAccessKey(),
 					s3.getCredentials().getSecretKey(),
 					sfxPath.getBucket());

@@ -20,7 +20,7 @@ public class S3FolderPath extends VirtualFolderPath {
 	
 	@ObjectField(type = FieldType.ENUM)
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 0, bundle = S3Folder.RESOURCE_KEY)
-	Region region;
+	S3Region region;
 	
 	@ObjectField(type = FieldType.TEXT)
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 100, bundle = S3Folder.RESOURCE_KEY)
@@ -55,11 +55,11 @@ public class S3FolderPath extends VirtualFolderPath {
 		this.filePath = filePath;
 	}
 
-	public Region getRegion() {
+	public S3Region getRegion() {
 		return region;
 	}
 	
-	public void setRegion(Region region) {
+	public void setRegion(S3Region region) {
 		this.region = region;
 	}
 }
