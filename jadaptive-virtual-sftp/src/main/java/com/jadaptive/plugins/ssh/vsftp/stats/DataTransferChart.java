@@ -43,9 +43,9 @@ public class DataTransferChart implements DashboardWidget {
 	@Override
 	public void renderWidget(Document document, Element element) {
 		
-		PageHelper.appendScript(document, "/app/content/amcharts5/index.js");
-		PageHelper.appendScript(document, "/app/content/amcharts5/xy.js");
-		PageHelper.appendScript(document, "/app/content/amcharts5/themes/Animated.js");
+		PageHelper.appendHeadScript(document, "/app/content/amcharts5/index.js");
+		PageHelper.appendHeadScript(document, "/app/content/amcharts5/xy.js");
+		PageHelper.appendHeadScript(document, "/app/content/amcharts5/themes/Animated.js");
 		
 		sessionUtils.addContentSecurityPolicy(Request.response(), "script-src", SessionUtils.UNSAFE_INLINE);
 		
@@ -53,7 +53,7 @@ public class DataTransferChart implements DashboardWidget {
 
 		URL url = getClass().getResource(String.format("%s.js", getClass().getSimpleName()));
 		if(Objects.nonNull(url)) {
-			PageHelper.appendScript(document, "/app/script/" + getClass().getPackageName().replace('.', '/') + "/" + getClass().getSimpleName() + ".js");
+			PageHelper.appendHeadScript(document, "/app/script/" + getClass().getPackageName().replace('.', '/') + "/" + getClass().getSimpleName() + ".js");
 		} 
 	}
 
