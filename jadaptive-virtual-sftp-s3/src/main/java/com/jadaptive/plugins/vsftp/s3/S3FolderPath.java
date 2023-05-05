@@ -9,8 +9,6 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.sshtools.common.util.FileUtils;
 
-import software.amazon.awssdk.regions.Region;
-
 @ObjectDefinition(resourceKey = S3FolderPath.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class S3FolderPath extends VirtualFolderPath {
 

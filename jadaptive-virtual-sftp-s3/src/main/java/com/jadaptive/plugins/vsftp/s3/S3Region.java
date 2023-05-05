@@ -1,7 +1,5 @@
 package com.jadaptive.plugins.vsftp.s3;
 
-import java.util.Map;
-
 import software.amazon.awssdk.regions.Region;
 
 public enum S3Region {

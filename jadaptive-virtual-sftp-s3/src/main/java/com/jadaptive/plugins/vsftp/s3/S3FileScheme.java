@@ -17,8 +17,6 @@ import com.jadaptive.plugins.ssh.vsftp.schemes.AbstractFileScheme;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.synergy.s3.S3AbstractFileFactory;
 
-import software.amazon.awssdk.regions.Region;
-
 @Extension
 public class S3FileScheme extends AbstractFileScheme {
 	
