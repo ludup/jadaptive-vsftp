@@ -40,7 +40,7 @@ public class TemporaryFileScheme extends VFSFileScheme<TemporaryFileProvider> {
 	
 	@Override
 	public String getIcon() {
-		return "far fa-hdd";
+		return "fa-solid fa-hdd";
 	}
 
 	@Override

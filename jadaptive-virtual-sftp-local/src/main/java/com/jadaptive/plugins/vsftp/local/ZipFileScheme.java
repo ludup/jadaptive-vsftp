@@ -35,7 +35,7 @@ public class ZipFileScheme extends VFSFileScheme<ZipFileProvider> {
 
 	@Override
 	public String getIcon() {
-		return "far fa-file-archive";
+		return "fa-solid fa-file-archive";
 	}
 	
 

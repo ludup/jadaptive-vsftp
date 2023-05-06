@@ -35,7 +35,7 @@ public class TarFileScheme extends VFSFileScheme<TarFileProvider> {
 	
 	@Override
 	public String getIcon() {
-		return "far fa-file-archive";
+		return "fa-solid fa-file-archive";
 	}
 
 	@Override

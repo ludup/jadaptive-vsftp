@@ -35,7 +35,7 @@ public class GzipFileScheme extends VFSFileScheme<GzipFileProvider> {
 
 	@Override
 	public String getIcon() {
-		return "far fa-file-archive";
+		return "fa-solid fa-file-archive";
 	}
 	
 	@Override

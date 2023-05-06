@@ -60,7 +60,7 @@ public class LocalFileScheme extends VFSFileScheme<DefaultLocalFileProvider> {
 	
 	@Override
 	public String getIcon() {
-		return "far fa-hdd";
+		return "fa-solid fa-hdd";
 	}
 
 	@Override

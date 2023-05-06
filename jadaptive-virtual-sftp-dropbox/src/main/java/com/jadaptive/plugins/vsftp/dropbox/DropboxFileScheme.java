@@ -66,7 +66,7 @@ public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 
 	@Override
 	public String getIcon() {
-		return "fab fa-dropbox";
+		return "fa-brands fa-dropbox";
 	}
 	
 	@Override

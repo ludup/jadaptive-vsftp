@@ -148,7 +148,7 @@ public class VirtualFileController extends AuthenticatedController implements St
 				mounts.add(new Mount(m, scheme.getIcon()));
 			}
 			if(!home) {
-				mounts.add(0, new Mount("Home", "/", "far fa-home"));
+				mounts.add(0, new Mount("Home", "/", "fa-solid fa-home"));
 			}
 			return new ResourceList<Mount>(mounts);
 		} catch (Throwable e) {

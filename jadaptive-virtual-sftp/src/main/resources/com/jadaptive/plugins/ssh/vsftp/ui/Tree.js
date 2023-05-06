@@ -222,11 +222,11 @@ $(function() {
 		loadingTemplate: '<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>',
 		onPostHeader: function() {
 			if($('#deleteButton').length == 0) {
-				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="deleteButton"><i class="fa-regular fa-trash"></i></button>');
+				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="deleteButton"><i class="fa-solid fa-trash"></i></button>');
 			}
 			
 			if($('#shareButton').length == 0) {
-				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="shareButton"><i class="fa-regular fa-link"></i></button>');
+				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="shareButton"><i class="fa-solid fa-link"></i></button>');
 			}
 		}
 	});

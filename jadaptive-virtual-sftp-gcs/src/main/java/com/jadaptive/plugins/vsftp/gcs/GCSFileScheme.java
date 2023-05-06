@@ -65,7 +65,7 @@ public class GCSFileScheme extends VFSFileScheme<GoogleStorageFileProvider> {
 
 	@Override
 	public String getIcon() {
-		return "fab fa-google";
+		return "fa-brands fa-google";
 	}
 	
 	@Override

@@ -138,7 +138,7 @@ public class DownloadPublicFile extends HtmlPage {
 		e.appendChild(new Element("p")
 				).appendChild(Html.a(downloadService.getDirectLink(download))
 						.addClass("btn btn-primary")
-						.appendChild(Html.i("fa-regular", "fa-download", "me-1"))
+						.appendChild(Html.i("fa-solid", "fa-download", "me-1"))
 						.appendChild(Html.i18n("default", "download.name"))
 						.attr("id", "downloadLink"));
 		
@@ -148,7 +148,7 @@ public class DownloadPublicFile extends HtmlPage {
 		
 		for(String virtualPath : download.getVirtualPaths()) {
 			div.appendChild(Html.a(downloadService.getDirectLink(download, virtualPath))
-					.appendChild(Html.i("fa-regular", "fa-file-arrow-down", "me-1"))
+					.appendChild(Html.i("fa-solid", "fa-file-arrow-down", "me-1"))
 					.appendChild(Html.span(FileUtils.getFilename(virtualPath), "me-3"))
 					.appendChild(new Element("br")));
 		}
@@ -174,7 +174,7 @@ public class DownloadPublicFile extends HtmlPage {
 		document.selectFirst("#downloadLinks").appendChild(new Element("p")
 				).appendChild(Html.a(downloadService.getDirectLink(download))
 						.addClass("btn btn-primary")
-						.appendChild(Html.i("fa-regular", "fa-download", "me-1"))
+						.appendChild(Html.i("fa-solid", "fa-download", "me-1"))
 						.appendChild(Html.i18n("default", "download.name"))
 						.attr("id", "downloadLink"));
 	
@@ -182,7 +182,7 @@ public class DownloadPublicFile extends HtmlPage {
 				.appendChild(Html.a(
 						Request.get().getRequestURL().toString())
 						.addClass("copyURL")
-						.appendChild(Html.i("fa-regular", "fa-copy", "me-1"))
+						.appendChild(Html.i("fa-solid", "fa-copy", "me-1"))
 						.appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "copyURL.name")))
 				.appendChild(Html.div("text-muted", "small")
 						.appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "copyURL.desc"))));
@@ -191,7 +191,7 @@ public class DownloadPublicFile extends HtmlPage {
 				.appendChild(Html.a(
 						Utils.getBaseURL(Request.get().getRequestURL().toString()) + downloadService.getDirectLink(download))
 						.addClass("copyURL")
-						.appendChild(Html.i("fa-regular", "fa-copy", "me-1"))
+						.appendChild(Html.i("fa-solid", "fa-copy", "me-1"))
 						.appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "copyDirect.name")))
 				.appendChild(Html.div("text-muted", "small")
 						.appendChild(Html.i18n(VirtualFolder.RESOURCE_KEY, "copyDirect.desc"))));
