@@ -4,7 +4,7 @@ $(function() {
 	
 	
 		$('#breadcrumb').empty();
-		$('#breadcrumb').append('<li class="breadcrumb-item"><a class="clickPath" href="/app/ui/tree/"><i class="far fa-hdd"></i></a></li>');
+		$('#breadcrumb').append('<li class="breadcrumb-item"><a class="clickPath" href="/app/ui/tree/"><i class="fa-solid fa-hdd"></i></a></li>');
 		var lastIdx = path.indexOf('/');
 		
 		while(lastIdx < path.length-1) {
