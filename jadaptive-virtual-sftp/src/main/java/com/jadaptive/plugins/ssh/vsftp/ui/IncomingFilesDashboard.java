@@ -6,8 +6,8 @@ import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.app.ApplicationService;
-import com.jadaptive.api.ui.DashboardWidget;
 import com.jadaptive.api.ui.Html;
+import com.jadaptive.plugins.dashboard.DashboardWidget;
 import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.upload.IncomingFile;

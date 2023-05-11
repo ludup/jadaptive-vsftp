@@ -21,12 +21,9 @@ public class TarFileScheme extends VFSFileScheme<TarFileProvider> {
 	@Autowired
 	private TemplateService templateService; 
 	
-	@Autowired
-	private FeatureEnablementService featureService; 
-	
 	@Override
 	public boolean isEnabled() {
-		return featureService.isEnabled(LocalFileScheme.LOCAL_FILES);
+		return FeatureEnablementService.isFeatureEnabled(LocalFileScheme.LOCAL_FILES);
 	}
 	
 	public TarFileScheme() {

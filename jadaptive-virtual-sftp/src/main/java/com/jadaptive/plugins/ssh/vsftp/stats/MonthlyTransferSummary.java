@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.SessionUtils;
 import com.jadaptive.api.ui.DashboardType;
-import com.jadaptive.api.ui.DashboardWidget;
 import com.jadaptive.api.ui.PageHelper;
+import com.jadaptive.plugins.dashboard.DashboardWidget;
 
 @Extension
 public class MonthlyTransferSummary implements DashboardWidget {

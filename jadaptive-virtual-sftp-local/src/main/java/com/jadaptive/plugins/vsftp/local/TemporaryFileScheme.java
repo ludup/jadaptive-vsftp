@@ -20,13 +20,10 @@ public class TemporaryFileScheme extends VFSFileScheme<TemporaryFileProvider> {
 	
 	@Autowired
 	private TemplateService templateService; 
-	
-	@Autowired
-	private FeatureEnablementService featureService; 
-	
+
 	@Override
 	public boolean isEnabled() {
-		return featureService.isEnabled(LocalFileScheme.LOCAL_FILES);
+		return FeatureEnablementService.isFeatureEnabled(LocalFileScheme.LOCAL_FILES);
 	}
 	
 	public TemporaryFileScheme() {

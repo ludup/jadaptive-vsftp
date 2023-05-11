@@ -30,13 +30,11 @@ public class LocalFileScheme extends VFSFileScheme<DefaultLocalFileProvider> {
 	
 	@Autowired
 	private TemplateService templateService; 
-	
-	@Autowired
-	private FeatureEnablementService featureService; 
+
 	
 	@Override
 	public boolean isEnabled() {
-		return featureService.isEnabled(LOCAL_FILES);
+		return FeatureEnablementService.isFeatureEnabled(LOCAL_FILES);
 	}
 	
 	public LocalFileScheme() {

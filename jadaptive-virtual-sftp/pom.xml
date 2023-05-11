@@ -18,7 +18,7 @@
 		<plugin.version>${project.version}</plugin.version>
 		<plugin.provider>JADAPTIVE Limited</plugin.provider>
 		<plugin.projectUrl>https://github.com/ludup/jadpative-vsftp</plugin.projectUrl>
-		<plugin.dependencies>jadaptive-ssh-server,jadaptive-ssh-synergy,jadaptive-email,jadaptive-licensing</plugin.dependencies>	
+		<plugin.dependencies>jadaptive-ssh-server,jadaptive-ssh-synergy,jadaptive-email,jadaptive-licensing,jadaptive-dashboard</plugin.dependencies>	
 	</properties>
 
 	<dependencies>
@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.jadaptive</groupId>
-			<artifactId>jadaptive-boot</artifactId>
+			<artifactId>jadaptive-dashboard</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
