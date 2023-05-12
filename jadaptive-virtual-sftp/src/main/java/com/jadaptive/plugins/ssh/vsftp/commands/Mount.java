@@ -86,7 +86,6 @@ public class Mount extends AbstractVFSCommand {
 		
 		String mount = FileUtils.checkStartsWithSlash(
 				FileUtils.checkEndsWithNoSlash(args[args.length - 2]));
-		String path = args[args.length - 1];
 		
 		fileService.assertSupportedMountType(type);
 		
