@@ -100,7 +100,7 @@ public class SftpFileScheme extends VFSFileScheme<SftpFileProvider> {
 
 	@Override
 	public String getIcon() {
-		return "far fa-terminal";
+		return "fa-solid fa-terminal";
 	}
 
 	@Override

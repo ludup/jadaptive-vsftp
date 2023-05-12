@@ -69,7 +69,7 @@ public class AzureFileScheme extends VFSFileScheme<AzureFileProvider> {
 	
 	@Override
 	public String getIcon() {
-		return "fab fa-azure";
+		return "fa-brands fa-azure";
 	}
 
 	@Override

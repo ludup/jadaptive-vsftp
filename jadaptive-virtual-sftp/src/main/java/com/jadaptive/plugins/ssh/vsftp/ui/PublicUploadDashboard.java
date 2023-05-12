@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.servlet.Request;
-import com.jadaptive.api.ui.DashboardWidget;
 import com.jadaptive.api.ui.Html;
+import com.jadaptive.plugins.dashboard.DashboardWidget;
 import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.uploads.UploadForm;
@@ -75,9 +75,9 @@ public class PublicUploadDashboard implements DashboardWidget {
 							.appendChild(Html.a(String.format("/app/ui/tree%s", share.getVirtualPath())).text(share.getName()).attr("title", "Browse upload area")))
 					.appendChild(Html.div("col-2")
 						.appendChild(Html.a(downloadURL, "copyURL").attr("title", "Copy URL to clipboard")
-								.appendChild(Html.i("far fa-fw", "fa-copy")))
+								.appendChild(Html.i("fa-solid fa-fw", "fa-copy")))
 						.appendChild(Html.a(downloadURL, "").attr("title", "Goto upload area")
-								.appendChild(Html.i("far fa-fw", "fa-link")))));
+								.appendChild(Html.i("fa-solid fa-fw", "fa-link")))));
 		
 		}
 

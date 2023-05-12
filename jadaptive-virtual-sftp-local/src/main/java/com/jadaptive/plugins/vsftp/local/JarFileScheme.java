@@ -21,12 +21,9 @@ public class JarFileScheme extends VFSFileScheme<JarFileProvider> {
 	@Autowired
 	private TemplateService templateService; 
 	
-	@Autowired
-	private FeatureEnablementService featureService; 
-	
 	@Override
 	public boolean isEnabled() {
-		return featureService.isEnabled(LocalFileScheme.LOCAL_FILES);
+		return FeatureEnablementService.isFeatureEnabled(LocalFileScheme.LOCAL_FILES);
 	}
 	
 	public JarFileScheme() {
@@ -35,7 +32,7 @@ public class JarFileScheme extends VFSFileScheme<JarFileProvider> {
 
 	@Override
 	public String getIcon() {
-		return "far fa-file-archive";
+		return "fa-solid fa-file-archive";
 	}
 	
 	@Override

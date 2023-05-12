@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.permissions.AccessDeniedException;
 import com.jadaptive.api.permissions.PermissionService;
-import com.jadaptive.api.ui.DashboardWidget;
+import com.jadaptive.plugins.dashboard.DashboardWidget;
 
 @Extension
 public class VirtualFolderWidget implements DashboardWidget {

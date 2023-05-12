@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
+import org.apache.tomcat.util.buf.HexUtils;
+
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.extensions.sharing.SharingExtension;
 import com.jadaptive.plugins.ssh.vsftp.pgp.PGPEncryptionExtension;
-import com.mongodb.internal.HexUtils;
 import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
+import com.sshtools.common.ssh.components.DigestUtils;
 
 public class File {
 
@@ -25,7 +27,7 @@ public class File {
 	
 	public String getId() {
 		try {
-			return "f" + HexUtils.hexMD5(getPath().getBytes("UTF-8"));
+			return "f" + HexUtils.toHexString(DigestUtils.md5(getPath().getBytes("UTF-8")));
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		}

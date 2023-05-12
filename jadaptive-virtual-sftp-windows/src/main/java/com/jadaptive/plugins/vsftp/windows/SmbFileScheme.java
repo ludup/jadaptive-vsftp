@@ -121,7 +121,7 @@ public class SmbFileScheme extends VFSFileScheme<SmbFileProvider> {
 	
 	@Override
 	public String getIcon() {
-		return "fab fa-windows";
+		return "fa-brands fa-windows";
 	}
 
 	@Override

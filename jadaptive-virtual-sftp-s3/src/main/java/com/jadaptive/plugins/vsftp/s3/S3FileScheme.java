@@ -46,7 +46,7 @@ public class S3FileScheme extends AbstractFileScheme {
 	
 	@Override
 	public String getIcon() {
-		return "fab fa-aws";
+		return "fa-brands fa-aws";
 	}
 
 	@Override
