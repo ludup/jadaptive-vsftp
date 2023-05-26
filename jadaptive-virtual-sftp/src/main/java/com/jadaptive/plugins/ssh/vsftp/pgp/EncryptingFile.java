@@ -17,6 +17,7 @@ import com.jadaptive.api.app.ApplicationServiceImpl;
 import com.jadaptive.api.encrypt.EncryptionService;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileAdapter;
+import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.IOUtils;
 
@@ -25,8 +26,9 @@ public class EncryptingFile extends AbstractFileAdapter {
 	PGPEncryption virtualFolder;
 	PGPPublicKey publicKey;
 	PGPPrivateKey secretKey;
+	EncryptingFileFactory factory;
 	
-	public EncryptingFile(AbstractFile file, PGPEncryption virtualFolder) throws IOException, PGPException, NoSuchProviderException {
+	public EncryptingFile(AbstractFile file, PGPEncryption virtualFolder, EncryptingFileFactory factory) throws IOException, PGPException, NoSuchProviderException {
 		super(file);
 		if(!virtualFolder.getEncrypt()) {
 			throw new IllegalStateException("EncryptingFile can only work with VirtualFolder with encryption turned on!");
@@ -71,6 +73,13 @@ public class EncryptingFile extends AbstractFileAdapter {
 		} catch (IOException | PGPException | PermissionDeniedException e) {
 			throw new IOException(e.getMessage(), e);
 		}
+	}
+
+
+
+	@Override
+	public AbstractFileFactory<? extends AbstractFile> getFileFactory() {
+		return factory;
 	}
 
 }

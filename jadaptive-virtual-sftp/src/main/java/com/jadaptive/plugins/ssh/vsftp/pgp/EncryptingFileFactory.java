@@ -22,7 +22,7 @@ public class EncryptingFileFactory implements AbstractFileFactory<EncryptingFile
 	@Override
 	public EncryptingFile getFile(String path) throws PermissionDeniedException, IOException {
 		try {
-			return new EncryptingFile(sourceFactory.getFile(path), enc);
+			return new EncryptingFile(sourceFactory.getFile(path), enc, this);
 		} catch (NoSuchProviderException | IOException | PGPException | PermissionDeniedException e) {
 			throw new IOException(e.getMessage(), e);
 		}
@@ -36,7 +36,7 @@ public class EncryptingFileFactory implements AbstractFileFactory<EncryptingFile
 	@Override
 	public EncryptingFile getDefaultPath() throws PermissionDeniedException, IOException {
 		try {
-			return new EncryptingFile(sourceFactory.getDefaultPath(), enc);
+			return new EncryptingFile(sourceFactory.getDefaultPath(), enc, this);
 		} catch (NoSuchProviderException | IOException | PGPException | PermissionDeniedException e) {
 			throw new IOException(e.getMessage(), e);
 		}
