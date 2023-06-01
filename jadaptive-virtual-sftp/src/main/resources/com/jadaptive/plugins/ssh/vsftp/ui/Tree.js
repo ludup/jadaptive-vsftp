@@ -8,8 +8,8 @@ function renderPerms(val, obj) {
 }
 
 function renderName(val, obj) {
-	var icon = (obj.directory ? (obj.encrypted ? '<i class="fa-solid fa-folder"></i>' : '<i class="fa-solid fa-folder"></i>')
-		 :  (obj.encrypted ? '<i class="fa-solid fa-file-lock"></i>' : '<i class="fa-solid fa-file"></i>'));
+	var icon = (obj.directory ? (obj.encrypted ? '<i class="' + $('body').data('iconset') + ' fa-folder"></i>' : '<i class="' + $('body').data('iconset') + ' fa-folder"></i>')
+		 :  (obj.encrypted ? '<i class="' + $('body').data('iconset') + ' fa-file-lock"></i>' : '<i class="' + $('body').data('iconset') + ' fa-file"></i>'));
 	if (obj.directory) {
 		return '<a class="clickPath" href="' + obj.path + '">' + icon + ' ' + obj.name + '</a>';
 	} else {
@@ -40,17 +40,17 @@ function renderDate(val) {
 
 function renderShare(obj) {
 
-		var html = '<span class="dropdown"><a class="createLink me-2 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="fa-solid fa-link fa-fw"></i></a>';
+		var html = '<span class="dropdown"><a class="createLink me-2 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="' + $('body').data('iconset') + ' fa-link fa-fw"></i></a>';
 		html += '<ul class="dropdown-menu top" aria-labelledby="' + obj.id + '">';	
 	
 		if(obj.shareFiles && !obj.directory) {
-			html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="fa-solid fa-copy fa-fw me-1"></i> Share Link</a></li>';
-			html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="fa-solid fa-share-alt fa-fw me-1"></i> Share with Options</a></li>';
+			html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-copy fa-fw me-1"></i> Share Link</a></li>';
+			html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-share-alt fa-fw me-1"></i> Share with Options</a></li>';
 		}
 		
 		if(obj.shareFolders && obj.directory) {
-			html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="fa-solid fa-copy fa-fw me-1"></i> Share Link</a></li>';
-			html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="fa-solid fa-share-alt fa-fw me-1"></i> Share with Options</a></li>';
+			html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-copy fa-fw me-1"></i> Share Link</a></li>';
+			html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-share-alt fa-fw me-1"></i> Share with Options</a></li>';
 		}
 
 		if(obj.shareFiles || obj.shareFolders) {
@@ -64,15 +64,15 @@ function renderActions(val, obj) {
 	var html = '';
 	
 	if(!obj.mount && !obj.readOnly) {
-		html += '<a class="deleteFile me-2" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="fa-solid fa-trash fa-fw"></i></a>';
+		html += '<a class="deleteFile me-2" href="#" data-name="' + obj.name + '" data-folder="' + obj.directory + '" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-trash fa-fw"></i></a>';
 	} else {
-		html += '<i class="fa-solid fa-fw"></i>';
+		html += '<i class="' + $('body').data('iconset') + ' fa-fw"></i>';
 	}
 	
 	if (!obj.directory) {
-		html += '<a class="downloadFile me-2" href="/app/vfs/downloadFile' + obj.path + '"><i class="fa-solid fa-download fa-fw"></i></a>';
+		html += '<a class="downloadFile me-2" href="/app/vfs/downloadFile' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-download fa-fw"></i></a>';
 	} else {
-		html += '<i class="fa-solid fa-fw"></i>';	
+		html += '<i class="' + $('body').data('iconset') + ' fa-fw"></i>';	
 	}
 	
 	if(obj.shareFiles && !obj.directory) {
@@ -80,7 +80,7 @@ function renderActions(val, obj) {
 	} else if(obj.shareFolders && obj.directory) {
 		html += renderShare(obj);
 	} else {
-		html += '<i class="fa-solid fa-fw"></i>';
+		html += '<i class="' + $('body').data('iconset') + ' fa-fw"></i>';
 	}
 
 	return html;
@@ -176,7 +176,7 @@ function changePath(path) {
 function updateBreadcrumb(path) {
 	path = decodeURI(path);
 	$('#breadcrumb').empty();
-	$('#breadcrumb').append('<li class="breadcrumb-item"><a class="clickPath" href="/"><i class="fa-solid fa-hdd"></i></a></li>');
+	$('#breadcrumb').append('<li class="breadcrumb-item"><a class="clickPath" href="/"><i class="' + $('body').data('iconset') + ' fa-hdd"></i></a></li>');
 	var lastIdx = path.indexOf('/');
 
 	while (lastIdx < path.length - 1) {
@@ -219,14 +219,14 @@ $(function() {
 		showRefresh: true,
 		mobileResponsive: true,
 		ajax: 'ajaxRequest',
-		loadingTemplate: '<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>',
+		loadingTemplate: '<i class="' + $('body').data('iconset') + ' fa-spinner fa-spin fa-fw fa-2x"></i>',
 		onPostHeader: function() {
 			if($('#deleteButton').length == 0) {
-				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="deleteButton"><i class="fa-solid fa-trash"></i></button>');
+				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="deleteButton"><i class="' + $('body').data('iconset') + ' fa-trash"></i></button>');
 			}
 			
 			if($('#shareButton').length == 0) {
-				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="shareButton"><i class="fa-solid fa-link"></i></button>');
+				$('.fixed-table-toolbar').append('<button class="ms-3 btn btn-secondary" id="shareButton"><i class="' + $('body').data('iconset') + ' fa-link"></i></button>');
 			}
 		}
 	});
