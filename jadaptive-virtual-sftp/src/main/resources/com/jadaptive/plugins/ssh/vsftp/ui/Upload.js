@@ -21,7 +21,7 @@ $(function() {
 		var reference = $('#reference').val();
 		
 		if(name.trim() === '' || email.trim() === '' || reference.trim() === '' || !validateEmail(email.trim())) {
-			$('#feedback').append('<p class="alert alert-danger"><i class="fa-solid fa-exclamation-circle"></i> Please provide your name, valid email address and a reference for your files.</p>');
+			$('#feedback').append('<p class="alert alert-danger"><i class="' + $('body').data('iconset') + ' fa-exclamation-circle"></i> Please provide your name, valid email address and a reference for your files.</p>');
 			return false;
 		}
 

@@ -64,7 +64,7 @@ public class IncomingFilesDashboard implements DashboardWidget {
 							
 					.appendChild(Html.div("col-2")
 						.appendChild(Html.a(String.format("/app/vfs/incoming/zip/%s", file.getUuid())).attr("title", "Download archive of the incoming files")
-							.appendChild(Html.i("far", "fa-download")))));
+							.appendChild(Html.i("fa-solid", "fa-download")))));
 		}
 		
 		if(count > 0) {

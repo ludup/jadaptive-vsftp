@@ -15,7 +15,7 @@ import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.plugins.sshd.PluginFileSystemMount;
-import com.sshtools.common.files.ReadOnlyFileFactoryAdapter;
+import com.sshtools.common.files.ReadOnlyFileFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 
@@ -82,7 +82,7 @@ public class VirtualFileSystemMountProvider extends AuthenticatedService impleme
 	
 	private VirtualMountTemplate getRootMount() throws FileNotFoundException {
 		String uri = String.format("ram://%s", getCurrentUser().getUsername());
-		return new VirtualMountTemplate("/", uri, new ReadOnlyFileFactoryAdapter(new VFSFileFactory(uri)), true);
+		return new VirtualMountTemplate("/", uri, new ReadOnlyFileFactory(new VFSFileFactory(uri)), true);
 	}
 
 }
