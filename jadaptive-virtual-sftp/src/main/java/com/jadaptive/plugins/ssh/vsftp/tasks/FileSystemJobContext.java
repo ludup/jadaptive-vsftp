@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.jobs.TaskRunnerContext;
 import com.sshtools.common.files.AbstractFileFactory;
-import com.sshtools.common.files.direct.DirectFileFactory;
+import com.sshtools.common.files.direct.NioFileFactory.NioFileFactoryBuilder;
 import com.sshtools.common.files.vfs.VFSFileFactory;
 import com.sshtools.common.files.vfs.VirtualFileFactory;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
@@ -36,7 +36,8 @@ public class FileSystemJobContext implements TaskRunnerContext {
 			throw new IllegalStateException(e.getMessage(), e);
 		}
 
-		system.set(new DirectFileFactory(new File(".")));
+		system.set(NioFileFactoryBuilder.create()
+				.withHome(new File(".")).build());
 
 	}
 
