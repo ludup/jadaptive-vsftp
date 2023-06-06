@@ -34,7 +34,7 @@ public class S3FolderPath extends VirtualFolderPath {
 	String filePath;
 	
 	protected String getDestinationUri() {
-		return FileUtils.checkStartsWithSlash(bucket)  + FileUtils.checkStartsWithSlash(filePath);
+		return filePath;
 	}
 	
 	@Override
