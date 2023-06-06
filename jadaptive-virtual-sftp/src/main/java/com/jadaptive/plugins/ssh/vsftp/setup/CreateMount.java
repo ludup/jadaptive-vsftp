@@ -132,9 +132,11 @@ public class CreateMount extends SetupSection {
 		
 		for(FileScheme child : schemes) {
 			ObjectTemplate childTemplate = templateService.get(child.getResourceKey());
-			values.add(new I18nOption(childTemplate.getBundle(),
-					childTemplate.getResourceKey() + ".name", 
-					childTemplate.getResourceKey()));
+			if(child.isEnabled()) {
+				values.add(new I18nOption(childTemplate.getBundle(),
+						childTemplate.getResourceKey() + ".name", 
+						childTemplate.getResourceKey()));
+			}
 		}
 		
 		String folderType = Request.get().getParameter(REQUEST_PARAM_TYPE);
