@@ -6,11 +6,11 @@ import com.jadaptive.api.app.ApplicationVersion;
 import com.jadaptive.api.product.Product;
 
 @Component
-public class VSFTP implements Product {
+public class SFX implements Product {
 
 	@Override
 	public String getName() {
-		return "VSFTP";
+		return "Secure File Exchange";
 	}
 
 	@Override

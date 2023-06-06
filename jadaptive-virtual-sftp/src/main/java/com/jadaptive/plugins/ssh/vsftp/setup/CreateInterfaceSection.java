@@ -14,7 +14,7 @@ public class CreateInterfaceSection extends InterfaceSection {
 		VirtualSFTPInterface obj = new VirtualSFTPInterface();
 		obj.setAddressToBind(iface.getAddressToBind());
 		obj.setPortToBind(iface.getPort());
-		obj.setName("Default VSFTP Interface");
+		obj.setName("Default SFTP Interface");
 		return obj;
 	}
 }
