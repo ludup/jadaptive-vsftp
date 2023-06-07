@@ -69,15 +69,15 @@ public class VirtualSFTPInterfaceFactory implements SSHInterfaceFactory<SshServe
 		 * TODO host keys should be configurable from the UI
 		 */
 		try {
-			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfFolder(), 
+			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfdFolder(), 
 					"vsftp_host_key_rsa"), SshServerContext.PUBLIC_KEY_SSHRSA, 4098);
-			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfFolder(), 
+			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfdFolder(), 
 					"vsftp_host_key_ed25519"), SshServerContext.PUBLIC_KEY_ED25519, 0);
-			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfFolder(), 
+			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfdFolder(), 
 					"vsftp_host_key_ecdsa_256"), SshKeyPairGenerator.ECDSA, 256);
-			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfFolder(), 
+			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfdFolder(), 
 					"vsftp_host_key_ecdsa_384"), SshKeyPairGenerator.ECDSA, 384);
-			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfFolder(), 
+			ctx.loadOrGenerateHostKey(new File(ApplicationProperties.getConfdFolder(), 
 					"vsftp_host_key_ecdsa_521"), SshKeyPairGenerator.ECDSA, 521);
 		} catch (InvalidPassphraseException e) {
 			throw new IOException(e.getMessage(), e);
