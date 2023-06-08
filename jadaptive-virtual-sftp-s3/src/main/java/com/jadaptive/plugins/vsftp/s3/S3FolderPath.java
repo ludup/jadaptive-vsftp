@@ -7,9 +7,7 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
-import com.sshtools.common.util.FileUtils;
 
 @ObjectDefinition(resourceKey = S3FolderPath.RESOURCE_KEY, type = ObjectType.OBJECT)
 @ObjectViews({@ObjectViewDefinition(value = S3FolderPath.BUCKET_VIEW, bundle = S3Folder.RESOURCE_KEY, weight = -75)})

@@ -116,6 +116,7 @@ public abstract class AbstractFilesUploadHandler extends AuthenticatedService im
 			return size.get();
 		} catch (IOException | PermissionDeniedException | NoSuchAlgorithmException e) {
 			
+			log.error("Upload error", e);
 			eventService.publishEvent(new FileUploadEvent(
 					new TransferResult(filename, FileUtils.getParentPath(path), 
 							0L, started, Utils.now()), e));

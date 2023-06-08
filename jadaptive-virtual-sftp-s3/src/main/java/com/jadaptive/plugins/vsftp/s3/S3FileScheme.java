@@ -91,7 +91,7 @@ public class S3FileScheme extends AbstractFileScheme {
 			return new S3AbstractFileFactory(sfxPath.getRegion().getSDKRegion(),
 					s3.getCredentials().getAccessKey(),
 					s3.getCredentials().getSecretKey(),
-					sfxPath.getBucket());
+					sfxPath.getBucket(), true, 1000);
 		} catch (URISyntaxException e) {
 			throw new IOException(e.getMessage(), e);
 		}
