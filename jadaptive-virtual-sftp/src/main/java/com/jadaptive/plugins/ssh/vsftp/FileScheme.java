@@ -58,6 +58,4 @@ public interface FileScheme extends ExtensionPoint {
 
 	AbstractFileFactory<?> configureFactory(VirtualFolder folder) throws IOException;
 
-	default void init() { };
-
 }

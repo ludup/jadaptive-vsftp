@@ -67,7 +67,7 @@ public abstract class VFSFileScheme<T extends FileProvider> extends AbstractFile
 	}
 	
 	@Override
-	public AbstractFileFactory<?> configureFactory(VirtualFolder folder) throws IOException {
+	protected AbstractFileFactory<?> onConfigureFactory(VirtualFolder folder) throws IOException {
 		
 		FileSystemOptions opts = buildFileSystemOptions(folder);
 		FileSystemManager manager = fileService.getManager(folder.getUuid(), CacheStrategy.ON_RESOLVE);

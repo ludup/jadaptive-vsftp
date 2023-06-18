@@ -1,5 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.schemes;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,7 @@ import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
+import com.sshtools.common.files.AbstractFileFactory;
 
 public abstract class AbstractFileScheme implements FileScheme {
 
@@ -20,16 +22,22 @@ public abstract class AbstractFileScheme implements FileScheme {
 	String name;
 	String[] types;
 	String resourceKey; 
-	
+
 	@Autowired
 	private EncryptionService encryptionService; 
-	 
 	
 	protected AbstractFileScheme(String resourceKey, String name, String... types) {
 		this.resourceKey = resourceKey;
 		this.name = name;
 		this.types = types;
 	}
+
+	@Override
+	public final AbstractFileFactory<?> configureFactory(VirtualFolder folder) throws IOException {
+		return onConfigureFactory(folder);
+	}
+	
+	protected abstract AbstractFileFactory<?> onConfigureFactory(VirtualFolder folder) throws IOException;
 	
 	public String getResourceKey() {
 		return resourceKey;
@@ -66,7 +74,7 @@ public abstract class AbstractFileScheme implements FileScheme {
 	
 	@Override
 	public void configure(VirtualFolder folder) {
-		
+	
 	}
 
 	@Override

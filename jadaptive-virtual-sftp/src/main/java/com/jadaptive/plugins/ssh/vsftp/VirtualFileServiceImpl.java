@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -209,7 +210,6 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 				for(String type : scheme.types()) {
 					providers.put(type, scheme);
 				}
-				scheme.init();
 			}
 		}
 	}
@@ -240,15 +240,29 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 			return new VirtualFolderMount(folder,
 					uri,
 					new EncryptingFileFactory(
-							scheme.configureFactory(folder), 
+							configureFactory(scheme, folder), 
 							((PGPEncryptionExtension)folder).getPGPEncryption()), 
 					scheme.createRoot());
 		} else {
 			return new VirtualFolderMount(folder,
 					uri,
-					scheme.configureFactory(folder), 
+					configureFactory(scheme, folder), 
 					scheme.createRoot());				
 		}			
+	}
+
+	private AbstractFileFactory<?> configureFactory(FileScheme scheme, VirtualFolder folder) throws IOException {
+		
+		for(FileSchemeAdapter adapter : applicationService.getBeans(FileSchemeAdapter.class)) {
+			if(adapter.isExtending(scheme)) {
+				try {
+					return adapter.configureFactory(scheme, folder);
+				} catch (URISyntaxException e) {
+					throw new IOException(e.getMessage(), e);
+				}
+			}
+		}
+		return scheme.configureFactory(folder);
 	}
 
 	private boolean isEncrypting(VirtualFolder folder) {
