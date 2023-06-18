@@ -209,6 +209,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 				for(String type : scheme.types()) {
 					providers.put(type, scheme);
 				}
+				scheme.init();
 			}
 		}
 	}

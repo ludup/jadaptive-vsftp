@@ -23,35 +23,35 @@ import com.sshtools.common.util.IOUtils;
 
 public class EncryptingFile extends AbstractFileAdapter {
 
-	PGPEncryption virtualFolder;
+	PGPEncryption encryption;
 	PGPPublicKey publicKey;
 	PGPPrivateKey secretKey;
 	EncryptingFileFactory factory;
 	
-	public EncryptingFile(AbstractFile file, PGPEncryption virtualFolder, EncryptingFileFactory factory) throws IOException, PGPException, NoSuchProviderException {
+	public EncryptingFile(AbstractFile file, PGPEncryption encryption, EncryptingFileFactory factory) throws IOException, PGPException, NoSuchProviderException {
 		super(file);
-		if(!virtualFolder.getEncrypt()) {
+		if(!encryption.getEncrypt()) {
 			throw new IllegalStateException("EncryptingFile can only work with VirtualFolder with encryption turned on!");
 		}
-		if(StringUtils.isAnyBlank(virtualFolder.getPrivateKey(), virtualFolder.getPassphrase(), virtualFolder.getPublicKey())) {
+		if(StringUtils.isAnyBlank(encryption.getPrivateKey(), encryption.getPassphrase(), encryption.getPublicKey())) {
 			throw new IllegalStateException("Encrypting folder requires private, public keys and a passphrase!");
 		}
 
-		try(InputStream in = IOUtils.toInputStream(virtualFolder.getPublicKey(), "UTF-8")) {
+		try(InputStream in = IOUtils.toInputStream(encryption.getPublicKey(), "UTF-8")) {
 			publicKey = PGPUtils.readPublicKey(in);
 		}
 		
-		try(InputStream in = IOUtils.toInputStream(virtualFolder.getPrivateKey(), "UTF-8")) {
+		try(InputStream in = IOUtils.toInputStream(encryption.getPrivateKey(), "UTF-8")) {
 
 			PGPSecretKeyRingCollection ringCollection = 
 					new PGPSecretKeyRingCollection(PGPUtil.getDecoderStream(in),
 							new JcaKeyFingerprintCalculator());
 			secretKey = PGPUtils.findSecretKey(ringCollection, publicKey.getKeyID(),
 					ApplicationServiceImpl.getInstance()
-						.getBean(EncryptionService.class).decrypt(virtualFolder.getPassphrase()).toCharArray());
+						.getBean(EncryptionService.class).decrypt(encryption.getPassphrase()).toCharArray());
 		}
 		
-		this.virtualFolder = virtualFolder;
+		this.encryption = encryption;
 	}
 
 	
@@ -69,7 +69,7 @@ public class EncryptingFile extends AbstractFileAdapter {
 	public OutputStream getOutputStream() throws IOException, PermissionDeniedException {
 		try {
 			return new PGPEncryptionOutputStream(super.getOutputStream(), publicKey, getName(),
-								virtualFolder.getArmour(), virtualFolder.getCompress(), virtualFolder.getIntegrityCheck());
+								encryption.getArmour(), encryption.getCompress(), encryption.getIntegrityCheck());
 		} catch (IOException | PGPException | PermissionDeniedException e) {
 			throw new IOException(e.getMessage(), e);
 		}

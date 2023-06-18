@@ -2,6 +2,7 @@ package com.jadaptive.plugins.vsftp.s3;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
+import com.jadaptive.plugins.ssh.vsftp.FileScheme;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
@@ -28,8 +30,14 @@ public class S3FileScheme extends AbstractFileScheme {
 	@Autowired
 	private TemplateService templateService; 
 	
+	private FileScheme overrideScheme = null;
+	
 	public S3FileScheme() {
 		super(RESOURCE_KEY, "Plan Storage", SCHEME_TYPE);
+	}
+	
+	public void setOverrideScheme(FileScheme overrideScheme) {
+		this.overrideScheme = overrideScheme;
 	}
 
 	public boolean requiresCredentials() {
@@ -85,15 +93,19 @@ public class S3FileScheme extends AbstractFileScheme {
 	@Override
 	public AbstractFileFactory<?> configureFactory(VirtualFolder folder) throws IOException {
 		
-		S3Folder s3 = (S3Folder) folder;
-		S3FolderPath sfxPath = (S3FolderPath) folder.getPath();
-		try {
-			return new S3AbstractFileFactory(sfxPath.getRegion().getSDKRegion(),
-					s3.getCredentials().getAccessKey(),
-					s3.getCredentials().getSecretKey(),
-					sfxPath.getBucket(), true, 1000);
-		} catch (URISyntaxException e) {
-			throw new IOException(e.getMessage(), e);
+		if(Objects.nonNull(overrideScheme)) {
+			return overrideScheme.configureFactory(folder);
+		} else {
+			S3Folder s3 = (S3Folder) folder;
+			S3FolderPath sfxPath = (S3FolderPath) folder.getPath();
+			try {
+				return new S3AbstractFileFactory(sfxPath.getRegion().getSDKRegion(),
+						s3.getCredentials().getAccessKey(),
+						s3.getCredentials().getSecretKey(),
+						sfxPath.getBucket(), true, 1000);
+			} catch (URISyntaxException e) {
+				throw new IOException(e.getMessage(), e);
+			}
 		}
 	}
 }
