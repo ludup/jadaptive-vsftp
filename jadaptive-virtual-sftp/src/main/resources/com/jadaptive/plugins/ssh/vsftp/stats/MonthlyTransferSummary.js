@@ -11,6 +11,8 @@ root.setThemes([
   am5themes_Animated.new(root)
 ]);
 
+am5.addLicense("AM5C387765625");
+root._logo.dispose();
 
 // Create chart
 // https://www.amcharts.com/docs/v5/charts/xy-chart/

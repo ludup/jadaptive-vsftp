@@ -45,7 +45,7 @@ public class UploadFormStep2 extends UploadFormSection {
 	public static final String SHORTCODE = "shortcode";
 	
 	public UploadFormStep2() {
-		super(UploadForm.RESOURCE_KEY, "publicUploadStep2", "PublicUploadStep2.html");
+		super(UploadForm.RESOURCE_KEY, "publicUploadStep2", "PublicUploadStep2.html", 2000);
 	}
 
 	@Override

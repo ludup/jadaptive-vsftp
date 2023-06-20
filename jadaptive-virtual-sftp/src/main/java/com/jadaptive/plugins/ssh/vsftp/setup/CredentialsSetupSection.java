@@ -19,7 +19,8 @@ public class CredentialsSetupSection extends SetupSection {
 		public CredentialsSetupSection(FileScheme scheme) {
 			super("setup", 
 					"homeCredentials", 
-					"HomeCredentials.html");
+					"HomeCredentials.html",
+					8889);
 			this.scheme = scheme;
 		}
 

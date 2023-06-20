@@ -12,7 +12,7 @@ import com.sshtools.common.util.FileUtils;
 public class UploadFormStep1 extends UploadFormSection {
 
 	public UploadFormStep1() {
-		super(UploadFormWizard.RESOURCE_KEY, "publicUploadStep1", "PublicUploadStep1.html");
+		super(UploadFormWizard.RESOURCE_KEY, "publicUploadStep1", "PublicUploadStep1.html", 1000);
 	}
 	
 	@Override

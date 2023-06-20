@@ -52,7 +52,7 @@ public class CreateMount extends SetupSection {
 	private RoleService roleService; 
 	
 	public CreateMount() {
-		super(RESOURCE_KEY, RESOURCE_KEY, "CreateMount.html");
+		super(RESOURCE_KEY, RESOURCE_KEY, "CreateMount.html", 8888);
 	}
 	
 	@Override

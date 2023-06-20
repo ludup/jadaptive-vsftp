@@ -12,7 +12,7 @@ import com.jadaptive.utils.Utils;
 public class UploadFormStep3 extends UploadFormSection {
 
 	public UploadFormStep3() {
-		super(UploadFormWizard.RESOURCE_KEY, "publicUploadStep3", "PublicUploadStep3.html");
+		super(UploadFormWizard.RESOURCE_KEY, "publicUploadStep3", "PublicUploadStep3.html", 3000);
 	}
 	
 	@Override

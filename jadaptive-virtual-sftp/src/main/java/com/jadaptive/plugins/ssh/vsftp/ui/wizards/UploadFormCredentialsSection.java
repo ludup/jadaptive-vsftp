@@ -19,7 +19,7 @@ public class UploadFormCredentialsSection extends UploadFormSection {
 		public UploadFormCredentialsSection(FileScheme scheme) {
 			super(UploadForm.RESOURCE_KEY, 
 					"homeCredentials", 
-					"PublicUploadStep2a.html");
+					"PublicUploadStep2a.html", 0);
 			this.scheme = scheme;
 		}
 

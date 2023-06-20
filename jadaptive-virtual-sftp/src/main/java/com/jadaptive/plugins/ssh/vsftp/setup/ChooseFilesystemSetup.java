@@ -22,7 +22,7 @@ public class ChooseFilesystemSetup extends SetupSection {
 	public static final String REQUEST_PARAM_TYPE = "filesystemType";
 	
 	public ChooseFilesystemSetup() {
-		super(RESOURCE_KEY, RESOURCE_KEY, "ChooseFilesystemSetup.html");
+		super(RESOURCE_KEY, RESOURCE_KEY, "ChooseFilesystemSetup.html", 1000);
 	}
 
 	@Override

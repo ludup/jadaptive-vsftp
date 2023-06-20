@@ -4,8 +4,8 @@ import com.jadaptive.api.ui.wizards.WizardSection;
 
 public class UploadFormSection extends WizardSection {
 
-	public UploadFormSection(String bundle, String name, String resource) {
-		super(bundle, name, resource);
+	public UploadFormSection(String bundle, String name, String resource, Integer weight) {
+		super(bundle, name, resource, weight);
 	}
 
 	@Override

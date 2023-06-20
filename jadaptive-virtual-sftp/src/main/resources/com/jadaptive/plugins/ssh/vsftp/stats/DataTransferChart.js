@@ -12,7 +12,7 @@ transferChart.setThemes([
 ]);
 
 am5.addLicense("AM5C387765625");
-
+transferChart._logo.dispose();
 // Create chart
 // https://www.amcharts.com/docs/v5/charts/xy-chart/
 var chart1 = transferChart.container.children.push(am5xy.XYChart.new(transferChart, {
