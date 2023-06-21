@@ -17,7 +17,6 @@ import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserDatabaseCapabilities;
 
 @Extension
-@Service
 public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantAware {
 
 	public static final String ANONYMOUS_USER_UUID = "39ce8047-bd8d-49d8-a17f-5938a23f87fd";

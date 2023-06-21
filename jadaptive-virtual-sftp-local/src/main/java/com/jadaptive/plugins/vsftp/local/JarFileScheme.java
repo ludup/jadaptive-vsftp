@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
-import com.jadaptive.plugins.licensing.FeatureEnablementService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
@@ -23,7 +22,7 @@ public class JarFileScheme extends VFSFileScheme<JarFileProvider> {
 	
 	@Override
 	public boolean isEnabled() {
-		return FeatureEnablementService.isFeatureEnabled(LocalFileScheme.LOCAL_FILES);
+		return true;
 	}
 	
 	public JarFileScheme() {

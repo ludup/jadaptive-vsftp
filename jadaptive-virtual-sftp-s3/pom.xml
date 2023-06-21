@@ -36,12 +36,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.jadaptive</groupId>
-			<artifactId>jadaptive-ssh-server</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.jadaptive</groupId>
 			<artifactId>jadaptive-virtual-sftp</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
