@@ -23,4 +23,9 @@ public class SFX implements Product {
 		return "Powered by <a href=\"https://jadaptive.com\">Secure File Exchange</a> Self-Hosted SFTP\n"
 				+ "   and File Sharing Server from <a href=\"https://jadaptive.com\">Jadaptive Limited</a>.";
 	}
+	
+	@Override
+	public String getProductCode() {
+		return "SFX";
+	}
 }
