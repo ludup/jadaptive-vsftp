@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.app.ApplicationService;
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -35,9 +34,6 @@ public class SmbFileScheme extends VFSFileScheme<SmbFileProvider> {
 	@Autowired
 	private TemplateService templateService; 
 
-	@Autowired
-	private ApplicationService applicationService; 
-	
 	@Override
 	public boolean isEnabled() {
 		return true;

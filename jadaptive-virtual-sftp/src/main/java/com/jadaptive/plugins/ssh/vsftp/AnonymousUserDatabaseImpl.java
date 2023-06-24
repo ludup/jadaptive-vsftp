@@ -5,8 +5,6 @@ import java.util.Set;
 
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.jadaptive.api.db.TenantAwareObjectDatabase;
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
