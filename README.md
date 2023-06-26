@@ -1,2 +1,4 @@
 # jadaptive-vsftp
-Private plugins for the JADAPTIVE framework project
+Public open-source plugins for the JADAPTIVE Secure File Exchange server.
+
+TODO
