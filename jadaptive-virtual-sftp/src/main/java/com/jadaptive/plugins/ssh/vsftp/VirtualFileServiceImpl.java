@@ -123,8 +123,17 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 		scheme.configure(folder);
 		
 		try {
-			resolveMount(folder);
-		} catch(IOException e) {
+			AbstractFileFactory<?> m = resolveMount(folder);
+			AbstractFile f = m.getFile("");
+			if(!f.exists()) {
+				throw new FileNotFoundException();
+			}
+			
+			if(!f.isDirectory()) {
+				throw new ObjectException("The target path is not a folder");
+			}
+			
+		} catch(PermissionDeniedException | IOException e) {
 			throw new ObjectException(String.format("Cannot resolve folder %s", folder.getName()), e);
 		}
 		
@@ -154,11 +163,19 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 		scheme.configure(folder);
 		
 		try {
-			resolveMount(folder);
-		} catch(IOException e) {
+			AbstractFileFactory<?> m = resolveMount(folder);
+			AbstractFile f = m.getFile("");
+			if(!f.exists()) {
+				throw new FileNotFoundException();
+			}
+			
+			if(!f.isDirectory()) {
+				throw new ObjectException("The target path is not a folder");
+			}
+			
+		} catch(PermissionDeniedException | IOException e) {
 			throw new ObjectException(String.format("Cannot resolve folder %s", folder.getName()), e);
-		}
-		
+		} 
 		
 		repository.saveOrUpdate(folder);
 		
