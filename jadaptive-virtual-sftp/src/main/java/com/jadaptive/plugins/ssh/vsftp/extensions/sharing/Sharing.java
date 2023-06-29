@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.extensions;
+package com.jadaptive.plugins.ssh.vsftp.extensions.sharing;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;

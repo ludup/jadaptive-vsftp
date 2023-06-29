@@ -1,4 +1,4 @@
-package com.jadaptive.plugins.ssh.vsftp.extensions;
+package com.jadaptive.plugins.ssh.vsftp.extensions.sharing;
 
 public interface SharingExtension {
 

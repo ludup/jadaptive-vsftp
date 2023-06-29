@@ -7,7 +7,7 @@ import java.util.Objects;
 import org.apache.tomcat.util.buf.HexUtils;
 
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
-import com.jadaptive.plugins.ssh.vsftp.extensions.SharingExtension;
+import com.jadaptive.plugins.ssh.vsftp.extensions.sharing.SharingExtension;
 import com.jadaptive.plugins.ssh.vsftp.pgp.PGPEncryptionExtension;
 import com.sshtools.common.files.vfs.VirtualFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
