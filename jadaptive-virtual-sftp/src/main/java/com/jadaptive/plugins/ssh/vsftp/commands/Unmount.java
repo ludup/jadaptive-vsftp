@@ -15,7 +15,6 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.utils.FileUtils;
 import com.sshtools.common.files.vfs.VirtualFileFactory;
 import com.sshtools.common.files.vfs.VirtualMount;
-import com.sshtools.common.files.vfs.VirtualMountManager;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.server.vsession.CliHelper;
 import com.sshtools.server.vsession.ShellCommand;
@@ -47,14 +46,13 @@ public class Unmount extends AbstractVFSCommand {
 				FileUtils.checkEndsWithNoSlash(args[1]));
 		
 		VirtualFileFactory ff = (VirtualFileFactory) console.getFileFactory();
-		VirtualMountManager mm = ff.getMountManager();
-		VirtualMount m = mm.getMount(mount);
+		VirtualMount m = ff.getMount(mount);
 		
 		if(Objects.isNull(m)) {
 			throw new IOException(String.format("%s does not appear to be mounted", mount));
 		}
 		
-		mm.unmount(m);
+		ff.unmount(m);
 		
 		if(permanent) {
 			try {

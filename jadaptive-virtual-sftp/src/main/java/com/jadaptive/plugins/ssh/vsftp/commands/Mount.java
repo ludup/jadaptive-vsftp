@@ -28,7 +28,6 @@ import com.jadaptive.plugins.sshd.ConsoleHelper;
 import com.jadaptive.utils.FileUtils;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VirtualFileFactory;
-import com.sshtools.common.files.vfs.VirtualMountManager;
 import com.sshtools.common.files.vfs.VirtualMountTemplate;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.server.vsession.CliHelper;
@@ -151,8 +150,6 @@ public class Mount extends AbstractVFSCommand {
 			VirtualFolder folder = provider.createFolder();
 			folder.setMountPath(mount);
 			
-			//folder.setPath(generatePath(path, cacheStrategy));
-			
 			if(provider.requiresCredentials()) {
 				provider.setCredentials(folder, credentials);
 			}
@@ -166,16 +163,13 @@ public class Mount extends AbstractVFSCommand {
 			
 			String uri = folder.getPath().generatePath();
 			
-			VirtualMountManager mm = ff.getMountManager();
 			VirtualMountTemplate template = new VirtualMountTemplate(mount, 
 					uri, 
 					factory, 
 					provider.createRoot());
 					
 			if(performMount) {
-				mm.mount(template, unmountFirst);
-			} else {
-				mm.test(template);
+				ff.mount(template, unmountFirst);
 			}
 			
 			if(permanent) {
