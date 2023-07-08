@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.vfs2.CacheStrategy;
+import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.FileProvider;
@@ -73,9 +74,14 @@ public abstract class VFSFileScheme<T extends FileProvider> extends AbstractFile
 		FileSystemManager manager = fileService.getManager(folder.getUuid(), CacheStrategy.ON_RESOLVE);
 		
 		try {
-			return new VFSFileFactory(manager, opts, generateUri(
+			String uri = generateUri(
 					fileService.replaceVariables(folder.getPath().generatePath()),
-					opts).toASCIIString());
+					opts).toASCIIString();
+			FileObject baseDir = manager.resolveFile(uri, opts);
+			
+			return new VFSFileFactory(manager, opts, uri);
+			
+					
 		} catch (URISyntaxException e) {
 			throw new IOException(e.getMessage(), e);
 		}

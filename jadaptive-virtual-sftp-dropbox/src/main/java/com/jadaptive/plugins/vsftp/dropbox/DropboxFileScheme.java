@@ -1,16 +1,27 @@
 package com.jadaptive.plugins.vsftp.dropbox;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.vfs2.FileSystemOptions;
-import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
+import org.apache.commons.vfs2.UserAuthenticationData;
+import org.apache.commons.vfs2.UserAuthenticationData.Type;
+import org.apache.commons.vfs2.UserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.app.PropertyService;
+import com.jadaptive.api.db.SingletonObjectDatabase;
+import com.jadaptive.api.encrypt.EncryptionService;
+import com.jadaptive.api.entity.ObjectException;
+import com.jadaptive.api.entity.ObjectService;
+import com.jadaptive.api.repository.RepositoryException;
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
+import com.jadaptive.api.template.ValidationException;
+import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
@@ -25,13 +36,29 @@ public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 	@Autowired
 	private TemplateService templateService; 
 	
+	@Autowired
+	private ObjectService objectService; 
+	
+	@Autowired
+	private PropertyService propertyService; 
+	
+	@Autowired
+	private EncryptionService encryptionService; 
+	
+	@Autowired
+	private SingletonObjectDatabase<DropboxConfiguration> configDatabase;
+	
 	public DropboxFileScheme() {
 		super(DropboxFolder.RESOURCE_KEY, "Dropbox", new DropboxFileProvider(), "dropbox");
 	}
 	
+	private DropboxConfiguration getConfig() {
+		return configDatabase.getObject(DropboxConfiguration.class);
+	}
+	
 	@Override
 	public boolean requiresCredentials() {
-		return true;
+		return !getConfig().getEnableOauth();
 	}
 	
 	@Override
@@ -41,25 +68,73 @@ public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 
 	@Override
 	public ObjectTemplate getCredentialsTemplate() {
-		return templateService.get("dropboxCredentials");
+		if(requiresCredentials()) {
+			return templateService.get("dropboxCredentials");
+		} else {
+			return null;
+		}
 	}
 
 	@Override
 	public Class<? extends VirtualFolderCredentials> getCredentialsClass() {
-		return DropboxCredentials.class;
+		if(requiresCredentials()) {
+			return DropboxCredentials.class;
+		} else {
+			return null;
+		}
+	}
+	
+	
+
+	@Override
+	public void configure(VirtualFolder folder) {
+		
+		DropboxCredentials credentials = ((DropboxFolder)folder).getCredentials();
+		DropboxConfiguration config = getConfig();
+		if(config.getEnableOauth() && StringUtils.isBlank(credentials.getAccessKey())) {
+			try {
+				objectService.stashObject(folder);
+				throw new UriRedirect("/app/dropbox/start");
+			} catch (ValidationException | RepositoryException | ObjectException | IOException e) {
+				throw new IllegalStateException(e.getMessage(), e);
+			}
+		}
 	}
 
 	@Override
 	public FileSystemOptions buildFileSystemOptions(VirtualFolder vf) throws IOException {
 		
-		DropboxFolder folder = (DropboxFolder) vf;
 		FileSystemOptions options = new FileSystemOptions();
-		if(Objects.nonNull(folder.getCredentials()) && folder.getCredentials() instanceof DropboxCredentials) {
-			
-			DropboxCredentials credentials = folder.getCredentials();
+		DropboxCredentials credentials = ((DropboxFolder)vf).getCredentials();
+		
+		DropboxConfiguration config = getConfig();
+		if(config.getEnableOauth()) {
 			DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(options, 
-            		new StaticUserAuthenticator(null, credentials.getAccessKey(), 
-            				credentials.getSecretKey()));
+				new UserAuthenticator() {
+					
+					@Override
+					public UserAuthenticationData requestAuthentication(Type[] types) {
+						UserAuthenticationData ua = new UserAuthenticationData();
+						ua.setData(UserAuthenticationData.DOMAIN, 
+								encryptionService.decrypt(config.getAppKey()).toCharArray());
+						ua.setData(UserAuthenticationData.USERNAME, 
+								encryptionService.decrypt(credentials.getRefreshKey()).toCharArray());
+						ua.setData(UserAuthenticationData.PASSWORD, 
+								encryptionService.decrypt(credentials.getAccessKey()).toCharArray());
+						return ua;
+					}
+				});
+		} else {
+			DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(options, 
+					new UserAuthenticator() {
+						@Override
+						public UserAuthenticationData requestAuthentication(Type[] types) {
+							UserAuthenticationData ua = new UserAuthenticationData();
+							ua.setData(UserAuthenticationData.PASSWORD, 
+									encryptionService.decrypt(credentials.getAccessKey()).toCharArray());
+							return ua;
+						}
+					});
 		}
 		return options;
 	}
@@ -83,11 +158,13 @@ public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 	public VirtualFolder createVirtualFolder(String name, String mountPath, VirtualFolderPath path,
 			VirtualFolderCredentials creds) {
 		
+		DropboxCredentials credentials = (DropboxCredentials) creds;
 		DropboxFolder folder = new DropboxFolder();
+		folder.setUuid(UUID.randomUUID().toString());
 		folder.setName(name);
 		folder.setMountPath(mountPath);
 		folder.setPath(path);
-		folder.setCredentials((DropboxCredentials) creds);
+		folder.setCredentials(credentials);
 		
 		return folder;
 	}

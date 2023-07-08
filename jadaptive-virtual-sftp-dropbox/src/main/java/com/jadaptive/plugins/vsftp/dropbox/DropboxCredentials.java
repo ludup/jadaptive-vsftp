@@ -6,8 +6,6 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectView;
-import com.jadaptive.api.template.ValidationType;
-import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
@@ -20,13 +18,10 @@ public class DropboxCredentials extends VirtualFolderCredentials {
 	
 	@ObjectField(type = FieldType.TEXT)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = DropboxCredentials.RESOURCE_KEY)
-	@Validator(type = ValidationType.REQUIRED)
 	String accessKey;
 
-	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = DropboxCredentials.RESOURCE_KEY)
-	@Validator(type = ValidationType.REQUIRED)
-	String secretKey;
+	@ObjectField(type = FieldType.TEXT, automaticEncryption = true, hidden = true)
+	String refreshKey;
 	
 	public String getAccessKey() {
 		return accessKey;
@@ -36,14 +31,14 @@ public class DropboxCredentials extends VirtualFolderCredentials {
 		this.accessKey = accessKey;
 	}
 	
-	public String getSecretKey() {
-		return secretKey;
+	public String getRefreshKey() {
+		return refreshKey;
 	}
-	
-	public void setSecretKey(String secretKey) {
-		this.secretKey = secretKey;
+
+	public void setRefreshKey(String refreshKey) {
+		this.refreshKey = refreshKey;
 	}
-	
+
 	@Override
 	public String getResourceKey() {
 		return RESOURCE_KEY;
