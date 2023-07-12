@@ -24,6 +24,10 @@ public class DropboxConfiguration extends SingletonUUIDEntity {
 	@ObjectView(ACCESS_VIEW)
 	Boolean enableOauth;
 	
+	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(ACCESS_VIEW)
+	String oauthDomain;
+	
 	@ObjectField(type = FieldType.TEXT, automaticEncryption = true)
 	@ObjectView(ACCESS_VIEW)
 	String appKey;
@@ -43,6 +47,14 @@ public class DropboxConfiguration extends SingletonUUIDEntity {
 
 	public void setEnableOauth(Boolean enableOauth) {
 		this.enableOauth = enableOauth;
+	}
+
+	public String getOauthDomain() {
+		return oauthDomain;
+	}
+
+	public void setOauthDomain(String oauthDomain) {
+		this.oauthDomain = oauthDomain;
 	}
 
 	public String getAppKey() {

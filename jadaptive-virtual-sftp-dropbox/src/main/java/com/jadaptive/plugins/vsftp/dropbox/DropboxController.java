@@ -3,19 +3,23 @@ package com.jadaptive.plugins.vsftp.dropbox;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
@@ -26,7 +30,6 @@ import com.dropbox.core.DbxStandardSessionStore;
 import com.dropbox.core.DbxWebAuth;
 import com.dropbox.core.TokenAccessType;
 import com.dropbox.core.util.LangUtil;
-import com.jadaptive.api.app.PropertyService;
 import com.jadaptive.api.db.SystemSingletonObjectDatabase;
 import com.jadaptive.api.encrypt.EncryptionService;
 import com.jadaptive.api.entity.ObjectService;
@@ -35,6 +38,7 @@ import com.jadaptive.api.servlet.PluginController;
 import com.jadaptive.api.ui.Feedback;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
+import com.sshtools.common.util.ExpiringConcurrentHashMap;
 
 @Extension
 @Controller
@@ -43,7 +47,7 @@ public class DropboxController extends AuthenticatedController implements Plugin
 	static Logger log = LoggerFactory.getLogger(DropboxController.class);
 	
 	@Autowired
-	private PropertyService propertyService; 
+	private SystemSingletonObjectDatabase<DropboxConfiguration> dropboxConfig;
 	
 	@Autowired
 	private EncryptionService encryptionService; 
@@ -57,14 +61,20 @@ public class DropboxController extends AuthenticatedController implements Plugin
 	@Autowired
 	private VirtualFileService fileService; 
 	
-	@RequestMapping(value = "/app/dropbox/start", method = { RequestMethod.GET })
-	public void doStart(HttpServletRequest request, HttpServletResponse response)
+	private ExpiringConcurrentHashMap<String,DropboxFolder> folders = new ExpiringConcurrentHashMap<>(60000 * 15);
+	
+	@RequestMapping(value = "/app/dropbox/start/{state}", method = { RequestMethod.GET })
+	public void doStart(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable String state)
             throws IOException, ServletException {
         
 		setupUserContext(request);
         
+		folders.put(state, objectService.fromStash(DropboxFolder.RESOURCE_KEY, DropboxFolder.class));
+	       
 		try {
 	        DbxWebAuth.Request authRequest = DbxWebAuth.newRequestBuilder()
+	        	.withState(state)
 	            .withRedirectUri(getRedirectUri(request), getSessionStore(request))
 	            .withTokenAccessType(TokenAccessType.OFFLINE)
 	            .build();
@@ -77,7 +87,8 @@ public class DropboxController extends AuthenticatedController implements Plugin
 		}
     }
 
-	@RequestMapping(value = "/app/dropbox/finish", method = { RequestMethod.GET })
+	@RequestMapping(value = "/app/"
+			+ "dropbox/finish", method = { RequestMethod.GET })
 	public void doFinish(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
@@ -115,8 +126,13 @@ public class DropboxController extends AuthenticatedController implements Plugin
             return;
         }
 
-        DropboxFolder folder = objectService.fromStash(DropboxFolder.RESOURCE_KEY, DropboxFolder.class);
+        DropboxFolder folder = folders.remove(authFinish.getUrlState());
+        
+        if(Objects.isNull(folder)) {
+        	throw new IllegalStateException("Missing folder object for oauth authentication");
+        }
         folder.getCredentials().setAccessKey(authFinish.getAccessToken());
+        
         folder.getCredentials().setRefreshKey(authFinish.getRefreshToken());
         
         fileService.saveOrUpdate(folder);
@@ -138,11 +154,17 @@ public class DropboxController extends AuthenticatedController implements Plugin
     }
 
     private String getRedirectUri(final HttpServletRequest request) {
-        return getUrl(request, "/app/dropbox/finish");
+    	DropboxConfiguration config = dropboxConfig.getObject(DropboxConfiguration.class);
+    	String oathDomain = config.getOauthDomain();
+    	if(StringUtils.isBlank(oathDomain)) {
+    		return getUrl(request, "/app/dropbox/finish");
+    	} else {
+    		return "https://" + oathDomain + "/app/dropbox/finish";
+    	}
     }
     
     public DbxRequestConfig getRequestConfig(HttpServletRequest request) {
-        return DbxRequestConfig.newBuilder("secure-file-exchange")
+        return DbxRequestConfig.newBuilder("secure-file-exchange-client")
             .withUserLocaleFrom(request.getLocale())
             .build();
     }

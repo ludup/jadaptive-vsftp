@@ -93,8 +93,11 @@ public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 		DropboxConfiguration config = getConfig();
 		if(config.getEnableOauth() && StringUtils.isBlank(credentials.getAccessKey())) {
 			try {
+				if(StringUtils.isBlank(folder.getUuid())) {
+					folder.setUuid(UUID.randomUUID().toString());
+				}
 				objectService.stashObject(folder);
-				throw new UriRedirect("/app/dropbox/start");
+				throw new UriRedirect("/app/dropbox/start/" + folder.getUuid());
 			} catch (ValidationException | RepositoryException | ObjectException | IOException e) {
 				throw new IllegalStateException(e.getMessage(), e);
 			}
