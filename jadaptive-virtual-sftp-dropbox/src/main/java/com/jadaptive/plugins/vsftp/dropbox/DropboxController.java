@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHeaders;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
@@ -35,6 +35,8 @@ import com.jadaptive.api.encrypt.EncryptionService;
 import com.jadaptive.api.entity.ObjectService;
 import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.servlet.PluginController;
+import com.jadaptive.api.tenant.Tenant;
+import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.Feedback;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -61,7 +63,11 @@ public class DropboxController extends AuthenticatedController implements Plugin
 	@Autowired
 	private VirtualFileService fileService; 
 	
+	@Autowired
+	private TenantService tenantService; 
+	
 	private ExpiringConcurrentHashMap<String,DropboxFolder> folders = new ExpiringConcurrentHashMap<>(60000 * 15);
+	private ExpiringConcurrentHashMap<String,String> folderTenants = new ExpiringConcurrentHashMap<>(60000 * 15);
 	
 	@RequestMapping(value = "/app/dropbox/start/{state}", method = { RequestMethod.GET })
 	public void doStart(HttpServletRequest request, HttpServletResponse response,
@@ -71,7 +77,8 @@ public class DropboxController extends AuthenticatedController implements Plugin
 		setupUserContext(request);
         
 		folders.put(state, objectService.fromStash(DropboxFolder.RESOURCE_KEY, DropboxFolder.class));
-	       
+	    folderTenants.put(state, request.getHeader(HttpHeaders.HOST));
+	    
 		try {
 	        DbxWebAuth.Request authRequest = DbxWebAuth.newRequestBuilder()
 	        	.withState(state)
@@ -87,12 +94,9 @@ public class DropboxController extends AuthenticatedController implements Plugin
 		}
     }
 
-	@RequestMapping(value = "/app/"
-			+ "dropbox/finish", method = { RequestMethod.GET })
+	@RequestMapping(value = "/app/dropbox/finish", method = { RequestMethod.GET })
 	public void doFinish(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-
-		setupUserContext(request);
 
         DbxAuthFinish authFinish;
         try {
@@ -126,18 +130,25 @@ public class DropboxController extends AuthenticatedController implements Plugin
             return;
         }
 
-        DropboxFolder folder = folders.remove(authFinish.getUrlState());
+        String domain = folderTenants.get(authFinish.getUrlState());
+        Tenant tenant = tenantService.getTenantByDomain(domain);
+        tenantService.executeAs(tenant, ()->{
+        	DropboxFolder folder = folders.remove(authFinish.getUrlState());
+            
+            if(Objects.isNull(folder)) {
+            	throw new IllegalStateException("Missing folder object for oauth authentication");
+            }
+            
+            folder.getCredentials().setAccessKey(authFinish.getAccessToken());
+            folder.getCredentials().setRefreshKey(authFinish.getRefreshToken());
+            
+            fileService.saveOrUpdate(folder);
+            Feedback.success(VirtualFolder.RESOURCE_KEY, "virtualFolder.saved", folder.getName());
+        });
         
-        if(Objects.isNull(folder)) {
-        	throw new IllegalStateException("Missing folder object for oauth authentication");
-        }
-        folder.getCredentials().setAccessKey(authFinish.getAccessToken());
-        
-        folder.getCredentials().setRefreshKey(authFinish.getRefreshToken());
-        
-        fileService.saveOrUpdate(folder);
-        Feedback.success(VirtualFolder.RESOURCE_KEY, "virtualFolder.saved", folder.getName());
-        response.sendRedirect("/app/ui/search/" + VirtualFolder.RESOURCE_KEY);
+        response.sendRedirect(String.format("https://%s/app/ui/search/%s",
+        		domain,
+        		VirtualFolder.RESOURCE_KEY));
     }
 
     private DbxSessionStore getSessionStore(final HttpServletRequest request) {
