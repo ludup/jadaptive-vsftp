@@ -38,9 +38,7 @@ public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 	
 	@Autowired
 	private ObjectService objectService; 
-	
-	@Autowired
-	private PropertyService propertyService; 
+
 	
 	@Autowired
 	private EncryptionService encryptionService; 

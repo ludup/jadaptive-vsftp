@@ -35,9 +35,11 @@ import com.jadaptive.api.encrypt.EncryptionService;
 import com.jadaptive.api.entity.ObjectService;
 import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.servlet.PluginController;
+import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.tenant.Tenant;
 import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.Feedback;
+import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.sshtools.common.util.ExpiringConcurrentHashMap;
@@ -76,22 +78,36 @@ public class DropboxController extends AuthenticatedController implements Plugin
         
 		setupUserContext(request);
         
-		folders.put(state, objectService.fromStash(DropboxFolder.RESOURCE_KEY, DropboxFolder.class));
-	    folderTenants.put(state, request.getHeader(HttpHeaders.HOST));
-	    
 		try {
-	        DbxWebAuth.Request authRequest = DbxWebAuth.newRequestBuilder()
-	        	.withState(state)
-	            .withRedirectUri(getRedirectUri(request), getSessionStore(request))
-	            .withTokenAccessType(TokenAccessType.OFFLINE)
-	            .build();
-	        
-	        String authorizeUrl = getWebAuth(request).authorize(authRequest);
-	
-	        response.sendRedirect(authorizeUrl);
+			folders.put(state, objectService.fromStash(DropboxFolder.RESOURCE_KEY, DropboxFolder.class));
+		    folderTenants.put(state, request.getHeader(HttpHeaders.HOST));
+	    
+			String oauthDomain = configDatabase.getObject(DropboxConfiguration.class).getOauthDomain();
+			if(StringUtils.isBlank(oauthDomain)) {
+				oauthDomain = Request.get().getHeader(HttpHeaders.HOST);
+			}
+			throw new UriRedirect(String.format("https://%s/app/dropbox/process/%s", oauthDomain, state));
+			
 		} finally {
 			clearUserContext();
 		}
+	}
+	
+	@RequestMapping(value = "/app/dropbox/process/{state}", method = { RequestMethod.GET })
+	public void processOAuthRequest(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable String state)
+            throws IOException, ServletException {
+		
+        DbxWebAuth.Request authRequest = DbxWebAuth.newRequestBuilder()
+        	.withState(state)
+            .withRedirectUri(getRedirectUri(request), getSessionStore(request))
+            .withTokenAccessType(TokenAccessType.OFFLINE)
+            .build();
+        
+        String authorizeUrl = getWebAuth(request).authorize(authRequest);
+
+        response.sendRedirect(authorizeUrl);
+
     }
 
 	@RequestMapping(value = "/app/dropbox/finish", method = { RequestMethod.GET })
@@ -110,6 +126,7 @@ public class DropboxController extends AuthenticatedController implements Plugin
             response.sendError(400);
             return;
         } catch (DbxWebAuth.BadStateException e) {
+        	log.error("Bad state", e);
             response.sendRedirect(getUrl(request, "/app/dropbox/start"));
             return;
         } catch (DbxWebAuth.CsrfException e) {
