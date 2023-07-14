@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.app.PropertyService;
 import com.jadaptive.api.db.SingletonObjectDatabase;
+import com.jadaptive.api.db.SystemSingletonObjectDatabase;
 import com.jadaptive.api.encrypt.EncryptionService;
 import com.jadaptive.api.entity.ObjectException;
 import com.jadaptive.api.entity.ObjectService;
@@ -44,7 +45,7 @@ public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 	private EncryptionService encryptionService; 
 	
 	@Autowired
-	private SingletonObjectDatabase<DropboxConfiguration> configDatabase;
+	private SystemSingletonObjectDatabase<DropboxConfiguration> configDatabase;
 	
 	public DropboxFileScheme() {
 		super(DropboxFolder.RESOURCE_KEY, "Dropbox", new DropboxFileProvider(), "dropbox");
