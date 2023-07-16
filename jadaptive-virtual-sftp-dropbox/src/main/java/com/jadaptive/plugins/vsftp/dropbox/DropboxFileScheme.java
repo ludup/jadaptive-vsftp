@@ -1,6 +1,8 @@
 package com.jadaptive.plugins.vsftp.dropbox;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,8 +14,6 @@ import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.jadaptive.api.app.PropertyService;
-import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.db.SystemSingletonObjectDatabase;
 import com.jadaptive.api.encrypt.EncryptionService;
 import com.jadaptive.api.entity.ObjectException;
@@ -27,6 +27,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
+import com.jadaptive.utils.FileUtils;
 import com.sshtools.vfs.dropbox.DropboxFileProvider;
 
 @Extension
@@ -117,8 +118,9 @@ public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 					@Override
 					public UserAuthenticationData requestAuthentication(Type[] types) {
 						UserAuthenticationData ua = new UserAuthenticationData();
-						ua.setData(UserAuthenticationData.DOMAIN, 
-								encryptionService.decrypt(config.getAppKey()).toCharArray());
+						String app = encryptionService.decrypt(config.getAppKey())
+								+ "|" + encryptionService.decrypt(config.getAppSecret());
+						ua.setData(UserAuthenticationData.DOMAIN, app.toCharArray());
 						ua.setData(UserAuthenticationData.USERNAME, 
 								encryptionService.decrypt(credentials.getRefreshKey()).toCharArray());
 						ua.setData(UserAuthenticationData.PASSWORD, 

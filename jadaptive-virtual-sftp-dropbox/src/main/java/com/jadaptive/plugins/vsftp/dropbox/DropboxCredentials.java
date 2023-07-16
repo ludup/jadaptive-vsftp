@@ -17,11 +17,11 @@ public class DropboxCredentials extends VirtualFolderCredentials {
 
 	public  static final String RESOURCE_KEY = "dropboxCredentials";
 	
-	@ObjectField(type = FieldType.TEXT)
+	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = false)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = DropboxFolder.RESOURCE_KEY)
 	String accessKey;
 
-	@ObjectField(type = FieldType.TEXT, automaticEncryption = true, hidden = true)
+	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = false, hidden = true)
 	String refreshKey;
 	
 	public String getAccessKey() {

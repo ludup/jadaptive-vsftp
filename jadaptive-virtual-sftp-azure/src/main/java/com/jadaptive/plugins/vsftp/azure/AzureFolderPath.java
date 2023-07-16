@@ -20,7 +20,7 @@ public class AzureFolderPath extends VirtualFolderPath {
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 200, bundle = AzureFolder.RESOURCE_KEY)
 	String filePath;
 	
-	protected String getDestinationUri() {
+	public String getDestinationUri() {
 		return FileUtils.checkStartsWithSlash(filePath);
 	}
 	

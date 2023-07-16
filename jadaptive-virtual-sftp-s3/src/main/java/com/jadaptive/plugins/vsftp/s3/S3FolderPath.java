@@ -31,7 +31,7 @@ public class S3FolderPath extends VirtualFolderPath {
 	@ObjectView(value = BUCKET_VIEW, weight = 200, bundle = S3Folder.RESOURCE_KEY)
 	String filePath;
 	
-	protected String getDestinationUri() {
+	public String getDestinationUri() {
 		return filePath;
 	}
 	

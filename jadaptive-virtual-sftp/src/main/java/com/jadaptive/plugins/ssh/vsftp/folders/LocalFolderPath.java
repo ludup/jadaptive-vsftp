@@ -28,7 +28,7 @@ public class LocalFolderPath extends VirtualFolderPath {
 		this.localPath = localPath;
 	}
 
-	protected String getDestinationUri() {
+	public String getDestinationUri() {
 		return localPath;
 	}
 	

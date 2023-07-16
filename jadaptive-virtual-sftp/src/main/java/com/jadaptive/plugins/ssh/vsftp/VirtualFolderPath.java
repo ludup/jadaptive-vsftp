@@ -24,7 +24,7 @@ public abstract class VirtualFolderPath extends AbstractUUIDEntity {
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = VirtualFolder.FOLDER_VIEW, weight = 9999)
 	Boolean readOnly;
 	
-	protected abstract String getDestinationUri();
+	public abstract String getDestinationUri();
 
 	public Boolean getAppendUsername() {
 		return appendUsername;
@@ -47,5 +47,6 @@ public abstract class VirtualFolderPath extends AbstractUUIDEntity {
 			return FileUtils.checkEndsWithSlash(getDestinationUri()) + "%USERNAME%";
 		}
 		return getDestinationUri();
-	}	
+	}
+
 }

@@ -56,13 +56,17 @@ public class SftpFolderPath extends VirtualFolderPath {
 	}
 
 	@Override
-	protected String getDestinationUri() {
+	public String getDestinationUri() {
 		if(StringUtils.isBlank(remotePath)) {
 			return hostname + ":" + port;
 		} else { 
 			return hostname + ":" + port + FileUtils.checkStartsWithSlash(remotePath);
 		}
 	}
+	
+	public String generatePath() {
+		return getRemotePath();
+	}	
 
 	public String getRemotePath() {
 		return remotePath;

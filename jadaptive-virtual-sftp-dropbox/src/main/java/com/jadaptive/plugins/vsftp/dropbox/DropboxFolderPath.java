@@ -20,7 +20,7 @@ public class DropboxFolderPath extends VirtualFolderPath {
 	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 200, bundle = DropboxFolder.RESOURCE_KEY)
 	String filePath;
 	
-	protected String getDestinationUri() {
+	public String getDestinationUri() {
 		return FileUtils.checkStartsWithSlash(filePath);
 	}
 	

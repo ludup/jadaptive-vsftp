@@ -17,6 +17,7 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderOptions;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.vfs.VFSFileFactory;
+import com.sshtools.common.util.FileUtils;
 
 public abstract class VFSFileScheme<T extends FileProvider> extends AbstractFileScheme {
 
@@ -35,7 +36,7 @@ public abstract class VFSFileScheme<T extends FileProvider> extends AbstractFile
 	}
 
 	public URI generateUri(String path, FileSystemOptions opts) throws URISyntaxException {
-		return new URI(getScheme() + "://" + path);
+		return new URI(getScheme() + "://" + FileUtils.checkEndsWithSlash(FileUtils.checkStartsWithNoSlash(path)));
 	}
 
 	public T getFileProvider() {
@@ -75,7 +76,7 @@ public abstract class VFSFileScheme<T extends FileProvider> extends AbstractFile
 		
 		try {
 			String uri = generateUri(
-					fileService.replaceVariables(folder.getPath().generatePath()),
+					fileService.replaceVariables(folder.getPath().getDestinationUri()),
 					opts).toASCIIString();
 			FileObject baseDir = manager.resolveFile(uri, opts);
 			

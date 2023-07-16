@@ -29,7 +29,7 @@ public class WindowsFolderPath extends VirtualFolderPath {
 	}
 
 	@Override
-	protected String getDestinationUri() {
+	public String getDestinationUri() {
 		return FileUtils.checkStartsWithNoSlash(share.replace('\\', '/').replace("//", "/"));
 	}
 
