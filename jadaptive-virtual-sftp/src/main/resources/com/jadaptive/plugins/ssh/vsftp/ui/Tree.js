@@ -40,22 +40,23 @@ function renderDate(val) {
 
 function renderShare(obj) {
 
-		var html = '<span class="dropdown"><a class="createLink me-2 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="' + $('body').data('iconset') + ' fa-link fa-fw"></i></a>';
-		html += '<ul class="dropdown-menu top" aria-labelledby="' + obj.id + '">';	
+		//var html = '<span class="dropdown"><a class="createLink me-2 dropdown-toggle" id="' + obj.id + '" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#"><i class="' + $('body').data('iconset') + ' fa-link fa-fw"></i></a>';
+		//html += '<ul class="dropdown-menu top" aria-labelledby="' + obj.id + '">';	
 	
+	    var html = '';
 		if(obj.shareFiles && !obj.directory) {
-			html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-copy fa-fw me-1"></i> Share Link</a></li>';
-			html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-share-alt fa-fw me-1"></i> Share with Options</a></li>';
+			html += '<a class="copyLink" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-copy fa-fw me-2"></i></a>';
+			html += '<a class="createShare" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-share-alt fa-fw me-1"></i></a>';
 		}
 		
 		if(obj.shareFolders && obj.directory) {
-			html += '<li><a class="dropdown-item copyLink" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-copy fa-fw me-1"></i> Share Link</a></li>';
-			html += '<li><a class="dropdown-item createShare" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-share-alt fa-fw me-1"></i> Share with Options</a></li>';
+			html += '<a class="copyLink" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-copy fa-fw me-2"></i></a>';
+			html += '<a class="createShare" href="#" data-path="' + obj.path + '"><i class="' + $('body').data('iconset') + ' fa-share-alt fa-fw me-1"></i></a>';
 		}
 
-		if(obj.shareFiles || obj.shareFolders) {
-			html += '</ul></span>';
-		}
+		//if(obj.shareFiles || obj.shareFolders) {
+		//	html += '</ul></span>';
+		//}
 		
 		return html;
 	
