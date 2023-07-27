@@ -1,8 +1,6 @@
 package com.jadaptive.plugins.vsftp.dropbox;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +25,6 @@ import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
 import com.jadaptive.plugins.ssh.vsftp.schemes.VFSFileScheme;
-import com.jadaptive.utils.FileUtils;
 import com.sshtools.vfs.dropbox.DropboxFileProvider;
 
 @Extension
