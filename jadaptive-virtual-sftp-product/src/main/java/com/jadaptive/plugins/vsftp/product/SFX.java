@@ -26,6 +26,6 @@ public class SFX implements Product {
 	
 	@Override
 	public String getProductCode() {
-		return "SFX";
+		return "SFXCHANGE";
 	}
 }

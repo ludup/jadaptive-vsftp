@@ -104,7 +104,12 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	}
 
 	@Override
-	public boolean hasEncryptedPassword(User u) {
+	public boolean hasPassword(User u) {
 		return true;
+	}
+
+	@Override
+	public void registerLogin(User user) {
+		
 	};
 }
