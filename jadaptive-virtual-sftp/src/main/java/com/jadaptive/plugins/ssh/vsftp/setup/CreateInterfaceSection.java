@@ -9,6 +9,10 @@ import com.jadaptive.plugins.sshd.setup.InterfaceSection;
 @Extension
 public class CreateInterfaceSection extends InterfaceSection {
 
+	public CreateInterfaceSection() {
+		super(VirtualSFTPInterface.RESOURCE_KEY);
+	}
+
 	@Override
 	protected SSHInterface createInterface(com.jadaptive.plugins.sshd.setup.CreateInterface iface) {
 		VirtualSFTPInterface obj = new VirtualSFTPInterface();
