@@ -20,12 +20,8 @@ import com.sshtools.common.util.IOUtils;
 					creatable = false,
 					deletable = false, 
 					updatable = false)
-@TableView(defaultColumns = { "filename", "size"}, requiresView = false, actions = { 
-	@TableAction(bundle = VirtualFolder.RESOURCE_KEY, 
-					icon = "fa-download", 
-					resourceKey = "downloadFile", 
-					target = Target.ROW, 
-					url="/app/vfs/downloadFile{virtualPath}")})
+@TableView(defaultColumns = { "filename", "size"}, requiresView = false)
+@TableAction(bundle = VirtualFolder.RESOURCE_KEY, icon = "fa-download", resourceKey = "downloadFile", target = Target.ROW, url="/app/vfs/downloadFile{virtualPath}")
 public class FileUpload extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = -6786661863502454580L;
