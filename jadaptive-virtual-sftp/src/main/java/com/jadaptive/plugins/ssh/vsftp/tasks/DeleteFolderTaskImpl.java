@@ -2,7 +2,6 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 
 import org.pf4j.Extension;
 
@@ -22,9 +21,12 @@ public class DeleteFolderTaskImpl extends AbstractFileTaskImpl<DeleteFolderTask>
 	}
 	
 	@Override
-	public TaskResult doTask(DeleteFolderTask task) {
+	public TaskResult doTask(DeleteFolderTask task, String executionId) {
 		
 		String targetName = FileUtils.getFilename(task.getTarget().getFilename());
+		
+		feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, "deletingFolder.text", targetName);
+		
 		try {	
 			AbstractFile parentFolder = resolveParent(
 					task.getTarget().getLocation(), 
@@ -33,19 +35,18 @@ public class DeleteFolderTaskImpl extends AbstractFileTaskImpl<DeleteFolderTask>
 			
 			if(file.exists()) {
 				if(file.delete(task.getDeleteContents())) {
-					return new DeleteFolderTaskResult(task.getTarget().getFilename(),
-						new FileAlreadyExistsException(task.getTarget().getFilename()));
+					return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename());
 				}
 				
-				return new DeleteFolderTaskResult(task.getTarget().getFilename(),
+				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 						new IOException("The folder could not be deleted"));
 			} else {
-				return new DeleteFolderTaskResult(task.getTarget().getFilename(),
+				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 						new FileNotFoundException("The folder does not exist"));
 			}
 			
 		} catch(IOException | PermissionDeniedException e) {
-			return new DeleteFolderTaskResult(task.getTarget().getFilename(), e);
+			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
 		}
 	}
 

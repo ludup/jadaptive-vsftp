@@ -3,17 +3,19 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
 import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 
-@ObjectDefinition(resourceKey = FileTarget.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(resourceKey = FileTarget.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
 public class FileTarget extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = -3213668962833520895L;
 
 	public static final String RESOURCE_KEY = "fileTarget";
 
-	@ObjectField(type = FieldType.ENUM)
+	@ObjectField(type = FieldType.ENUM, defaultValue = "VIRTUAL_PATH")
+	@ObjectView(value = "", systemOnly = true)
 	FileLocation location;
 	
 	@ObjectField(type = FieldType.TEXT)

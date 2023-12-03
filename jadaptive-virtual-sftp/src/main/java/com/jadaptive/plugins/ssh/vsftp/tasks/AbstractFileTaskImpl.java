@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.tasks.FeedbackService;
 import com.jadaptive.api.tasks.Task;
 import com.jadaptive.api.tasks.TaskImpl;
 import com.sshtools.common.files.AbstractFile;
@@ -14,7 +15,11 @@ import com.sshtools.common.util.FileUtils;
 public abstract class AbstractFileTaskImpl<T extends Task> implements TaskImpl<T> {
 
 	@Autowired
-	FileSystemJobContext fsContext;
+	private FileSystemJobContext fsContext;
+	
+	@Autowired
+	protected FeedbackService feedbackService; 
+	
 	
 	protected AbstractFile resolveFile(FileLocation location, String filename)
 			throws PermissionDeniedException, IOException {

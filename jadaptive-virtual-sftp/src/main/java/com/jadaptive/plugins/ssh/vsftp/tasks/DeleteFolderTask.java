@@ -1,11 +1,13 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
+import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.TaskDefinition;
 
-@ObjectDefinition(resourceKey = DeleteFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT)
+@ObjectDefinition(resourceKey = DeleteFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
+@TaskDefinition(impl = DeleteFolderTaskImpl.class, result = FileLocationResult.class, bundle = AbstractFileTargetTask.BUNDLE)
 public class DeleteFolderTask extends AbstractFileTargetTask {
 
 	private static final long serialVersionUID = 1700728212983579995L;

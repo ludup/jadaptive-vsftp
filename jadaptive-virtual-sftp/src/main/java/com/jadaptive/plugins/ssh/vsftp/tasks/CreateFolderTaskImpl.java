@@ -21,28 +21,31 @@ public class CreateFolderTaskImpl extends AbstractFileTaskImpl<CreateFolderTask>
 	}
 	
 	@Override
-	public TaskResult doTask(CreateFolderTask task) {
+	public TaskResult doTask(CreateFolderTask task, String executionId) {
 		
 		String targetName = FileUtils.getFilename(task.getTarget().getFilename());
+		
+		feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, "creatingFolder.text", targetName);
+		
 		try {	
 			AbstractFile parentFolder = resolveParent(
 					task.getTarget().getLocation(), 
 					task.getTarget().getFilename());
 			AbstractFile file = parentFolder.resolveFile(targetName);
 			
-			if(file.exists()) {
-				return new CreateFolderTaskResult(task.getTarget().getFilename(),
+			if(file.exists() && task.getErrorIfExists()) {
+				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 						new FileAlreadyExistsException(task.getTarget().getFilename()));
 			}
 			
 			if(file.createFolder()) {
-				return new CreateFolderTaskResult(task.getTarget().getFilename());
+				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename());
 			}
 			
-			return new CreateFolderTaskResult(task.getTarget().getFilename(),
+			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 					new IOException("The folder could not be created"));
 		} catch(IOException | PermissionDeniedException e) {
-			return new CreateFolderTaskResult(task.getTarget().getFilename(), e);
+			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
 		}
 	}
 

@@ -37,7 +37,7 @@ public class FileSystemJobContext implements TaskRunnerContext {
 		}
 
 		system.set(NioFileFactoryBuilder.create()
-				.withHome(new File(".")).build());
+				.withHome(File.listRoots()[0]).build());
 
 	}
 

@@ -36,6 +36,7 @@ import com.jadaptive.plugins.ssh.vsftp.events.FileDownloadEvent;
 import com.jadaptive.plugins.ssh.vsftp.events.TransferResult;
 import com.jadaptive.plugins.ssh.vsftp.stats.StatsService;
 import com.jadaptive.plugins.ssh.vsftp.stats.Throughput;
+import com.jadaptive.plugins.ssh.vsftp.tasks.VFSUtils;
 import com.jadaptive.plugins.ssh.vsftp.zip.ZipFolderInputStream;
 import com.jadaptive.plugins.ssh.vsftp.zip.ZipMultipleFilesInputStream;
 import com.jadaptive.utils.Utils;
@@ -123,7 +124,7 @@ public class AbstractFileController extends AuthenticatedController {
 			byte[] output = digest.digest();
 			eventService.publishEvent(new FileDownloadEvent(
 					new TransferResult(filename, FileUtils.getParentPath(path), 
-							digestOutput.getByteCount(), started, Utils.now(), formatDigest(digest.getAlgorithm(), output), 
+							digestOutput.getByteCount(), started, Utils.now(), VFSUtils.formatDigest(digest.getAlgorithm(), output), 
 								new HumanHashGenerator(output)
 									.words(contentHash.getWords())
 									.build())));
@@ -193,7 +194,7 @@ public class AbstractFileController extends AuthenticatedController {
 			byte[] output = digest.digest();
 			eventService.publishEvent(new FileDownloadEvent(
 					new TransferResult(filename, "", 
-							size, started, Utils.now(), formatDigest(digest.getAlgorithm(), output), 
+							size, started, Utils.now(), VFSUtils.formatDigest(digest.getAlgorithm(), output), 
 								new HumanHashGenerator(output)
 									.words(contentHash.getWords())
 									.build())));
@@ -209,14 +210,5 @@ public class AbstractFileController extends AuthenticatedController {
 			IOUtils.closeStream(out);
 		}
 	}
-	
 
-	protected String formatDigest(String algorithm, byte[] output) {
-		
-		StringBuffer tmp = new StringBuffer();
-		tmp.append(algorithm);
-		tmp.append(":");
-		tmp.append(com.sshtools.common.util.Utils.bytesToHex(output, output.length, false, false));
-		return tmp.toString();
-	}
 }

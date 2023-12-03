@@ -21,9 +21,12 @@ public class DeleteFileTaskImpl extends AbstractFileTaskImpl<DeleteFileTask> {
 	}
 	
 	@Override
-	public TaskResult doTask(DeleteFileTask task) {
+	public TaskResult doTask(DeleteFileTask task, String executionId) {
 		
 		String targetName = FileUtils.getFilename(task.getTarget().getFilename());
+		
+		feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, "deletingFile.text", targetName);
+		
 		try {	
 			AbstractFile parentFolder = resolveParent(
 					task.getTarget().getLocation(), 
@@ -32,18 +35,18 @@ public class DeleteFileTaskImpl extends AbstractFileTaskImpl<DeleteFileTask> {
 			
 			if(file.exists()) {
 				if(file.delete(false)) {
-					return new DeleteFileTaskResult(task.getTarget().getFilename());
+					return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename());
 				}
-				return new DeleteFileTaskResult(task.getTarget().getFilename(),
+				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 						new IOException("The file could not be deleted"));
 			} else {
-				return new DeleteFileTaskResult(task.getTarget().getFilename(),
+				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 						new FileNotFoundException(task.getTarget().getFilename()));
 			}
 			
 			
 		} catch(IOException | PermissionDeniedException e) {
-			return new DeleteFileTaskResult(task.getTarget().getFilename(), e);
+			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
 		}
 	}
 
