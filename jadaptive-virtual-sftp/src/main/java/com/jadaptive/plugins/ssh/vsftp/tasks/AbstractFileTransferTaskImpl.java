@@ -20,7 +20,7 @@ import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.humanhash.HumanHashGenerator;
 
-public abstract class AbstractFileTransferTaskImpl<T extends AbstractFileUploadTask> extends AbstractFileTaskImpl<T> {
+public abstract class AbstractFileTransferTaskImpl<T extends AbstractFileTansferTask> extends AbstractFileTaskImpl<T> {
 
 	@Autowired
 	private SingletonObjectDatabase<VFSConfiguration> configuration;
