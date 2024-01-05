@@ -4,7 +4,7 @@ import com.jadaptive.api.tasks.Task;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 
-public class AbstractFileSourceTargetTask extends Task {
+public abstract class AbstractFileSourceTargetTask extends Task {
 
 	private static final long serialVersionUID = 2893752481039355444L;
 
@@ -28,12 +28,6 @@ public class AbstractFileSourceTargetTask extends Task {
 
 	public void setTarget(FileTarget target) {
 		this.target = target;
-	}
-
-	@Override
-	public String getResourceKey() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	

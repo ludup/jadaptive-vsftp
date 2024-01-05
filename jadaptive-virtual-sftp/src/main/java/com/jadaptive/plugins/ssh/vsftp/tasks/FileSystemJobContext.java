@@ -1,23 +1,22 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import java.io.File;
-import java.io.IOException;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.jobs.TaskRunnerContext;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.files.direct.NioFileFactory.NioFileFactoryBuilder;
-import com.sshtools.common.files.vfs.VFSFileFactory;
-import com.sshtools.common.files.vfs.VirtualFileFactory;
-import com.sshtools.common.files.vfs.VirtualMountTemplate;
-import com.sshtools.common.permissions.PermissionDeniedException;
 
 @Component
 public class FileSystemJobContext implements TaskRunnerContext {
 
 	ThreadLocal<AbstractFileFactory<?>> vfs = new ThreadLocal<>();
 	ThreadLocal<AbstractFileFactory<?>> system = new ThreadLocal<>();
+	
+	@Autowired
+	private VirtualFileService fileService; 
 	
 	@Override
 	public void clearContext() {
@@ -28,13 +27,7 @@ public class FileSystemJobContext implements TaskRunnerContext {
 	@Override
 	public void setupContext() {
 		
-		try {
-			vfs.set(new VirtualFileFactory(
-					new VirtualMountTemplate("/", "tmp:///",
-							new VFSFileFactory("tmp:///"), true)));
-		} catch (IOException | PermissionDeniedException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		}
+		vfs.set(fileService.getFactory());
 
 		system.set(NioFileFactoryBuilder.create()
 				.withHome(File.listRoots()[0]).build());
