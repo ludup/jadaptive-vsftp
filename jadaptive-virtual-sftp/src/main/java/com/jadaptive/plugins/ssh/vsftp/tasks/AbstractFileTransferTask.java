@@ -3,7 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectField;
 
-public abstract class AbstractFileTansferTask extends AbstractFileSourceTargetTask {
+public abstract class AbstractFileTransferTask extends AbstractFileSourceTargetTask {
 
 	private static final long serialVersionUID = 1813559364987803360L;
 

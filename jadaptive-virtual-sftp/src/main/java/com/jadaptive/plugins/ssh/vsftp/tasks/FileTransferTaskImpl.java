@@ -22,7 +22,7 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.humanhash.HumanHashGenerator;
 
 @Extension
-public class FileTransferTaskImpl<T extends AbstractFileTansferTask> extends AbstractFileTaskImpl<T> {
+public class FileTransferTaskImpl<T extends AbstractFileTransferTask> extends AbstractFileTaskImpl<T> {
 
 	public static final String RESOURCE_KEY = "transferTask";
 	
