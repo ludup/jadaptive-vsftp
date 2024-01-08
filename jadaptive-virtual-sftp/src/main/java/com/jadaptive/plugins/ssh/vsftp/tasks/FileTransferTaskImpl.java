@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import org.apache.commons.io.output.CountingOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,7 +44,9 @@ public class FileTransferTaskImpl<T extends AbstractFileTransferTask> extends Ab
 				dest = dest.resolveFile(source.getName());
 			}
 		
-			feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, "transferingFile.text", source.getName());
+			feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, 
+					"transferingFile.text", 
+					StringUtils.abbreviateMiddle(source.getName(), "...", 30));
 			
 			MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
 			

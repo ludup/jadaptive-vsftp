@@ -24,10 +24,11 @@ public class FeedbackFileTransferProgress implements FileTransferProgress {
 		
 		percentageBlock = bytesTotal / 100;
 		percentageDone = 0;
-		percentageBlock = 0;
+		currentBlock = 0;
 		bytesDone = 0;
 		
-		feedbackService.startProgress(file, 0, 100);
+		
+		feedbackService.startProgress(executionId, 0, 100);
 	};
 
 	public boolean isCancelled() { return false; };

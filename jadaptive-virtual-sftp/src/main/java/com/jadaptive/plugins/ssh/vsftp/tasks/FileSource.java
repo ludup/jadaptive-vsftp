@@ -40,5 +40,9 @@ public class FileSource extends AbstractUUIDEntity {
 		return RESOURCE_KEY;
 	}
 	
+	public String[] getFilePaths() {
+		return filename.split(",");
+	}
+
 	
 }

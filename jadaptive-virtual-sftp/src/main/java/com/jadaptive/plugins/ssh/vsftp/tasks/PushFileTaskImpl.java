@@ -41,7 +41,9 @@ public class PushFileTaskImpl extends AbstractFileTaskImpl<PushFileTask> {
 			source = resolveFile(task.getSource().getLocation(), task.getSource().getFilename());
 			length = source.length();
 			
-			feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, "creatingSshClient.text", source.getName());
+			feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE,
+					"creatingSshClient.text",
+					task.getConnection().getHostname());
 			
 			SshClientBuilder builder = SshClientBuilder.create()
 					.withHostname(task.getConnection().getHostname())
@@ -59,7 +61,9 @@ public class PushFileTaskImpl extends AbstractFileTaskImpl<PushFileTask> {
 			
 			try(SshClient ssh = builder.build()) {
 			
-				feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, "pushingFile.text", source.getName());
+				feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, 
+						"pushingFile.text", 
+						StringUtils.abbreviateMiddle(source.getName(), "...", 30));
 				
 				ssh.runTask(PushTaskBuilder.create()
 						.withClient(ssh)
@@ -70,6 +74,13 @@ public class PushFileTaskImpl extends AbstractFileTaskImpl<PushFileTask> {
 						.build());
 			} 
 			
+			return new FileTransferResult(new TransferResult(
+					FileUtils.getFilename(task.getSource().getFilename()),
+					FileUtils.getParentPath(task.getSource().getFilename()),
+					length,
+					started,
+					Utils.now()), false);
+			
 		} catch (PermissionDeniedException | IOException | SshException | InvalidPassphraseException e) {
 			return new FileTransferResult(new TransferResult(
 					FileUtils.getFilename(task.getSource().getFilename()),
@@ -78,11 +89,6 @@ public class PushFileTaskImpl extends AbstractFileTaskImpl<PushFileTask> {
 					started,
 					Utils.now()), false, e);
 		}
-		
-		
-			
-		
-		return null;
 	}
 
 	private SshKeyPair buildIdentity(SshConnectionProperties connection) throws IOException, InvalidPassphraseException {
