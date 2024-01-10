@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 import org.apache.commons.io.output.CountingOutputStream;
@@ -36,36 +38,48 @@ public class FileTransferTaskImpl<T extends AbstractFileTransferTask> extends Ab
 		Date started = Utils.now();
 		ContentHash contentHash = configuration.getObject(VFSConfiguration.class).getDefaultHash();
 		
+		AbstractFile target;
+		
 		try {
-			AbstractFile source = resolveFile(task.getSource().getLocation(), task.getSource().getFilename());
-			AbstractFile dest = resolveDestinationFile(task);
-		
-			if(dest.isDirectory()) {
-				dest = dest.resolveFile(source.getName());
-			}
-		
-			feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, 
-					"transferingFile.text", 
-					StringUtils.abbreviateMiddle(source.getName(), "...", 30));
-			
-			MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
-			
-			long count = doTransfer(source, dest, digest, task, executionId);
-		
-			byte[] output = digest.digest();
-			String hash = VFSUtils.formatDigest(digest.getAlgorithm(), output);
-			String humanHash = new HumanHashGenerator(output)
-					.words(contentHash.getWords())
-					.build();
-			
-			TransferResult result = new TransferResult(source.getName(), 
-					dest.getAbsolutePath(), count, started, new Date(), hash, humanHash);
-			
-			return new FileTransferResult(result, task.getAppendContents());
-		} catch (PermissionDeniedException | IOException | NoSuchAlgorithmException e) {
-			
-			return new FileLocationResult(task.getSource().getLocation(), task.getSource().getFilename(), e);
+			target = resolveDestinationFile(task);
+		} catch (PermissionDeniedException | IOException e) {
+			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
 		}
+		
+		Collection<TaskResult> results = new ArrayList<>();
+		
+		for(String path : task.getSource().getPaths()) {
+			try {
+				AbstractFile from = resolveFile(task.getSource().getLocation(), path);
+				AbstractFile to = target;
+				if(to.isDirectory()) {
+					to = to.resolveFile(from.getName());
+				}
+			
+				feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, 
+						"transferingFile.text", 
+						StringUtils.abbreviateMiddle(from.getName(), "...", 30));
+				
+				MessageDigest digest = MessageDigest.getInstance(contentHash.getAlgorithm());
+				
+				long count = doTransfer(from, to, digest, task, executionId);
+			
+				byte[] output = digest.digest();
+				String hash = VFSUtils.formatDigest(digest.getAlgorithm(), output);
+				String humanHash = new HumanHashGenerator(output)
+						.words(contentHash.getWords())
+						.build();
+				
+				TransferResult result = new TransferResult(from.getName(), 
+						to.getAbsolutePath(), count, started, new Date(), hash, humanHash);
+				
+				results.add(new FileTransferResult(result, task.getAppendContents()));
+			} catch (PermissionDeniedException | IOException | NoSuchAlgorithmException e) {
+				results.add(new FileLocationResult(task.getSource().getLocation(), path, e));
+			}
+		}
+		
+		return new MultipleTaskResults(results);
 	}
 
 	private long doTransfer(AbstractFile file, AbstractFile dest, MessageDigest digest, T task, String executionId) throws IOException, PermissionDeniedException {

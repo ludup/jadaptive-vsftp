@@ -1,6 +1,8 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 
@@ -33,62 +35,78 @@ public class PushFileTaskImpl extends AbstractFileTaskImpl<PushFileTask> {
 	@Override
 	public TaskResult doTask(PushFileTask task, String executionId) {
 		
-		AbstractFile source = null;
 		Date started = Utils.now();
 		Long length = 0L;
-		try {
+		
+		Collection<TaskResult> results = new ArrayList<>();
+		
+		for(String path : task.getSource().getPaths()) {
 			
-			source = resolveFile(task.getSource().getLocation(), task.getSource().getFilename());
-			length = source.length();
+			AbstractFile from = null;
+			String absolutePath = null;
+			try {
+				from = resolveFile(task.getSource().getLocation(), path);
+				length = from.length();
+				absolutePath = from.getAbsolutePath();
 			
-			feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE,
-					"creatingSshClient.text",
-					task.getConnection().getHostname());
-			
-			SshClientBuilder builder = SshClientBuilder.create()
-					.withHostname(task.getConnection().getHostname())
-					.withPort(task.getConnection().getPort())
-					.withUsername(task.getConnection().getUsername());
-			
-			if(StringUtils.isNotBlank(task.getConnection().getPassword())) {
-				builder.withPassword(task.getConnection().getPassword());
+			} catch(PermissionDeniedException | IOException e) {
+				return new FileLocationResult(task.getSource().getLocation(), path, e);
 			}
 			
-			SshKeyPair pair = buildIdentity(task.getConnection());
-			if(Objects.nonNull(pair)) {
-				builder.withIdentities(pair);
-			}
-			
-			try(SshClient ssh = builder.build()) {
-			
-				feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, 
-						"pushingFile.text", 
-						StringUtils.abbreviateMiddle(source.getName(), "...", 30));
+			try {	
 				
-				ssh.runTask(PushTaskBuilder.create()
-						.withClient(ssh)
-						.withAbstractFiles(source)
-						.withChunks(3)
-						.withProgress(ApplicationServiceImpl.getInstance().autowire( 
-								new FeedbackFileTransferProgress(executionId)))
-						.build());
-			} 
-			
-			return new FileTransferResult(new TransferResult(
-					FileUtils.getFilename(task.getSource().getFilename()),
-					FileUtils.getParentPath(task.getSource().getFilename()),
-					length,
-					started,
-					Utils.now()), false);
-			
-		} catch (PermissionDeniedException | IOException | SshException | InvalidPassphraseException e) {
-			return new FileTransferResult(new TransferResult(
-					FileUtils.getFilename(task.getSource().getFilename()),
-					FileUtils.getParentPath(task.getSource().getFilename()),
-					length,
-					started,
-					Utils.now()), false, e);
+				feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE,
+						"creatingSshClient.text",
+						task.getConnection().getHostname());
+				
+				SshClientBuilder builder = SshClientBuilder.create()
+						.withHostname(task.getConnection().getHostname())
+						.withPort(task.getConnection().getPort())
+						.withUsername(task.getConnection().getUsername());
+				
+				if(StringUtils.isNotBlank(task.getConnection().getPassword())) {
+					builder.withPassword(task.getConnection().getPassword());
+				}
+				
+				SshKeyPair pair = buildIdentity(task.getConnection());
+				if(Objects.nonNull(pair)) {
+					builder.withIdentities(pair);
+				}
+				
+				try(SshClient ssh = builder.build()) {
+				
+					feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, 
+							"pushingFile.text", 
+							StringUtils.abbreviateMiddle(from.getName(), "...", 30));
+					
+					ssh.runTask(PushTaskBuilder.create()
+							.withClient(ssh)
+							.withAbstractFiles(from)
+							.withRemoteFolder(task.getRemoteDirectory())
+							.withChunks(task.getChunks())
+							.withProgress(ApplicationServiceImpl.getInstance().autowire( 
+									new FeedbackFileTransferProgress(executionId)))
+							.build());
+				} 
+				
+				results.add(new FileTransferResult(new TransferResult(
+						FileUtils.getFilename(absolutePath),
+						FileUtils.getParentPath(absolutePath),
+						length,
+						started,
+						Utils.now()), false));
+				
+			} catch (IOException | SshException | InvalidPassphraseException e) {
+				results.add(new FileTransferResult(new TransferResult(
+						FileUtils.getFilename(absolutePath),
+						FileUtils.getParentPath(absolutePath),
+						length,
+						started,
+						Utils.now()), false, e));
+			}
 		}
+		
+		return new MultipleTaskResults(results);
 	}
 
 	private SshKeyPair buildIdentity(SshConnectionProperties connection) throws IOException, InvalidPassphraseException {

@@ -11,8 +11,8 @@ import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 
 @ObjectDefinition(resourceKey = SshConnectionProperties.RESOURCE_KEY, type = ObjectType.OBJECT)
-@ObjectViewDefinition(value = SshConnectionProperties.SSH_CONNECTION_VIEW, weight = 0)
-@ObjectViewDefinition(value = SshConnectionProperties.SSH_AUTHENTICATION_VIEW, weight = 100)
+@ObjectViewDefinition(value = SshConnectionProperties.SSH_CONNECTION_VIEW, weight = 9998)
+@ObjectViewDefinition(value = SshConnectionProperties.SSH_AUTHENTICATION_VIEW, weight = 9999)
 public class SshConnectionProperties extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = -1421409177277985276L;

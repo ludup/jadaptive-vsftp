@@ -1,10 +1,12 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
+import java.util.Collection;
+
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
-import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
+import com.jadaptive.api.template.ObjectField;
 
 @ObjectDefinition(resourceKey = FileSource.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class FileSource extends AbstractUUIDEntity {
@@ -17,7 +19,7 @@ public class FileSource extends AbstractUUIDEntity {
 	FileLocation location;
 	
 	@ObjectField(type = FieldType.TEXT)
-	String filename;
+	Collection<String> paths;
 
 	public FileLocation getLocation() {
 		return location;
@@ -27,22 +29,17 @@ public class FileSource extends AbstractUUIDEntity {
 		this.location = location;
 	}
 
-	public String getFilename() {
-		return filename;
+	public Collection<String> getPaths() {
+		return paths;
 	}
 
-	public void setFilename(String filename) {
-		this.filename = filename;
+	public void setPaths(Collection<String> paths) {
+		this.paths = paths;
 	}
 
 	@Override
 	public String getResourceKey() {
 		return RESOURCE_KEY;
 	}
-	
-	public String[] getFilePaths() {
-		return filename.split(",");
-	}
-
 	
 }
