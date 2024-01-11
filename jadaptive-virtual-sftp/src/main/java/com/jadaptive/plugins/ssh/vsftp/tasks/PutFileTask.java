@@ -7,17 +7,13 @@ import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.TaskDefinition;
 
-@ObjectDefinition(resourceKey = PushFileTask.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
-@TaskDefinition(impl = PushFileTaskImpl.class, result = FileTransferResult.class, bundle = AbstractFileTargetTask.BUNDLE)
-public class PushFileTask extends AbstractFileSourceTask {
+@ObjectDefinition(resourceKey = PutFileTask.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
+@TaskDefinition(impl = PutFileTaskImpl.class, result = FileTransferResult.class, bundle = AbstractFileTargetTask.BUNDLE)
+public class PutFileTask extends AbstractFileSourceTask {
 
 	private static final long serialVersionUID = 1068917947192402468L;
 
-	public static final String RESOURCE_KEY = "pushFile";
-	
-	@ObjectField(type = FieldType.INTEGER, defaultValue = "3")
-	@ObjectView(OPTIONS_VIEW)
-	Integer chunks;
+	public static final String RESOURCE_KEY = "putFile";
 	
 	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
 	@ObjectView(OPTIONS_VIEW)
@@ -29,14 +25,6 @@ public class PushFileTask extends AbstractFileSourceTask {
 	
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
 	SshConnectionProperties connection;
-	
-	public Integer getChunks() {
-		return chunks;
-	}
-
-	public void setChunks(Integer chunks) {
-		this.chunks = chunks;
-	}
 
 	public Boolean getErrorIfExists() {
 		return errorIfExists;

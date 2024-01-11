@@ -4,6 +4,7 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.TaskDefinition;
 
 @ObjectDefinition(resourceKey = CreateFileTask.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
@@ -15,6 +16,7 @@ public class CreateFileTask extends AbstractFileTargetTask {
 	public static final String RESOURCE_KEY = "createFile";
 
 	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
+	@ObjectView(OPTIONS_VIEW)
 	Boolean errorIfExists;
 	
 	public Boolean getErrorIfExists() {

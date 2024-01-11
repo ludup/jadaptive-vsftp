@@ -8,26 +8,15 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 
-@ObjectDefinition(resourceKey = FileSource.RESOURCE_KEY, type = ObjectType.OBJECT)
-public class FileSource extends AbstractUUIDEntity {
+@ObjectDefinition(resourceKey = RemoteFileSources.RESOURCE_KEY, type = ObjectType.OBJECT)
+public class RemoteFileSources extends AbstractUUIDEntity {
 
 	private static final long serialVersionUID = 4479279858955794444L;
 
-	public static final String RESOURCE_KEY = "fileSource";
-
-	@ObjectField(type = FieldType.ENUM)
-	FileLocation location;
+	public static final String RESOURCE_KEY = "remoteFileSources";
 	
 	@ObjectField(type = FieldType.TEXT)
 	Collection<String> paths;
-
-	public FileLocation getLocation() {
-		return location;
-	}
-
-	public void setLocation(FileLocation location) {
-		this.location = location;
-	}
 
 	public Collection<String> getPaths() {
 		return paths;

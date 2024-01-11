@@ -33,4 +33,8 @@ public abstract class AbstractFileTaskImpl<T extends Task> implements TaskImpl<T
 		return resolveFile(location, parent);
 	}
 	
+	protected AbstractFileFactory<?> getFileFactory(FileLocation location) {
+		return fsContext.getFileSystem(location);
+	}
+	
 }
