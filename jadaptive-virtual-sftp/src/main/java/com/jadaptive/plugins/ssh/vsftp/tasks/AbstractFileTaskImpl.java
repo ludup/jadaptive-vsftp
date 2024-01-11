@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jadaptive.api.tasks.FeedbackService;
 import com.jadaptive.api.tasks.Task;
 import com.jadaptive.api.tasks.TaskImpl;
-import com.jadaptive.api.tasks.TaskResult;
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.AbstractFileFactory;
 import com.sshtools.common.permissions.PermissionDeniedException;
