@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.jadaptive</groupId>
+		<artifactId>jadaptive-common-parent</artifactId>
+		<relativePath>..</relativePath>
+		<version>0.4.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>jadaptive-debian-repository</artifactId>
+	<name>Debian Repository</name>
+
+	<properties>
+		<plugin.id>jadaptive-debian-repository</plugin.id>
+		<plugin.class>com.jadaptive.plugins.debrep.DebianRepositoryPlugin</plugin.class>
+		<plugin.version>${project.version}</plugin.version>
+		<plugin.provider>JADAPTIVE Limited</plugin.provider>
+		<plugin.projectUrl>https://github.com/ludup/jadpative-common/</plugin.projectUrl>
+		<plugin.dependencies>jadaptive-virtual-sftp,jadaptive-ssh-synergy</plugin.dependencies>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.jadaptive</groupId>
+			<artifactId>jadaptive-api</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jadaptive</groupId>
+			<artifactId>jadaptive-virtual-sftp</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.jadaptive</groupId>
+			<artifactId>jadaptive-ssh-synergy</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.sshtools</groupId>
+			<artifactId>forker-client</artifactId>
+			<version>1.8-SNAPSHOT</version>
+		</dependency>
+		
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.sshtools</groupId>
+				<artifactId>pf4j-plugin-generator</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>ext-releases-local</id>
+			<name>artifactory.jadaptive.com-ext-releases</name>
+			<url>https://artifactory.jadaptive.com/ext-releases-local</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases />
+		</repository>
+	</repositories>
+</project>
