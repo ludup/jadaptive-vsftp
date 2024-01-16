@@ -16,7 +16,7 @@
 		<plugin.version>${project.version}</plugin.version>
 		<plugin.provider>JADAPTIVE Limited</plugin.provider>
 		<plugin.projectUrl>https://github.com/ludup/jadpative-common/</plugin.projectUrl>
-		<plugin.dependencies>jadaptive-virtual-sftp,jadaptive-ssh-synergy</plugin.dependencies>
+		<plugin.dependencies>jadaptive-virtual-sftp,jadaptive-ssh-synergy,jadaptive-virtual-sftp-s3</plugin.dependencies>
 	</properties>
 
 	<dependencies>
@@ -37,6 +37,13 @@
 		<dependency>
 			<groupId>com.jadaptive</groupId>
 			<artifactId>jadaptive-ssh-synergy</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.jadaptive</groupId>
+			<artifactId>jadaptive-virtual-sftp-s3</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
