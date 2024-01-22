@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import com.jadaptive.api.app.StartupAware;
 import com.jadaptive.api.entity.AbstractUUIDObjectServceImpl;
 import com.jadaptive.api.events.EventService;
-import com.jadaptive.api.i18n.I18nService;
-import com.jadaptive.api.permissions.PermissionService;
 
 @Service
 public class DebianReleaseServiceImpl extends AbstractUUIDObjectServceImpl<DebianRelease>

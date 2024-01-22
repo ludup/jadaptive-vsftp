@@ -11,19 +11,11 @@ import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs2.AllFileSelector;
-import org.apache.commons.vfs2.FileContent;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.FileType;
-import org.apache.commons.vfs2.VFS;
-
 import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.direct.NioFileFactory;
 import com.sshtools.common.files.direct.NioFileFactory.NioFileFactoryBuilder;
 import com.sshtools.common.permissions.PermissionDeniedException;
-import com.sshtools.common.sftp.SftpFileAttributes;
 import com.sshtools.common.sftp.SftpFileAttributes.SftpFileAttributesBuilder;
-import com.sshtools.common.util.UnsignedInteger64;
 
 public class Sync {
 	final static Log LOG = LogFactory.getLog(Sync.class);
