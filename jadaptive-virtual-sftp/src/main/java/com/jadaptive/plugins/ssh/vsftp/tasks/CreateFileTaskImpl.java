@@ -20,6 +20,10 @@ public class CreateFileTaskImpl extends AbstractFileTaskImpl<CreateFileTask> {
 		return RESOURCE_KEY;
 	}
 	
+	public String getIcon() {
+		return "fa-file-circle-plus";
+	}
+	
 	@Override
 	public TaskResult doTask(CreateFileTask task, String executionId) {
 		

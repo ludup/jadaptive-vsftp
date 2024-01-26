@@ -20,6 +20,10 @@ public class CreateFolderTaskImpl extends AbstractFileTaskImpl<CreateFolderTask>
 		return RESOURCE_KEY;
 	}
 	
+	public String getIcon() {
+		return "fa-folder-plus";
+	}
+	
 	@Override
 	public TaskResult doTask(CreateFolderTask task, String executionId) {
 		

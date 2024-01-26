@@ -11,5 +11,9 @@ public class MoveFileTaskImpl extends FileTransferTaskImpl<MoveFileTask> {
 	public String getResourceKey() {
 		return RESOURCE_KEY;
 	}
+	
+	public String getIcon() {
+		return "fa-file-export";
+	}
 
 }

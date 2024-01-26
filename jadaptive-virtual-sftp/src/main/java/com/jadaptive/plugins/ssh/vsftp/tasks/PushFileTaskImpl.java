@@ -31,6 +31,10 @@ public class PushFileTaskImpl extends AbstractFileTaskImpl<PushFileTask> {
 	public String getResourceKey() {
 		return PushFileTask.RESOURCE_KEY;
 	}
+	
+	public String getIcon() {
+		return "fa-bars-progress";
+	}
 
 	@Override
 	public TaskResult doTask(PushFileTask task, String executionId) {

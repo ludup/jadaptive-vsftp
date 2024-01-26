@@ -34,6 +34,10 @@ public class PutFileTaskImpl extends AbstractFileTaskImpl<PutFileTask> {
 	public String getResourceKey() {
 		return PutFileTask.RESOURCE_KEY;
 	}
+	
+	public String getIcon() {
+		return "fa-upload";
+	}
 
 	@Override
 	public TaskResult doTask(PutFileTask task, String executionId) {

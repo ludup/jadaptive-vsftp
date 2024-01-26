@@ -20,6 +20,10 @@ public class DeleteFolderTaskImpl extends AbstractFileTaskImpl<DeleteFolderTask>
 		return RESOURCE_KEY;
 	}
 	
+	public String getIcon() {
+		return "fa-folder-xmark";
+	}
+	
 	@Override
 	public TaskResult doTask(DeleteFolderTask task, String executionId) {
 		

@@ -20,6 +20,10 @@ public class DeleteFileTaskImpl extends AbstractFileTaskImpl<DeleteFileTask> {
 		return RESOURCE_KEY;
 	}
 	
+	public String getIcon() {
+		return "fa-file-slash";
+	}
+	
 	@Override
 	public TaskResult doTask(DeleteFileTask task, String executionId) {
 		
