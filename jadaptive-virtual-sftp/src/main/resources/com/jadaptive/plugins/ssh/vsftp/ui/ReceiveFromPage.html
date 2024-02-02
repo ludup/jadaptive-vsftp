@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:jad="https://jadaptive.com/jadaptive">
+<body>
+	<div class="wrapper">
+		<header jad:id="header"></header>
+		<main class="container mt-5">
+			<div class="row w-100 h-100">
+				<div class="col-12">
+					<h2 jad:bundle="virtualFolder" jad:i18n="receiveFrom.name">Receive File(s)</h2>
+				</div>
+				<div id="feedback" class="col-12"></div>
+				<div class="col-12">
+					<h4 class="text-success" jad:bundle="virtualFolder" jad:i18n="receiveFrom.info"></h4>
+				</div>
+				<p class="mt-4">
+						<span id="progressText" jad:bundle="virtualFolder" jad:i18n="transferingFiles.text"></span>
+						<i id="spinner" class="fa-solid fa-spinner fa-spin"></i>
+					</p>
+				<input type="hidden" name="shareCode" id="shareCode">
+			</div>
+		</main>
+	</div>
+	<footer jad:id="footer"></footer>
+</body>
+</html>

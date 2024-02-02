@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:jad="https://jadaptive.com/jadaptive">
+<body>
+	<div class="wrapper">
+		<header jad:id="header"></header>
+		<main class="container mt-5">
+			<div class="row w-100 h-100">
+				<div class="col-12">
+					<h2 jad:bundle="virtualFolder" jad:i18n="sendTo.name">Send To</h2>
+				</div>
+				<div id="feedback" class="col-12"></div>
+				<div class="col-12">
+					<h4 class="text-success" jad:bundle="virtualFolder" jad:i18n="sendTo.info"></h4>
+				</div>
+				<div id="content" class="col-md-12 my-3">
+					<div id="uploadHolder" jad:id="uploadWidget" class="w-100"></div>
+				</div>
+				<div id="waiting" class="mt-4 d-none col-md-12">
+					<p jad:bundle="virtualFolder" jad:i18n="sendTo.instructions" class="mt-3"></p>
+					<h4><span id="url"></span> <a href="#" class="copyLink text-decoration-none"><i class="ms-3 text-success fa-solid fa-copy"></i></a></h4>
+					<p class="mt-4">
+						<span id="progressText" jad:bundle="virtualFolder" jad:i18n="waitingFor.text"></span>
+						<i id="spinner" class="fa-solid fa-spinner fa-spin" onclick="javascript: alert();"></i>
+					</p>
+				</div>
+				<input type="hidden" name="shareCode" id="shareCode">
+			</div>
+		</main>
+	</div>
+	<footer jad:id="footer"></footer>
+</body>
+</html>
