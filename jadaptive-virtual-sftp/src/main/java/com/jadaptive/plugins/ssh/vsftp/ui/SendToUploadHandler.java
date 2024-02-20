@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
+import com.jadaptive.api.ui.Feedback;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.sendto.SendToService;
 import com.jadaptive.plugins.ssh.vsftp.upload.AbstractFilesUploadHandler;
 import com.sshtools.common.permissions.PermissionDeniedException;
@@ -45,6 +47,7 @@ public class SendToUploadHandler extends AbstractFilesUploadHandler {
 	@Override
 	public void onUploadsComplete(Map<String, String> params) {
 		try {
+			Feedback.success(VirtualFolder.RESOURCE_KEY, "transferComplete.text");
 			transferService.completeUpload(params.get("shareCode"));
 		} catch (IOException e) {
 			throw new IllegalStateException(e.getMessage(), e);
