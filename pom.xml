@@ -95,6 +95,9 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
+				<configuration>
+					<skipAttach>true</skipAttach>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-extension-zip</id>
@@ -103,7 +106,6 @@
 							<goal>attach-artifact</goal>
 						</goals>
 						<configuration>
-							<skipAttach>false</skipAttach>
 							<artifacts>
 								<artifact>
 									<file>
@@ -115,13 +117,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
 			</plugin>
 		</plugins>
 		

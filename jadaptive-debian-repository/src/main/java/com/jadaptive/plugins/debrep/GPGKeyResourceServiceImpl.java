@@ -1,19 +1,21 @@
 package com.jadaptive.plugins.debrep;
 
+import static com.jadaptive.plugins.debrep.OSCommand.runAndCheckExit;
+import static com.jadaptive.plugins.debrep.OSCommand.runCommandAndCaptureOutput;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.lang.ProcessBuilder.Redirect;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +30,6 @@ import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.template.SortOrder;
 import com.jadaptive.api.tenant.Tenant;
 import com.jadaptive.api.tenant.TenantAware;
-import com.sshtools.forker.client.ForkerBuilder;
-import com.sshtools.forker.client.OSCommand;
-import com.sshtools.forker.common.IO;
 
 @Service
 public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGKeyResource>
@@ -70,12 +69,8 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 	public String getPublicContent(GPGKeyResource resource) {
 		final File realmGPGHomeDir = getRealmGPGHomeDir();
 		if (realmGPGHomeDir.exists()) {
-			try {
-				return String.join("\n", OSCommand.runCommandAndCaptureOutput("gpg", "--homedir",
+				return String.join("\n", runCommandAndCaptureOutput("gpg", "--homedir",
 						realmGPGHomeDir.getAbsolutePath(), "--armour", "--export", resource.getFingerprint())) + "\n\n";
-			} catch (IOException e) {
-				throw new IllegalStateException("Publish of keys failed.", e);
-			}
 		}
 		throw new IllegalStateException("Publish of keys failed, no directory for GPG keys.");
 	}
@@ -85,15 +80,11 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 
 		final File realmGPGHomeDir = getRealmGPGHomeDir();
 		if (realmGPGHomeDir.exists()) {
-			try {
-				List<String> args = Arrays.asList("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--keyserver",
-						config.getObject(DebrepConfiguration.class).getKeyServer(), "--send-keys",
-						resource.getFingerprint());
-				LOG.info(String.format("Executing command: %s", String.join(" ", args)));
-				OSCommand.run(args);
-			} catch (IOException e) {
-				throw new IllegalStateException("Publish of keys failed.", e);
-			}
+			var args = Arrays.asList("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--keyserver",
+					config.getObject(DebrepConfiguration.class).getKeyServer(), "--send-keys",
+					resource.getFingerprint());
+			LOG.info(String.format("Executing command: %s", String.join(" ", args)));
+			runAndCheckExit(args);
 			return;
 		}
 		throw new IllegalStateException("Publish of keys failed, no directory for GPG keys.");
@@ -149,8 +140,8 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 
 	protected void syncKeyType(Set<String> exist, final File realmGPGHomeDir, GPGKeyResource gpg,
 			String keyTypeArg) throws IOException {
-		for (String line : OSCommand.runCommandAndCaptureOutput("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(),
-				keyTypeArg, "--with-colons")) {
+		for (String line : runCommandAndCaptureOutput("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(),
+				keyTypeArg, "--with-colons").split("\n")) {
 			String[] data = line.split(":");
 
 			if (data[0].equals("gpg")) {
@@ -325,23 +316,12 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 		final File realmGPGHomeDir = getRealmGPGHomeDir();
 		if (realmGPGHomeDir.exists()) {
 			try {
-				List<String> args = Arrays.asList("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--import");
+				var args = Arrays.asList("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--import");
 				LOG.info(String.format("Executing command: %s", String.join(" ", args)));
-				ForkerBuilder fb = new ForkerBuilder(args);
-				fb.io(IO.IO);
+				var fb = new ProcessBuilder(args);
 				fb.redirectErrorStream(true);
-				Process p = fb.start();
-				new Thread() {
-					public void run() {
-						try {
-							IOUtils.copy(p.getInputStream(), System.out);
-						}
-						catch(Exception e) {
-						}
-					}
-				}.start();
-				IOUtils.copy(in, p.getOutputStream());
-				p.getOutputStream().close();
+				fb.redirectInput(Redirect.INHERIT);
+				var p = fb.start();
 				if(p.waitFor() != 0)
 					throw new IOException(String.format("GPG import exited with status code %d",p.exitValue()));
 				syncWithKeystore();
@@ -362,14 +342,10 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 				if(e.getObject().equals(r.getParent())) {
 					final File realmGPGHomeDir = getRealmGPGHomeDir();
 					if (realmGPGHomeDir.exists()) {
-						try {
-							OSCommand.runCommand("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--batch",  "--delete-secret-keys",
-									r.getFingerprint());
-							OSCommand.runCommand("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--batch", "--delete-key",
-									r.getFingerprint());
-						} catch (IOException ex) {
-							throw new IllegalStateException("Deletion of keys failed.", ex);
-						}
+						runAndCheckExit("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--batch",  "--delete-secret-keys",
+								r.getFingerprint());
+						runAndCheckExit("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--batch", "--delete-key",
+								r.getFingerprint());
 					}
 					objectDatabase.delete(r);
 				}
@@ -378,14 +354,10 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 			if (!Boolean.TRUE.equals(deleted.get())) {
 				final File realmGPGHomeDir = getRealmGPGHomeDir();
 				if (realmGPGHomeDir.exists()) {
-					try {
-						OSCommand.runCommand("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--batch",  "--delete-secret-keys",
-								e.getObject().getFingerprint());
-						OSCommand.runCommand("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--batch", "--delete-key",
-								e.getObject().getFingerprint());
-					} catch (IOException ex) {
-						throw new IllegalStateException("Deletion of keys failed.", ex);
-					}
+					runAndCheckExit("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--batch",  "--delete-secret-keys",
+							e.getObject().getFingerprint());
+					runAndCheckExit("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--batch", "--delete-key",
+							e.getObject().getFingerprint());
 				}
 			}
 		});
@@ -435,7 +407,7 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 				final File realmGPGHomeDir = getRealmGPGHomeDir();
 				if (!realmGPGHomeDir.exists()) {
 					if (realmGPGHomeDir.mkdirs())
-						OSCommand.runCommand("chmod", "go-rwx", realmGPGHomeDir.getAbsolutePath());
+						runAndCheckExit("chmod", "go-rwx", realmGPGHomeDir.getAbsolutePath());
 					else
 						throw new IllegalStateException(
 								String.format("Failed to create GPG directory %s.", realmGPGHomeDir));
@@ -462,7 +434,7 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 				oThread.start();
 
 				try {
-					OSCommand.runCommand("gpg", "--cert-digest-algo", "SHA512", "--default-preference-list",
+					runAndCheckExit("gpg", "--cert-digest-algo", "SHA512", "--default-preference-list",
 							"SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed", "--homedir",
 							realmGPGHomeDir.getAbsolutePath(), "--no-tty", "--yes", "--passphrase", "", "--batch",
 							"--gen-key", tf.getAbsolutePath());
