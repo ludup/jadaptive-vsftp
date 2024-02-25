@@ -11,6 +11,8 @@ import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.upload.Upload;
 import com.jadaptive.api.upload.UploadIterator;
+import com.jadaptive.api.ui.Feedback;
+import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.sendto.SendToService;
 import com.jadaptive.plugins.ssh.vsftp.upload.AbstractFilesUploadHandler;
 import com.jadaptive.utils.ParameterHelper;
@@ -53,6 +55,8 @@ public class SendToUploadHandler extends AbstractFilesUploadHandler {
 	@Override
 	public void onUploadsComplete(Map<String, String[]> params) {
 		try {
+
+			Feedback.success(VirtualFolder.RESOURCE_KEY, "transferComplete.text");
 			transferService.completeUpload(ParameterHelper.getValue(params,"shareCode"));
 		} catch (IOException e) {
 			throw new IllegalStateException(e.getMessage(), e);

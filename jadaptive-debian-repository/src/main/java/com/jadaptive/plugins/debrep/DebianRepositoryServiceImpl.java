@@ -1,5 +1,7 @@
 package com.jadaptive.plugins.debrep;
 
+import static com.jadaptive.plugins.debrep.OSCommand.runAndCheckExit;
+
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
@@ -37,7 +39,6 @@ import com.sshtools.common.files.AbstractFile;
 import com.sshtools.common.files.direct.NioFileFactory;
 import com.sshtools.common.files.direct.NioFileFactory.NioFileFactoryBuilder;
 import com.sshtools.common.permissions.PermissionDeniedException;
-import com.sshtools.forker.client.OSCommand;
 import com.sshtools.synergy.s3.S3AbstractFileFactory;
 import com.sshtools.synergy.s3.S3File;
 
@@ -189,26 +190,25 @@ public class DebianRepositoryServiceImpl extends AbstractUUIDObjectServceImpl<De
 	@Override
 	public void rebuildConfiguration(DebianRepository resource) {
 		if (!resource.getReleases().isEmpty()) {
-			File dir = new File(getRealmRepositoryHomeDir(), resource.getName());
-			File confDir = new File(dir, "conf");
-			File distFile = new File(confDir, "distributions");
-			try {
-				PrintWriter pw = new PrintWriter(new FileWriter(distFile), true);
+			var dir = new File(getRealmRepositoryHomeDir(), resource.getName());
+			var confDir = new File(dir, "conf");
+			var distFile = new File(confDir, "distributions");
+			try(var pw = new PrintWriter(new FileWriter(distFile), true)) {
 				for (DebianRelease r : resource.getReleases()) {
 					r.write(pw, resource);
 					pw.println();
 				}
-				File realmGPGHomeDir = gPGKeyResourceService.getRealmGPGHomeDir();
+				var realmGPGHomeDir = gPGKeyResourceService.getRealmGPGHomeDir();
 				/*
 				 * TODO need to capture the output. It may contain errors, e.g. about the
 				 * undefined targets that we ignore This happens when a repository synched from
 				 * a remote contains older packages in a different distribution (e.g. when
 				 * nervepoint used to be in 'lucid' foir example)
 				 */
-				OSCommand.run(dir, "reprepro", "--gnupghome", realmGPGHomeDir.getAbsolutePath(),
+				runAndCheckExit(dir, "reprepro", "--gnupghome", realmGPGHomeDir.getAbsolutePath(),
 						"--ignore=undefinedtarget", "export");
 
-				for (DebianRelease r : resource.getReleases()) {
+				for (var r : resource.getReleases()) {
 					if (r.getSignWith() != null) {
 						writeGPG(new File(confDir, resource.getName() + "-" + r.getName() + ".gpg.key"),
 								realmGPGHomeDir, r.getSignWith());
@@ -228,7 +228,7 @@ public class DebianRepositoryServiceImpl extends AbstractUUIDObjectServceImpl<De
 
 	protected void writeGPG(File outFile, File realmGPGHomeDir, GPGKeyResource signWith) throws IOException {
 		LOG.info(String.format("Writing GPG key %s", signWith));
-		OSCommand.runCommand("gpg", "--yes", "--no-tty", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--armor",
+		runAndCheckExit("gpg", "--yes", "--no-tty", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--armor",
 				"--output", outFile.getAbsolutePath(), "--export", signWith.getFingerprint());
 	}
 

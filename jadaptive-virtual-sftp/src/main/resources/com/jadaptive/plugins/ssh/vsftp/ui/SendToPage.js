@@ -21,8 +21,7 @@ $(function() {
 				if(data.success) {
 					$('#progressText').text("${virtualFolder:transferingFiles.text}");
 					doUpload(function() {
-						$('#spinner').remove();
-						$('#progressText').text("${virtualFolder:transferComplete.text}");
+						window.location.reload();
 					});
 				} else {
 					setTimeout(poll, 1000);

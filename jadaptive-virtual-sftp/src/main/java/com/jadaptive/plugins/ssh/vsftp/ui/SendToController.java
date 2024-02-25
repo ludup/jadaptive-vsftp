@@ -1,5 +1,11 @@
 package com.jadaptive.plugins.ssh.vsftp.ui;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jadaptive.api.json.RequestStatus;
 import com.jadaptive.api.json.RequestStatusImpl;
 import com.jadaptive.api.servlet.Request;
-import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.plugins.ssh.vsftp.sendto.SendToService;
 
 @Controller
@@ -40,15 +45,14 @@ public class SendToController extends AbstractFileController {
 	}
 	
 	@RequestMapping(value = "/recv/{shareCode}", method = { RequestMethod.GET })
-	@ResponseBody
-	public RequestStatus redirect(@PathVariable String shareCode) {
-		throw new UriRedirect("/app/ui/recv/" + shareCode);
+	public void redirect(@PathVariable String shareCode,
+			HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getRequestDispatcher("/app/ui/recv/" + shareCode).forward(request, response);
 	}
 	
 	@RequestMapping(value = "/send", method = { RequestMethod.GET })
-	@ResponseBody
-	public RequestStatus redirect() {
-		throw new UriRedirect("/app/ui/send-to");
+	public void redirect(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getRequestDispatcher("/app/ui/send-to").forward(request, response);
 	}
 	
 	

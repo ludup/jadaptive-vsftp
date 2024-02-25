@@ -48,12 +48,6 @@
 			<scope>provided</scope>
 		</dependency>
 		
-		<dependency>
-			<groupId>com.sshtools</groupId>
-			<artifactId>forker-client</artifactId>
-			<version>1.8-SNAPSHOT</version>
-		</dependency>
-		
 	</dependencies>
 
 	<build>
@@ -65,12 +59,8 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
-					<skip>false</skip>
+					<skipAttach>false</skipAttach>
 				</configuration>
 			</plugin>
 		</plugins>
