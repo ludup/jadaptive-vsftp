@@ -7,12 +7,14 @@ import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.Html;
 import com.jadaptive.api.ui.HtmlPage;
 import com.jadaptive.api.ui.PageDependencies;
 import com.jadaptive.api.ui.PageProcessors;
+import com.jadaptive.plugins.ssh.vsftp.sendto.SendToConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.sendto.SendToService;
 import com.jadaptive.utils.Utils;
 
@@ -27,6 +29,9 @@ public class SendToPage extends HtmlPage {
 	@Autowired
 	private SendToService transferService;
 	
+	@Autowired
+	private SingletonObjectDatabase<SendToConfiguration> config;
+	
 	@Override
 	public String getUri() {
 		return "send-to";
@@ -36,7 +41,7 @@ public class SendToPage extends HtmlPage {
 	protected void generateContent(Document document) throws IOException {
 		
 		super.generateContent(document);
-		
+	
 		String shareCode = Utils.generateRandomAlphaNumericString(6).toUpperCase();
 		
 		transferService.registerTransfer(shareCode);

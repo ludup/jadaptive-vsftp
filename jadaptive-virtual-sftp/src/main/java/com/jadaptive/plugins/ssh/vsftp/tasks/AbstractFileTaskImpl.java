@@ -36,4 +36,8 @@ public abstract class AbstractFileTaskImpl<T extends Task> implements TaskImpl<T
 		return fsContext.getFileSystem(location);
 	}
 	
+	public String getBundle() {
+		return AbstractFileTargetTask.BUNDLE;
+	}
+	
 }

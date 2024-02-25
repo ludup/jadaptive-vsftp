@@ -14,12 +14,13 @@ public interface SendToService {
 
 	void registerTransfer(String shareCode);
 
-	void sendFile(String shareCode, String filename, InputStream in) throws NoSuchAlgorithmException, IOException, PermissionDeniedException;
-
 	void receiveFile(String shareCode, HttpServletResponse response) throws InterruptedException;
 
 	void completeUpload(String shareCode) throws IOException;
 
 	boolean status(String shareCode);
+
+	void sendFile(String shareCode, String filename, InputStream in, long contentLength)
+			throws NoSuchAlgorithmException, IOException, PermissionDeniedException;
 
 }

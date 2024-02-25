@@ -39,9 +39,9 @@ public class SendToServiceImpl implements SendToService {
 	}
 
 	@Override
-	public void sendFile(String shareCode, String filename, InputStream in) throws NoSuchAlgorithmException, IOException, PermissionDeniedException {
+	public void sendFile(String shareCode, String filename, InputStream in, long contentLength) throws NoSuchAlgorithmException, IOException, PermissionDeniedException {
 		
-		getCache().get(shareCode).sendFile(filename, in);
+		getCache().get(shareCode).sendFile(filename, in, contentLength);
 	
 	}
 
