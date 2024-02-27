@@ -8,7 +8,6 @@ import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.servlet.Request;
-import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.ui.Html;
 import com.jadaptive.api.ui.HtmlPage;
 import com.jadaptive.api.ui.PageDependencies;
@@ -21,9 +20,6 @@ import com.jadaptive.utils.Utils;
 @PageProcessors(extensions = { "i18n"} )
 public class SendToPage extends HtmlPage {
 
-	@Autowired
-	private TenantService tenantService; 
-	
 	@Autowired
 	private SendToService transferService;
 	
