@@ -8,7 +8,7 @@ import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jadaptive.api.servlet.Request;
+import com.jadaptive.api.session.Session;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
 import com.sshtools.common.util.URLUTF8Encoder;
@@ -23,7 +23,7 @@ public class BrowseFilesUploadHandler extends AbstractFilesUploadHandler {
 			InputStream in) throws IOException, SessionTimeoutException, UnauthorizedException {
 		
 
-		setupUserContext(sessionUtils.getActiveSession(Request.get()).getUser());
+		setupUserContext(Session.get().getUser());
 		
 		try { 
 			String path = URLUTF8Encoder.decode(parameters.get("path"));

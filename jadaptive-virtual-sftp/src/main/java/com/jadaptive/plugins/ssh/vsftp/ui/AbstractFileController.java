@@ -22,9 +22,6 @@ import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.permissions.AuthenticatedController;
 import com.jadaptive.api.servlet.Request;
-import com.jadaptive.api.session.Session;
-import com.jadaptive.api.session.SessionStickyInputStream;
-import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.SessionUtils;
 import com.jadaptive.api.ui.ErrorPage;
 import com.jadaptive.api.ui.PageRedirect;
@@ -99,18 +96,10 @@ public class AbstractFileController extends AuthenticatedController {
 				}
 				response.setContentType(mimeType);
 				
-				Session session = sessionUtils.getActiveSession(Request.get());
-				IOUtils.copy(new SessionStickyInputStream(in, session) {
-					
-					@Override
-					protected void touchSession(Session session) throws IOException {
-						try {
-							sessionUtils.touchSession(session);
-						} catch (SessionTimeoutException e) {
-							throw new IOException(e.getMessage(), e);
-						}
-					}
-				} , digestOutput);
+				var fin = in;
+				SessionUtils.runIoWithoutSessionTimeout(Request.get(), () -> {
+					IOUtils.copy(fin, digestOutput);
+				});
 			
 			} finally {
 				IOUtils.closeStream(digestOutput);
@@ -168,18 +157,10 @@ public class AbstractFileController extends AuthenticatedController {
 				}
 				response.setContentType(mimeType);
 				
-				Session session = sessionUtils.getActiveSession(Request.get());
-				IOUtils.copy(new SessionStickyInputStream(in, session) {
-					
-					@Override
-					protected void touchSession(Session session) throws IOException {
-						try {
-							sessionUtils.touchSession(session);
-						} catch (SessionTimeoutException e) {
-							throw new IOException(e.getMessage(), e);
-						}
-					}
-				} , digestOutput);
+				var fin = in;
+				SessionUtils.runIoWithoutSessionTimeout(Request.get(), () -> {
+					IOUtils.copy(fin, digestOutput);
+				});
 
 			} finally {
 				size = digestOutput.getByteCount();

@@ -17,9 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.servlet.Request;
-import com.jadaptive.api.session.Session;
-import com.jadaptive.api.session.SessionStickyInputStream;
-import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.SessionUtils;
 import com.jadaptive.plugins.ssh.vsftp.ContentHash;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
@@ -78,24 +75,14 @@ public class Transfer {
 			setupTransfer(count > 1 ? shareCode + ".zip" : filename);
 		}
 		
-		Session session = sessionUtils.getActiveSession(Request.get());
-		InputStream sin = new SessionStickyInputStream(in, session) {
-			
-			@Override
-			protected void touchSession(Session session) throws IOException {
-				try {
-					sessionUtils.touchSession(session);
-				} catch (SessionTimeoutException e) {
-					throw new IOException(e.getMessage(), e);
-				}
-			}
-		};
+		SessionUtils.runIoWithoutSessionTimeout(Request.get(), () -> {
+			if(Objects.nonNull(zip)) {
+				zip.sendFile(filename, in); 
+			} else {
+				IOUtils.copy(in, digestOutput);
+			}	
+		});
 		
-		if(Objects.nonNull(zip)) {
-			zip.sendFile(filename, sin); 
-		} else {
-			IOUtils.copy(sin, digestOutput);
-		}
 		
 		/**
 		 * TODO event for the file itself?
