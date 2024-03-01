@@ -4,9 +4,10 @@ import org.springframework.stereotype.Component;
 
 import com.jadaptive.api.app.ApplicationVersion;
 import com.jadaptive.api.product.Product;
+import com.jadaptive.api.product.ProductService.ProductId;
 
 @Component
-public class SFX implements Product {
+public class SecureFileExchangeOnPrem implements Product {
 
 	@Override
 	public String getName() {
@@ -27,5 +28,10 @@ public class SFX implements Product {
 	@Override
 	public String getProductCode() {
 		return "SFXCHANGE";
+	}
+
+	@Override
+	public ProductId getProductId() {
+		return ProductId.SECURE_FILE_EXCHANGE_OMPREM;
 	}
 }
