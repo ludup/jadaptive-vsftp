@@ -21,4 +21,9 @@ public class CreateInterfaceSection extends InterfaceSection {
 		obj.setName("Default SFTP Interface");
 		return obj;
 	}
+
+	@Override
+	protected int getDefaultPort() {
+		return 2222;
+	}
 }
