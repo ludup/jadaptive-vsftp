@@ -16,6 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.db.SingletonObjectDatabase;
+import com.jadaptive.api.quotas.QuotaKey;
+import com.jadaptive.api.quotas.QuotaService;
+import com.jadaptive.api.quotas.QuotaThreshold;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.SessionUtils;
 import com.jadaptive.plugins.ssh.vsftp.ContentHash;
@@ -30,6 +33,9 @@ public class Transfer {
 	
 	@Autowired
 	private SingletonObjectDatabase<VFSConfiguration> configurationService; 
+
+	@Autowired
+	private QuotaService quotaService; 
 	
 	HttpServletResponse response = null;
 	Integer count;
@@ -71,15 +77,17 @@ public class Transfer {
 
 	public synchronized void sendFile(String filename, InputStream in) throws IOException, NoSuchAlgorithmException, PermissionDeniedException {
 		
+		QuotaThreshold transferQuota = quotaService.getAssignedThreshold(quotaService.getKey(SendToServiceImpl.SEND_TO_TRANSFER_LIMIT));
+		
 		if(Objects.isNull(digestOutput)) {
 			setupTransfer(count > 1 ? shareCode + ".zip" : filename);
 		}
 		
 		SessionUtils.runIoWithoutSessionTimeout(Request.get(), () -> {
 			if(Objects.nonNull(zip)) {
-				zip.sendFile(filename, in); 
+				zip.sendFile(filename, new QuotaEnforcingInputStream(in, transferQuota)); 
 			} else {
-				IOUtils.copy(in, digestOutput);
+				IOUtils.copy(new QuotaEnforcingInputStream(in, transferQuota), digestOutput);
 			}	
 		});
 		
@@ -116,6 +124,46 @@ public class Transfer {
 
 	public boolean status() {
 		return latch.getCount() == 0;
+	}
+	
+	class QuotaEnforcingInputStream extends InputStream {
+
+		long block = 0;
+		InputStream in;
+		QuotaThreshold transferQuota;
+		
+		public QuotaEnforcingInputStream(InputStream in, QuotaThreshold transferQuota) {
+			this.in = in;
+			this.transferQuota = transferQuota;
+		}
+		@Override
+		public int read() throws IOException {
+			byte[] tmp = new byte[1];
+			int r = read(tmp);
+			if(r > 0) {
+				return tmp[0] & 0xFF;
+			}
+			return -1;
+		}
+
+		@Override
+		public int read(byte[] b, int off, int len) throws IOException {
+			
+			int r  = in.read(b, off, len);
+			if(r > 0) {
+				block += r;
+				if(Objects.nonNull(transferQuota) && block >= 0x100000) {
+					quotaService.incrementQuota(transferQuota, block, SendToConfiguration.RESOURCE_KEY, "transferQuotaExceeded.error");
+					block = block - 0x100000;
+				}
+			}
+			return r;
+		}
+		
+		
+		public void close() throws IOException {
+			in.close();
+		}
 	}
 
 }

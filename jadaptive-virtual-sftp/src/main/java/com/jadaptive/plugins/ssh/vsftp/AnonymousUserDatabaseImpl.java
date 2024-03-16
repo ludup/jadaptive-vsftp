@@ -45,7 +45,6 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 		return new HashSet<>();
 	}
 
-
 	@Override
 	public void initializeSystem(boolean newSchema) {
 		initializeTenant(tenantService.getSystemTenant(), newSchema);

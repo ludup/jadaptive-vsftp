@@ -22,6 +22,8 @@ $(function() {
 					$('#progressText').text("${virtualFolder:transferingFiles.text}");
 					doUpload(function() {
 						window.location.reload();
+					}, function() {
+						window.location = "/app/ui/error";
 					});
 				} else {
 					setTimeout(poll, 1000);
