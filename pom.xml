@@ -131,7 +131,7 @@
 				<plugin>
 					<groupId>com.sshtools</groupId>
 					<artifactId>pf4j-plugin-generator</artifactId>
-					<version>0.1.2-SNAPSHOT</version>
+					<version>0.1.2</version>
 					<executions>
 						<execution>
 							<id>generate-plugin</id>
