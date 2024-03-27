@@ -5,7 +5,9 @@ import java.util.Set;
 
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import com.jadaptive.api.db.TenantAwareObjectDatabase;
+import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.tenant.Tenant;
@@ -111,4 +113,9 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	public void registerLogin(User user) {
 		
 	};
+	
+	@Override
+	public User findUser(String username) {
+		throw new ObjectNotFoundException("User not found");
+	}
 }
