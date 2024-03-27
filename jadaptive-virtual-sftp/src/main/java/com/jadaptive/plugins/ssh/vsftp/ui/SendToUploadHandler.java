@@ -13,7 +13,6 @@ import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.ui.Feedback;
 import com.jadaptive.api.user.UserService;
-import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabase;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.sendto.SendToService;

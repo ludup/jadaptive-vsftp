@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.db.SingletonObjectDatabase;
-import com.jadaptive.api.quotas.QuotaKey;
 import com.jadaptive.api.quotas.QuotaService;
 import com.jadaptive.api.quotas.QuotaThreshold;
 import com.jadaptive.api.servlet.Request;
@@ -28,9 +27,6 @@ import com.sshtools.common.util.IOUtils;
 
 public class Transfer {
 
-	@Autowired
-	private SessionUtils sessionUtils;
-	
 	@Autowired
 	private SingletonObjectDatabase<VFSConfiguration> configurationService; 
 
