@@ -65,10 +65,12 @@ public class SendToPage extends HtmlPage {
 			long remaining = quotaService.getRemainingQuota(transferQuota);
 			document.selectFirst("#quota")
 				.addClass("col-12 mt-3")
+				.attr("data-quota", String.valueOf(remaining))
+				.attr("data-enforcing", "true")
 				.appendChild(Html.div("alert alert-info me-2")
 				.appendChild(Html.i("fa-solid", "fa-bars-progress"))
 				.appendChild(Html.i18n(SendToConfiguration.RESOURCE_KEY, "quota.info", Utils.toByteSize(remaining, 0).toUpperCase(),
-					transferQuota.getValue().toUpperCase(), transferQuota.getPeriodValue(), transferQuota.getPeriodUnit().name())));
+						Utils.toByteSize(Utils.fromByteSize(transferQuota.getValue()), 0).toUpperCase(), transferQuota.getPeriodValue(), transferQuota.getPeriodUnit().name())));
 		}
 		
 		String shareCode = Utils.generateRandomAlphaNumericString(6).toUpperCase();

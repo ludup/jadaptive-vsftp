@@ -7,6 +7,21 @@ $(function() {
 		
 	}, function(doUpload) {
 		
+		if(UploadWidget.count() == 0) {
+			JadaptiveUtils.error($('#feedback'), '${virtualFolder:noFiles.text}');
+			return false;
+		}
+		
+		if($('#quota').data('enforcing')) {
+			var remaining = $('#quota').data('quota');
+			if(remaining < UploadWidget.size()) {
+				JadaptiveUtils.error($('#feedback'), '${virtualFolder:quotaExceeded.text}');
+				return false;
+			}
+		}
+		
+		$('.feedback').remove();
+		
 		$('#waiting').removeClass('d-none');
 		
 		/**

@@ -9,7 +9,7 @@ $(function() {
 		$.getJSON('/app/api/sendTo/status/' + $('#shareCode').val(), function(data) {
 			
 			if(data.success) {
-				$('#progressText').text("${virtualFolder:transferComplete.text}");
+				$('#progressText').text("${virtualFolder:transferReceived.text}");
 				$('#spinner').remove();
 			} else {
 				setTimeout(poll, 1000);
