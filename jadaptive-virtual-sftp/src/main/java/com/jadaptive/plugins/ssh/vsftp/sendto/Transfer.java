@@ -6,6 +6,7 @@ import java.net.URLConnection;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
@@ -16,12 +17,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.db.SingletonObjectDatabase;
+import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.quotas.QuotaService;
 import com.jadaptive.api.quotas.QuotaThreshold;
 import com.jadaptive.api.servlet.Request;
 import com.jadaptive.api.session.SessionUtils;
 import com.jadaptive.plugins.ssh.vsftp.ContentHash;
 import com.jadaptive.plugins.ssh.vsftp.VFSConfiguration;
+import com.jadaptive.plugins.ssh.vsftp.events.FileStreamedEvent;
+import com.jadaptive.plugins.ssh.vsftp.events.TransferResult;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.IOUtils;
 
@@ -32,6 +36,9 @@ public class Transfer {
 
 	@Autowired
 	private QuotaService quotaService; 
+	
+	@Autowired
+	private EventService eventService; 
 	
 	HttpServletResponse response = null;
 	Integer count;
@@ -80,11 +87,24 @@ public class Transfer {
 		}
 		
 		SessionUtils.runIoWithoutSessionTimeout(Request.get(), () -> {
-			if(Objects.nonNull(zip)) {
-				zip.sendFile(filename, new QuotaEnforcingInputStream(in, transferQuota)); 
-			} else {
-				IOUtils.copy(new QuotaEnforcingInputStream(in, transferQuota), digestOutput);
-			}	
+			Date started = new Date();
+			QuotaEnforcingInputStream qin = new QuotaEnforcingInputStream(in, transferQuota);
+			
+			try {
+				if(Objects.nonNull(zip)) {
+					zip.sendFile(filename, qin); 
+				} else {
+					IOUtils.copy(in, digestOutput);
+				}	
+				
+				TransferResult result = new TransferResult(filename, filename, qin.getTotalLength(), started, new Date());
+				eventService.publishEvent(new FileStreamedEvent(result));
+				
+			} catch(IOException e) {
+				TransferResult result = new TransferResult(filename, filename, qin.getTotalLength(), started, new Date());
+				eventService.publishEvent(new FileStreamedEvent(result, e));
+				
+			}
 		});
 		
 		
@@ -125,6 +145,7 @@ public class Transfer {
 	class QuotaEnforcingInputStream extends InputStream {
 
 		long block = 0;
+		long totalLength = 0;
 		InputStream in;
 		QuotaThreshold transferQuota;
 		
@@ -148,6 +169,7 @@ public class Transfer {
 			int r  = in.read(b, off, len);
 			if(r > 0) {
 				block += r;
+				totalLength += r;
 				if(Objects.nonNull(transferQuota) && block >= 0x100000) {
 					quotaService.incrementQuota(transferQuota, block, SendToConfiguration.RESOURCE_KEY, "transferQuotaExceeded.error");
 					block = block - 0x100000;
@@ -156,6 +178,9 @@ public class Transfer {
 			return r;
 		}
 		
+		public long getTotalLength() {
+			return totalLength;
+		}
 		
 		public void close() throws IOException {
 			in.close();
