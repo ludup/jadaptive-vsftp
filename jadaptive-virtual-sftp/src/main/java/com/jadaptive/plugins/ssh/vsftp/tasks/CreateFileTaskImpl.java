@@ -21,7 +21,7 @@ public class CreateFileTaskImpl extends AbstractFileTaskImpl<CreateFileTask> {
 	}
 	
 	public String getIcon() {
-		return "fa-file-circle-plus";
+		return "fa-file";
 	}
 	
 	@Override

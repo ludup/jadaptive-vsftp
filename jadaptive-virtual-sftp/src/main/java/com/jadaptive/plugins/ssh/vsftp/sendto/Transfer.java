@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jadaptive.api.db.SingletonObjectDatabase;
@@ -78,14 +79,14 @@ public class Transfer {
 		}
 	}
 
-	public synchronized void sendFile(String filename, InputStream in) throws IOException, NoSuchAlgorithmException, PermissionDeniedException {
+	public synchronized void sendFile(String filename, InputStream in, long contentLength) throws IOException, NoSuchAlgorithmException, PermissionDeniedException {
 		
 		QuotaThreshold transferQuota = quotaService.getAssignedThreshold(quotaService.getKey(SendToServiceImpl.SEND_TO_TRANSFER_LIMIT));
 		
 		if(Objects.isNull(digestOutput)) {
 			setupTransfer(count > 1 ? shareCode + ".zip" : filename);
 		}
-		
+
 		SessionUtils.runIoWithoutSessionTimeout(Request.get(), () -> {
 			Date started = new Date();
 			QuotaEnforcingInputStream qin = new QuotaEnforcingInputStream(in, transferQuota);
