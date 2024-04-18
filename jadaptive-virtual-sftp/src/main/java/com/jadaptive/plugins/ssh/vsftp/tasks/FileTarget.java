@@ -2,10 +2,10 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
-import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
+import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectView;
 
 @ObjectDefinition(resourceKey = FileTarget.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
 public class FileTarget extends AbstractUUIDEntity {
@@ -16,16 +16,16 @@ public class FileTarget extends AbstractUUIDEntity {
 
 	@ObjectField(type = FieldType.ENUM, defaultValue = "VIRTUAL_PATH")
 	@ObjectView(value = "", systemOnly = true)
-	FileLocation location;
+	TargetLocation location;
 	
 	@ObjectField(type = FieldType.TEXT)
 	String filename;
 
-	public FileLocation getLocation() {
+	public TargetLocation getLocation() {
 		return location;
 	}
 
-	public void setLocation(FileLocation location) {
+	public void setLocation(TargetLocation location) {
 		this.location = location;
 	}
 

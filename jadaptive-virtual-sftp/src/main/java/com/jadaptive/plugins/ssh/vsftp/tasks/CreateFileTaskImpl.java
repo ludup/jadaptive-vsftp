@@ -39,21 +39,21 @@ public class CreateFileTaskImpl extends AbstractFileTaskImpl<CreateFileTask> {
 			AbstractFile file = parentFolder.resolveFile(targetName);
 			
 			if(file.exists() && task.getErrorIfExists()) {
-				return new FileLocationResult(task.getTarget().getLocation(),
+				return new TargetLocationResult(task.getTarget().getLocation(),
 						task.getTarget().getFilename(),
 						new FileAlreadyExistsException(task.getTarget().getFilename()));
 			}
 			
 			if(file.createNewFile()) {
-				return new FileLocationResult(task.getTarget().getLocation(), 
+				return new TargetLocationResult(task.getTarget().getLocation(), 
 						task.getTarget().getFilename());
 			}
 			
-			return new FileLocationResult(task.getTarget().getLocation(), 
+			return new TargetLocationResult(task.getTarget().getLocation(), 
 					task.getTarget().getFilename(),
 					new IOException("The file could not be created"));
 		} catch(IOException | PermissionDeniedException e) {
-			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
+			return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
 		}
 	}
 

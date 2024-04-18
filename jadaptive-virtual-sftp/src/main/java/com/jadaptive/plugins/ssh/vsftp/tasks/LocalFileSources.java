@@ -7,7 +7,6 @@ import com.jadaptive.api.repository.AbstractUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 
 @ObjectDefinition(resourceKey = LocalFileSources.RESOURCE_KEY, type = ObjectType.OBJECT)
 public class LocalFileSources extends AbstractUUIDEntity {
@@ -17,17 +16,17 @@ public class LocalFileSources extends AbstractUUIDEntity {
 	public static final String RESOURCE_KEY = "localFileSources";
 
 	@ObjectField(type = FieldType.ENUM)
-	FileLocation location;
+	SourceLocation location;
 	
 	@ObjectField(type = FieldType.TEXT)
 	//@ObjectView(value = "", dependsOn = "location", dependsValue = "!UPLOAD_FORM")
 	Collection<String> paths;
 
-	public FileLocation getLocation() {
+	public SourceLocation getLocation() {
 		return location;
 	}
 
-	public void setLocation(FileLocation location) {
+	public void setLocation(SourceLocation location) {
 		this.location = location;
 	}
 

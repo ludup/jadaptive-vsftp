@@ -39,18 +39,18 @@ public class DeleteFileTaskImpl extends AbstractFileTaskImpl<DeleteFileTask> {
 			
 			if(file.exists()) {
 				if(file.delete(false)) {
-					return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename());
+					return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename());
 				}
-				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
+				return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 						new IOException("The file could not be deleted"));
 			} else {
-				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
+				return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 						new FileNotFoundException(task.getTarget().getFilename()));
 			}
 			
 			
 		} catch(IOException | PermissionDeniedException e) {
-			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
+			return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
 		}
 	}
 

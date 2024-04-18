@@ -34,7 +34,17 @@ public class FileSystemJobContext implements TaskRunnerContext {
 
 	}
 
-	public AbstractFileFactory<?> getFileSystem(FileLocation target) {
+	public AbstractFileFactory<?> getFileSystem(SourceLocation target) {
+		switch(target) {
+		case SYSTEM_PATH:
+			return system.get();
+		case VIRTUAL_PATH:
+		default:
+			return vfs.get();
+		}
+	}
+	
+	public AbstractFileFactory<?> getFileSystem(TargetLocation target) {
 		switch(target) {
 		case SYSTEM_PATH:
 			return system.get();

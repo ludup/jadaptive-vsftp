@@ -8,7 +8,7 @@ import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.TaskDefinition;
 
 @ObjectDefinition(resourceKey = CreateFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
-@TaskDefinition(impl = CreateFolderTaskImpl.class, result = FileLocationResult.class, bundle = AbstractFileTargetTask.BUNDLE)
+@TaskDefinition(impl = CreateFolderTaskImpl.class, result = SourceLocationResult.class, bundle = AbstractFileTargetTask.BUNDLE)
 public class CreateFolderTask extends AbstractFileTargetTask {
 
 	private static final long serialVersionUID = 7900486943823628996L;

@@ -21,18 +21,33 @@ public abstract class AbstractFileTaskImpl<T extends Task> implements TaskImpl<T
 	protected FeedbackService feedbackService; 
 	
 	
-	protected AbstractFile resolveFile(FileLocation location, String filename)
+	protected AbstractFile resolveFile(SourceLocation location, String filename)
+			throws PermissionDeniedException, IOException {
+		AbstractFileFactory<?> fileFactory = fsContext.getFileSystem(location);
+		return fileFactory.getFile(filename);
+	}
+	
+	protected AbstractFile resolveFile(TargetLocation location, String filename)
 			throws PermissionDeniedException, IOException {
 		AbstractFileFactory<?> fileFactory = fsContext.getFileSystem(location);
 		return fileFactory.getFile(filename);
 	}
 
-	protected AbstractFile resolveParent(FileLocation location, String filename) throws PermissionDeniedException, IOException {
+	protected AbstractFile resolveParent(SourceLocation location, String filename) throws PermissionDeniedException, IOException {
 		String parent = FileUtils.getParentPath(filename);
 		return resolveFile(location, parent);
 	}
 	
-	protected AbstractFileFactory<?> getFileFactory(FileLocation location) {
+	protected AbstractFile resolveParent(TargetLocation location, String filename) throws PermissionDeniedException, IOException {
+		String parent = FileUtils.getParentPath(filename);
+		return resolveFile(location, parent);
+	}
+	
+	protected AbstractFileFactory<?> getFileFactory(SourceLocation location) {
+		return fsContext.getFileSystem(location);
+	}
+	
+	protected AbstractFileFactory<?> getFileFactory(TargetLocation location) {
 		return fsContext.getFileSystem(location);
 	}
 	

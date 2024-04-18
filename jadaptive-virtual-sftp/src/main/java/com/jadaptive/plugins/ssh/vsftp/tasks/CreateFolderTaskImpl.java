@@ -38,18 +38,18 @@ public class CreateFolderTaskImpl extends AbstractFileTaskImpl<CreateFolderTask>
 			AbstractFile file = parentFolder.resolveFile(targetName);
 			
 			if(file.exists() && task.getErrorIfExists()) {
-				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
+				return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 						new FileAlreadyExistsException(task.getTarget().getFilename()));
 			}
 			
 			if(file.createFolder()) {
-				return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename());
+				return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename());
 			}
 			
-			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
+			return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(),
 					new IOException("The folder could not be created"));
 		} catch(IOException | PermissionDeniedException e) {
-			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
+			return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
 		}
 	}
 

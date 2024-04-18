@@ -43,7 +43,7 @@ public abstract class FileTransferTaskImpl<T extends AbstractFileTransferTask> e
 		try {
 			target = resolveDestinationFile(task);
 		} catch (PermissionDeniedException | IOException e) {
-			return new FileLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
+			return new TargetLocationResult(task.getTarget().getLocation(), task.getTarget().getFilename(), e);
 		}
 		
 		Collection<TaskResult> results = new ArrayList<>();
@@ -75,7 +75,7 @@ public abstract class FileTransferTaskImpl<T extends AbstractFileTransferTask> e
 				
 				results.add(new FileTransferResult(result, task.getAppendContents()));
 			} catch (PermissionDeniedException | IOException | NoSuchAlgorithmException e) {
-				results.add(new FileLocationResult(task.getSource().getLocation(), path, e));
+				results.add(new SourceLocationResult(task.getSource().getLocation(), path, e));
 			}
 		}
 		

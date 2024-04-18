@@ -84,7 +84,7 @@ public class PutFileTaskImpl extends AbstractFileTaskImpl<PutFileTask> {
 							absolutePath = from.getAbsolutePath();
 						
 						} catch(PermissionDeniedException | IOException e) {
-							return new FileLocationResult(task.getSource().getLocation(), path, e);
+							return new SourceLocationResult(task.getSource().getLocation(), path, e);
 						}
 
 						feedbackService.info(executionId, AbstractFileTargetTask.BUNDLE, 

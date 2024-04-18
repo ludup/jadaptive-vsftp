@@ -6,26 +6,26 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 
-@ObjectDefinition(resourceKey = FileLocationResult.RESOURCE_KEY, type = ObjectType.OBJECT)
-public class FileLocationResult extends TaskResult {
+@ObjectDefinition(resourceKey = TargetLocationResult.RESOURCE_KEY, type = ObjectType.OBJECT)
+public class TargetLocationResult extends TaskResult {
 
 	private static final long serialVersionUID = -2647802923985077711L;
 
 	public static final String RESOURCE_KEY = "fileLocationResult";
 	
 	@ObjectField(type = FieldType.ENUM)
-	FileLocation location;
+	TargetLocation location;
 	
 	@ObjectField(type = FieldType.TEXT)
 	String filename;
 	
-	public FileLocationResult(FileLocation location, String filename, Throwable e) {
+	public TargetLocationResult(TargetLocation location, String filename, Throwable e) {
 		super(RESOURCE_KEY, e);
 		this.location = location;
 		this.filename = filename;
 	}
 
-	public FileLocationResult(FileLocation location, String filename) {
+	public TargetLocationResult(TargetLocation location, String filename) {
 		super(RESOURCE_KEY);
 		this.location = location;
 		this.filename = filename;
@@ -36,11 +36,11 @@ public class FileLocationResult extends TaskResult {
 		return "fileTasks";
 	}
 
-	public FileLocation getLocation() {
+	public TargetLocation getLocation() {
 		return location;
 	}
 
-	public void setLocation(FileLocation location) {
+	public void setLocation(TargetLocation location) {
 		this.location = location;
 	}
 

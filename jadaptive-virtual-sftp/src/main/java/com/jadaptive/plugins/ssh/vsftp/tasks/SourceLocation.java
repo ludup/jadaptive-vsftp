@@ -1,6 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp.tasks;
 
-public enum FileLocation {
+public enum SourceLocation {
 
 	SYSTEM_PATH,
 	VIRTUAL_PATH,
