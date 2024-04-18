@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +15,8 @@ import com.jadaptive.api.quotas.QuotaService;
 import com.jadaptive.api.tenant.Tenant;
 import com.jadaptive.api.tenant.TenantAware;
 import com.sshtools.common.permissions.PermissionDeniedException;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class SendToServiceImpl extends AuthenticatedService implements SendToService, TenantAware {

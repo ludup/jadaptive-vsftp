@@ -10,8 +10,6 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,8 @@ import com.jadaptive.plugins.ssh.vsftp.events.FileStreamedEvent;
 import com.jadaptive.plugins.ssh.vsftp.events.TransferResult;
 import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.IOUtils;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 public class Transfer {
 

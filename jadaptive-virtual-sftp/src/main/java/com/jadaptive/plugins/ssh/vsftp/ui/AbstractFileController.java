@@ -10,8 +10,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,6 +40,8 @@ import com.sshtools.common.permissions.PermissionDeniedException;
 import com.sshtools.common.util.FileUtils;
 import com.sshtools.common.util.IOUtils;
 import com.sshtools.humanhash.HumanHashGenerator;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 public class AbstractFileController extends AuthenticatedController {
 

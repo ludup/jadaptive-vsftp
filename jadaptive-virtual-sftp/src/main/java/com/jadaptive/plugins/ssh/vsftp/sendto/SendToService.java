@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.sshtools.common.permissions.PermissionDeniedException;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface SendToService {
 

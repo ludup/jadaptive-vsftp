@@ -5,11 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.pf4j.Extension;
@@ -43,6 +38,11 @@ import com.jadaptive.api.ui.UriRedirect;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.sshtools.common.util.ExpiringConcurrentHashMap;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Extension
 @Controller
