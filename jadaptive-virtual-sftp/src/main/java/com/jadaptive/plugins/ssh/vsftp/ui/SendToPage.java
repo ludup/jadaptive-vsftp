@@ -24,8 +24,6 @@ import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserService;
 import com.jadaptive.plugins.ssh.vsftp.AnonymousUserDatabaseImpl;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFileService;
-import com.jadaptive.plugins.ssh.vsftp.VirtualFileServiceImpl;
 import com.jadaptive.plugins.ssh.vsftp.sendto.SendToConfiguration;
 import com.jadaptive.plugins.ssh.vsftp.sendto.SendToService;
 import com.jadaptive.plugins.ssh.vsftp.sendto.SendToServiceImpl;
