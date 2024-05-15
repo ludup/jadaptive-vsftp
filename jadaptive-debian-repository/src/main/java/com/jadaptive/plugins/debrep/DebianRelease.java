@@ -14,49 +14,68 @@ import com.jadaptive.api.repository.NamedUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectView;
+import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.TableAction;
+import com.jadaptive.api.template.TableView;
 import com.jadaptive.api.template.TableAction.Target;
 import com.jadaptive.api.ui.menu.ApplicationMenuService;
 import com.jadaptive.api.ui.menu.PageMenu;
 
 @ObjectDefinition(resourceKey = DebianRelease.RESOURCE_KEY)
 @GenerateEventTemplates
+@TableView(defaultColumns = {"name", "label"})
 @PageMenu(bundle = DebianRelease.RESOURCE_KEY, i18n = DebianRelease.RESOURCE_KEY + ".names", icon = "fa-code-fork", parent = ApplicationMenuService.RESOURCE_MENU_UUID)
 @TableAction(icon = "fa-asterisk", resourceKey = "promoteDebianRelease", target = Target.ROW, writeAction = true, url = "/app/api/debian/promote/{uuid}", bundle = DebianRelease.RESOURCE_KEY)
+@ObjectViewDefinition(value = DebianRelease.VIEW_BASIC, weight = 100)
+@ObjectViewDefinition(value = DebianRelease.VIEW_ADVANCED, weight = 200)
 public class DebianRelease extends NamedUUIDEntity {
 
 	private static final long serialVersionUID = -5832968884541307217L;
 
 	public static final String RESOURCE_KEY = "debianRelease";
-	
-	@ObjectField(type = FieldType.OBJECT_EMBEDDED)
-	Set<DebianRepository> repositories = new HashSet<DebianRepository>();
 
-	@ObjectField(type = FieldType.OBJECT_REFERENCE)
+	public static final String VIEW_BASIC = "basicReleaseView";
+	public static final String VIEW_ADVANCED = "advancedReleaseView";
+	
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = DebianRepository.RESOURCE_KEY)
+	@ObjectView(value = VIEW_BASIC)
+	private Set<DebianRepository> repositories = new HashSet<DebianRepository>();
+
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = GPGKeyResource.RESOURCE_KEY)
+	@ObjectView(value = VIEW_BASIC)
 	private GPGKeyResource signWith;
 
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_BASIC)
 	private String label;
 	
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String origin;
 	
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String suite;
 	
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String architectures;
 	
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String components;
 	
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String description;
 	
 	@ObjectField(type = FieldType.ENUM)
+	@ObjectView(value = VIEW_ADVANCED)
 	private DebianPriority overridePriority;
 	
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String overrideSection;
 
 	public DebianPriority getOverridePriority() {

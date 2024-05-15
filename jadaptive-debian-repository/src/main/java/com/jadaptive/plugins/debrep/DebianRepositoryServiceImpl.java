@@ -375,10 +375,10 @@ public class DebianRepositoryServiceImpl extends AbstractUUIDObjectServceImpl<De
 			final File realmGPGHomeDir = gPGKeyResourceService.getRealmGPGHomeDir();
 			final File realmRepositoryHomeDir = new File(getRealmRepositoryHomeDir(), repo.getName());
 			List<String> args = new ArrayList<>(Arrays.asList("reprepro"));
-			DebianPriority overridePriority = null;
-			if (release.getOverridePriority() != null)
+			DebianPriority overridePriority = DebianPriority.inherit;
+			if (release.getOverridePriority() != null  && release.getOverridePriority() != DebianPriority.inherit)
 				overridePriority = release.getOverridePriority();
-			else if (repo.getOverridePriority() != null)
+			else if (repo.getOverridePriority() != null && repo.getOverridePriority() != DebianPriority.inherit)
 				overridePriority = repo.getOverridePriority();
 			String overrideSection = release.getOverrideSection();
 			if (StringUtils.isBlank(overrideSection))
@@ -387,7 +387,7 @@ public class DebianRepositoryServiceImpl extends AbstractUUIDObjectServceImpl<De
 				args.add("--section");
 				args.add(overrideSection);
 			}
-			if (overridePriority != null) {
+			if (overridePriority != DebianPriority.inherit) {
 				args.add("--priority");
 				args.add(overridePriority.name());
 			}

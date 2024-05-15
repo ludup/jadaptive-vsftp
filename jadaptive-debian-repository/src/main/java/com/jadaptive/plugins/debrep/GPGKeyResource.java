@@ -7,61 +7,97 @@ import com.jadaptive.api.repository.NamedUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectView;
+import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.TableAction;
 import com.jadaptive.api.template.TableAction.Target;
+import com.jadaptive.api.template.TableView;
+import com.jadaptive.api.template.ValidationType;
+import com.jadaptive.api.template.Validator;
 import com.jadaptive.api.ui.menu.ApplicationMenuService;
 import com.jadaptive.api.ui.menu.PageMenu;
 
 @ObjectDefinition(resourceKey = GPGKeyResource.RESOURCE_KEY)
 @GenerateEventTemplates
-@PageMenu(bundle = GPGKeyResource.RESOURCE_KEY, i18n = GPGKeyResource.RESOURCE_KEY + ".names", icon = "fa-archive", parent = ApplicationMenuService.RESOURCE_MENU_UUID)
+@TableView(defaultColumns = {"name", "recordType", "fingerprint", "comment", "fullName", "email"})
+@PageMenu(bundle = GPGKeyResource.RESOURCE_KEY, i18n = GPGKeyResource.RESOURCE_KEY + ".names", icon = "fa-signature-lock", parent = ApplicationMenuService.RESOURCE_MENU_UUID)
 @TableAction(icon = "fa-download", resourceKey = "downloadKey", target = Target.ROW, url = "/app/api/gpg/download", bundle = GPGKeyResource.RESOURCE_KEY)
-
+@TableAction(icon = "fa-upload", resourceKey = "uploadKey", target = Target.TABLE, writeAction = true, url = "upload-gpg-key", bundle = GPGKeyResource.RESOURCE_KEY)
+@ObjectViewDefinition(value = GPGKeyResource.VIEW_BASIC, weight = 100)
+@ObjectViewDefinition(value = GPGKeyResource.VIEW_ADVANCED, weight = 200)
 public class GPGKeyResource extends NamedUUIDEntity {
 
 	private static final long serialVersionUID = -6809208141909321884L;
 
 	public static final String RESOURCE_KEY = "gpgKey";
 	
-	@ObjectField(type = FieldType.ENUM)
-	private GPGRecordType recordType;
-
-	private GPGValidity validity;
-	private int keyLength;
-	private GPGKeyAlgo publicKeyAlgo;
-	private String fingerprint;
-
-	@ObjectField(type = FieldType.TIMESTAMP)
-	private Date creationDate;
-	
-	@ObjectField(type = FieldType.TIMESTAMP)
-	private Date expirationDate;
-	
-	@ObjectField(type = FieldType.OBJECT_REFERENCE)
-	private GPGKeyResource parent;
-
-	@ObjectField(type = FieldType.TEXT)
-	private String info;
+	public static final String VIEW_BASIC = "basicView";
+	public static final String VIEW_ADVANCED = "advancedView";
 	
 	@ObjectField(type = FieldType.TEXT)
-	private String ownerTrust;
-	
-	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_BASIC)
+	@Validator(type = ValidationType.REQUIRED)
 	private String fullName;
 	
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_BASIC)
+	@Validator(type = ValidationType.REQUIRED)
+	private String email;
+	
+	@ObjectField(type = FieldType.ENUM, defaultValue = "pub")
+	@ObjectView(value = VIEW_BASIC)
+	private GPGRecordType recordType = GPGRecordType.pub;
+
+	@ObjectField(type = FieldType.ENUM, defaultValue = "NONE")
+	@ObjectView(value = VIEW_BASIC)
+	private GPGValidity validity = GPGValidity.NONE;
+
+	@ObjectField(type = FieldType.INTEGER, defaultValue = "3072")
+	@ObjectView(value = VIEW_BASIC)
+	private int keyLength  = 3072;
+
+	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_BASIC)
+	private String fingerprint;
+	
+	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.ENUM, defaultValue = "RSA_RSA")
+	private GPGKeyAlgo publicKeyAlgo = GPGKeyAlgo.RSA_RSA;
+
+	@ObjectField(type = FieldType.TIMESTAMP, readOnly = true)
+	@ObjectView(value = VIEW_BASIC)
+	private Date creationDate;
+	
+	@ObjectField(type = FieldType.TIMESTAMP)
+	@ObjectView(value = VIEW_BASIC)
+	private Date expirationDate;
+	
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = GPGKeyResource.RESOURCE_KEY)
+	@ObjectView(value = VIEW_BASIC)
+	private GPGKeyResource parent;
+
+	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
+	private String info;
+	
+	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
+	private String ownerTrust;
+	
+	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String comment;
 	
 	@ObjectField(type = FieldType.TEXT)
-	private String email;
-	
-	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String signatureClass;
 	
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String keyCapabilities;
 	
 	@ObjectField(type = FieldType.TEXT)
+	@ObjectView(value = VIEW_ADVANCED)
 	private String issuerCertificateFingerprint;
 
 	public String getComment() {
@@ -73,12 +109,13 @@ public class GPGKeyResource extends NamedUUIDEntity {
 	}
 
 	public void setParent(GPGKeyResource parent) {
+		if(parent != null && (this.equals(parent) ||  parent.getUuid().equals(getUuid())))
+			throw new IllegalArgumentException("Parent cannot be this key.");
 		this.parent = parent;
 	}
 
 	public void setComment(String comment) {
 		this.comment = comment;
-		updateName();
 	}
 
 	public GPGRecordType getRecordType() {
@@ -87,7 +124,6 @@ public class GPGKeyResource extends NamedUUIDEntity {
 
 	public void setRecordType(GPGRecordType recordType) {
 		this.recordType = recordType;
-		updateName();
 	}
 
 	public GPGValidity getValidity() {
@@ -169,16 +205,20 @@ public class GPGKeyResource extends NamedUUIDEntity {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
-		updateName();
 	}
 
 	public String getEmail() {
 		return email;
 	}
 
+	@Override
+	public void setSystem(Boolean system) {
+		// TODO Auto-generated method stub
+		super.setSystem(system);
+	}
+
 	public void setEmail(String email) {
 		this.email = email;
-		updateName();
 	}
 
 	public String getSignatureClass() {
@@ -206,12 +246,9 @@ public class GPGKeyResource extends NamedUUIDEntity {
 	}
 
 	public String getUserId() {
-		return String.format("%s (%s) <%s>", fullName, comment, email);
+		return String.format("%s (%s) <%s>", fullName, comment == null ? "" : comment, email);
 	}
 
-	private void updateName() {
-		setName(recordType + ":" + getUserId());
-	}
 
 	@Override
 	public String toString() {
