@@ -13,7 +13,7 @@ import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.session.SessionTimeoutException;
 import com.jadaptive.api.session.UnauthorizedException;
 import com.jadaptive.api.upload.UploadHandler;
-import com.sshtools.common.util.IOUtils;
+import com.jadaptive.api.upload.UploadIterator;
 
 @Extension
 public class GPGKeyUploadHandler extends AuthenticatedService implements UploadHandler {
@@ -22,21 +22,6 @@ public class GPGKeyUploadHandler extends AuthenticatedService implements UploadH
 	
 	@Autowired
 	private GPGKeyService keyService;  
-	
-	@Override
-	public void handleUpload(String handlerName, String uri, Map<String, String> parameters, String filename,
-			InputStream in) throws IOException, SessionTimeoutException, UnauthorizedException {
-		
-		try { 
-			keyService.importKey(in);
-
-		} catch(Throwable e) {
-			log.error("Failed to upload public key", e);
-			throw new IOException(e.getMessage(), e);
-		} finally {
-			IOUtils.closeStream(in);
-		}
-	}
 
 	@Override
 	public boolean isSessionRequired() {
@@ -46,5 +31,25 @@ public class GPGKeyUploadHandler extends AuthenticatedService implements UploadH
 	@Override
 	public String getURIName() {
 		return "gpg-key";
+	}
+
+	@Override
+	public void handleUpload(String handlerName, String uri, Map<String, String[]> parameters, UploadIterator uploads)
+			throws IOException, SessionTimeoutException, UnauthorizedException {
+		
+		try { 
+			uploads.forEachRemaining((u)->{
+				try(InputStream in = u.openStream()) {
+					keyService.importKey(in);
+				} catch (IOException e) {
+					throw new IllegalStateException(e.getMessage(), e);
+				}
+			});
+			
+
+		} catch(Throwable e) {
+			log.error("Failed to upload public key", e);
+			throw new IOException(e.getMessage(), e);
+		} 
 	}
 }
