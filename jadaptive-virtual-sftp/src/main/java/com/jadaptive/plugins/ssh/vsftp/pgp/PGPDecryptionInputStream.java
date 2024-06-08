@@ -79,7 +79,6 @@ public class PGPDecryptionInputStream extends InputStream {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	public int read(byte[] buf, int off, int len) throws IOException {
 		
 		try {
@@ -112,7 +111,6 @@ public class PGPDecryptionInputStream extends InputStream {
 		return r;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void close() throws IOException {
 	
 		if(Objects.nonNull(in)) {

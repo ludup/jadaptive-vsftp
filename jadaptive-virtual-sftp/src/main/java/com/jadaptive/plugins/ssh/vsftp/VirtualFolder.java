@@ -1,6 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Objects;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.events.GenerateEventTemplates;
@@ -80,7 +80,7 @@ public abstract class VirtualFolder extends AssignableUUIDEntity implements Name
 	}
 
 	public String getScheme() {
-		return StringUtils.defaultString(scheme, getType() + ".name");
+		return Objects.toString(scheme, getType() + ".name");
 	}
 
 	public void setScheme(String scheme) {

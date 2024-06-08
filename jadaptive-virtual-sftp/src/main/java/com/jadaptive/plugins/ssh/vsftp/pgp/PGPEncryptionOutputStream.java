@@ -74,7 +74,6 @@ public class PGPEncryptionOutputStream extends OutputStream {
 		out.write(b);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void close() throws IOException {
 		if(Objects.nonNull(out)) {
 			out.flush();
