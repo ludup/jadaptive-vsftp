@@ -46,6 +46,7 @@
 		<module>jadaptive-virtual-sftp-windows</module>
 		<module>jadaptive-virtual-sftp-sftp</module>
 		<module>jadaptive-debian-repository</module>
+		<module>jadaptive-debian-repository-product</module>
 	</modules>
 
 	<dependencies>

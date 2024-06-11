@@ -4,19 +4,19 @@
 		<groupId>com.jadaptive</groupId>
 		<artifactId>jadaptive-vsftp</artifactId>
 		<relativePath>..</relativePath>
-		<version>0.5.0-SNAPSHOT</version>
+		<version>0.4.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>jadaptive-debian-repository</artifactId>
+	<artifactId>jadaptive-debian-repository-product</artifactId>
 	<name>Debian Repository</name>
 
 	<properties>
-		<plugin.id>jadaptive-debian-repository</plugin.id>
-		<plugin.class>com.jadaptive.plugins.debrep.DebianRepositoryPlugin</plugin.class>
+		<plugin.id>jadaptive-debian-repository-product</plugin.id>
+		<plugin.class>com.jadaptive.plugins.debrep.product.ProductPlugin</plugin.class>
 		<plugin.version>${project.version}</plugin.version>
 		<plugin.provider>JADAPTIVE Limited</plugin.provider>
-		<plugin.projectUrl>https://github.com/ludup/jadpative-common/</plugin.projectUrl>
-		<plugin.dependencies>jadaptive-virtual-sftp,jadaptive-ssh-synergy,jadaptive-virtual-sftp-s3</plugin.dependencies>
+		<plugin.projectUrl>https://github.com/ludup/jadpative-vsftp</plugin.projectUrl>
+		<plugin.dependencies>jadaptive-debian-repository,jadaptive-ssh-synergy</plugin.dependencies>
 	</properties>
 
 	<dependencies>
@@ -25,29 +25,31 @@
 			<artifactId>jadaptive-api</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>com.jadaptive</groupId>
-			<artifactId>jadaptive-virtual-sftp</artifactId>
+			<artifactId>jadaptive-ssh-server</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.jadaptive</groupId>
 			<artifactId>jadaptive-ssh-synergy</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.jadaptive</groupId>
-			<artifactId>jadaptive-virtual-sftp-s3</artifactId>
-			<version>${project.version}</version>
+			<artifactId>jadaptive-debian-repository</artifactId>
+			<version>${project.version}</version> 
 			<scope>provided</scope>
 		</dependency>
-		
 	</dependencies>
 
 	<build>

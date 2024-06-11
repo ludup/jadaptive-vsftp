@@ -26,6 +26,7 @@ import com.jadaptive.api.app.StartupAware;
 import com.jadaptive.api.db.SearchField;
 import com.jadaptive.api.db.SingletonObjectDatabase;
 import com.jadaptive.api.entity.AbstractUUIDObjectServceImpl;
+import com.jadaptive.api.entity.ObjectNotFoundException;
 import com.jadaptive.api.events.EventService;
 import com.jadaptive.api.template.SortOrder;
 import com.jadaptive.api.tenant.Tenant;
@@ -142,6 +143,9 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 			String keyTypeArg) throws IOException {
 		for (String line : runCommandAndCaptureOutput("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(),
 				keyTypeArg, "--with-colons").split("\n")) {
+			if(line.equals(""))
+				return;
+			
 			String[] data = line.split(":");
 
 			if (data[0].equals("gpg")) {
@@ -206,7 +210,6 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 						gpg.setKeyCapabilities(data[11]);
 					}
 				}
-				gpg.setSystem(true);
 
 				if (last != null && (recordType == GPGRecordType.sub || recordType == GPGRecordType.ssb)
 						&& (last.getRecordType() == GPGRecordType.pub || last.getRecordType() == GPGRecordType.sec)) {
@@ -271,7 +274,16 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 	}
 
 	protected void createOrUpdate(GPGKeyResource gpg)  {
-		GPGKeyResource res = objectDatabase.get(GPGKeyResource.class, SearchField.eq("name", gpg.getName()));
+		GPGKeyResource res ;
+		try {
+			res = objectDatabase.get(GPGKeyResource.class, SearchField.and(
+				SearchField.eq("fullName", gpg.getFullName()),
+				SearchField.eq("comment", gpg.getComment()),
+				SearchField.eq("email", gpg.getEmail())));
+		}
+		catch(ObjectNotFoundException onfe) {
+			res = null;
+		}
 		GPGKeyResource parent = gpg.getParent();
 		if (parent != null && parent.getUuid() == null) {
 			parent = objectDatabase.get(GPGKeyResource.class, SearchField.eq("name", parent.getName()));
@@ -396,7 +408,8 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 						break;
 					}
 					pw.println("Name-Real: " + resource.getFullName());
-					pw.println("Name-Comment: " + resource.getComment());
+					if(StringUtils.isNotBlank(resource.getComment()))
+						pw.println("Name-Comment: " + resource.getComment());
 					pw.println("Name-Email: " + resource.getEmail());
 					pw.println("Expire-Date: "
 							+ (resource.getExpirationDate() == null ? 0 : (resource.getExpirationDate().getTime() / 1000)));
@@ -432,7 +445,7 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 					}
 				};
 				oThread.start();
-
+				realmGPGHomeDir.mkdirs();
 				try {
 					runAndCheckExit("gpg", "--cert-digest-algo", "SHA512", "--default-preference-list",
 							"SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 BZIP2 ZLIB ZIP Uncompressed", "--homedir",
