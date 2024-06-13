@@ -33,22 +33,22 @@ public class EncryptingFile extends AbstractFileAdapter {
 		if(!encryption.getEncrypt()) {
 			throw new IllegalStateException("EncryptingFile can only work with VirtualFolder with encryption turned on!");
 		}
-		if(StringUtils.isAnyBlank(encryption.getPrivateKey(), encryption.getPassphrase(), encryption.getPublicKey())) {
+		if(StringUtils.isAnyBlank(encryption.getPgpPrivateKey(), encryption.getPgpPassphrase(), encryption.getPgpPublicKey())) {
 			throw new IllegalStateException("Encrypting folder requires private, public keys and a passphrase!");
 		}
 
-		try(InputStream in = IOUtils.toInputStream(encryption.getPublicKey(), "UTF-8")) {
+		try(InputStream in = IOUtils.toInputStream(encryption.getPgpPublicKey(), "UTF-8")) {
 			publicKey = PGPUtils.readPublicKey(in);
 		}
 		
-		try(InputStream in = IOUtils.toInputStream(encryption.getPrivateKey(), "UTF-8")) {
+		try(InputStream in = IOUtils.toInputStream(encryption.getPgpPrivateKey(), "UTF-8")) {
 
 			PGPSecretKeyRingCollection ringCollection = 
 					new PGPSecretKeyRingCollection(PGPUtil.getDecoderStream(in),
 							new JcaKeyFingerprintCalculator());
 			secretKey = PGPUtils.findSecretKey(ringCollection, publicKey.getKeyID(),
 					ApplicationServiceImpl.getInstance()
-						.getBean(EncryptionService.class).decrypt(encryption.getPassphrase()).toCharArray());
+						.getBean(EncryptionService.class).decrypt(encryption.getPgpPassphrase()).toCharArray());
 		}
 		
 		this.encryption = encryption;

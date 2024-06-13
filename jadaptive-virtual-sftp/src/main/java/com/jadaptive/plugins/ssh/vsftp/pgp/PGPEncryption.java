@@ -45,15 +45,15 @@ public class PGPEncryption extends AbstractUUIDEntity {
 	
 	@ObjectField(type = FieldType.TEXT_AREA)
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
-	String privateKey;
+	String pgpPrivateKey;
 	
 	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
-	String passphrase;
+	String pgpPassphrase;
 	
 	@ObjectField(type = FieldType.TEXT_AREA)
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
-	String publicKey;
+	String pgpPublicKey;
 
 	@Override
 	public String getResourceKey() {
@@ -92,27 +92,27 @@ public class PGPEncryption extends AbstractUUIDEntity {
 		this.integrityCheck = integrityCheck;
 	}
 
-	public String getPrivateKey() {
-		return privateKey;
+	public String getPgpPrivateKey() {
+		return pgpPrivateKey;
 	}
 
-	public void setPrivateKey(String privateKey) {
-		this.privateKey = privateKey;
+	public void setPgpPrivateKey(String pgpPrivateKey) {
+		this.pgpPrivateKey = pgpPrivateKey;
 	}
 
-	public String getPassphrase() {
-		return passphrase;
+	public String getPgpPassphrase() {
+		return pgpPassphrase;
 	}
 
-	public void setPassphrase(String passphrase) {
-		this.passphrase = passphrase;
+	public void setPgpPassphrase(String pgpPassphrase) {
+		this.pgpPassphrase = pgpPassphrase;
 	}
 
-	public String getPublicKey() {
-		return publicKey;
+	public String getPgpPublicKey() {
+		return pgpPublicKey;
 	}
 
-	public void setPublicKey(String publicKey) {
-		this.publicKey = publicKey;
+	public void setPgpPublicKey(String pgpPublicKey) {
+		this.pgpPublicKey = pgpPublicKey;
 	}
 }
