@@ -16,11 +16,11 @@ public class BasicCredentials extends VirtualFolderCredentials implements Userna
 	public static final String RESOURCE_KEY =  "basicCredentials";
 
 	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectView(value = VirtualFolder.CREDS_VIEW)
 	String username;
 	
 	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectView(value = VirtualFolder.CREDS_VIEW)
 	String password;
 	
 	public BasicCredentials() { }
