@@ -59,9 +59,6 @@ public class AbstractFileController extends AuthenticatedController {
 	@Autowired
 	private StatsService statsService; 
 	
-	@Autowired
-	private SessionUtils sessionUtils;
-	
 	protected void sendFileOrZipFolder(String path, AbstractFile fileObject, HttpServletResponse response) throws IOException, PermissionDeniedException {
 		
 		InputStream in = null;
