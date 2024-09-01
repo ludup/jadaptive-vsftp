@@ -39,7 +39,7 @@ public class BrowserFilesMenu implements ApplicationMenu {
 
 	@Override
 	public String getParent() {
-		return ApplicationMenuService.RESOURCE_MENU_UUID;
+		return ApplicationMenuService.HOME_MENU_UUID;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class BrowserFilesMenu implements ApplicationMenu {
 
 	@Override
 	public Integer weight() {
-		return 1000;
+		return 0;
 	}
 
 }
