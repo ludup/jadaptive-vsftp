@@ -32,6 +32,6 @@ public class SecureFileExchangeOnPrem implements Product {
 
 	@Override
 	public ProductId getProductId() {
-		return ProductId.SECURE_FILE_EXCHANGE_OMPREM;
+		return ProductId.SECURE_FILE_EXCHANGE_ONPREM;
 	}
 }
