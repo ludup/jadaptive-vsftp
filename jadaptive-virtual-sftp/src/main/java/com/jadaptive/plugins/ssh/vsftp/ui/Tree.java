@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.jsoup.nodes.Document;
 import org.pf4j.Extension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,9 @@ import com.jadaptive.api.ui.PageProcessors;
 import com.jadaptive.api.ui.PageRedirect;
 import com.jadaptive.api.ui.RequestPage;
 import com.jadaptive.api.ui.renderers.DropdownInput;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Extension
 @RequestPage(path = "tree/")
