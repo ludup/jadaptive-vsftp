@@ -1,6 +1,6 @@
 package com.jadaptive.plugins.ssh.vsftp;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.pf4j.Extension;
@@ -44,7 +44,7 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 
 	@Override
 	public Set<UserDatabaseCapabilities> getCapabilities() {
-		return new HashSet<>();
+		return Collections.emptySet();
 	}
 
 	@Override
