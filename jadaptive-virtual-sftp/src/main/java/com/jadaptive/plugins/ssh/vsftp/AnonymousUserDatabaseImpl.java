@@ -118,4 +118,14 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	public User findUser(String username) {
 		throw new ObjectNotFoundException("User not found");
 	}
+
+	@Override
+	public void enableUser(User user) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void disableUser(User user) {
+		throw new UnsupportedOperationException();
+	}
 }
