@@ -95,7 +95,7 @@ public class DropboxFileScheme extends VFSFileScheme<DropboxFileProvider> {
 				}
 				objectService.stashObject(folder);
 				throw new UriRedirect("/app/dropbox/start/" + folder.getUuid());
-			} catch (ValidationException | RepositoryException | ObjectException | IOException e) {
+			} catch (ValidationException | RepositoryException | ObjectException e) {
 				throw new IllegalStateException(e.getMessage(), e);
 			}
 		}
