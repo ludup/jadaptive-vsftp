@@ -30,7 +30,7 @@ public class GPGKeyUploadHandler extends AuthenticatedService implements UploadH
 
 	@Override
 	public String getURIName() {
-		return "gpg-key";
+		return "gpg";
 	}
 
 	@Override
