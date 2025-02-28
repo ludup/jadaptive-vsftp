@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jadaptive.api.app.ApplicationService;
+import com.jadaptive.api.app.App;
 import com.jadaptive.api.cache.CacheService;
 import com.jadaptive.api.permissions.AuthenticatedService;
 import com.jadaptive.api.quotas.QuotaService;
@@ -32,7 +32,7 @@ public class SendToServiceImpl extends AuthenticatedService implements SendToSer
 	private CacheService cacheService;
 	
 	@Autowired
-	private ApplicationService applicationService;
+	private App applicationService;
 	
 	
 	Map<String,Transfer> getCache() {

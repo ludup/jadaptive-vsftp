@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jadaptive.api.app.ApplicationService;
+import com.jadaptive.api.app.App;
 import com.jadaptive.api.app.StartupAware;
 import com.jadaptive.api.cache.CacheService;
 import com.jadaptive.api.db.AssignableObjectDatabase;
@@ -59,7 +59,7 @@ public class VirtualFileServiceImpl extends AbstractUUIDObjectServceImpl<Virtual
 	private AssignableObjectDatabase<VirtualFolder> repository;
 	
 	@Autowired
-	private ApplicationService applicationService; 
+	private App applicationService; 
 	
 	@Autowired
 	private SSHDService sshdService;
