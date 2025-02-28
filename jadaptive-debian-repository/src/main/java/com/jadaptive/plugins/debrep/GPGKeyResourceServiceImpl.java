@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -119,21 +120,17 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 		Set<String> exist = new HashSet<>();
 
 		final File realmGPGHomeDir = getRealmGPGHomeDir();
+		updateDir(realmGPGHomeDir);
 		LOG.info(String.format("Realm GPG configuration for tenant %s from %s", getCurrentTenant().getName(), realmGPGHomeDir));
-		GPGKeyResource gpg = null;
 		if (realmGPGHomeDir.exists()) {
-			syncKeyType(exist, realmGPGHomeDir, gpg, "--list-keys");
-			syncKeyType(exist, realmGPGHomeDir, gpg, "--list-secret-keys");
+			syncKeyType(exist, realmGPGHomeDir, null, "--list-keys");
+			syncKeyType(exist, realmGPGHomeDir, null, "--list-secret-keys");
 		}
 
 		/* Remove all that no longer exist */
 		deleted.set(Boolean.TRUE);
 		try {
-			for (GPGKeyResource r : allObjects()) {
-				if (!exist.contains(r.getName())) {
-					deleteObject(r);
-				}
-			}
+			streamAll().filter(r -> !exist.contains(r.getFingerprint())).forEach(this::deleteObject);
 		} finally {
 			deleted.remove();
 		}
@@ -143,9 +140,6 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 			String keyTypeArg) throws IOException {
 		for (String line : runCommandAndCaptureOutput("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(),
 				keyTypeArg, "--with-colons").split("\n")) {
-			if(line.equals(""))
-				return;
-			
 			String[] data = line.split(":");
 
 			if (data[0].equals("gpg")) {
@@ -160,7 +154,7 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 				/* Write out previous key */
 				if (gpg != null) {
 					createOrUpdate(gpg);
-					exist.add(gpg.getName());
+					exist.add(gpg.getFingerprint());
 				}
 
 				/* Field 5 is the 64bit key ID and the last 64 bit of the SHA-1 fingerprint */
@@ -240,7 +234,135 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 		}
 		if (gpg != null) {
 			createOrUpdate(gpg);
-			exist.add(gpg.getName());
+			exist.add(gpg.getFingerprint());
+		}
+	}
+
+	protected void syncXXXKeyType(Set<String> exist, final File realmGPGHomeDir, 
+			String keyTypeArg) throws IOException {
+		GPGKeyResource gpg = null;
+		GPGKeyResource last = null;
+		List<GPGRecordType> supportedTypes = Arrays.asList(GPGRecordType.pub, GPGRecordType.uid, GPGRecordType.fpr);
+		
+		for (String line : runCommandAndCaptureOutput("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(),
+				keyTypeArg, "--with-colons").split("\n")) {
+			System.out.println("ZZZZZZ: " + line);
+			if(line.equals(""))
+				return;
+			
+			String[] data = line.split(":");
+
+			if (data[0].equals("gpg")) {
+				/* Warning output */
+				LOG.warn(line);
+				continue;
+			}
+
+			GPGRecordType recordType = GPGRecordType.valueOf(data[0]);
+
+			if(!supportedTypes.contains(recordType)) {
+				continue;
+			}
+			
+			
+			if (recordType.equals(GPGRecordType.pub)) {
+				/* Write out previous key */
+				if (gpg != null) {
+					System.out.println("Writing: " + gpg);
+					createOrUpdate(gpg);
+					exist.add(gpg.getFingerprint());
+				}
+
+				/* Field 5 is the 64bit key ID and the last 64 bit of the SHA-1 fingerprint */
+				String fp = data[4];
+
+				gpg = new GPGKeyResource();
+				gpg.setRecordType(recordType);
+				gpg.setValidity(data[1].length() > 0 ? GPGValidity.fromCode(data[1]) : GPGValidity.NONE);
+				gpg.setKeyLength(Integer.parseInt(data[2]));
+				gpg.setPublicKeyAlgo(GPGKeyAlgo.fromCode(Integer.parseInt(data[3])));
+				gpg.setFingerprint(fp);
+				if (data.length > 5 && StringUtils.isNotBlank(data[5])) {
+					try {
+						gpg.setCreationDate(new Date(Long.parseLong(data[5]) * 1000));
+					} catch (NumberFormatException nfe) {
+						try {
+							gpg.setCreationDate(new SimpleDateFormat("yyyy-MM-dd").parse(data[5]));
+						} catch (ParseException e) {
+							LOG.warn(String.format("Could not parse creation date.", data[5]), e);
+							gpg.setCreationDate(null);
+						}
+					}
+				} else
+					gpg.setCreated(null);
+				if (data.length > 6 && StringUtils.isNotBlank(data[6])) {
+					try {
+						gpg.setExpirationDate(new Date(Long.parseLong(data[6]) * 1000));
+					} catch (NumberFormatException nfe) {
+						try {
+							gpg.setExpirationDate(new SimpleDateFormat("yyyy-MM-dd").parse(data[6]));
+						} catch (ParseException e) {
+							LOG.warn(String.format("Could not parse expiration date.", data[6]), e);
+							gpg.setCreationDate(null);
+						}
+					}
+				} else
+					gpg.setExpirationDate(null);
+				if (data.length > 7)
+					gpg.setInfo(data[7]);
+				if (data.length > 8)
+					gpg.setOwnerTrust(data[8]);
+				if (data.length > 10) {
+					gpg.setSignatureClass(data[10]);
+					if (data.length > 11) {
+						gpg.setKeyCapabilities(data[11]);
+					}
+				}
+
+				if (last != null) {
+
+					System.out.println("   last is " + last);
+					
+					gpg.setComment(last.getComment());
+					gpg.setFullName(last.getFullName());
+					gpg.setEmail(last.getEmail());
+					gpg.setName(recordType + ":" + last.getFullName() + " <" + last.getEmail() + ">");
+				}
+				else if(data.length > 9 && ( recordType == GPGRecordType.pub)) {
+					last = gpg;
+					GPGComment cmt = new GPGComment(data[9]);
+					last.setEmail(cmt.email);
+					last.setFullName(cmt.fullName);
+					last.setComment(cmt.comment);
+
+					System.out.println("   comment "  +cmt);
+				} 
+				else {
+					System.out.println("Not writing");
+					gpg = null;
+				}
+					
+			} else if (last != null && recordType.equals(GPGRecordType.fpr)) {
+				/* Contains full finger print (happens after pub) */
+				if (gpg == null)
+					throw new IllegalStateException("Unexpected ordering of key database.");
+				else {
+					last.setFingerprint(data[9]);
+					System.out.println("   FPR: " + data[9]);
+				}
+			} else if (last != null && recordType.equals(GPGRecordType.uid)) {
+				GPGComment cmt = new GPGComment(data[9]);
+				last.setEmail(cmt.email);
+				last.setFullName(cmt.fullName);
+				last.setComment(cmt.comment);
+				System.out.println("   uid comment "  +cmt);
+			} else {
+				System.out.println("Unexpected GPG data: " + line);
+			}
+		}
+		if (gpg != null) {
+			createOrUpdate(gpg);
+			exist.add(gpg.getFingerprint());
 		}
 	}
 	
@@ -270,16 +392,18 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 			}
 			fullName = userId;
 		}
+
+		@Override
+		public String toString() {
+			return "GPGComment [email=" + email + ", fullName=" + fullName + ", comment=" + comment + "]";
+		}
 		
 	}
 
 	protected void createOrUpdate(GPGKeyResource gpg)  {
 		GPGKeyResource res ;
 		try {
-			res = objectDatabase.get(GPGKeyResource.class, SearchField.and(
-				SearchField.eq("fullName", gpg.getFullName()),
-				SearchField.eq("comment", gpg.getComment()),
-				SearchField.eq("email", gpg.getEmail())));
+			res = objectDatabase.get(GPGKeyResource.class, SearchField.eq("name", gpg.getName()));
 		}
 		catch(ObjectNotFoundException onfe) {
 			res = null;
@@ -293,6 +417,7 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 			try {
 				gpg.setParent(parent);
 				objectDatabase.saveOrUpdate(gpg);
+				System.out.println("Created: " + gpg.getRecordType() + ":" + gpg.getUuid() + " : " + gpg.getName());
 			} finally {
 				created.remove();
 			}
@@ -311,6 +436,7 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 			res.setSignatureClass(gpg.getSignatureClass());
 			res.setValidity(gpg.getValidity());
 			objectDatabase.saveOrUpdate(res);
+			System.out.println("Updated: " + gpg.getRecordType() + ":" + gpg.getUuid() + " : " + gpg.getName());
 		}
 	}
 
@@ -326,24 +452,35 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 	@Override
 	public GPGKeyResource importKey(InputStream in) {
 		final File realmGPGHomeDir = getRealmGPGHomeDir();
-		if (realmGPGHomeDir.exists()) {
-			try {
-				var args = Arrays.asList("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--import");
-				LOG.info(String.format("Executing command: %s", String.join(" ", args)));
-				var fb = new ProcessBuilder(args);
-				fb.redirectErrorStream(true);
-				fb.redirectInput(Redirect.INHERIT);
-				var p = fb.start();
-				if(p.waitFor() != 0)
-					throw new IOException(String.format("GPG import exited with status code %d",p.exitValue()));
-				syncWithKeystore();
-				// TODO
-				return allObjects().iterator().next();
-			} catch (IOException | InterruptedException e) {
-				throw new IllegalStateException("Publish of keys failed.", e);
+		updateDir(realmGPGHomeDir);
+		try {
+			var args = Arrays.asList("gpg", "--homedir", realmGPGHomeDir.getAbsolutePath(), "--import");
+			LOG.info(String.format("Executing command: %s", String.join(" ", args)));
+			var fb = new ProcessBuilder(args);
+			fb.redirectError(Redirect.INHERIT);
+			fb.redirectInput(Redirect.PIPE);
+			fb.redirectOutput(Redirect.INHERIT);
+			var p = fb.start();
+			
+			try(var out = p.getOutputStream()) {
+				in.transferTo(out);
 			}
+			
+			if(p.waitFor() != 0)
+				throw new IOException(String.format("GPG import exited with status code %d",p.exitValue()));
+			
+			syncWithKeystore();
+			// TODO
+			return allObjects().iterator().next();
+		} catch (IOException | InterruptedException e) {
+			throw new IllegalStateException("Publish of keys failed.", e);
 		}
-		throw new IllegalStateException("Publish of keys failed, no directory for GPG keys.");
+	}
+
+	private void updateDir(final File realmGPGHomeDir) {
+		realmGPGHomeDir.mkdirs();
+		realmGPGHomeDir.setReadable(true, true);
+		realmGPGHomeDir.setWritable(true, true);
 	}
 
 	@Override

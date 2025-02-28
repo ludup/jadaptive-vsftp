@@ -108,9 +108,9 @@ public class GPGKeyResource extends NamedUUIDEntity {
 		return parent;
 	}
 
-	public void setParent(GPGKeyResource parent) {
-		if(parent != null && (this.equals(parent) ||  parent.getUuid().equals(getUuid())))
-			throw new IllegalArgumentException("Parent cannot be this key.");
+	public void setParent(GPGKeyResource parent) { 
+		if(parent != null && parent.getUuid() != null && getUuid() != null && (this.equals(parent) ||  parent.getUuid().equals(getUuid())))
+			throw new IllegalArgumentException("Parent " + parent.getUuid() + ": " + parent.hashCode() + " cannot be this key " + getUuid() + " : " + hashCode());
 		this.parent = parent;
 	}
 
@@ -124,6 +124,7 @@ public class GPGKeyResource extends NamedUUIDEntity {
 
 	public void setRecordType(GPGRecordType recordType) {
 		this.recordType = recordType;
+		updateName();
 	}
 
 	public GPGValidity getValidity() {
@@ -205,6 +206,7 @@ public class GPGKeyResource extends NamedUUIDEntity {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+		updateName();
 	}
 
 	public String getEmail() {
@@ -219,6 +221,7 @@ public class GPGKeyResource extends NamedUUIDEntity {
 
 	public void setEmail(String email) {
 		this.email = email;
+		updateName();
 	}
 
 	public String getSignatureClass() {
@@ -249,7 +252,6 @@ public class GPGKeyResource extends NamedUUIDEntity {
 		return String.format("%s (%s) <%s>", fullName, comment == null ? "" : comment, email);
 	}
 
-
 	@Override
 	public String toString() {
 		return "GPGKeyResource [recordType=" + recordType + ", validity=" + validity + ", keyLength=" + keyLength
@@ -263,5 +265,9 @@ public class GPGKeyResource extends NamedUUIDEntity {
 	@Override
 	public String getResourceKey() {
 		return RESOURCE_KEY;
+	}
+
+	private void updateName() {
+		setName(recordType + ":" + getUserId());
 	}
 }

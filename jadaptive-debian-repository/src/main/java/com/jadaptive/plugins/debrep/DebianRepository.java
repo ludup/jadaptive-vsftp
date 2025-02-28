@@ -148,21 +148,32 @@ public class DebianRepository extends NamedAssignableUUIDEntity {
 		return releases;
 	}
 
-	public List<String> getArchitectures() {
-		return architectures == null ? Collections.emptyList() : Arrays.asList(architectures.split(","));
+	public List<String> getArchitecturesAsList() {
+		return architectures == null || architectures.isEmpty() 
+				? Collections.emptyList() 
+				: Arrays.asList(architectures.split(",")).stream().map(String::trim).toList();
 	}
 
-	public void setArchitectures(List<String> architectures) {
-		this.architectures = architectures == null || architectures.size() == 0 ? null
-				: String.join(",", architectures);
+	public String getArchitectures() {
+		return architectures;
 	}
 
-	public List<String> getComponents() {
-		return components == null ? Collections.emptyList() : Arrays.asList(components.split(","));
+	public void setArchitectures(String architectures) {
+		this.architectures = architectures;
 	}
 
-	public void setComponents(List<String> components) {
-		this.components = components == null || components.size() == 0 ? null : String.join(",", components);
+	public List<String> getComponentsAsList() {
+		return components == null || components.isEmpty() 
+				? Collections.emptyList() 
+				: Arrays.asList(components.split(",")).stream().map(String::trim).toList();
+	}
+
+	public String getComponents() {
+		return components;
+	}
+
+	public void setComponents(String components) {
+		this.components = components;
 	}
 
 	public GPGKeyResource getSignWith() {

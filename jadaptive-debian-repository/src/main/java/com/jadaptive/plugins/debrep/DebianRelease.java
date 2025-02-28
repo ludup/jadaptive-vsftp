@@ -11,14 +11,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.jadaptive.api.events.GenerateEventTemplates;
 import com.jadaptive.api.repository.NamedUUIDEntity;
+import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.TableAction;
-import com.jadaptive.api.template.TableView;
 import com.jadaptive.api.template.TableAction.Target;
+import com.jadaptive.api.template.TableView;
 import com.jadaptive.api.ui.menu.ApplicationMenuService;
 import com.jadaptive.api.ui.menu.PageMenu;
 
@@ -135,21 +136,32 @@ public class DebianRelease extends NamedUUIDEntity {
 		this.repositories.addAll(repositories);
 	}
 
-	public List<String> getArchitectures() {
-		return architectures == null ? Collections.emptyList() : Arrays.asList(architectures.split(","));
+	public List<String> getArchitecturesAsList() {
+		return architectures == null || architectures.isEmpty() 
+				? Collections.emptyList() 
+				: Arrays.asList(architectures.split(",")).stream().map(String::trim).toList();
 	}
 
-	public void setArchitectures(List<String> architectures) {
-		this.architectures = architectures == null || architectures.size() == 0 ? null
-				: String.join(",", architectures);
+	public String getArchitectures() {
+		return architectures;
 	}
 
-	public List<String> getComponents() {
-		return components == null ? Collections.emptyList() : Arrays.asList(components.split(","));
+	public void setArchitectures(String architectures) {
+		this.architectures = architectures;
 	}
 
-	public void setComponents(List<String> components) {
-		this.components = components == null || components.size() == 0 ? null : String.join(",", components);
+	public List<String> getComponentsAsList() {
+		return components == null || components.isEmpty() 
+				? Collections.emptyList() 
+				: Arrays.asList(components.split(",")).stream().map(String::trim).toList();
+	}
+
+	public String getComponents() {
+		return components;
+	}
+
+	public void setComponents(String components) {
+		this.components = components;
 	}
 
 	public GPGKeyResource getSignWith() {
@@ -178,20 +190,20 @@ public class DebianRelease extends NamedUUIDEntity {
 			writer.println(String.format("Suite: %s", suite));
 		writer.println(String.format("Codename: %s", getName()));
 		writer.println(String.format("Version: 3.1"));
-		if (architectures == null || architectures.isEmpty()) {
-			if (repository.getArchitectures() == null || repository.getArchitectures().isEmpty())
+		if (getArchitecturesAsList().isEmpty()) {
+			if (repository.getArchitecturesAsList().isEmpty())
 				writer.println(String.format("Architectures: %s", "i386 amd64"));
 			else
-				writer.println(String.format("Architectures: %s", String.join(" ", repository.getArchitectures())));
+				writer.println(String.format("Architectures: %s", String.join(" ", repository.getArchitecturesAsList())));
 		} else
-			writer.println(String.format("Architectures: %s", String.join(" ", architectures)));
-		if (components == null || components.isEmpty()) {
-			if (repository.getComponents() == null || repository.getComponents().isEmpty())
+			writer.println(String.format("Architectures: %s", String.join(" ", getArchitecturesAsList())));
+		if (getComponentsAsList().isEmpty()) {
+			if (repository.getComponentsAsList().isEmpty())
 				writer.println(String.format("Components: %s", "i386 amd64"));
 			else
-				writer.println(String.format("Components: %s", String.join(" ", repository.getComponents())));
+				writer.println(String.format("Components: %s", String.join(" ", repository.getComponentsAsList())));
 		} else
-			writer.println(String.format("Components: %s", String.join(" ", components)));
+			writer.println(String.format("Components: %s", String.join(" ", getComponentsAsList())));
 		writer.println(String.format("Description: %s", StringUtils.isBlank(description) ? label : description));
 		if (signWith == null) {
 			if (repository.getSignWith() != null)
