@@ -2,6 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp.pgp;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
+import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectExtension;
@@ -47,7 +48,7 @@ public class PGPEncryption extends AbstractUUIDEntity {
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
 	String pgpPrivateKey;
 	
-	@ObjectField(type = FieldType.PASSWORD, manualEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD,  options = FieldOptions.MANUAL_ENCRYPTION)
 	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
 	String pgpPassphrase;
 	

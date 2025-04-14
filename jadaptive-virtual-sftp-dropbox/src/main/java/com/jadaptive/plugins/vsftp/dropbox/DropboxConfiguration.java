@@ -2,6 +2,7 @@ package com.jadaptive.plugins.vsftp.dropbox;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.SingletonUUIDEntity;
+import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -28,7 +29,7 @@ public class DropboxConfiguration extends SingletonUUIDEntity {
 	@ObjectView(ACCESS_VIEW)
 	String oauthDomain;
 	
-	@ObjectField(type = FieldType.TEXT, automaticEncryption = true)
+	@ObjectField(type = FieldType.TEXT, options = FieldOptions.AUTOMATIC_ENCRYPTION)
 	@ObjectView(ACCESS_VIEW)
 	String appKey;
 	

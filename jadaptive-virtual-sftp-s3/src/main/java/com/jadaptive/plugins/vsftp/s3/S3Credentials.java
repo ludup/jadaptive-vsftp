@@ -2,6 +2,7 @@ package com.jadaptive.plugins.vsftp.s3;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
+import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -23,7 +24,7 @@ public class S3Credentials extends VirtualFolderCredentials {
 	@Validator(type = ValidationType.REQUIRED)
 	String accessKey;
 
-	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = S3Folder.RESOURCE_KEY)
 	@Validator(type = ValidationType.REQUIRED)
 	String secretKey;

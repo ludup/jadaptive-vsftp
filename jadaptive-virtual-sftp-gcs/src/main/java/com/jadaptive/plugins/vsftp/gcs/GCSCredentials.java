@@ -3,6 +3,7 @@ package com.jadaptive.plugins.vsftp.gcs;
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.ObjectDefinition;
+import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectView;
@@ -16,7 +17,7 @@ public class GCSCredentials extends VirtualFolderCredentials {
 
 	public  static final String RESOURCE_KEY = "googleCredentials";
 	
-	@ObjectField(type = FieldType.TEXT_AREA, manualEncryption = true)
+	@ObjectField(type = FieldType.TEXT_AREA,  options = FieldOptions.MANUAL_ENCRYPTION)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = GCSFolder.RESOURCE_KEY)
 	String clientJson;
 	

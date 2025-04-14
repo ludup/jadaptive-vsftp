@@ -2,6 +2,7 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
+import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -38,15 +39,15 @@ public class SshConnectionProperties extends AbstractUUIDEntity {
 	@ObjectView(SSH_CONNECTION_VIEW)
 	String username;
 	
-	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
 	@ObjectView(SSH_AUTHENTICATION_VIEW)
 	String password;
 	
-	@ObjectField(type = FieldType.TEXT_AREA, automaticEncryption = true)
+	@ObjectField(type = FieldType.TEXT_AREA, options = FieldOptions.AUTOMATIC_ENCRYPTION)
 	@ObjectView(SSH_AUTHENTICATION_VIEW)
 	String privateKey;
 	
-	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
 	@ObjectView(SSH_AUTHENTICATION_VIEW)
 	String passphrase;
 	

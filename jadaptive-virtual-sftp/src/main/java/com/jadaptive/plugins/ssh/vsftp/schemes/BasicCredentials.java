@@ -1,10 +1,11 @@
 package com.jadaptive.plugins.ssh.vsftp.schemes;
 
 import com.jadaptive.api.entity.ObjectType;
-import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
+import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
+import com.jadaptive.api.template.ObjectField;
+import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
@@ -19,7 +20,7 @@ public class BasicCredentials extends VirtualFolderCredentials implements Userna
 	@ObjectView(value = VirtualFolder.CREDS_VIEW)
 	String username;
 	
-	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW)
 	String password;
 	

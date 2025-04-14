@@ -1,6 +1,7 @@
 package com.jadaptive.plugins.vsftp.azure;
 
 import com.jadaptive.api.entity.ObjectType;
+import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -19,7 +20,7 @@ public class AzureCredentials extends VirtualFolderCredentials {
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = AzureFolder.RESOURCE_KEY)
 	String storageAccount;
 	
-	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = true)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = AzureFolder.RESOURCE_KEY)
 	String key;
 

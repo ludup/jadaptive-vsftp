@@ -2,6 +2,7 @@ package com.jadaptive.plugins.vsftp.dropbox;
 
 import com.jadaptive.api.entity.ObjectScope;
 import com.jadaptive.api.entity.ObjectType;
+import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -17,11 +18,11 @@ public class DropboxCredentials extends VirtualFolderCredentials {
 
 	public  static final String RESOURCE_KEY = "dropboxCredentials";
 	
-	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = false)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
 	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = DropboxFolder.RESOURCE_KEY)
 	String accessKey;
 
-	@ObjectField(type = FieldType.PASSWORD, automaticEncryption = false, hidden = true)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, hidden = true)
 	String refreshKey;
 	
 	public String getAccessKey() {
