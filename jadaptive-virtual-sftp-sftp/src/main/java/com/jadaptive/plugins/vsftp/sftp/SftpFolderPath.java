@@ -6,7 +6,6 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -20,18 +19,15 @@ public class SftpFolderPath extends VirtualFolderPath {
 	
 	private static final long serialVersionUID = 3615197803358528585L;
 
-	@ObjectField(defaultValue = "", type = FieldType.TEXT)
-	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 0, bundle = SftpFolder.RESOURCE_KEY)
+	@ObjectField(defaultValue = "", type = FieldType.TEXT, view = VirtualFolder.FOLDER_VIEW, weight = 0, bundle = SftpFolder.RESOURCE_KEY)
 	@Validator(type = ValidationType.REQUIRED)
 	String hostname;
 	
-	@ObjectField(defaultValue = "22", type = FieldType.INTEGER)
-	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 1, bundle = SftpFolder.RESOURCE_KEY)
+	@ObjectField(defaultValue = "22", type = FieldType.INTEGER, view = VirtualFolder.FOLDER_VIEW, weight = 1, bundle = SftpFolder.RESOURCE_KEY)
 	@Validator(type = ValidationType.RANGE, value = "1-65535", bundle = SftpFolder.RESOURCE_KEY, i18n = "port.invalid")
 	Integer port;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VirtualFolder.FOLDER_VIEW, weight = 100, bundle = SftpFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT, view = VirtualFolder.FOLDER_VIEW, weight = 100, bundle = SftpFolder.RESOURCE_KEY)
 	String remotePath;
 	
 	@Override

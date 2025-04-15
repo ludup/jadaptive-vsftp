@@ -10,7 +10,6 @@ import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 @ObjectDefinition(resourceKey = TransferResult.RESOURCE_KEY, scope = ObjectScope.GLOBAL, 
@@ -22,32 +21,25 @@ public class TransferResult extends UUIDEntity {
 
 	public static final String RESOURCE_KEY = "transferResult";
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String filename;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String path;
 	
-	@ObjectField(type = FieldType.TIMESTAMP)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TIMESTAMP, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	Date started;
 	
-	@ObjectField(type = FieldType.TIMESTAMP)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TIMESTAMP, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	Date ended;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY, renderer = FieldRenderer.OPTIONAL)
+	@ObjectField(type = FieldType.TEXT, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY, renderer = FieldRenderer.OPTIONAL)
 	String contentHash;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY, renderer = FieldRenderer.OPTIONAL)
+	@ObjectField(type = FieldType.TEXT, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY, renderer = FieldRenderer.OPTIONAL)
 	String humanHash;
 	
-	@ObjectField(type = FieldType.LONG)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.LONG, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	long size;
 	
 	public TransferResult(String filename, String path, long size, Date started, Date ended, String contentHash, String humanHash) {

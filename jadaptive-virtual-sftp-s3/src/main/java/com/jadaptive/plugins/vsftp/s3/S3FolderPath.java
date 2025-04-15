@@ -4,7 +4,6 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderPath;
@@ -19,16 +18,13 @@ public class S3FolderPath extends VirtualFolderPath {
 	
 	public static final String BUCKET_VIEW = "bucketView";
 	
-	@ObjectField(type = FieldType.ENUM)
-	@ObjectView(value = BUCKET_VIEW, weight = 0, bundle = S3Folder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.ENUM, view = BUCKET_VIEW, weight = 0, bundle = S3Folder.RESOURCE_KEY)
 	S3Region region;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = BUCKET_VIEW, weight = 100, bundle = S3Folder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT, view = BUCKET_VIEW, weight = 100, bundle = S3Folder.RESOURCE_KEY)
 	String bucket;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = BUCKET_VIEW, weight = 200, bundle = S3Folder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT, view = BUCKET_VIEW, weight = 200, bundle = S3Folder.RESOURCE_KEY)
 	String filePath;
 	
 	public String getDestinationUri() {

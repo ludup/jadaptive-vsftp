@@ -6,7 +6,6 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectExtension;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
@@ -20,12 +19,10 @@ public class Sharing extends AbstractUUIDEntity {
 	public static final String RESOURCE_KEY = "sharing";
 	public static final String SHARING_VIEW = "sharingView";
 	
-	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = SHARING_VIEW)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false", bundle = VirtualFolder.RESOURCE_KEY, view = SHARING_VIEW)
 	Boolean shareFiles;
 	
-	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = SHARING_VIEW)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false", bundle = VirtualFolder.RESOURCE_KEY, view = SHARING_VIEW)
 	Boolean shareFolders;
 
 	public Boolean getShareFiles() {

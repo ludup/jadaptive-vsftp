@@ -5,7 +5,6 @@ import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 import com.jadaptive.plugins.ssh.vsftp.schemes.UsernameAndPasswordCredentials;
@@ -17,16 +16,13 @@ public class WindowsCredentials extends VirtualFolderCredentials implements User
 
 	public static final String RESOURCE_KEY =  "windowsCredentials";
 
-	@ObjectField(type = FieldType.TEXT, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW)
+	@ObjectField(type = FieldType.TEXT, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = VirtualFolder.CREDS_VIEW)
 	String domain;
 	
-	@ObjectField(type = FieldType.TEXT, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String username;
 	
-	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String password;
 
 	public String getDomain() {

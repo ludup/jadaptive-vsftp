@@ -9,7 +9,6 @@ import com.jadaptive.api.repository.AbstractUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 
 @ObjectDefinition(resourceKey = FileOperation.RESOURCE_KEY, scope = ObjectScope.GLOBAL, type = ObjectType.COLLECTION, bundle = VirtualFolder.RESOURCE_KEY)
@@ -19,20 +18,16 @@ public class FileOperation extends AbstractUUIDEntity {
 
 	public static final String RESOURCE_KEY = "fileOperation";
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String filename;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String path;
 	
-	@ObjectField(type = FieldType.TIMESTAMP)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TIMESTAMP, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	Date started;
 	
-	@ObjectField(type = FieldType.TIMESTAMP)
-	@ObjectView(value = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TIMESTAMP, view = ObjectEvent.OBJECT_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	Date ended;
 	
 	public FileOperation(String filename, String path, Date started) {

@@ -7,7 +7,6 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectExtension;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -28,32 +27,25 @@ public class PGPEncryption extends AbstractUUIDEntity {
 	public static final String ENCRYPTION_VIEW = "encryptionView";
 	public static final String KEYS_VIEW = "keysView";
 	
-	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = ENCRYPTION_VIEW)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false",bundle = VirtualFolder.RESOURCE_KEY, view = ENCRYPTION_VIEW)
 	Boolean encrypt;
 	
-	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = ENCRYPTION_VIEW)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false",bundle = VirtualFolder.RESOURCE_KEY, view = ENCRYPTION_VIEW)
 	Boolean armour;
 	
-	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = ENCRYPTION_VIEW)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false",bundle = VirtualFolder.RESOURCE_KEY, view = ENCRYPTION_VIEW)
 	Boolean compress;
 	
-	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = ENCRYPTION_VIEW)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false",bundle = VirtualFolder.RESOURCE_KEY, view = ENCRYPTION_VIEW)
 	Boolean integrityCheck;
 	
-	@ObjectField(type = FieldType.TEXT_AREA)
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
+	@ObjectField(type = FieldType.TEXT_AREA,bundle = VirtualFolder.RESOURCE_KEY, view = KEYS_VIEW)
 	String pgpPrivateKey;
 	
-	@ObjectField(type = FieldType.PASSWORD,  options = FieldOptions.MANUAL_ENCRYPTION)
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
+	@ObjectField(type = FieldType.PASSWORD,  options = FieldOptions.MANUAL_ENCRYPTION, bundle = VirtualFolder.RESOURCE_KEY, view = KEYS_VIEW)
 	String pgpPassphrase;
 	
-	@ObjectField(type = FieldType.TEXT_AREA)
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = KEYS_VIEW)
+	@ObjectField(type = FieldType.TEXT_AREA, bundle = VirtualFolder.RESOURCE_KEY, view = KEYS_VIEW)
 	String pgpPublicKey;
 
 	@Override

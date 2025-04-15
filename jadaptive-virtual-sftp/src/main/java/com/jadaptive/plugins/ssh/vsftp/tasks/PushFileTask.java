@@ -4,7 +4,6 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.TaskDefinition;
 
 @ObjectDefinition(resourceKey = PushFileTask.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
@@ -15,16 +14,13 @@ public class PushFileTask extends AbstractFileSourceTask {
 
 	public static final String RESOURCE_KEY = "pushFile";
 	
-	@ObjectField(type = FieldType.INTEGER, defaultValue = "3")
-	@ObjectView(OPTIONS_VIEW)
+	@ObjectField(type = FieldType.INTEGER, defaultValue = "3", view = OPTIONS_VIEW)
 	Integer chunks;
 	
-	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(OPTIONS_VIEW)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false", view = OPTIONS_VIEW)
 	Boolean errorIfExists;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(TARGET_VIEW)
+	@ObjectField(type = FieldType.TEXT, view = TARGET_VIEW)
 	String remoteDirectory;
 	
 	@ObjectField(type = FieldType.OBJECT_EMBEDDED)

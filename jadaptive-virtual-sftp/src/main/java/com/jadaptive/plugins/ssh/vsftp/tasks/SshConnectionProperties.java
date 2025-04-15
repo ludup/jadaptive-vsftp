@@ -6,7 +6,6 @@ import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
@@ -23,32 +22,26 @@ public class SshConnectionProperties extends AbstractUUIDEntity {
 	public static final String SSH_CONNECTION_VIEW = "sshConnectionView";
 	public static final String SSH_AUTHENTICATION_VIEW = "sshAuthenticationView";
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(SSH_CONNECTION_VIEW)
+	@ObjectField(type = FieldType.TEXT, view = SSH_CONNECTION_VIEW)
 	@Validator(type = ValidationType.HOSTNAME)
 	@Validator(type = ValidationType.IPV4)
 	@Validator(type = ValidationType.IPV6)
 	String hostname;
 	
-	@ObjectField(type = FieldType.INTEGER, defaultValue = "22")
-	@ObjectView(SSH_CONNECTION_VIEW)
+	@ObjectField(type = FieldType.INTEGER, defaultValue = "22", view = SSH_CONNECTION_VIEW)
 	@Validator(type = ValidationType.PORT)
 	Integer port;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(SSH_CONNECTION_VIEW)
+	@ObjectField(type = FieldType.TEXT, view = SSH_CONNECTION_VIEW)
 	String username;
 	
-	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(SSH_AUTHENTICATION_VIEW)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = SSH_AUTHENTICATION_VIEW)
 	String password;
 	
-	@ObjectField(type = FieldType.TEXT_AREA, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(SSH_AUTHENTICATION_VIEW)
+	@ObjectField(type = FieldType.TEXT_AREA, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = SSH_AUTHENTICATION_VIEW)
 	String privateKey;
 	
-	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(SSH_AUTHENTICATION_VIEW)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = SSH_AUTHENTICATION_VIEW)
 	String passphrase;
 	
 	@Override

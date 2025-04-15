@@ -5,7 +5,6 @@ import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
@@ -16,12 +15,10 @@ public class PrivateKeyCredentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "privateKeyCredentials";
 
-	@ObjectField(type = FieldType.TEXT_AREA)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = SftpFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT_AREA, view = VirtualFolder.CREDS_VIEW, bundle = SftpFolder.RESOURCE_KEY)
 	String privateKey;
 
-	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = SftpFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = VirtualFolder.CREDS_VIEW, bundle = SftpFolder.RESOURCE_KEY)
 	String passphrase;
 
 	public PrivateKeyCredentials() { }

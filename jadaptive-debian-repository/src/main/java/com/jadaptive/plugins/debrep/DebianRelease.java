@@ -14,7 +14,6 @@ import com.jadaptive.api.repository.NamedUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.TableAction;
 import com.jadaptive.api.template.TableAction.Target;
@@ -38,44 +37,34 @@ public class DebianRelease extends NamedUUIDEntity {
 	public static final String VIEW_BASIC = "basicReleaseView";
 	public static final String VIEW_ADVANCED = "advancedReleaseView";
 	
-	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = DebianRepository.RESOURCE_KEY)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = DebianRepository.RESOURCE_KEY, view = VIEW_BASIC)
 	private Set<DebianRepository> repositories = new HashSet<DebianRepository>();
 
-	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = GPGKeyResource.RESOURCE_KEY)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = GPGKeyResource.RESOURCE_KEY, view = VIEW_BASIC)
 	private GPGKeyResource signWith;
 
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_BASIC)
 	private String label;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String origin;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String suite;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String architectures;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String components;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String description;
 	
-	@ObjectField(type = FieldType.ENUM)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.ENUM, view = VIEW_ADVANCED)
 	private DebianPriority overridePriority;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String overrideSection;
 
 	public DebianPriority getOverridePriority() {

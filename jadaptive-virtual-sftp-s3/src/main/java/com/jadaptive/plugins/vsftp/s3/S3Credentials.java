@@ -6,7 +6,6 @@ import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ValidationType;
 import com.jadaptive.api.template.Validator;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -19,13 +18,11 @@ public class S3Credentials extends VirtualFolderCredentials {
 
 	public static final String RESOURCE_KEY = "s3Credentials";
 
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = S3Folder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.TEXT, view = VirtualFolder.CREDS_VIEW, bundle = S3Folder.RESOURCE_KEY)
 	@Validator(type = ValidationType.REQUIRED)
 	String accessKey;
 
-	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW, bundle = S3Folder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = VirtualFolder.CREDS_VIEW, bundle = S3Folder.RESOURCE_KEY)
 	@Validator(type = ValidationType.REQUIRED)
 	String secretKey;
 	

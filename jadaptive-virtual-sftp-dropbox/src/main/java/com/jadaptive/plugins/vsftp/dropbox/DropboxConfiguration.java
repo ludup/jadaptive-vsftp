@@ -6,7 +6,6 @@ import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.ui.pages.config.ConfigurationItem;
 
@@ -21,20 +20,16 @@ public class DropboxConfiguration extends SingletonUUIDEntity {
 	
 	public static final String ACCESS_VIEW = "accessView";
 
-	@ObjectField(type = FieldType.BOOL)
-	@ObjectView(ACCESS_VIEW)
+	@ObjectField(type = FieldType.BOOL, view = ACCESS_VIEW)
 	Boolean enableOauth;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(ACCESS_VIEW)
+	@ObjectField(type = FieldType.TEXT, view = ACCESS_VIEW)
 	String oauthDomain;
 	
-	@ObjectField(type = FieldType.TEXT, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(ACCESS_VIEW)
+	@ObjectField(type = FieldType.TEXT, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = ACCESS_VIEW)
 	String appKey;
 	
-	@ObjectField(type = FieldType.PASSWORD)
-	@ObjectView(ACCESS_VIEW)
+	@ObjectField(type = FieldType.PASSWORD, view = ACCESS_VIEW)
 	String appSecret;
 	
 	@Override

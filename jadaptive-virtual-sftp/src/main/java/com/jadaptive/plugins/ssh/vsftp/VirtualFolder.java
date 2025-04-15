@@ -11,7 +11,6 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
 import com.jadaptive.api.template.ObjectServiceBean;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.TableView;
 import com.jadaptive.api.user.User;
@@ -32,16 +31,13 @@ public abstract class VirtualFolder extends AssignableUUIDEntity implements Name
 
 	public static final String RESOURCE_KEY = "virtualFolder";
 	
-	@ObjectField(type = FieldType.TEXT, nameField = true, searchable = true, unique = true)
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "")
+	@ObjectField(type = FieldType.TEXT, nameField = true, searchable = true, unique = true, bundle = VirtualFolder.RESOURCE_KEY)
 	String name;
 
-	@ObjectField(type = FieldType.TEXT, hidden = true)
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = "", renderer = FieldRenderer.I18N)
+	@ObjectField(type = FieldType.TEXT, hidden = true, bundle = VirtualFolder.RESOURCE_KEY, renderer = FieldRenderer.I18N)
 	String scheme = getType() + ".name";
 	
-	@ObjectField(type = FieldType.TEXT, searchable = true, unique = true)
-	@ObjectView(bundle = VirtualFolder.RESOURCE_KEY, value = FOLDER_VIEW)
+	@ObjectField(type = FieldType.TEXT, searchable = true, unique = true, bundle = VirtualFolder.RESOURCE_KEY, view = FOLDER_VIEW)
 	String mountPath;
 
 	public abstract VirtualFolderPath getPath();

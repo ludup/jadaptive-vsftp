@@ -6,7 +6,6 @@ import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 
 @ObjectDefinition(resourceKey = FileTarget.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
 public class FileTarget extends AbstractUUIDEntity {
@@ -16,7 +15,6 @@ public class FileTarget extends AbstractUUIDEntity {
 	public static final String RESOURCE_KEY = "fileTarget";
 
 	@ObjectField(type = FieldType.ENUM, defaultValue = "VIRTUAL_PATH", options = FieldOptions.SYSTEM_ONLY_VIEW)
-	@ObjectView(value = "")
 	TargetLocation location;
 	
 	@ObjectField(type = FieldType.TEXT)

@@ -6,7 +6,6 @@ import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectExtension;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.ObjectViews;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
@@ -23,8 +22,7 @@ public class FolderNotes extends AbstractUUIDEntity {
 
 	public static final String NOTES_VIEW = "notesView";
 	
-	@ObjectField(type = FieldType.TEXT_AREA)
-	@ObjectView(value = FolderNotes.NOTES_VIEW)
+	@ObjectField(type = FieldType.TEXT_AREA, view = FolderNotes.NOTES_VIEW)
 	private String notes;
 	
 	@Override

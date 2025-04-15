@@ -4,7 +4,6 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.TaskDefinition;
 import com.jadaptive.api.templates.ObjectDynamicField;
 
@@ -17,8 +16,7 @@ public class MoveFileTask extends AbstractFileTransferTask {
 
 	public static final String RESOURCE_KEY = "moveFile";
 
-	@ObjectField(type = FieldType.BOOL, defaultValue = "false")
-	@ObjectView(AbstractFileTransferTask.OPTIONS_VIEW)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "false", view = AbstractFileTransferTask.OPTIONS_VIEW)
 	Boolean errorIfExists;
 	
 	public Boolean getErrorIfExists() {

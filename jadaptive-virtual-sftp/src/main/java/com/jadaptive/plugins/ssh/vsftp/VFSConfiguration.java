@@ -5,7 +5,6 @@ import com.jadaptive.api.repository.SingletonUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 
 @ObjectDefinition(resourceKey = VFSConfiguration.RESOURCE_KEY, type = ObjectType.SINGLETON, aliases = { VFSConfiguration.RESOURCE_KEY + ".updated" })
 public class VFSConfiguration extends SingletonUUIDEntity {
@@ -16,8 +15,7 @@ public class VFSConfiguration extends SingletonUUIDEntity {
 	
 	public static final String RESOURCE_KEY = "vfsConfiguration";
 	
-	@ObjectField(type = FieldType.ENUM, defaultValue = "SHA256")
-	@ObjectView(value = GENERAL_VIEW)
+	@ObjectField(type = FieldType.ENUM, defaultValue = "SHA256", view = GENERAL_VIEW)
 	ContentHash defaultHash;
 	
 	@Override

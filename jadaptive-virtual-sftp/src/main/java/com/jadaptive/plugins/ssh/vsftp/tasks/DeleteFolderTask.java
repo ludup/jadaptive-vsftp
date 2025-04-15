@@ -4,7 +4,6 @@ import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.TaskDefinition;
 
 @ObjectDefinition(resourceKey = DeleteFolderTask.RESOURCE_KEY, type = ObjectType.OBJECT, bundle = AbstractFileTargetTask.BUNDLE)
@@ -15,8 +14,7 @@ public class DeleteFolderTask extends AbstractFileTargetTask {
 
 	public static final String RESOURCE_KEY = "deleteFolder";
 	
-	@ObjectField(type = FieldType.BOOL)
-	@ObjectView(OPTIONS_VIEW)
+	@ObjectField(type = FieldType.BOOL, view = OPTIONS_VIEW)
 	Boolean deleteContents;
 
 	public Boolean getDeleteContents() {

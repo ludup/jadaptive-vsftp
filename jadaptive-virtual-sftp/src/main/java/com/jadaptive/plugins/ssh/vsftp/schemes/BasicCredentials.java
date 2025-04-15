@@ -5,7 +5,6 @@ import com.jadaptive.api.template.FieldOptions;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolder;
 import com.jadaptive.plugins.ssh.vsftp.VirtualFolderCredentials;
 
@@ -16,12 +15,10 @@ public class BasicCredentials extends VirtualFolderCredentials implements Userna
 
 	public static final String RESOURCE_KEY =  "basicCredentials";
 
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW)
+	@ObjectField(type = FieldType.TEXT, view = VirtualFolder.CREDS_VIEW)
 	String username;
 	
-	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION)
-	@ObjectView(value = VirtualFolder.CREDS_VIEW)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = VirtualFolder.CREDS_VIEW)
 	String password;
 	
 	public BasicCredentials() { }

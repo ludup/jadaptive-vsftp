@@ -11,7 +11,6 @@ import com.jadaptive.api.repository.NamedAssignableUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.TableAction;
 import com.jadaptive.api.template.TableAction.Target;
@@ -39,44 +38,34 @@ public class DebianRepository extends NamedAssignableUUIDEntity {
 	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = DebianRelease.RESOURCE_KEY)
 	private Set<DebianRelease> releases = new HashSet<DebianRelease>();
 
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String architectures;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String components;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_BASIC)
 	private String origin;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_BASIC)
 	private String suite;
 	
-	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = VirtualFolder.RESOURCE_KEY)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = VirtualFolder.RESOURCE_KEY, view = VIEW_BASIC)
 	private VirtualFolder remoteRepository;
 	
-	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = GPGKeyResource.RESOURCE_KEY)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = GPGKeyResource.RESOURCE_KEY, view = VIEW_BASIC)
 	private GPGKeyResource signWith;
 	
-	@ObjectField(type = FieldType.ENUM, defaultValue = "inherit")
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.ENUM, defaultValue = "inherit", view = VIEW_ADVANCED)
 	private DebianPriority overridePriority = DebianPriority.inherit;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String overrideSection;
 	
-	@ObjectField(type = FieldType.BOOL)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.BOOL, view = VIEW_BASIC)
 	private boolean shared;
 	
-	@ObjectField(type = FieldType.BOOL, defaultValue = "true")
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.BOOL, defaultValue = "true", view = VIEW_BASIC)
 	private boolean uploadToRemoteOnUpdate = true;
 
 	public boolean isUploadToRemoteOnUpdate() {

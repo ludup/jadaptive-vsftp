@@ -7,7 +7,6 @@ import com.jadaptive.api.repository.NamedUUIDEntity;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
-import com.jadaptive.api.template.ObjectView;
 import com.jadaptive.api.template.ObjectViewDefinition;
 import com.jadaptive.api.template.TableAction;
 import com.jadaptive.api.template.TableAction.Target;
@@ -34,70 +33,54 @@ public class GPGKeyResource extends NamedUUIDEntity {
 	public static final String VIEW_BASIC = "basicView";
 	public static final String VIEW_ADVANCED = "advancedView";
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.TEXT, view =VIEW_BASIC)
 	@Validator(type = ValidationType.REQUIRED)
 	private String fullName;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_BASIC)
 	@Validator(type = ValidationType.REQUIRED)
 	private String email;
 	
-	@ObjectField(type = FieldType.ENUM, defaultValue = "pub")
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.ENUM, defaultValue = "pub", view = VIEW_BASIC)
 	private GPGRecordType recordType = GPGRecordType.pub;
 
-	@ObjectField(type = FieldType.ENUM, defaultValue = "NONE")
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.ENUM, defaultValue = "NONE", view = VIEW_BASIC)
 	private GPGValidity validity = GPGValidity.NONE;
 
-	@ObjectField(type = FieldType.INTEGER, defaultValue = "3072")
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.INTEGER, defaultValue = "3072", view = VIEW_BASIC)
 	private int keyLength  = 3072;
 
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_BASIC)
 	private String fingerprint;
 	
-	@ObjectView(value = VIEW_BASIC)
-	@ObjectField(type = FieldType.ENUM, defaultValue = "RSA_RSA")
+	@ObjectField(type = FieldType.ENUM, defaultValue = "RSA_RSA", view = VIEW_BASIC)
 	private GPGKeyAlgo publicKeyAlgo = GPGKeyAlgo.RSA_RSA;
 
-	@ObjectField(type = FieldType.TIMESTAMP, readOnly = true)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.TIMESTAMP, readOnly = true, view = VIEW_BASIC)
 	private Date creationDate;
 	
-	@ObjectField(type = FieldType.TIMESTAMP)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.TIMESTAMP, view = VIEW_BASIC)
 	private Date expirationDate;
 	
-	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = GPGKeyResource.RESOURCE_KEY)
-	@ObjectView(value = VIEW_BASIC)
+	@ObjectField(type = FieldType.OBJECT_REFERENCE, references = GPGKeyResource.RESOURCE_KEY, view = VIEW_BASIC)
 	private GPGKeyResource parent;
 
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String info;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String ownerTrust;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String comment;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String signatureClass;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String keyCapabilities;
 	
-	@ObjectField(type = FieldType.TEXT)
-	@ObjectView(value = VIEW_ADVANCED)
+	@ObjectField(type = FieldType.TEXT, view = VIEW_ADVANCED)
 	private String issuerCertificateFingerprint;
 
 	public String getComment() {
