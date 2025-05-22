@@ -73,11 +73,6 @@ public class SendToServiceImpl extends AuthenticatedService implements SendToSer
 	}
 
 	@Override
-	public void initializeSystem(boolean newSchema) {
-		initializeTenant(getCurrentTenant(), newSchema);
-	}
-
-	@Override
 	public void initializeTenant(Tenant tenant, boolean newSchema) {
 		
 		if(!quotaService.hasKey(SEND_TO_TRANSFER_LIMIT)) {

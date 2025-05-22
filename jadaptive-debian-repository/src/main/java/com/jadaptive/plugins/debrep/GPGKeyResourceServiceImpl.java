@@ -49,11 +49,6 @@ public class GPGKeyResourceServiceImpl extends AbstractUUIDObjectServceImpl<GPGK
 	private ThreadLocal<Boolean> created = new ThreadLocal<>();
 
 	@Override
-	public void initializeSystem(boolean newSchema) {
-		initializeTenant(getCurrentTenant(), newSchema);
-	}
-
-	@Override
 	public void initializeTenant(Tenant tenant, boolean newSchema) {
 		
 		try {

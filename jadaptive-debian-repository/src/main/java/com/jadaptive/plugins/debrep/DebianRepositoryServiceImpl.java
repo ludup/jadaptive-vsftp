@@ -117,13 +117,6 @@ public class DebianRepositoryServiceImpl extends AbstractUUIDObjectServceImpl<De
 //		});
 	}
 	
-	
-
-	@Override
-	public void initializeSystem(boolean newSchema) {
-		initializeTenant(getCurrentTenant(), newSchema);
-	}
-
 	@Override
 	public void initializeTenant(Tenant tenant, boolean newSchema) {
 		

@@ -48,11 +48,6 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	}
 
 	@Override
-	public void initializeSystem(boolean newSchema) {
-		initializeTenant(tenantService.getSystemTenant(), newSchema);
-	}
-
-	@Override
 	public void initializeTenant(Tenant tenant, boolean newSchema) {
 		if(newSchema) {
 			AnonymousUser user = new AnonymousUser();
