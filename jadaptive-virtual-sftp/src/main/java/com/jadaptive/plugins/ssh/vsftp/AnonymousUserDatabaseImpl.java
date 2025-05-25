@@ -12,7 +12,6 @@ import com.jadaptive.api.template.ObjectTemplate;
 import com.jadaptive.api.template.TemplateService;
 import com.jadaptive.api.tenant.Tenant;
 import com.jadaptive.api.tenant.TenantAware;
-import com.jadaptive.api.tenant.TenantService;
 import com.jadaptive.api.user.User;
 import com.jadaptive.api.user.UserDatabaseCapabilities;
 
@@ -25,10 +24,7 @@ public class AnonymousUserDatabaseImpl implements AnonymousUserDatabase, TenantA
 	
 	@Autowired
 	private TenantAwareObjectDatabase<AnonymousUser> anonymousDatabase;
-	
-	@Autowired
-	private TenantService tenantService; 
-	
+
 	@Autowired
 	private TemplateService templateService; 
 
