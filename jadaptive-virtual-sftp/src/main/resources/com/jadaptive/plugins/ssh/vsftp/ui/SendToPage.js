@@ -8,14 +8,14 @@ $(function() {
 	}, function(doUpload) {
 		
 		if(UploadWidget.count() == 0) {
-			JadaptiveUtils.error($('#feedback'), '${virtualFolder:noFiles.text}');
+			JadaptiveUtils.error($('#feedback'), '$[virtualFolder:noFiles.text]');
 			return false;
 		}
 		
 		if($('#quota').data('enforcing')) {
 			var remaining = $('#quota').data('quota');
 			if(remaining < UploadWidget.size()) {
-				JadaptiveUtils.error($('#feedback'), '${virtualFolder:quotaExceeded.text}');
+				JadaptiveUtils.error($('#feedback'), '$[virtualFolder:quotaExceeded.text]');
 				return false;
 			}
 		}
@@ -34,7 +34,7 @@ $(function() {
 			$.getJSON('/app/api/sendTo/receiver/' + $('#shareCode').val() + '/' + UploadWidget.count(), function(data) {
 			
 				if(data.success) {
-					$('#progressText').text("${virtualFolder:transferingFiles.text}");
+					$('#progressText').text("$[virtualFolder:transferingFiles.text]");
 					doUpload(function() {
 						window.location.reload();
 					}, function() {
