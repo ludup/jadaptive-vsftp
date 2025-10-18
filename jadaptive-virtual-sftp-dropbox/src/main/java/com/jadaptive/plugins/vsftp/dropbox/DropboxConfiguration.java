@@ -3,6 +3,7 @@ package com.jadaptive.plugins.vsftp.dropbox;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.SingletonUUIDEntity;
 import com.jadaptive.api.template.FieldOptions;
+import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -29,7 +30,7 @@ public class DropboxConfiguration extends SingletonUUIDEntity {
 	@ObjectField(type = FieldType.TEXT, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = ACCESS_VIEW)
 	String appKey;
 	
-	@ObjectField(type = FieldType.PASSWORD, view = ACCESS_VIEW)
+	@ObjectField(type = FieldType.PASSWORD, view = ACCESS_VIEW, renderer = FieldRenderer.SET_PASSWORD)
 	String appSecret;
 	
 	@Override

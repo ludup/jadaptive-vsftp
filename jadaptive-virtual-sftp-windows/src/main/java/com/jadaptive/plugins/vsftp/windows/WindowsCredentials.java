@@ -2,6 +2,7 @@ package com.jadaptive.plugins.vsftp.windows;
 
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.template.FieldOptions;
+import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -22,7 +23,7 @@ public class WindowsCredentials extends VirtualFolderCredentials implements User
 	@ObjectField(type = FieldType.TEXT, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
 	String username;
 	
-	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = VirtualFolder.CREDS_VIEW, bundle = VirtualFolder.RESOURCE_KEY, renderer = FieldRenderer.SET_PASSWORD)
 	String password;
 
 	public String getDomain() {
