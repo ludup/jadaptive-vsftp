@@ -3,6 +3,7 @@ package com.jadaptive.plugins.ssh.vsftp.tasks;
 import com.jadaptive.api.entity.ObjectType;
 import com.jadaptive.api.repository.AbstractUUIDEntity;
 import com.jadaptive.api.template.FieldOptions;
+import com.jadaptive.api.template.FieldRenderer;
 import com.jadaptive.api.template.FieldType;
 import com.jadaptive.api.template.ObjectDefinition;
 import com.jadaptive.api.template.ObjectField;
@@ -32,16 +33,16 @@ public class SshConnectionProperties extends AbstractUUIDEntity {
 	@Validator(type = ValidationType.PORT)
 	Integer port;
 	
-	@ObjectField(type = FieldType.TEXT, view = SSH_CONNECTION_VIEW)
+	@ObjectField(type = FieldType.TEXT, view = SSH_CONNECTION_VIEW, renderer = FieldRenderer.SET_PASSWORD)
 	String username;
 	
-	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = SSH_AUTHENTICATION_VIEW)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = SSH_AUTHENTICATION_VIEW, renderer = FieldRenderer.SET_PASSWORD)
 	String password;
 	
 	@ObjectField(type = FieldType.TEXT_AREA, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = SSH_AUTHENTICATION_VIEW)
 	String privateKey;
 	
-	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = SSH_AUTHENTICATION_VIEW)
+	@ObjectField(type = FieldType.PASSWORD, options = FieldOptions.AUTOMATIC_ENCRYPTION, view = SSH_AUTHENTICATION_VIEW, renderer = FieldRenderer.SET_PASSWORD)
 	String passphrase;
 	
 	@Override
